@@ -1,8 +1,9 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import '../generated/l10n.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LocalizationUtil {
   static const String _languageCodeKey = 'languageCode';
@@ -49,15 +50,12 @@ class LocalizationUtil {
           backgroundColor: Colors.white, // Custom background color
           title: Row(
             children: [
-                const FaIcon(FontAwesomeIcons.list, color: Colors.blueAccent),
-              const SizedBox(width: 10),
               Text(
                 S.of(context).select_language,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent, // Custom title style
-                ),
+                style: GoogleFonts.cairo(
+                    fontSize: 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -65,16 +63,30 @@ class LocalizationUtil {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const FaIcon(FontAwesomeIcons.globe, color: Colors.blueAccent),
-                title: const Text('English'),
+                leading: const FaIcon(FontAwesomeIcons.globe,
+                    color: Colors.blueAccent),
+                title: Text(
+                  'English',
+                  style: GoogleFonts.cairo(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500),
+                ),
                 onTap: () {
                   onLanguageChange(const Locale('en'));
                   Navigator.of(context).pop();
                 },
               ),
               ListTile(
-                leading: const FaIcon(FontAwesomeIcons.globe, color: Colors.blueAccent),
-                title: const Text('العربية'),
+                leading: const FaIcon(FontAwesomeIcons.globe,
+                    color: Colors.blueAccent),
+                title: Text(
+                  'العربية',
+                  style: GoogleFonts.cairo(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500),
+                ),
                 onTap: () {
                   onLanguageChange(const Locale('ar'));
                   Navigator.of(context).pop();
@@ -89,10 +101,10 @@ class LocalizationUtil {
               },
               child: Text(
                 S.of(context).cancel,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.redAccent,
-                ),
+                style: GoogleFonts.cairo(
+                    fontSize: 16,
+                    color: Colors.red,
+                    fontWeight: FontWeight.w500),
               ),
             ),
           ],

@@ -40,6 +40,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "enter_phone_number":
             MessageLookupByLibrary.simpleMessage("يرجى إدخال رقم هاتفك"),
         "login": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
+        "login_welcome": MessageLookupByLibrary.simpleMessage(
+            "مرحبًا بعودتك! يرجى تسجيل الدخول إلى حسابك للمتابعة."),
         "login_with_facebook": MessageLookupByLibrary.simpleMessage(
             "تسجيل الدخول باستخدام فيسبوك"),
         "login_with_google":
@@ -55,6 +57,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_language":
             MessageLookupByLibrary.simpleMessage("يرجى اختيار اللغة"),
         "signup": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
+        "signup_in_progress": MessageLookupByLibrary.simpleMessage(
+            "يرجى الانتظار أثناء إنشاء الحساب"),
+        "signup_welcome": MessageLookupByLibrary.simpleMessage(
+            "مرحبًا! أنشئ حسابًا جديدًا للانضمام إلينا والاستمتاع بالخدمات."),
         "signup_with_facebook":
             MessageLookupByLibrary.simpleMessage("إنشاء حساب باستخدام فيسبوك"),
         "signup_with_google":
@@ -62,6 +68,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "valid_email": MessageLookupByLibrary.simpleMessage(
             "يرجى إدخال عنوان بريد إلكتروني صالح"),
         "valid_phone_number":
-            MessageLookupByLibrary.simpleMessage("يرجى إدخال رقم هاتف صالح")
+            MessageLookupByLibrary.simpleMessage("يرجى إدخال رقم هاتف صالح"),
+        "wait_while_loading": MessageLookupByLibrary.simpleMessage(
+            "يرجى الانتظار أثناء تحميل البيانات")
       };
 }

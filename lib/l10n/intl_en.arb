@@ -25,5 +25,11 @@
     "confirm_password": "Please confirm your password",
     "password_mismatch": "Passwords do not match",
     "enter_email": "Please enter your email address",
-    "valid_email": "Please enter a valid email address"
+    "valid_email": "Please enter a valid email address",
+    "logging_in_progress": "Please wait while logging you in",
+    "signup_in_progress": "Please wait while creating your account",
+    "wait_while_loading": "Pleae wait while loading data",
+    "login_welcome": "Welcome back! Please log in to your account to continue.",
+    "signup_welcome": "Welcome! Create a new account to join us and enjoy our services."
+
 }

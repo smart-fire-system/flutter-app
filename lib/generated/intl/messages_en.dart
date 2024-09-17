@@ -39,7 +39,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Please enter your password"),
         "enter_phone_number": MessageLookupByLibrary.simpleMessage(
             "Please enter your phone number"),
+        "logging_in_progress": MessageLookupByLibrary.simpleMessage(
+            "Please wait while logging you in"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
+        "login_welcome": MessageLookupByLibrary.simpleMessage(
+            "Welcome back! Please log in to your account to continue."),
         "login_with_facebook":
             MessageLookupByLibrary.simpleMessage("Log in with Facebook"),
         "login_with_google":
@@ -55,6 +59,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_language":
             MessageLookupByLibrary.simpleMessage("Please choose a language"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign Up"),
+        "signup_in_progress": MessageLookupByLibrary.simpleMessage(
+            "Please wait while creating your account"),
+        "signup_welcome": MessageLookupByLibrary.simpleMessage(
+            "Welcome! Create a new account to join us and enjoy our services."),
         "signup_with_facebook":
             MessageLookupByLibrary.simpleMessage("Sign up with Facebook"),
         "signup_with_google":
@@ -62,6 +70,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "valid_email": MessageLookupByLibrary.simpleMessage(
             "Please enter a valid email address"),
         "valid_phone_number": MessageLookupByLibrary.simpleMessage(
-            "Please enter a valid phone number")
+            "Please enter a valid phone number"),
+        "wait_while_loading": MessageLookupByLibrary.simpleMessage(
+            "Pleae wait while loading data")
       };
 }

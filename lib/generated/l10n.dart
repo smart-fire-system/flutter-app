@@ -299,6 +299,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Please wait while logging you in`
+  String get logging_in_progress {
+    return Intl.message(
+      'Please wait while logging you in',
+      name: 'logging_in_progress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please wait while creating your account`
+  String get signup_in_progress {
+    return Intl.message(
+      'Please wait while creating your account',
+      name: 'signup_in_progress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pleae wait while loading data`
+  String get wait_while_loading {
+    return Intl.message(
+      'Pleae wait while loading data',
+      name: 'wait_while_loading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome back! Please log in to your account to continue.`
+  String get login_welcome {
+    return Intl.message(
+      'Welcome back! Please log in to your account to continue.',
+      name: 'login_welcome',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome! Create a new account to join us and enjoy our services.`
+  String get signup_welcome {
+    return Intl.message(
+      'Welcome! Create a new account to join us and enjoy our services.',
+      name: 'signup_welcome',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

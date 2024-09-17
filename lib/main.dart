@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'generated/l10n.dart';
-import 'screens/sign_up_screen.dart';
-import 'screens/login_screen.dart';
+import 'login/view/view.dart';
+import 'signup/view/view.dart';
 import 'utils/localization_util.dart';
 
 void main() {
@@ -44,7 +45,7 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Smart Fire System',
-
+      builder: EasyLoading.init(),
       supportedLocales: const [
         Locale('en', ''),
         Locale('ar', ''),
