@@ -6,17 +6,29 @@ import 'package:flutter/material.dart';
 import '../generated/l10n.dart';
 
 class LocalizationUtil {
+  static Locale myLocale = const Locale('en');
+  static dynamic Function(Locale)? changeMainLanguageCallback;
   static const String _languageCodeKey = 'languageCode';
 
-  static Future<void> saveLanguagePreference(Locale locale) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_languageCodeKey, locale.languageCode);
+  static void setChangeLanguageCallback(dynamic Function(Locale) callback) {
+    changeMainLanguageCallback = callback;
+  }
+
+  static Future<Locale> initializeLanguage() async {
+    Locale? savedLocale = await loadLanguagePreference();
+    myLocale = savedLocale ?? detectDeviceLanguage();
+    return myLocale;
+  }
+
+  static Future<void> changeLanguage(Locale locale) async {
+    await saveLanguagePreference(locale);
+    myLocale = locale;
+    changeMainLanguageCallback!(locale);
   }
 
   static Future<Locale?> loadLanguagePreference() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? languageCode = prefs.getString(_languageCodeKey);
-
     if (languageCode != null) {
       return Locale(languageCode);
     }
@@ -28,18 +40,12 @@ class LocalizationUtil {
     return Locale(deviceLocale.languageCode);
   }
 
-  static Future<Locale> initializeLanguage() async {
-    Locale? savedLocale = await loadLanguagePreference();
-    return savedLocale ?? detectDeviceLanguage();
+  static Future<void> saveLanguagePreference(Locale locale) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_languageCodeKey, locale.languageCode);
   }
 
-  static Future<Locale> changeLanguage(Locale locale) async {
-    await saveLanguagePreference(locale);
-    return locale;
-  }
-
-  static void showEditLanguageDialog(
-      BuildContext context, Function(Locale) onLanguageChange) {
+  static void showEditLanguageDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -73,7 +79,7 @@ class LocalizationUtil {
                       fontWeight: FontWeight.w500),
                 ),
                 onTap: () {
-                  onLanguageChange(const Locale('en'));
+                  changeLanguage(const Locale('en'));
                   Navigator.of(context).pop();
                 },
               ),
@@ -88,7 +94,7 @@ class LocalizationUtil {
                       fontWeight: FontWeight.w500),
                 ),
                 onTap: () {
-                  onLanguageChange(const Locale('ar'));
+                  changeLanguage(const Locale('ar'));
                   Navigator.of(context).pop();
                 },
               ),

@@ -4,6 +4,8 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'generated/l10n.dart';
+import 'welcome/view/view.dart';
+import 'home/view/view.dart';
 import 'login/view/view.dart';
 import 'signup/view/view.dart';
 import 'utils/localization_util.dart';
@@ -24,18 +26,18 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
   @override
   void initState() {
     super.initState();
+    LocalizationUtil.setChangeLanguageCallback(setLocale);
     _loadInitialLanguage();
   }
 
   Future<void> _loadInitialLanguage() async {
-    Locale locale = await LocalizationUtil.initializeLanguage();
+    Locale? locale = await LocalizationUtil.initializeLanguage();
     setState(() {
       _locale = locale;
     });
   }
 
-  Future<void> _changeLanguage(Locale locale) async {
-    Locale updatedLocale = await LocalizationUtil.changeLanguage(locale);
+  void setLocale(Locale? updatedLocale) {
     setState(() {
       _locale = updatedLocale;
     });
@@ -69,16 +71,13 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
         }
         return supportedLocales.first;
       },
-
       routes: {
-        '/login': (context) =>
-            LoginScreen(onLanguageChange: _changeLanguage),
-        '/signup': (context) =>
-            SignUpScreen(onLanguageChange: _changeLanguage),
-        //'/signup': (context) => const SignUpScreen(), // Add the signup route
+        '/welcome': (context) => const WelcomeScreen(),
+        '/home': (context) => const HomeScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/signup': (context) => const SignUpScreen(),
       },
-
-      initialRoute: '/login',
+      initialRoute: '/welcome',
     );
   }
 }

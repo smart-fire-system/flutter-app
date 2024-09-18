@@ -1,5 +1,3 @@
-
-
 class AuthRepository {
   AuthRepository();
 
@@ -11,13 +9,19 @@ class AuthRepository {
   Future<bool> isUserAuthenticated() async {
     bool isAuthenticated = false;
     print("TODO: Handle isUserAuthenticated");
-    await Future.delayed(const Duration(microseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 500));
     return isAuthenticated;
   }
 
   Future<void> signInWithEmailAndPassword(String email, String password) async {
+    String errorMessage = "";
+
     print("TODO: Handle signInWithEmailAndPassword");
     await Future.delayed(const Duration(seconds: 2));
+
+    if (errorMessage.isNotEmpty) {
+      throw Exception(errorMessage);
+    }
   }
 
   Future<void> signInWithGoogle() async {
@@ -32,15 +36,26 @@ class AuthRepository {
   }
 
   Future<void> signInWithFacebook() async {
+    String errorMessage = "";
+
     print("TODO: Handle signInWithFacebook");
     await Future.delayed(const Duration(seconds: 2));
+
+    if (errorMessage.isNotEmpty) {
+      throw Exception(errorMessage);
+    }
   }
 
   Future<void> signUpWithEmailAndPassword(String email, String password,
       String name, String phone, String countryCode) async {
+    String errorMessage = "";
+
     print("TODO: Handle signUpWithEmailAndPassword");
-    print(countryCode);
     await Future.delayed(const Duration(seconds: 2));
+
+    if (errorMessage.isNotEmpty) {
+      throw Exception(errorMessage);
+    }
   }
 
   Future<void> signUpWithGoogle() async {
@@ -55,7 +70,13 @@ class AuthRepository {
   }
 
   Future<void> signUpWithFacebook() async {
+    String errorMessage = "";
+
     print("TODO: Handle signUpWithFacebook");
     await Future.delayed(const Duration(seconds: 2));
+
+    if (errorMessage.isNotEmpty) {
+      throw Exception(errorMessage);
+    }
   }
 }

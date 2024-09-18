@@ -22,16 +22,25 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "admins": MessageLookupByLibrary.simpleMessage("المسؤولون"),
         "already_have_an_account": MessageLookupByLibrary.simpleMessage(
             "لديك حساب بالفعل؟ تسجيل الدخول"),
-        "app_name": MessageLookupByLibrary.simpleMessage("نظام الحريق الذكي"),
+        "app_name":
+            MessageLookupByLibrary.simpleMessage("نظام تنبيه الحريق الذكي"),
+        "branchManagers": MessageLookupByLibrary.simpleMessage("مديرو الفروع"),
         "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
+        "changeLanguage": MessageLookupByLibrary.simpleMessage("تغيير اللغة"),
+        "clients": MessageLookupByLibrary.simpleMessage("العملاء"),
+        "complaints": MessageLookupByLibrary.simpleMessage("الشكاوى"),
+        "complaintsDescription": MessageLookupByLibrary.simpleMessage(
+            "عرض الشكاوى المفتوحة أو تقديم شكوى جديدة."),
         "confirm_password":
             MessageLookupByLibrary.simpleMessage("يرجى تأكيد كلمة المرور"),
         "don_t_have_an_account":
             MessageLookupByLibrary.simpleMessage("ليس لديك حساب؟ إنشاء حساب"),
         "email":
             MessageLookupByLibrary.simpleMessage("عنوان البريد الإلكتروني"),
+        "employees": MessageLookupByLibrary.simpleMessage("الموظفون"),
         "enter_email": MessageLookupByLibrary.simpleMessage(
             "يرجى إدخال عنوان بريدك الإلكتروني"),
         "enter_name": MessageLookupByLibrary.simpleMessage("يرجى إدخال اسمك"),
@@ -39,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("يرجى إدخال كلمة المرور"),
         "enter_phone_number":
             MessageLookupByLibrary.simpleMessage("يرجى إدخال رقم هاتفك"),
+        "home": MessageLookupByLibrary.simpleMessage("الصفحة الرئيسية"),
         "login": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
         "login_welcome": MessageLookupByLibrary.simpleMessage(
             "مرحبًا بعودتك! يرجى تسجيل الدخول إلى حسابك للمتابعة."),
@@ -46,7 +56,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "تسجيل الدخول باستخدام فيسبوك"),
         "login_with_google":
             MessageLookupByLibrary.simpleMessage("تسجيل الدخول باستخدام جوجل"),
+        "maintenanceContracts":
+            MessageLookupByLibrary.simpleMessage("عقود الصيانة"),
+        "manageAndConfigureSystem":
+            MessageLookupByLibrary.simpleMessage("إدارة وتعديل النظام"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
+        "notifications": MessageLookupByLibrary.simpleMessage("الإشعارات"),
         "or": MessageLookupByLibrary.simpleMessage("أو"),
         "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
         "password_length": MessageLookupByLibrary.simpleMessage(
@@ -54,9 +69,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "password_mismatch":
             MessageLookupByLibrary.simpleMessage("كلمات المرور غير متطابقة"),
         "phone": MessageLookupByLibrary.simpleMessage("رقم الهاتف"),
+        "profile": MessageLookupByLibrary.simpleMessage("الملف الشخصي"),
+        "regionalManagers":
+            MessageLookupByLibrary.simpleMessage("المديرون الإقليميون"),
+        "reports": MessageLookupByLibrary.simpleMessage("التقارير"),
+        "reportsDescription": MessageLookupByLibrary.simpleMessage(
+            "عرض تقارير لعقود الصيانة، الزيارات وحالة النظام."),
         "select_language":
             MessageLookupByLibrary.simpleMessage("يرجى اختيار اللغة"),
-        "signup": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
+        "signup": MessageLookupByLibrary.simpleMessage("إنشاء حساب جديد"),
         "signup_in_progress": MessageLookupByLibrary.simpleMessage(
             "يرجى الانتظار أثناء إنشاء الحساب"),
         "signup_welcome": MessageLookupByLibrary.simpleMessage(
@@ -65,11 +86,30 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("إنشاء حساب باستخدام فيسبوك"),
         "signup_with_google":
             MessageLookupByLibrary.simpleMessage("إنشاء حساب باستخدام جوجل"),
+        "submitComplaint": MessageLookupByLibrary.simpleMessage("تقديم شكوى"),
+        "system": MessageLookupByLibrary.simpleMessage("النظام"),
+        "systemStatusAndFaults":
+            MessageLookupByLibrary.simpleMessage("حالة النظام والأعطال"),
+        "system_monitoring_control":
+            MessageLookupByLibrary.simpleMessage("مراقبة النظام والتحكم"),
+        "system_monitoring_description": MessageLookupByLibrary.simpleMessage(
+            "مراقبة الحالة الحالية لكل حساس والتحكم في الوحدات الفرعية. يمكنك أيضًا تنفيذ إجراءات مثل تشغيل أو إيقاف الأجهزة مباشرةً من هذه الواجهة."),
+        "technicans": MessageLookupByLibrary.simpleMessage("الفنيون"),
+        "users": MessageLookupByLibrary.simpleMessage("المستخدمون"),
+        "usersDescription": MessageLookupByLibrary.simpleMessage(
+            "عرض وإعطاء أو حذف صلاحيات للمستخدمين"),
         "valid_email": MessageLookupByLibrary.simpleMessage(
             "يرجى إدخال عنوان بريد إلكتروني صالح"),
         "valid_phone_number":
             MessageLookupByLibrary.simpleMessage("يرجى إدخال رقم هاتف صالح"),
+        "viewAndControlSystem":
+            MessageLookupByLibrary.simpleMessage("عرض والتحكم في النظام"),
+        "viewComplaints": MessageLookupByLibrary.simpleMessage("عرض الشكاوى"),
+        "visits": MessageLookupByLibrary.simpleMessage("الزيارات"),
         "wait_while_loading": MessageLookupByLibrary.simpleMessage(
-            "يرجى الانتظار أثناء تحميل البيانات")
+            "يرجى الانتظار أثناء تحميل البيانات"),
+        "welcome": MessageLookupByLibrary.simpleMessage("مرحبا"),
+        "welcome_message": MessageLookupByLibrary.simpleMessage(
+            "مرحبًا في نظام تنبيه الحريق الذكي. يرجى تسجيل الدخول أو إنشاء حساب.")
       };
 }

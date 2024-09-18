@@ -50,11 +50,291 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `Smart Fire System`
+  /// `Smart Fire Alarm System`
   String get app_name {
     return Intl.message(
-      'Smart Fire System',
+      'Smart Fire Alarm System',
       name: 'app_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Home`
+  String get home {
+    return Intl.message(
+      'Home',
+      name: 'home',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile`
+  String get profile {
+    return Intl.message(
+      'Profile',
+      name: 'profile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notifications`
+  String get notifications {
+    return Intl.message(
+      'Notifications',
+      name: 'notifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Language`
+  String get changeLanguage {
+    return Intl.message(
+      'Change Language',
+      name: 'changeLanguage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `System`
+  String get system {
+    return Intl.message(
+      'System',
+      name: 'system',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View and Control System`
+  String get viewAndControlSystem {
+    return Intl.message(
+      'View and Control System',
+      name: 'viewAndControlSystem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage and Configure System`
+  String get manageAndConfigureSystem {
+    return Intl.message(
+      'Manage and Configure System',
+      name: 'manageAndConfigureSystem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complaints`
+  String get complaints {
+    return Intl.message(
+      'Complaints',
+      name: 'complaints',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Complaints`
+  String get viewComplaints {
+    return Intl.message(
+      'View Complaints',
+      name: 'viewComplaints',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit Complaint`
+  String get submitComplaint {
+    return Intl.message(
+      'Submit Complaint',
+      name: 'submitComplaint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reports`
+  String get reports {
+    return Intl.message(
+      'Reports',
+      name: 'reports',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Visits`
+  String get visits {
+    return Intl.message(
+      'Visits',
+      name: 'visits',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Maintenance Contracts`
+  String get maintenanceContracts {
+    return Intl.message(
+      'Maintenance Contracts',
+      name: 'maintenanceContracts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `System Status and Faults`
+  String get systemStatusAndFaults {
+    return Intl.message(
+      'System Status and Faults',
+      name: 'systemStatusAndFaults',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Users`
+  String get users {
+    return Intl.message(
+      'Users',
+      name: 'users',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Admins`
+  String get admins {
+    return Intl.message(
+      'Admins',
+      name: 'admins',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Regional Managers`
+  String get regionalManagers {
+    return Intl.message(
+      'Regional Managers',
+      name: 'regionalManagers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Branch Managers`
+  String get branchManagers {
+    return Intl.message(
+      'Branch Managers',
+      name: 'branchManagers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employees`
+  String get employees {
+    return Intl.message(
+      'Employees',
+      name: 'employees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Technicians`
+  String get technicans {
+    return Intl.message(
+      'Technicians',
+      name: 'technicans',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clients`
+  String get clients {
+    return Intl.message(
+      'Clients',
+      name: 'clients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `System Monitoring and Control`
+  String get system_monitoring_control {
+    return Intl.message(
+      'System Monitoring and Control',
+      name: 'system_monitoring_control',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monitor the current state of each sensor and control sub-units. You can also perform actions like turning devices on or off directly from this interface.`
+  String get system_monitoring_description {
+    return Intl.message(
+      'Monitor the current state of each sensor and control sub-units. You can also perform actions like turning devices on or off directly from this interface.',
+      name: 'system_monitoring_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show reports for maintenance contracts, visits and system status.`
+  String get reportsDescription {
+    return Intl.message(
+      'Show reports for maintenance contracts, visits and system status.',
+      name: 'reportsDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show open compaints or submit new one.`
+  String get complaintsDescription {
+    return Intl.message(
+      'Show open compaints or submit new one.',
+      name: 'complaintsDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show and give or remove access from users`
+  String get usersDescription {
+    return Intl.message(
+      'Show and give or remove access from users',
+      name: 'usersDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome`
+  String get welcome {
+    return Intl.message(
+      'Welcome',
+      name: 'welcome',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome to the Smart Fire Alarm System. Please login or sign up.`
+  String get welcome_message {
+    return Intl.message(
+      'Welcome to the Smart Fire Alarm System. Please login or sign up.',
+      name: 'welcome_message',
       desc: '',
       args: [],
     );
