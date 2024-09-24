@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../generated/l10n.dart';
+
+import 'package:fire_alarm_system/generated/l10n.dart';
 
 class DataValidator {
   static String? validateEmail(BuildContext context, String? value) {

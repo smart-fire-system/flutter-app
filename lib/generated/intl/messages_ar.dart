@@ -22,6 +22,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "access_denied_message": MessageLookupByLibrary.simpleMessage(
+            "ليس لديك صلاحية الوصول إلى هذا القسم. يرجى الانتظار حتى يتم منحك الصلاحيات من مسؤولي النظام."),
+        "access_denied_title":
+            MessageLookupByLibrary.simpleMessage("تم رفض الوصول"),
+        "account_not_verified_message": MessageLookupByLibrary.simpleMessage(
+            "حسابك غير مُفعّل. يرجى التحقق من بريدك الإلكتروني للحصول على رابط التفعيل."),
+        "account_not_verified_title":
+            MessageLookupByLibrary.simpleMessage("الحساب غير مُفعّل"),
         "admins": MessageLookupByLibrary.simpleMessage("المسؤولون"),
         "already_have_an_account": MessageLookupByLibrary.simpleMessage(
             "لديك حساب بالفعل؟ تسجيل الدخول"),
@@ -43,11 +51,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "employees": MessageLookupByLibrary.simpleMessage("الموظفون"),
         "enter_email": MessageLookupByLibrary.simpleMessage(
             "يرجى إدخال عنوان بريدك الإلكتروني"),
+        "enter_email_to_reset": MessageLookupByLibrary.simpleMessage(
+            "يرجى إدخال بريدك الإلكتروني لإعادة تعيين كلمة المرور."),
         "enter_name": MessageLookupByLibrary.simpleMessage("يرجى إدخال اسمك"),
         "enter_password":
             MessageLookupByLibrary.simpleMessage("يرجى إدخال كلمة المرور"),
         "enter_phone_number":
             MessageLookupByLibrary.simpleMessage("يرجى إدخال رقم هاتفك"),
+        "error": MessageLookupByLibrary.simpleMessage("خطأ"),
+        "forgot_password":
+            MessageLookupByLibrary.simpleMessage("هل نسيت كلمة المرور؟"),
         "home": MessageLookupByLibrary.simpleMessage("الصفحة الرئيسية"),
         "login": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
         "login_welcome": MessageLookupByLibrary.simpleMessage(
@@ -56,12 +69,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "تسجيل الدخول باستخدام فيسبوك"),
         "login_with_google":
             MessageLookupByLibrary.simpleMessage("تسجيل الدخول باستخدام جوجل"),
+        "logout": MessageLookupByLibrary.simpleMessage("تسجيل الخروج"),
         "maintenanceContracts":
             MessageLookupByLibrary.simpleMessage("عقود الصيانة"),
         "manageAndConfigureSystem":
             MessageLookupByLibrary.simpleMessage("إدارة وتعديل النظام"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
         "notifications": MessageLookupByLibrary.simpleMessage("الإشعارات"),
+        "ok": MessageLookupByLibrary.simpleMessage("حسناً"),
         "or": MessageLookupByLibrary.simpleMessage("أو"),
         "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
         "password_length": MessageLookupByLibrary.simpleMessage(
@@ -75,6 +90,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "reports": MessageLookupByLibrary.simpleMessage("التقارير"),
         "reportsDescription": MessageLookupByLibrary.simpleMessage(
             "عرض تقارير لعقود الصيانة، الزيارات وحالة النظام."),
+        "resend_verification_email": MessageLookupByLibrary.simpleMessage(
+            "إعادة إرسال البريد الإلكتروني للتفعيل"),
+        "reset_email_sent": MessageLookupByLibrary.simpleMessage(
+            "تم إرسال بريد إلكتروني لإعادة تعيين كلمة المرور. يرجى التحقق من صندوق البريد."),
         "select_language":
             MessageLookupByLibrary.simpleMessage("يرجى اختيار اللغة"),
         "signup": MessageLookupByLibrary.simpleMessage("إنشاء حساب جديد"),

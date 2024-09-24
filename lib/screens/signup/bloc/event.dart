@@ -14,8 +14,10 @@ class SignUpSubmitted extends SignUpEvent {
       required this.countryCode});
 }
 
-class GoogleSignUpRequested extends SignUpEvent {}
+class AuthRequested extends SignUpEvent {}
 
-class AuthStatusRequested extends SignUpEvent {}
+class ResetState extends SignUpEvent {}
+
+class GoogleSignUpRequested extends SignUpEvent {}
 
 class FacebookSignUpRequested extends SignUpEvent {}

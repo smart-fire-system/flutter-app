@@ -1,9 +1,10 @@
 import 'dart:ui';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter/material.dart';
-import '../generated/l10n.dart';
+
+import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/utils/styles.dart';
 
 class LocalizationUtil {
   static Locale myLocale = const Locale('en');
@@ -58,10 +59,7 @@ class LocalizationUtil {
             children: [
               Text(
                 S.of(context).select_language,
-                style: GoogleFonts.cairo(
-                    fontSize: 20,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w700),
+                style: CustomStyle.largeText30B,
               ),
             ],
           ),
@@ -73,10 +71,7 @@ class LocalizationUtil {
                     color: Colors.blueAccent),
                 title: Text(
                   'English',
-                  style: GoogleFonts.cairo(
-                      fontSize: 16,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500),
+                  style: CustomStyle.smallText,
                 ),
                 onTap: () {
                   changeLanguage(const Locale('en'));
@@ -88,10 +83,7 @@ class LocalizationUtil {
                     color: Colors.blueAccent),
                 title: Text(
                   'العربية',
-                  style: GoogleFonts.cairo(
-                      fontSize: 16,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500),
+                  style: CustomStyle.smallText,
                 ),
                 onTap: () {
                   changeLanguage(const Locale('ar'));
@@ -107,10 +99,7 @@ class LocalizationUtil {
               },
               child: Text(
                 S.of(context).cancel,
-                style: GoogleFonts.cairo(
-                    fontSize: 16,
-                    color: Colors.red,
-                    fontWeight: FontWeight.w500),
+                style: CustomStyle.smallText,
               ),
             ),
           ],

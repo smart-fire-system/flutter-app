@@ -3,6 +3,21 @@
 
     "app_name": "Smart Fire Alarm System",
     
+    "account_not_verified_title": "Account Not Verified",
+    "account_not_verified_message": "Your account is not verified. Please check your email for the verification link.",
+    "resend_verification_email": "Resend Verification Email",
+
+    "access_denied_title": "Access Denied",
+    "access_denied_message": "You do not have access to this section. Please wait until the system administrators grant you access.",
+
+    "error": "Error",
+    "ok": "Ok",
+    "cancel": "Cancel",
+
+    "forgot_password": "Forgot your password?",
+    "enter_email_to_reset": "Please enter your email address to reset your password.",
+    "reset_email_sent": "A password reset email has been sent. Please check your inbox.",
+
     "home": "Home",
     "profile": "Profile",
     "notifications": "Notifications",
@@ -24,6 +39,7 @@
     "employees": "Employees",
     "technicans": "Technicians",
     "clients": "Clients",
+    "logout": "Logout",
 
     "system_monitoring_control": "System Monitoring and Control",
     "system_monitoring_description": "Monitor the current state of each sensor and control sub-units. You can also perform actions like turning devices on or off directly from this interface.",

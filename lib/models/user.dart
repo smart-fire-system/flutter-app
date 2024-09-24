@@ -1,6 +1,34 @@
-import 'enums.dart';
+enum UserRole {
+  admin,
+  regionalManager,
+  branchManager,
+  employee,
+  technican,
+  client,
+  noAccess,
+  initialRole,
+  notAuthenticated
+}
 
-class GeneralUtil {
+enum AuthStatus {
+  notAuthenticated,
+  authenticatedWithEmailVerified,
+  authenticatedWithEmailNotVerified,
+  authenticatedWithGoogle,
+  authenticatedWithFacebook,
+}
+
+class User {
+  AuthStatus authStatus;
+  UserRole? role;
+  String? id;
+  String? name;
+  String? email;
+  String? phoneNumber;
+  String? countryCode;
+
+  User({required this.authStatus});
+
   static String getRoleName(UserRole role) {
     if (role == UserRole.admin) {
       return "Admin";

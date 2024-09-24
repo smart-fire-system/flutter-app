@@ -22,6 +22,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "access_denied_message": MessageLookupByLibrary.simpleMessage(
+            "You do not have access to this section. Please wait until the system administrators grant you access."),
+        "access_denied_title":
+            MessageLookupByLibrary.simpleMessage("Access Denied"),
+        "account_not_verified_message": MessageLookupByLibrary.simpleMessage(
+            "Your account is not verified. Please check your email for the verification link."),
+        "account_not_verified_title":
+            MessageLookupByLibrary.simpleMessage("Account Not Verified"),
         "admins": MessageLookupByLibrary.simpleMessage("Admins"),
         "already_have_an_account": MessageLookupByLibrary.simpleMessage(
             "Already have an account? Log In"),
@@ -44,12 +52,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "employees": MessageLookupByLibrary.simpleMessage("Employees"),
         "enter_email": MessageLookupByLibrary.simpleMessage(
             "Please enter your email address"),
+        "enter_email_to_reset": MessageLookupByLibrary.simpleMessage(
+            "Please enter your email address to reset your password."),
         "enter_name":
             MessageLookupByLibrary.simpleMessage("Please enter your name"),
         "enter_password":
             MessageLookupByLibrary.simpleMessage("Please enter your password"),
         "enter_phone_number": MessageLookupByLibrary.simpleMessage(
             "Please enter your phone number"),
+        "error": MessageLookupByLibrary.simpleMessage("Error"),
+        "forgot_password":
+            MessageLookupByLibrary.simpleMessage("Forgot your password?"),
         "home": MessageLookupByLibrary.simpleMessage("Home"),
         "logging_in_progress": MessageLookupByLibrary.simpleMessage(
             "Please wait while logging you in"),
@@ -60,12 +73,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Log in with Facebook"),
         "login_with_google":
             MessageLookupByLibrary.simpleMessage("Log in with Google"),
+        "logout": MessageLookupByLibrary.simpleMessage("Logout"),
         "maintenanceContracts":
             MessageLookupByLibrary.simpleMessage("Maintenance Contracts"),
         "manageAndConfigureSystem":
             MessageLookupByLibrary.simpleMessage("Manage and Configure System"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
+        "ok": MessageLookupByLibrary.simpleMessage("Ok"),
         "or": MessageLookupByLibrary.simpleMessage("or"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
         "password_length": MessageLookupByLibrary.simpleMessage(
@@ -79,6 +94,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "reports": MessageLookupByLibrary.simpleMessage("Reports"),
         "reportsDescription": MessageLookupByLibrary.simpleMessage(
             "Show reports for maintenance contracts, visits and system status."),
+        "resend_verification_email":
+            MessageLookupByLibrary.simpleMessage("Resend Verification Email"),
+        "reset_email_sent": MessageLookupByLibrary.simpleMessage(
+            "A password reset email has been sent. Please check your inbox."),
         "select_language":
             MessageLookupByLibrary.simpleMessage("Please choose a language"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign Up"),

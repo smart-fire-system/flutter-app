@@ -1,23 +1,42 @@
+import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../generated/l10n.dart';
-import '../utils/localization_util.dart';
-import '../utils/enums.dart';
-import '../utils/general_util.dart';
+import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/utils/localization_util.dart';
+import 'package:fire_alarm_system/models/user.dart';
+
+enum ScreenType {
+  welcome,
+  login,
+  signup,
+  home,
+  profile,
+  notifications,
+  viewSystem,
+  configureSystem,
+  viewComplaints,
+  submitComplaints,
+  visits,
+  contracts,
+  systemStatus,
+  admins,
+  regionalManagers,
+  branchManagers,
+  employees,
+  technicans,
+  clients,
+}
 
 class CustomSideMenu extends StatefulWidget {
   final ScreenType screen;
-  final UserRole userRole;
-  final String userName;
+  final User user;
   final double? width;
   final bool Function()? preNavigationCallback;
 
   const CustomSideMenu({
     super.key,
     required this.screen,
-    required this.userRole,
-    required this.userName,
+    required this.user,
     this.width,
     this.preNavigationCallback,
   });
@@ -27,8 +46,6 @@ class CustomSideMenu extends StatefulWidget {
 }
 
 class CustomSideMenuState extends State<CustomSideMenu> {
-  final TextStyle _fontStyle = GoogleFonts.cairo(
-      fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500);
   @override
   void initState() {
     super.initState();
@@ -44,19 +61,16 @@ class CustomSideMenuState extends State<CustomSideMenu> {
             child: ListView(children: [
               ListTile(
                 title: Text(
-                  widget.userName,
-                  style: _fontStyle,
+                  widget.user.name!,
+                  style: CustomStyle.smallText,
                 ),
                 leading: const Icon(
                   Icons.person,
                   size: 40,
                 ),
                 subtitle: Text(
-                  GeneralUtil.getRoleName(widget.userRole), // Optional subtitle
-                  style: GoogleFonts.cairo(
-                      fontSize: 16,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w500),
+                  User.getRoleName(widget.user.role!),
+                  style: CustomStyle.smallTextGrey,
                 ),
                 onTap: () {
                   if (widget.preNavigationCallback == null) {
@@ -69,7 +83,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
               ListTile(
                 title: Text(
                   S.of(context).home,
-                  style: _fontStyle,
+                  style: CustomStyle.smallText,
                 ),
                 selected: (widget.screen == ScreenType.home),
                 leading: const Icon(
@@ -87,7 +101,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
               ListTile(
                 title: Text(
                   S.of(context).profile,
-                  style: _fontStyle,
+                  style: CustomStyle.smallText,
                 ),
                 selected: (widget.screen == ScreenType.profile),
                 leading: const Icon(
@@ -105,7 +119,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
               ListTile(
                 title: Text(
                   S.of(context).notifications,
-                  style: _fontStyle,
+                  style: CustomStyle.smallText,
                 ),
                 selected: (widget.screen == ScreenType.notifications),
                 leading: const Icon(
@@ -123,7 +137,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
               ListTile(
                 title: Text(
                   S.of(context).changeLanguage,
-                  style: _fontStyle,
+                  style: CustomStyle.smallText,
                 ),
                 leading: const Icon(
                   Icons.language,
@@ -133,18 +147,18 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                   LocalizationUtil.showEditLanguageDialog(context);
                 },
               ),
-              (widget.userRole == UserRole.admin ||
-                      widget.userRole == UserRole.technican)
+              (widget.user.role == UserRole.admin ||
+                      widget.user.role == UserRole.technican)
                   ? ExpansionTile(
                       title: Text(
                         S.of(context).system,
-                        style: _fontStyle,
+                        style: CustomStyle.smallText,
                       ),
                       children: [
                         ListTile(
                           title: Text(
                             S.of(context).viewAndControlSystem,
-                            style: _fontStyle,
+                            style: CustomStyle.smallText,
                           ),
                           selected: (widget.screen == ScreenType.viewSystem),
                           leading: const Icon(
@@ -162,7 +176,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         ListTile(
                           title: Text(
                             S.of(context).manageAndConfigureSystem,
-                            style: _fontStyle,
+                            style: CustomStyle.smallText,
                           ),
                           selected:
                               (widget.screen == ScreenType.configureSystem),
@@ -183,7 +197,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                   : ListTile(
                       title: Text(
                         S.of(context).viewAndControlSystem,
-                        style: _fontStyle,
+                        style: CustomStyle.smallText,
                       ),
                       selected: (widget.screen == ScreenType.viewSystem),
                       leading: const Icon(
@@ -201,13 +215,13 @@ class CustomSideMenuState extends State<CustomSideMenu> {
               ExpansionTile(
                 title: Text(
                   S.of(context).complaints,
-                  style: _fontStyle,
+                  style: CustomStyle.smallText,
                 ),
                 children: [
                   ListTile(
                     title: Text(
                       S.of(context).viewComplaints,
-                      style: _fontStyle,
+                      style: CustomStyle.smallText,
                     ),
                     selected: (widget.screen == ScreenType.viewComplaints),
                     leading: const Icon(
@@ -225,7 +239,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                   ListTile(
                     title: Text(
                       S.of(context).submitComplaint,
-                      style: _fontStyle,
+                      style: CustomStyle.smallText,
                     ),
                     selected: (widget.screen == ScreenType.submitComplaints),
                     leading: const Icon(
@@ -245,13 +259,13 @@ class CustomSideMenuState extends State<CustomSideMenu> {
               ExpansionTile(
                 title: Text(
                   S.of(context).reports,
-                  style: _fontStyle,
+                  style: CustomStyle.smallText,
                 ),
                 children: [
                   ListTile(
                     title: Text(
                       S.of(context).visits,
-                      style: _fontStyle,
+                      style: CustomStyle.smallText,
                     ),
                     selected: (widget.screen == ScreenType.visits),
                     leading: const Icon(
@@ -269,7 +283,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                   ListTile(
                     title: Text(
                       S.of(context).maintenanceContracts,
-                      style: _fontStyle,
+                      style: CustomStyle.smallText,
                     ),
                     selected: (widget.screen == ScreenType.contracts),
                     leading: const Icon(
@@ -287,7 +301,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                   ListTile(
                     title: Text(
                       S.of(context).systemStatusAndFaults,
-                      style: _fontStyle,
+                      style: CustomStyle.smallText,
                     ),
                     selected: (widget.screen == ScreenType.systemStatus),
                     leading: const Icon(
@@ -307,14 +321,14 @@ class CustomSideMenuState extends State<CustomSideMenu> {
               ExpansionTile(
                 title: Text(
                   S.of(context).users,
-                  style: _fontStyle,
+                  style: CustomStyle.smallText,
                 ),
                 children: [
-                  if (widget.userRole == UserRole.admin)
+                  if (widget.user.role == UserRole.admin)
                     ListTile(
                       title: Text(
                         S.of(context).admins,
-                        style: _fontStyle,
+                        style: CustomStyle.smallText,
                       ),
                       selected: (widget.screen == ScreenType.admins),
                       leading: const Icon(
@@ -329,11 +343,11 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         }
                       },
                     ),
-                  if (widget.userRole == UserRole.admin)
+                  if (widget.user.role == UserRole.admin)
                     ListTile(
                       title: Text(
                         S.of(context).regionalManagers,
-                        style: _fontStyle,
+                        style: CustomStyle.smallText,
                       ),
                       selected: (widget.screen == ScreenType.regionalManagers),
                       leading: const Icon(
@@ -348,12 +362,12 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         }
                       },
                     ),
-                  if (widget.userRole == UserRole.admin ||
-                      widget.userRole == UserRole.regionalManager)
+                  if (widget.user.role == UserRole.admin ||
+                      widget.user.role == UserRole.regionalManager)
                     ListTile(
                       title: Text(
                         S.of(context).branchManagers,
-                        style: _fontStyle,
+                        style: CustomStyle.smallText,
                       ),
                       selected: (widget.screen == ScreenType.branchManagers),
                       leading: const Icon(
@@ -368,13 +382,13 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         }
                       },
                     ),
-                  if (widget.userRole == UserRole.admin ||
-                      widget.userRole == UserRole.regionalManager ||
-                      widget.userRole == UserRole.branchManager)
+                  if (widget.user.role == UserRole.admin ||
+                      widget.user.role == UserRole.regionalManager ||
+                      widget.user.role == UserRole.branchManager)
                     ListTile(
                       title: Text(
                         S.of(context).employees,
-                        style: _fontStyle,
+                        style: CustomStyle.smallText,
                       ),
                       selected: (widget.screen == ScreenType.employees),
                       leading: const Icon(
@@ -389,13 +403,13 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         }
                       },
                     ),
-                  if (widget.userRole == UserRole.admin ||
-                      widget.userRole == UserRole.regionalManager ||
-                      widget.userRole == UserRole.branchManager)
+                  if (widget.user.role == UserRole.admin ||
+                      widget.user.role == UserRole.regionalManager ||
+                      widget.user.role == UserRole.branchManager)
                     ListTile(
                       title: Text(
                         S.of(context).technicans,
-                        style: _fontStyle,
+                        style: CustomStyle.smallText,
                       ),
                       selected: (widget.screen == ScreenType.technicans),
                       leading: const Icon(
@@ -410,15 +424,15 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         }
                       },
                     ),
-                  if (widget.userRole == UserRole.admin ||
-                      widget.userRole == UserRole.regionalManager ||
-                      widget.userRole == UserRole.branchManager ||
-                      widget.userRole == UserRole.employee ||
-                      widget.userRole == UserRole.technican)
+                  if (widget.user.role == UserRole.admin ||
+                      widget.user.role == UserRole.regionalManager ||
+                      widget.user.role == UserRole.branchManager ||
+                      widget.user.role == UserRole.employee ||
+                      widget.user.role == UserRole.technican)
                     ListTile(
                       title: Text(
                         S.of(context).clients,
-                        style: _fontStyle,
+                        style: CustomStyle.smallText,
                       ),
                       selected: (widget.screen == ScreenType.clients),
                       leading: const Icon(
@@ -437,23 +451,29 @@ class CustomSideMenuState extends State<CustomSideMenu> {
               ),
             ]),
           ),
+          const Divider(
+            thickness: 3,
+          ),
           ListTile(
             title: Text(
               "About Developer",
-              style: _fontStyle,
+              style: CustomStyle.smallText,
             ),
-            tileColor: Colors.lightBlue[50],
             subtitle: Text(
               "Ahmed Hassan",
-              style: _fontStyle,
+              style: CustomStyle.smallTextGrey,
             ),
             leading: const Icon(
               Icons.code,
               color: Colors.black54,
             ),
             onTap: () async {
-              const url = 'ahmedhassandev.com';
-              await launchUrl(Uri(scheme: 'https', path: url));
+              try {
+                const url = 'ahmedhassandev.com';
+                await launchUrl(Uri(scheme: 'https', path: url), webOnlyWindowName: "_blank" );
+              } catch (error) {
+                // No launch
+              }
             },
           ),
         ],

@@ -60,6 +60,116 @@ class S {
     );
   }
 
+  /// `Account Not Verified`
+  String get account_not_verified_title {
+    return Intl.message(
+      'Account Not Verified',
+      name: 'account_not_verified_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your account is not verified. Please check your email for the verification link.`
+  String get account_not_verified_message {
+    return Intl.message(
+      'Your account is not verified. Please check your email for the verification link.',
+      name: 'account_not_verified_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resend Verification Email`
+  String get resend_verification_email {
+    return Intl.message(
+      'Resend Verification Email',
+      name: 'resend_verification_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Denied`
+  String get access_denied_title {
+    return Intl.message(
+      'Access Denied',
+      name: 'access_denied_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You do not have access to this section. Please wait until the system administrators grant you access.`
+  String get access_denied_message {
+    return Intl.message(
+      'You do not have access to this section. Please wait until the system administrators grant you access.',
+      name: 'access_denied_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error`
+  String get error {
+    return Intl.message(
+      'Error',
+      name: 'error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ok`
+  String get ok {
+    return Intl.message(
+      'Ok',
+      name: 'ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forgot your password?`
+  String get forgot_password {
+    return Intl.message(
+      'Forgot your password?',
+      name: 'forgot_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your email address to reset your password.`
+  String get enter_email_to_reset {
+    return Intl.message(
+      'Please enter your email address to reset your password.',
+      name: 'enter_email_to_reset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A password reset email has been sent. Please check your inbox.`
+  String get reset_email_sent {
+    return Intl.message(
+      'A password reset email has been sent. Please check your inbox.',
+      name: 'reset_email_sent',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Home`
   String get home {
     return Intl.message(
@@ -270,6 +380,16 @@ class S {
     );
   }
 
+  /// `Logout`
+  String get logout {
+    return Intl.message(
+      'Logout',
+      name: 'logout',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `System Monitoring and Control`
   String get system_monitoring_control {
     return Intl.message(
@@ -345,16 +465,6 @@ class S {
     return Intl.message(
       'Login',
       name: 'login',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'cancel',
       desc: '',
       args: [],
     );
