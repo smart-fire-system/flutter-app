@@ -1,48 +1,39 @@
-enum UserRole {
-  admin,
-  regionalManager,
-  branchManager,
-  employee,
-  technican,
-  client,
-  noAccess,
-  initialRole,
-  notAuthenticated
-}
-
-enum AuthStatus {
-  notAuthenticated,
-  authenticatedWithEmailVerified,
-  authenticatedWithEmailNotVerified,
-  authenticatedWithGoogle,
-  authenticatedWithFacebook,
-}
+import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/utils/enums.dart';
+import 'package:flutter/material.dart';
 
 class User {
-  AuthStatus authStatus;
-  UserRole? role;
-  String? id;
-  String? name;
-  String? email;
-  String? phoneNumber;
-  String? countryCode;
+  String id;
+  String name;
+  String email;
+  String phoneNumber;
+  String countryCode;
+  UserRole role;
 
-  User({required this.authStatus});
+  User(
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.countryCode,
+      required this.phoneNumber,
+      required this.role});
 
-  static String getRoleName(UserRole role) {
-    if (role == UserRole.admin) {
-      return "Admin";
-    } else if (role == UserRole.regionalManager) {
-      return "Regional Manager";
-    } else if (role == UserRole.branchManager) {
-      return "Branch Manager";
-    } else if (role == UserRole.employee) {
-      return "Employee";
-    } else if (role == UserRole.technican) {
-      return "Technican";
-    } else if (role == UserRole.client) {
-      return "Client";
+  static String getRoleName(BuildContext context, UserRole role) {
+    switch (role) {
+      case UserRole.admin:
+        return S.of(context).admin;
+      case UserRole.regionalManager:
+        return S.of(context).regionalManager;
+      case UserRole.branchManager:
+        return S.of(context).branchManager;
+      case UserRole.employee:
+        return S.of(context).employee;
+      case UserRole.technican:
+        return S.of(context).technican;
+      case UserRole.client:
+        return S.of(context).client;
+      default:
+        return S.of(context).noRole;
     }
-    return "Undefined";
   }
 }

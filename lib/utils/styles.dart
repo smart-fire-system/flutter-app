@@ -39,6 +39,13 @@ class CustomStyle {
     padding: EdgeInsets.zero,
     alignment: Alignment.center,
   );
+    static final ButtonStyle normalButtonRed = ElevatedButton.styleFrom(
+    backgroundColor: Colors.red,
+    minimumSize: const Size(double.infinity, 50),
+    padding: EdgeInsets.zero,
+    alignment: Alignment.center,
+  );
+
   static final TextStyle normalButtonText = GoogleFonts.cairo(
       fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600);
   static final TextStyle normalButtonTextMedium = GoogleFonts.cairo(

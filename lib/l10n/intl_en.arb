@@ -39,6 +39,14 @@
     "employees": "Employees",
     "technicans": "Technicians",
     "clients": "Clients",
+    "admin": "Admin",
+    "regionalManager": "Regional Manager",
+    "branchManager": "Branch Manager",
+    "employee": "Employee",
+    "technican": "Technician",
+    "client": "Client",
+    "role": "Role",
+    "noRole": "No Role",
     "logout": "Logout",
 
     "system_monitoring_control": "System Monitoring and Control",
@@ -46,7 +54,15 @@
     "reportsDescription": "Show reports for maintenance contracts, visits and system status.",
     "complaintsDescription": "Show open compaints or submit new one.",
     "usersDescription": "Show and give or remove access from users",
-        
+
+    "deleteUser": "Remove User",
+    "changeAccessRole": "Modify Access Role",
+    "confirmDeleteUser": "Are you sure you want to permanently delete this user from the system?",
+    "confirmChangeAccessRole": "Do you want to proceed with changing the user's access permissions?",
+    "userDeletedSuccessMessage": "User has been successfully deleted from the system.",
+    "accessRoleChangedSuccessMessage": "User's access role has been successfully updated.",
+    "addNewAdmin": "Add New Admin",
+
     "welcome": "Welcome",
     "welcome_message": "Welcome to the Smart Fire Alarm System. Please login or sign up.",
     "login": "Login",

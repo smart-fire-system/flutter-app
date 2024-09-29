@@ -380,6 +380,86 @@ class S {
     );
   }
 
+  /// `Admin`
+  String get admin {
+    return Intl.message(
+      'Admin',
+      name: 'admin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Regional Manager`
+  String get regionalManager {
+    return Intl.message(
+      'Regional Manager',
+      name: 'regionalManager',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Branch Manager`
+  String get branchManager {
+    return Intl.message(
+      'Branch Manager',
+      name: 'branchManager',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee`
+  String get employee {
+    return Intl.message(
+      'Employee',
+      name: 'employee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Technician`
+  String get technican {
+    return Intl.message(
+      'Technician',
+      name: 'technican',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Client`
+  String get client {
+    return Intl.message(
+      'Client',
+      name: 'client',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Role`
+  String get role {
+    return Intl.message(
+      'Role',
+      name: 'role',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Role`
+  String get noRole {
+    return Intl.message(
+      'No Role',
+      name: 'noRole',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Logout`
   String get logout {
     return Intl.message(
@@ -435,6 +515,76 @@ class S {
     return Intl.message(
       'Show and give or remove access from users',
       name: 'usersDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove User`
+  String get deleteUser {
+    return Intl.message(
+      'Remove User',
+      name: 'deleteUser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modify Access Role`
+  String get changeAccessRole {
+    return Intl.message(
+      'Modify Access Role',
+      name: 'changeAccessRole',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to permanently delete this user from the system?`
+  String get confirmDeleteUser {
+    return Intl.message(
+      'Are you sure you want to permanently delete this user from the system?',
+      name: 'confirmDeleteUser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do you want to proceed with changing the user's access permissions?`
+  String get confirmChangeAccessRole {
+    return Intl.message(
+      'Do you want to proceed with changing the user\'s access permissions?',
+      name: 'confirmChangeAccessRole',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User has been successfully deleted from the system.`
+  String get userDeletedSuccessMessage {
+    return Intl.message(
+      'User has been successfully deleted from the system.',
+      name: 'userDeletedSuccessMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User's access role has been successfully updated.`
+  String get accessRoleChangedSuccessMessage {
+    return Intl.message(
+      'User\'s access role has been successfully updated.',
+      name: 'accessRoleChangedSuccessMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add New Admin`
+  String get addNewAdmin {
+    return Intl.message(
+      'Add New Admin',
+      name: 'addNewAdmin',
       desc: '',
       args: [],
     );

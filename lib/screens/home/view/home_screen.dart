@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 import 'package:fire_alarm_system/generated/l10n.dart';
-import 'package:fire_alarm_system/models/user.dart';
-import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/widgets/access_denied.dart';
 import 'package:fire_alarm_system/widgets/side_menu.dart';
+import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/utils/alert.dart';
+import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
-
 import 'package:fire_alarm_system/screens/home/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/home/bloc/event.dart';
 import 'package:fire_alarm_system/screens/home/bloc/state.dart';
@@ -31,9 +28,7 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     context.read<HomeBloc>().add(AuthRequested());
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showSideMenu = (MediaQuery.of(context).size.width > 600);
-    });
+    _showSideMenu = (MediaQuery.of(context).size.width > 600);
   }
 
   @override
@@ -41,19 +36,19 @@ class HomeScreenState extends State<HomeScreen> {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state is HomeError) {
-          context.read<HomeBloc>().add(AuthRequested());
           WidgetsBinding.instance.addPostFrameCallback((_) async {
+            context.read<HomeBloc>().add(AuthRequested());
             await CustomAlert.showError(context, state.error);
           });
         } else if (state is HomeNotAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.popAndPushNamed(context, '/welcome');
-            context.read<HomeBloc>().add(ResetState());
           });
         } else if (state is HomeNotVerified) {
           _user = state.user;
           return CustomAccessDenied(
             user: _user!,
+            type: AccessDeniedType.accountNeedsVerification,
             onLogoutClick: () async {
               context.read<HomeBloc>().add(LogoutRequested());
             },
@@ -65,6 +60,7 @@ class HomeScreenState extends State<HomeScreen> {
           _user = state.user;
           return CustomAccessDenied(
             user: _user!,
+            type: AccessDeniedType.noRoleForUser,
             onLogoutClick: () async {
               context.read<HomeBloc>().add(LogoutRequested());
             },
@@ -86,8 +82,7 @@ class HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text(
           S.of(context).home,
-          style: GoogleFonts.cairo(
-              fontSize: 20, color: Colors.black, fontWeight: FontWeight.w700),
+          style: CustomStyle.appBarText,
         ),
         leading: IconButton(
           icon: Icon(
@@ -109,7 +104,7 @@ class HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () {
-              // Action for notifications
+              print("TODO: Navigate to Notifications");
             },
           ),
           IconButton(
@@ -156,10 +151,7 @@ class HomeScreenState extends State<HomeScreen> {
                           children: <Widget>[
                             Text(
                               S.of(context).app_name,
-                              style: GoogleFonts.cairo(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700),
+                              style: CustomStyle.largeTextB,
                               textAlign: TextAlign.center,
                             ),
                             Padding(
@@ -171,8 +163,7 @@ class HomeScreenState extends State<HomeScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     ListTile(
-                                      leading: const FaIcon(
-                                          FontAwesomeIcons.magnifyingGlassChart,
+                                      leading: const Icon(Icons.analytics,
                                           color: Colors.black),
                                       title: Text(
                                         S.of(context).system_monitoring_control,
@@ -203,8 +194,8 @@ class HomeScreenState extends State<HomeScreen> {
                                                 style: CustomStyle.smallText),
                                           ),
                                         ),
-                                        if (_user?.role == UserRole.admin ||
-                                            _user?.role == UserRole.technican)
+                                        if (_user!.role == UserRole.admin ||
+                                            _user!.role == UserRole.technican)
                                           Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: ElevatedButton(
@@ -339,11 +330,11 @@ class HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                             ),
-                            if (_user?.role == UserRole.admin ||
-                                _user?.role == UserRole.regionalManager ||
-                                _user?.role == UserRole.branchManager ||
-                                _user?.role == UserRole.employee ||
-                                _user?.role == UserRole.technican)
+                            if (_user!.role == UserRole.admin ||
+                                _user!.role == UserRole.regionalManager ||
+                                _user!.role == UserRole.branchManager ||
+                                _user!.role == UserRole.employee ||
+                                _user!.role == UserRole.technican)
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Card(
@@ -367,7 +358,7 @@ class HomeScreenState extends State<HomeScreen> {
                                       ),
                                       Wrap(
                                         children: [
-                                          if (_user?.role == UserRole.admin)
+                                          if (_user!.role == UserRole.admin)
                                             Padding(
                                               padding:
                                                   const EdgeInsets.all(8.0),
@@ -381,7 +372,7 @@ class HomeScreenState extends State<HomeScreen> {
                                                         CustomStyle.smallText),
                                               ),
                                             ),
-                                          if (_user?.role == UserRole.admin)
+                                          if (_user!.role == UserRole.admin)
                                             Padding(
                                               padding:
                                                   const EdgeInsets.all(8.0),
@@ -397,8 +388,8 @@ class HomeScreenState extends State<HomeScreen> {
                                                         CustomStyle.smallText),
                                               ),
                                             ),
-                                          if (_user?.role == UserRole.admin ||
-                                              _user?.role ==
+                                          if (_user!.role == UserRole.admin ||
+                                              _user!.role ==
                                                   UserRole.regionalManager)
                                             Padding(
                                               padding:
@@ -415,10 +406,10 @@ class HomeScreenState extends State<HomeScreen> {
                                                         CustomStyle.smallText),
                                               ),
                                             ),
-                                          if (_user?.role == UserRole.admin ||
-                                              _user?.role ==
+                                          if (_user!.role == UserRole.admin ||
+                                              _user!.role ==
                                                   UserRole.regionalManager ||
-                                              _user?.role ==
+                                              _user!.role ==
                                                   UserRole.branchManager)
                                             Padding(
                                               padding:
@@ -433,10 +424,10 @@ class HomeScreenState extends State<HomeScreen> {
                                                         CustomStyle.smallText),
                                               ),
                                             ),
-                                          if (_user?.role == UserRole.admin ||
-                                              _user?.role ==
+                                          if (_user!.role == UserRole.admin ||
+                                              _user!.role ==
                                                   UserRole.regionalManager ||
-                                              _user?.role ==
+                                              _user!.role ==
                                                   UserRole.branchManager)
                                             Padding(
                                               padding:
@@ -451,14 +442,14 @@ class HomeScreenState extends State<HomeScreen> {
                                                         CustomStyle.smallText),
                                               ),
                                             ),
-                                          if (_user?.role == UserRole.admin ||
-                                              _user?.role ==
+                                          if (_user!.role == UserRole.admin ||
+                                              _user!.role ==
                                                   UserRole.regionalManager ||
-                                              _user?.role ==
+                                              _user!.role ==
                                                   UserRole.branchManager ||
-                                              _user?.role ==
+                                              _user!.role ==
                                                   UserRole.employee ||
-                                              _user?.role == UserRole.technican)
+                                              _user!.role == UserRole.technican)
                                             Padding(
                                               padding:
                                                   const EdgeInsets.all(8.0),

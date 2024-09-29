@@ -1,9 +1,11 @@
+import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
-import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/models/user_auth.dart';
 
 enum ScreenType {
   welcome,
@@ -61,7 +63,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
             child: ListView(children: [
               ListTile(
                 title: Text(
-                  widget.user.name!,
+                  widget.user.name,
                   style: CustomStyle.smallText,
                 ),
                 leading: const Icon(
@@ -69,7 +71,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                   size: 40,
                 ),
                 subtitle: Text(
-                  User.getRoleName(widget.user.role!),
+                  User.getRoleName(context, widget.user.role),
                   style: CustomStyle.smallTextGrey,
                 ),
                 onTap: () {
@@ -491,7 +493,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
   void _defaultOnVisitsClick() {}
   void _defaultOnContractsClick() {}
   void _defaultOnSystemStatusClick() {}
-  void _defaultOnAdminsClick() {}
+  void _defaultOnAdminsClick() {Navigator.pushNamed(context, '/admins');}
   void _defaultOnRegionalManagersClick() {}
   void _defaultOnBranchManagersClick() {}
   void _defaultOnEmployeesClick() {}

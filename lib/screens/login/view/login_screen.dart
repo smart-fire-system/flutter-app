@@ -25,14 +25,18 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<LoginBloc>().add(AuthRequested());
+    context.read<LoginBloc>().add(ResetStateRequested());
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
-        if (state is LoginNotAuthenticated) {
+        if (state is LoginInitial) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.read<LoginBloc>().add(AuthRequested());
+          });
+        } else if (state is LoginNotAuthenticated) {
           if (state.error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               CustomAlert.showError(context, state.error!);
@@ -43,7 +47,6 @@ class LoginScreenState extends State<LoginScreen> {
         } else if (state is LoginSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.popAndPushNamed(context, '/home');
-            context.read<LoginBloc>().add(ResetState());
           });
         } else if (state is ResetEmailSent) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -97,6 +100,9 @@ class LoginScreenState extends State<LoginScreen> {
           child: Text(S.of(context).ok, style: CustomStyle.normalButtonText),
           onPressed: () {
             if (email != "") {
+              context
+                  .read<LoginBloc>()
+                  .add(ResetPasswordRequested(email: email));
               Navigator.pop(context);
             }
           },
@@ -105,16 +111,11 @@ class LoginScreenState extends State<LoginScreen> {
           child:
               Text(S.of(context).cancel, style: CustomStyle.normalButtonText),
           onPressed: () {
-            email = "";
             Navigator.pop(context);
           },
         ),
       ],
     ).show();
-
-    if (email != "") {
-      context.read<LoginBloc>().add(ResetPasswordRequested(email: email));
-    }
   }
 
   Widget _buildLoginScreen(BuildContext context) {
@@ -200,7 +201,7 @@ class LoginScreenState extends State<LoginScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (formKey.currentState?.validate() ?? false) {
-                            context.read<LoginBloc>().add(LoginSubmitted(
+                            context.read<LoginBloc>().add(LoginRequested(
                                   email: emailController.text,
                                   password: passwordController.text,
                                 ));
@@ -249,7 +250,7 @@ class LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           context.read<LoginBloc>().add(GoogleLoginRequested());
                         },
-                        icon: const FaIcon(FontAwesomeIcons.google,
+                        icon: const Icon(FontAwesomeIcons.google,
                             color: Colors.white),
                         label: Text(
                           S.of(context).login_with_google,
@@ -291,7 +292,7 @@ class LoginScreenState extends State<LoginScreen> {
                         ),
                         onPressed: () {
                           Navigator.popAndPushNamed(context, '/signup');
-                          context.read<LoginBloc>().add(ResetState());
+                          context.read<LoginBloc>().add(ResetStateRequested());
                         },
                       ),
                     ),

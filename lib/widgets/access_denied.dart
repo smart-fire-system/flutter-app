@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
-import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
+import 'package:fire_alarm_system/models/user.dart';
 
 enum AccessDeniedType { accountNeedsVerification, noRoleForUser }
 
 class CustomAccessDenied extends StatelessWidget {
   final User user;
+  final AccessDeniedType type;
   final void Function()? onLogoutClick;
   final void Function()? onResendClick;
   const CustomAccessDenied({
     super.key,
     required this.user,
+    required this.type,
     this.onLogoutClick,
     this.onResendClick,
   });
@@ -23,7 +25,7 @@ class CustomAccessDenied extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          user.authStatus == AuthStatus.authenticatedWithEmailNotVerified
+          type == AccessDeniedType.accountNeedsVerification
               ? S.of(context).account_not_verified_title
               : S.of(context).access_denied_title,
           style: CustomStyle.appBarText,
@@ -51,11 +53,10 @@ class CustomAccessDenied extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: ListTile(
                       title: Text(
-                        user.name ?? "",
+                        user.name,
                         style: CustomStyle.mediumText,
                       ),
-                      subtitle:
-                          Text(user.email ?? "", style: CustomStyle.smallText),
+                      subtitle: Text(user.email, style: CustomStyle.smallText),
                       leading: Image.asset(
                         'assets/images/access-denied.png',
                         fit: BoxFit.contain,
@@ -66,8 +67,7 @@ class CustomAccessDenied extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      user.authStatus ==
-                              AuthStatus.authenticatedWithEmailNotVerified
+                      type == AccessDeniedType.accountNeedsVerification
                           ? S.of(context).account_not_verified_message
                           : S.of(context).access_denied_message,
                       style: CustomStyle.largeTextB,
@@ -90,8 +90,8 @@ class CustomAccessDenied extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (user.authStatus ==
-                      AuthStatus.authenticatedWithEmailNotVerified)
+                  if (type ==
+                      AccessDeniedType.accountNeedsVerification)
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),

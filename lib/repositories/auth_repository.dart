@@ -1,42 +1,39 @@
-import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/utils/enums.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase;
+import 'package:fire_alarm_system/models/user_auth.dart';
 
 class AuthRepository {
   AuthRepository();
 
-  final User _user = User(authStatus: AuthStatus.notAuthenticated);
+  final UserAuth _userAuth = UserAuth(authStatus: AuthStatus.notAuthenticated);
 
   void _setUserNotAuthenticated() {
-    _user.authStatus = AuthStatus.notAuthenticated;
-    _user.id = null;
-    _user.name = null;
-    _user.email = null;
-    _user.phoneNumber = null;
-    _user.countryCode = null;
-    _user.role = null;
+    _userAuth.authStatus = AuthStatus.notAuthenticated;
+    _userAuth.user = null;
   }
 
-  Future<User> initAuth() async {
+  Future<UserAuth> initAuth() async {
     print("TODO: Handle initAuth");
-    // TODO: Get Auth Info
     await Future.delayed(const Duration(milliseconds: 500));
     if (false) {
-      _user.authStatus = AuthStatus.authenticatedWithEmailVerified;
-      _user.role = UserRole.admin;
-      _user.id = "112541";
-      _user.name = "Joh Doe";
-      _user.email = "example@example.com";
-      _user.countryCode = "+966";
-      _user.phoneNumber = "01014514855";
+      _userAuth.authStatus = AuthStatus.authenticatedWithEmailVerified;
+      _userAuth.user = User(
+          id: "112541",
+          name: "Joh Doe",
+          email: "example@example.com",
+          countryCode: "+966",
+          phoneNumber: "01014514855",
+          role: UserRole.admin);
     } else {
       _setUserNotAuthenticated();
     }
 
-    return _user;
+    return _userAuth;
   }
 
-  User getUserInfo() {
-    return _user;
+  UserAuth getUserAuth() {
+    return _userAuth;
   }
 
   Future<void> signOut() async {
@@ -55,70 +52,74 @@ class AuthRepository {
     await Future.delayed(const Duration(milliseconds: 500));
   }
 
-  Future<User> signInWithEmailAndPassword(String email, String password) async {
+  Future<UserAuth> signInWithEmailAndPassword(
+      String email, String password) async {
     String errorMessage = "";
 
     print("TODO: Handle signInWithEmailAndPassword");
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (errorMessage.isEmpty) {
-      _user.authStatus = AuthStatus.authenticatedWithEmailNotVerified;
-      _user.role = UserRole.admin;
-      _user.id = "112541";
-      _user.name = "Joh Doe";
-      _user.email = "example@example.com";
-      _user.countryCode = "+966";
-      _user.phoneNumber = "01014514855";
+      _userAuth.authStatus = AuthStatus.authenticatedWithEmailNotVerified;
+      _userAuth.user = User(
+          id: "112541",
+          name: "Joh Doe",
+          email: "example@example.com",
+          countryCode: "+966",
+          phoneNumber: "01014514855",
+          role: UserRole.admin);
     } else {
       _setUserNotAuthenticated();
       throw Exception(errorMessage);
     }
-    return _user;
+    return _userAuth;
   }
 
-  Future<User> signInWithGoogle() async {
+  Future<UserAuth> signInWithGoogle() async {
     String errorMessage = "";
 
     print("TODO: Handle signInWithGoogle");
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (errorMessage.isEmpty) {
-      _user.authStatus = AuthStatus.authenticatedWithEmailVerified;
-      _user.role = UserRole.admin;
-      _user.id = "112541";
-      _user.name = "Joh Doe";
-      _user.email = "example@example.com";
-      _user.countryCode = "+966";
-      _user.phoneNumber = "01014514855";
+      _userAuth.authStatus = AuthStatus.authenticatedWithEmailVerified;
+      _userAuth.user = User(
+          id: "112541",
+          name: "Joh Doe",
+          email: "example@example.com",
+          countryCode: "+966",
+          phoneNumber: "01014514855",
+          role: UserRole.admin);
     } else {
       _setUserNotAuthenticated();
       throw Exception(errorMessage);
     }
-    return _user;
+    return _userAuth;
   }
 
-  Future<User> signInWithFacebook() async {
+  Future<UserAuth> signInWithFacebook() async {
     String errorMessage = "This service is not available right now.";
 
     print("TODO: Handle signInWithFacebook");
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (errorMessage.isEmpty) {
-      _user.authStatus = AuthStatus.authenticatedWithFacebook;
-      _user.role = UserRole.admin;
-      _user.id = "112541";
-      _user.name = "Joh Doe";
-      _user.email = "example@example.com";
-      _user.countryCode = "+966";
-      _user.phoneNumber = "01014514855";
+      _userAuth.authStatus = AuthStatus.authenticatedWithFacebook;
+      _userAuth.user = User(
+          id: "112541",
+          name: "Joh Doe",
+          email: "example@example.com",
+          countryCode: "+966",
+          phoneNumber: "01014514855",
+          role: UserRole.admin);
     } else {
       _setUserNotAuthenticated();
       throw Exception(errorMessage);
     }
-    return _user;
+    return _userAuth;
   }
 
-  Future<User> signUpWithEmailAndPassword(String email, String password,
+  Future<UserAuth> signUpWithEmailAndPassword(String email, String password,
       String name, String phone, String countryCode) async {
     String errorMessage = "";
 
@@ -126,59 +127,62 @@ class AuthRepository {
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (errorMessage.isEmpty) {
-      _user.authStatus = AuthStatus.authenticatedWithEmailNotVerified;
-      _user.role = null;
-      _user.id = "112541";
-      _user.name = "Joh Doe";
-      _user.email = "example@example.com";
-      _user.countryCode = "+966";
-      _user.phoneNumber = "01014514855";
+      _userAuth.authStatus = AuthStatus.authenticatedWithEmailNotVerified;
+      _userAuth.user = User(
+          id: "112541",
+          name: "Joh Doe",
+          email: "example@example.com",
+          countryCode: "+966",
+          phoneNumber: "01014514855",
+          role: UserRole.admin);
     } else {
       _setUserNotAuthenticated();
       throw Exception(errorMessage);
     }
-    return _user;
+    return _userAuth;
   }
 
-  Future<User> signUpWithGoogle() async {
+  Future<UserAuth> signUpWithGoogle() async {
     String errorMessage = "";
 
     print("TODO: Handle signUpWithGoogle");
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (errorMessage.isEmpty) {
-      _user.authStatus = AuthStatus.authenticatedWithGoogle;
-      _user.role = null;
-      _user.id = "112541";
-      _user.name = "Joh Doe";
-      _user.email = "example@example.com";
-      _user.countryCode = "+966";
-      _user.phoneNumber = "01014514855";
+      _userAuth.authStatus = AuthStatus.authenticatedWithGoogle;
+      _userAuth.user = User(
+          id: "112541",
+          name: "Joh Doe",
+          email: "example@example.com",
+          countryCode: "+966",
+          phoneNumber: "01014514855",
+          role: UserRole.admin);
     } else {
       _setUserNotAuthenticated();
       throw Exception(errorMessage);
     }
-    return _user;
+    return _userAuth;
   }
 
-  Future<User> signUpWithFacebook() async {
+  Future<UserAuth> signUpWithFacebook() async {
     String errorMessage = "This service is not available right now.";
 
     print("TODO: Handle signUpWithFacebook");
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (errorMessage.isEmpty) {
-      _user.authStatus = AuthStatus.authenticatedWithFacebook;
-      _user.role = UserRole.admin;
-      _user.id = "112541";
-      _user.name = "Joh Doe";
-      _user.email = "example@example.com";
-      _user.countryCode = "+966";
-      _user.phoneNumber = "01014514855";
+      _userAuth.authStatus = AuthStatus.authenticatedWithFacebook;
+      _userAuth.user = User(
+          id: "112541",
+          name: "Joh Doe",
+          email: "example@example.com",
+          countryCode: "+966",
+          phoneNumber: "01014514855",
+          role: UserRole.admin);
     } else {
       _setUserNotAuthenticated();
       throw Exception(errorMessage);
     }
-    return _user;
+    return _userAuth;
   }
 }

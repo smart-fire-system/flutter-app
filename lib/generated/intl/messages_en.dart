@@ -22,6 +22,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "accessRoleChangedSuccessMessage": MessageLookupByLibrary.simpleMessage(
+            "User\'s access role has been successfully updated."),
         "access_denied_message": MessageLookupByLibrary.simpleMessage(
             "You do not have access to this section. Please wait until the system administrators grant you access."),
         "access_denied_title":
@@ -30,25 +32,37 @@ class MessageLookup extends MessageLookupByLibrary {
             "Your account is not verified. Please check your email for the verification link."),
         "account_not_verified_title":
             MessageLookupByLibrary.simpleMessage("Account Not Verified"),
+        "addNewAdmin": MessageLookupByLibrary.simpleMessage("Add New Admin"),
+        "admin": MessageLookupByLibrary.simpleMessage("Admin"),
         "admins": MessageLookupByLibrary.simpleMessage("Admins"),
         "already_have_an_account": MessageLookupByLibrary.simpleMessage(
             "Already have an account? Log In"),
         "app_name":
             MessageLookupByLibrary.simpleMessage("Smart Fire Alarm System"),
+        "branchManager": MessageLookupByLibrary.simpleMessage("Branch Manager"),
         "branchManagers":
             MessageLookupByLibrary.simpleMessage("Branch Managers"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "changeAccessRole":
+            MessageLookupByLibrary.simpleMessage("Modify Access Role"),
         "changeLanguage":
             MessageLookupByLibrary.simpleMessage("Change Language"),
+        "client": MessageLookupByLibrary.simpleMessage("Client"),
         "clients": MessageLookupByLibrary.simpleMessage("Clients"),
         "complaints": MessageLookupByLibrary.simpleMessage("Complaints"),
         "complaintsDescription": MessageLookupByLibrary.simpleMessage(
             "Show open compaints or submit new one."),
+        "confirmChangeAccessRole": MessageLookupByLibrary.simpleMessage(
+            "Do you want to proceed with changing the user\'s access permissions?"),
+        "confirmDeleteUser": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to permanently delete this user from the system?"),
         "confirm_password": MessageLookupByLibrary.simpleMessage(
             "Please confirm your password"),
+        "deleteUser": MessageLookupByLibrary.simpleMessage("Remove User"),
         "don_t_have_an_account": MessageLookupByLibrary.simpleMessage(
             "Don\'t have an account? Sign Up"),
         "email": MessageLookupByLibrary.simpleMessage("Email Address"),
+        "employee": MessageLookupByLibrary.simpleMessage("Employee"),
         "employees": MessageLookupByLibrary.simpleMessage("Employees"),
         "enter_email": MessageLookupByLibrary.simpleMessage(
             "Please enter your email address"),
@@ -79,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manageAndConfigureSystem":
             MessageLookupByLibrary.simpleMessage("Manage and Configure System"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
+        "noRole": MessageLookupByLibrary.simpleMessage("No Role"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
         "ok": MessageLookupByLibrary.simpleMessage("Ok"),
         "or": MessageLookupByLibrary.simpleMessage("or"),
@@ -89,6 +104,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Passwords do not match"),
         "phone": MessageLookupByLibrary.simpleMessage("Phone Number"),
         "profile": MessageLookupByLibrary.simpleMessage("Profile"),
+        "regionalManager":
+            MessageLookupByLibrary.simpleMessage("Regional Manager"),
         "regionalManagers":
             MessageLookupByLibrary.simpleMessage("Regional Managers"),
         "reports": MessageLookupByLibrary.simpleMessage("Reports"),
@@ -98,6 +115,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Resend Verification Email"),
         "reset_email_sent": MessageLookupByLibrary.simpleMessage(
             "A password reset email has been sent. Please check your inbox."),
+        "role": MessageLookupByLibrary.simpleMessage("Role"),
         "select_language":
             MessageLookupByLibrary.simpleMessage("Please choose a language"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign Up"),
@@ -118,7 +136,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "System Monitoring and Control"),
         "system_monitoring_description": MessageLookupByLibrary.simpleMessage(
             "Monitor the current state of each sensor and control sub-units. You can also perform actions like turning devices on or off directly from this interface."),
+        "technican": MessageLookupByLibrary.simpleMessage("Technician"),
         "technicans": MessageLookupByLibrary.simpleMessage("Technicians"),
+        "userDeletedSuccessMessage": MessageLookupByLibrary.simpleMessage(
+            "User has been successfully deleted from the system."),
         "users": MessageLookupByLibrary.simpleMessage("Users"),
         "usersDescription": MessageLookupByLibrary.simpleMessage(
             "Show and give or remove access from users"),

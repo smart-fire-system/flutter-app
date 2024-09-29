@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
-import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/models/user_auth.dart';
+import 'package:fire_alarm_system/utils/enums.dart';
 import 'event.dart';
 import 'state.dart';
 
@@ -14,16 +15,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     on<AuthRequested>((event, emit) async {
       emit(HomeLoading());
-      User user = authRepository.getUserInfo();
-      if (user.authStatus == AuthStatus.notAuthenticated) {
+      UserAuth userAuth = authRepository.getUserAuth();
+      if (userAuth.authStatus == AuthStatus.notAuthenticated) {
         emit(HomeNotAuthenticated());
-      } else if (user.authStatus ==
+      } else if (userAuth.authStatus ==
           AuthStatus.authenticatedWithEmailNotVerified) {
-        emit(HomeNotVerified(user: user));
-      } else if (user.role == null) {
-        emit(HomeNoRole(user: user));
+        emit(HomeNotVerified(user: userAuth.user!));
+      } else if (userAuth.user!.role == UserRole.noRole) {
+        emit(HomeNoRole(user: userAuth.user!));
       } else {
-        emit(HomeAuthenticated(user: user));
+        emit(HomeAuthenticated(user: userAuth.user!));
       }
     });
 
@@ -31,16 +32,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeLoading());
       try {
         await authRepository.resendActivationEmail();
-        User user = authRepository.getUserInfo();
-        if (user.authStatus == AuthStatus.notAuthenticated) {
+        UserAuth userAuth = authRepository.getUserAuth();
+        if (userAuth.authStatus == AuthStatus.notAuthenticated) {
           emit(HomeNotAuthenticated());
-        } else if (user.authStatus ==
+        } else if (userAuth.authStatus ==
             AuthStatus.authenticatedWithEmailNotVerified) {
-          emit(HomeNotVerified(user: user));
-        } else if (user.role == null) {
-          emit(HomeNoRole(user: user));
+          emit(HomeNotVerified(user: userAuth.user!));
+        } else if (userAuth.user!.role == UserRole.noRole) {
+          emit(HomeNoRole(user: userAuth.user!));
         } else {
-          emit(HomeAuthenticated(user: user));
+          emit(HomeAuthenticated(user: userAuth.user!));
         }
       } catch (error) {
         emit(HomeError(error: error.toString()));
@@ -51,16 +52,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeLoading());
       try {
         await authRepository.signOut();
-        User user = authRepository.getUserInfo();
-        if (user.authStatus == AuthStatus.notAuthenticated) {
+        UserAuth userAuth = authRepository.getUserAuth();
+        if (userAuth.authStatus == AuthStatus.notAuthenticated) {
           emit(HomeNotAuthenticated());
-        } else if (user.authStatus ==
+        } else if (userAuth.authStatus ==
             AuthStatus.authenticatedWithEmailNotVerified) {
-          emit(HomeNotVerified(user: user));
-        } else if (user.role == null) {
-          emit(HomeNoRole(user: user));
+          emit(HomeNotVerified(user: userAuth.user!));
+        } else if (userAuth.user!.role == UserRole.noRole) {
+          emit(HomeNoRole(user: userAuth.user!));
         } else {
-          emit(HomeAuthenticated(user: user));
+          emit(HomeAuthenticated(user: userAuth.user!));
         }
       } catch (error) {
         emit(HomeError(error: error.toString()));

@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/utils/data_validator_util.dart';
-
 import 'package:fire_alarm_system/screens/signup/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/signup/bloc/event.dart';
 import 'package:fire_alarm_system/screens/signup/bloc/state.dart';
@@ -25,13 +23,17 @@ class SignUpScreenState extends State<SignUpScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<SignUpBloc>().add(AuthRequested());
+    context.read<SignUpBloc>().add(ResetStateRequested());
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SignUpBloc, SignUpState>(builder: (context, state) {
-      if (state is SignUpNotAuthenticated) {
+      if (state is SignUpInitial) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          context.read<SignUpBloc>().add(AuthRequested());
+        });
+      } else if (state is SignUpNotAuthenticated) {
         if (state.error != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             CustomAlert.showError(context, state.error!);
@@ -42,7 +44,7 @@ class SignUpScreenState extends State<SignUpScreen> {
       } else if (state is SignUpSuccess) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.popAndPushNamed(context, '/home');
-          context.read<SignUpBloc>().add(ResetState());
+          context.read<SignUpBloc>().add(ResetStateRequested());
         });
       }
       return const CustomLoading();
@@ -214,7 +216,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (formKey.currentState?.validate() ?? false) {
-                            context.read<SignUpBloc>().add(SignUpSubmitted(
+                            context.read<SignUpBloc>().add(SignUpRequested(
                                 email: emailController.text,
                                 password: passwordController.text,
                                 name: nameController.text,

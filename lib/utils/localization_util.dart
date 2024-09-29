@@ -1,8 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
@@ -55,19 +53,17 @@ class LocalizationUtil {
             borderRadius: BorderRadius.circular(20), // Rounded corners
           ),
           backgroundColor: Colors.white, // Custom background color
-          title: Row(
-            children: [
-              Text(
-                S.of(context).select_language,
-                style: CustomStyle.largeText30B,
-              ),
-            ],
+          title: Text(
+            S.of(context).select_language,
+            style: CustomStyle.largeTextB,
+            softWrap: true,
+            overflow: TextOverflow.visible,
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const FaIcon(FontAwesomeIcons.globe,
+                leading: const Icon(Icons.language,
                     color: Colors.blueAccent),
                 title: Text(
                   'English',
@@ -79,7 +75,7 @@ class LocalizationUtil {
                 },
               ),
               ListTile(
-                leading: const FaIcon(FontAwesomeIcons.globe,
+                leading: const Icon(Icons.language,
                     color: Colors.blueAccent),
                 title: Text(
                   'العربية',

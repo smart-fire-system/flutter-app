@@ -1,27 +1,11 @@
-import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fire_alarm_system/generated/l10n.dart';
-import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
 
-class WelcomeScreen extends StatefulWidget {
-  final User user;
-  const WelcomeScreen({super.key, required this.user});
-  @override
-  WelcomeScreenState createState() => WelcomeScreenState();
-}
-
-class WelcomeScreenState extends State<WelcomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.user.authStatus != AuthStatus.notAuthenticated) {
-        Navigator.popAndPushNamed(context, '/home');
-      }
-    });
-  }
+class WelcomeScreen extends StatelessWidget {
+  const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

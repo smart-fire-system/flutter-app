@@ -22,6 +22,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "accessRoleChangedSuccessMessage": MessageLookupByLibrary.simpleMessage(
+            "تم تحديث صلاحيات وصول المستخدم بنجاح."),
         "access_denied_message": MessageLookupByLibrary.simpleMessage(
             "ليس لديك صلاحية الوصول إلى هذا القسم. يرجى الانتظار حتى يتم منحك الصلاحيات من مسؤولي النظام."),
         "access_denied_title":
@@ -30,24 +32,36 @@ class MessageLookup extends MessageLookupByLibrary {
             "حسابك غير مُفعّل. يرجى التحقق من بريدك الإلكتروني للحصول على رابط التفعيل."),
         "account_not_verified_title":
             MessageLookupByLibrary.simpleMessage("الحساب غير مُفعّل"),
+        "addNewAdmin": MessageLookupByLibrary.simpleMessage("إضافة مسئول جديد"),
+        "admin": MessageLookupByLibrary.simpleMessage("مسئول"),
         "admins": MessageLookupByLibrary.simpleMessage("المسؤولون"),
         "already_have_an_account": MessageLookupByLibrary.simpleMessage(
             "لديك حساب بالفعل؟ تسجيل الدخول"),
         "app_name":
             MessageLookupByLibrary.simpleMessage("نظام تنبيه الحريق الذكي"),
+        "branchManager": MessageLookupByLibrary.simpleMessage("مدير فرع"),
         "branchManagers": MessageLookupByLibrary.simpleMessage("مديرو الفروع"),
         "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
+        "changeAccessRole":
+            MessageLookupByLibrary.simpleMessage("تغيير صلاحيات الوصول"),
         "changeLanguage": MessageLookupByLibrary.simpleMessage("تغيير اللغة"),
+        "client": MessageLookupByLibrary.simpleMessage("عميل"),
         "clients": MessageLookupByLibrary.simpleMessage("العملاء"),
         "complaints": MessageLookupByLibrary.simpleMessage("الشكاوى"),
         "complaintsDescription": MessageLookupByLibrary.simpleMessage(
             "عرض الشكاوى المفتوحة أو تقديم شكوى جديدة."),
+        "confirmChangeAccessRole": MessageLookupByLibrary.simpleMessage(
+            "هل تريد المتابعة لتغيير صلاحيات وصول المستخدم؟"),
+        "confirmDeleteUser": MessageLookupByLibrary.simpleMessage(
+            "هل أنت متأكد من أنك تريد حذف هذا المستخدم نهائيًا من النظام؟"),
         "confirm_password":
             MessageLookupByLibrary.simpleMessage("يرجى تأكيد كلمة المرور"),
+        "deleteUser": MessageLookupByLibrary.simpleMessage("حذف المستخدم"),
         "don_t_have_an_account":
             MessageLookupByLibrary.simpleMessage("ليس لديك حساب؟ إنشاء حساب"),
         "email":
             MessageLookupByLibrary.simpleMessage("عنوان البريد الإلكتروني"),
+        "employee": MessageLookupByLibrary.simpleMessage("موظف"),
         "employees": MessageLookupByLibrary.simpleMessage("الموظفون"),
         "enter_email": MessageLookupByLibrary.simpleMessage(
             "يرجى إدخال عنوان بريدك الإلكتروني"),
@@ -75,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manageAndConfigureSystem":
             MessageLookupByLibrary.simpleMessage("إدارة وتعديل النظام"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
+        "noRole": MessageLookupByLibrary.simpleMessage("بدون صلاحية وصول"),
         "notifications": MessageLookupByLibrary.simpleMessage("الإشعارات"),
         "ok": MessageLookupByLibrary.simpleMessage("حسناً"),
         "or": MessageLookupByLibrary.simpleMessage("أو"),
@@ -85,6 +100,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("كلمات المرور غير متطابقة"),
         "phone": MessageLookupByLibrary.simpleMessage("رقم الهاتف"),
         "profile": MessageLookupByLibrary.simpleMessage("الملف الشخصي"),
+        "regionalManager": MessageLookupByLibrary.simpleMessage("مدير إقليمي"),
         "regionalManagers":
             MessageLookupByLibrary.simpleMessage("المديرون الإقليميون"),
         "reports": MessageLookupByLibrary.simpleMessage("التقارير"),
@@ -94,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "إعادة إرسال البريد الإلكتروني للتفعيل"),
         "reset_email_sent": MessageLookupByLibrary.simpleMessage(
             "تم إرسال بريد إلكتروني لإعادة تعيين كلمة المرور. يرجى التحقق من صندوق البريد."),
+        "role": MessageLookupByLibrary.simpleMessage("صلاحية الوصول"),
         "select_language":
             MessageLookupByLibrary.simpleMessage("يرجى اختيار اللغة"),
         "signup": MessageLookupByLibrary.simpleMessage("إنشاء حساب جديد"),
@@ -113,7 +130,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("مراقبة النظام والتحكم"),
         "system_monitoring_description": MessageLookupByLibrary.simpleMessage(
             "مراقبة الحالة الحالية لكل حساس والتحكم في الوحدات الفرعية. يمكنك أيضًا تنفيذ إجراءات مثل تشغيل أو إيقاف الأجهزة مباشرةً من هذه الواجهة."),
+        "technican": MessageLookupByLibrary.simpleMessage("فني"),
         "technicans": MessageLookupByLibrary.simpleMessage("الفنيون"),
+        "userDeletedSuccessMessage": MessageLookupByLibrary.simpleMessage(
+            "تم حذف المستخدم بنجاح من النظام."),
         "users": MessageLookupByLibrary.simpleMessage("المستخدمون"),
         "usersDescription": MessageLookupByLibrary.simpleMessage(
             "عرض وإعطاء أو حذف صلاحيات للمستخدمين"),

@@ -39,6 +39,15 @@
     "employees": "الموظفون",
     "technicans": "الفنيون",
     "clients": "العملاء",
+    "admin": "مسئول",
+    "regionalManager": "مدير إقليمي",
+    "branchManager": "مدير فرع",
+    "employee": "موظف",
+    "technican": "فني",
+    "client": "عميل",
+    "role": "صلاحية الوصول",
+    "noRole": "بدون صلاحية وصول",
+
     "logout": "تسجيل الخروج",
 
     "system_monitoring_control": "مراقبة النظام والتحكم",
@@ -46,6 +55,14 @@
     "reportsDescription": "عرض تقارير لعقود الصيانة، الزيارات وحالة النظام.",
     "complaintsDescription": "عرض الشكاوى المفتوحة أو تقديم شكوى جديدة.",
     "usersDescription": "عرض وإعطاء أو حذف صلاحيات للمستخدمين",
+
+    "deleteUser": "حذف المستخدم",
+    "changeAccessRole": "تغيير صلاحيات الوصول",
+    "confirmDeleteUser": "هل أنت متأكد من أنك تريد حذف هذا المستخدم نهائيًا من النظام؟",
+    "confirmChangeAccessRole": "هل تريد المتابعة لتغيير صلاحيات وصول المستخدم؟",
+    "userDeletedSuccessMessage": "تم حذف المستخدم بنجاح من النظام.",
+    "accessRoleChangedSuccessMessage": "تم تحديث صلاحيات وصول المستخدم بنجاح.",
+    "addNewAdmin": "إضافة مسئول جديد",
 
     "welcome": "مرحبا",
     "welcome_message": "مرحبًا في نظام تنبيه الحريق الذكي. يرجى تسجيل الدخول أو إنشاء حساب.",

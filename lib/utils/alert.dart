@@ -18,8 +18,7 @@ class CustomAlert {
         ),
         buttons: [
           DialogButton(
-            child: Text(S.of(context).ok,
-                style: CustomStyle.normalButtonText),
+            child: Text(S.of(context).ok, style: CustomStyle.normalButtonText),
             onPressed: () => Navigator.pop(context),
           )
         ],
@@ -40,8 +39,7 @@ class CustomAlert {
         ),
         buttons: [
           DialogButton(
-            child: Text(S.of(context).ok,
-                style: CustomStyle.normalButtonText),
+            child: Text(S.of(context).ok, style: CustomStyle.normalButtonText),
             onPressed: () => Navigator.pop(context),
           )
         ],
@@ -62,8 +60,7 @@ class CustomAlert {
         ),
         buttons: [
           DialogButton(
-            child: Text(S.of(context).ok,
-                style: CustomStyle.normalButtonText),
+            child: Text(S.of(context).ok, style: CustomStyle.normalButtonText),
             onPressed: () => Navigator.pop(context),
           )
         ],
@@ -71,25 +68,22 @@ class CustomAlert {
     });
   }
 
-  static Future<void> showSuccess(BuildContext context, String message) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Alert(
-        context: context,
-        type: AlertType.success,
-        desc: message,
-        style: AlertStyle(
-          titleStyle: CustomStyle.largeTextB,
-          descStyle: CustomStyle.mediumText,
-          animationType: AnimationType.grow,
-        ),
-        buttons: [
-          DialogButton(
-            child: Text(S.of(context).ok,
-                style: CustomStyle.normalButtonText),
-            onPressed: () => Navigator.pop(context),
-          )
-        ],
-      ).show();
-    });
+  static Future<bool?> showSuccess(BuildContext context, String message) async {
+    return await Alert(
+      context: context,
+      type: AlertType.success,
+      desc: message,
+      style: AlertStyle(
+        titleStyle: CustomStyle.largeTextB,
+        descStyle: CustomStyle.mediumText,
+        animationType: AnimationType.grow,
+      ),
+      buttons: [
+        DialogButton(
+          child: Text(S.of(context).ok, style: CustomStyle.normalButtonText),
+          onPressed: () => Navigator.pop(context),
+        )
+      ],
+    ).show();
   }
 }
