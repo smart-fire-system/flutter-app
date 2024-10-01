@@ -1,14 +1,37 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
-import 'package:fire_alarm_system/utils/styles.dart';
+import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
+import 'package:fire_alarm_system/utils/styles.dart';
+import 'package:fire_alarm_system/screens/welcome/bloc/bloc.dart';
+import 'package:fire_alarm_system/screens/welcome/bloc/state.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
 
   @override
+  WelcomeScreenState createState() => WelcomeScreenState();
+}
+
+class WelcomeScreenState extends State<WelcomeScreen> {
+  @override
   Widget build(BuildContext context) {
+    return BlocBuilder<WelcomeBloc, WelcomeState>(
+      builder: (context, state) {
+        if (state is WelcomeAuthenticated) {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            Navigator.popAndPushNamed(context, '/home');
+          });
+        } else if (state is WelcomeNotAuthenticated) {
+          return _buildWelcome(context);
+        }
+        return const CustomLoading();
+      },
+    );
+  }
+
+  Widget _buildWelcome(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(

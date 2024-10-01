@@ -8,30 +8,27 @@ class CustomLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Smart Fire System',
-      home: PopScope(
-        canPop: false,
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Image.asset(
-                    'assets/images/loading.gif',
-                    fit: BoxFit.contain,
-                    width: 200,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(
+                  'assets/images/loading.gif',
+                  fit: BoxFit.contain,
+                  width: 200,
+                ),
+                if (noText == null || noText == false)
+                  Text(
+                    S.of(context).wait_while_loading,
+                    style: CustomStyle.mediumText,
                   ),
-                  if (noText == null || noText == false)
-                    Text(
-                      S.of(context).wait_while_loading,
-                      style: CustomStyle.mediumText,
-                    ),
-                ],
-              ),
+              ],
             ),
           ),
         ),
