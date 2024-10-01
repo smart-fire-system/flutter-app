@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
-class CustomLoading extends StatelessWidget {
-  final bool? noText;
-  const CustomLoading({super.key, this.noText});
+class CustomNoInternet extends StatelessWidget {
+  const CustomNoInternet({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +18,14 @@ class CustomLoading extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Image.asset(
-                    'assets/images/loading.gif',
-                    fit: BoxFit.contain,
-                    width: 200,
+                  const Icon(
+                    Icons.wifi_off,
+                    size: 50,
                   ),
-                  if (noText == null || noText == false)
-                    Text(
-                      S.of(context).wait_while_loading,
-                      style: CustomStyle.mediumText,
-                    ),
+                  Text(
+                    'No Internet Connection.',
+                    style: CustomStyle.mediumText,
+                  ),
                 ],
               ),
             ),

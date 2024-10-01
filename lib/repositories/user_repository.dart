@@ -2,7 +2,6 @@ import 'package:fire_alarm_system/models/admin.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase;
 
 class UserRepository {
   final AuthRepository authRepository;

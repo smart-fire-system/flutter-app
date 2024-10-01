@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
-import 'package:fire_alarm_system/models/user_auth.dart';
 import 'event.dart';
 import 'state.dart';
 
@@ -9,15 +8,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthRepository authRepository;
 
   LoginBloc({required this.authRepository}) : super(LoginInitial()) {
-    on<ResetStateRequested>((event, emit) {
-      emit(LoginInitial());
+    authRepository.authStateChanges.listen((data) {
+      add(AuthChanged(error: data == "" ? null : data));
+    }, onError: (error) {
+      add(AuthChanged(error: error.toString()));
     });
 
-    on<AuthRequested>((event, emit) async {
-      emit(LoginLoading());
-      UserAuth userAuth = authRepository.getUserAuth();
-      if (userAuth.authStatus == AuthStatus.notAuthenticated) {
-        emit(LoginNotAuthenticated());
+    on<AuthChanged>((event, emit) async {
+      if (authRepository.userAuth.authStatus == AuthStatus.notAuthenticated) {
+        emit(LoginNotAuthenticated(error: event.error));
       } else {
         emit(LoginSuccess());
       }
@@ -36,9 +35,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginRequested>((event, emit) async {
       emit(LoginLoading());
       try {
-        await authRepository.signInWithEmailAndPassword(
-            event.email, event.password);
-        emit(LoginSuccess());
+        await authRepository.signIn(event.email, event.password);
       } catch (error) {
         emit(LoginNotAuthenticated(error: error.toString()));
       }
@@ -48,17 +45,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginLoading());
       try {
         await authRepository.signInWithGoogle();
-        emit(LoginSuccess());
-      } catch (error) {
-        emit(LoginNotAuthenticated(error: error.toString()));
-      }
-    });
-
-    on<FacebookLoginRequested>((event, emit) async {
-      emit(LoginLoading());
-      try {
-        await authRepository.signInWithFacebook();
-        emit(LoginSuccess());
       } catch (error) {
         emit(LoginNotAuthenticated(error: error.toString()));
       }

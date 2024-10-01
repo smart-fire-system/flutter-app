@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,30 +22,20 @@ class SignUpScreen extends StatefulWidget {
 
 class SignUpScreenState extends State<SignUpScreen> {
   @override
-  void initState() {
-    super.initState();
-    context.read<SignUpBloc>().add(ResetStateRequested());
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocBuilder<SignUpBloc, SignUpState>(builder: (context, state) {
-      if (state is SignUpInitial) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          context.read<SignUpBloc>().add(AuthRequested());
-        });
-      } else if (state is SignUpNotAuthenticated) {
+      if (state is SignUpNotAuthenticated) {
         if (state.error != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            CustomAlert.showError(context, state.error!);
-            context.read<SignUpBloc>().add(AuthRequested());
+            CustomAlert.showError(
+                context, Errors.getFirebaseErrorMessage(context, state.error!));
+            context.read<SignUpBloc>().add(AuthChanged());
           });
         }
         return _buildSignUpScreen(context);
       } else if (state is SignUpSuccess) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.popAndPushNamed(context, '/home');
-          context.read<SignUpBloc>().add(ResetStateRequested());
         });
       }
       return const CustomLoading();
@@ -231,6 +222,15 @@ class SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                     ),
+                    TextButton(
+                      child: Text(
+                        S.of(context).already_have_an_account,
+                        style: CustomStyle.smallText,
+                      ),
+                      onPressed: () {
+                        Navigator.popAndPushNamed(context, '/login');
+                      },
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 16.0, right: 16.0, top: 30.0, bottom: 30.0),
@@ -260,7 +260,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                         icon: const FaIcon(FontAwesomeIcons.google,
                             color: Colors.white),
                         label: Text(
-                          S.of(context).signup_with_google,
+                          S.of(context).continue_with_google,
                           style: CustomStyle.normalButtonTextSmall,
                         ),
                         style: ElevatedButton.styleFrom(
@@ -268,36 +268,6 @@ class SignUpScreenState extends State<SignUpScreen> {
                           minimumSize: const Size(double.infinity, 50),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          context
-                              .read<SignUpBloc>()
-                              .add(FacebookSignUpRequested());
-                        },
-                        icon: const FaIcon(FontAwesomeIcons.facebook,
-                            color: Colors.white),
-                        label: Text(
-                          S.of(context).signup_with_facebook,
-                          style: CustomStyle.normalButtonTextSmall,
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          minimumSize: const Size(double.infinity, 50),
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      child: Text(
-                        S.of(context).already_have_an_account,
-                        style: CustomStyle.smallText,
-                      ),
-                      onPressed: () {
-                        Navigator.popAndPushNamed(context, '/login');
-                      },
                     ),
                   ],
                 ),

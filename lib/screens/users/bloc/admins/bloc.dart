@@ -17,11 +17,11 @@ class AdminsBloc extends Bloc<AdminsEvent, AdminsState> {
     });
     on<AuthRequested>((event, emit) async {
       emit(AdminsLoading());
-      UserAuth userAuth = authRepository.getUserAuth();
+      UserAuth userAuth = await authRepository.refreshUserAuth();
       if (userAuth.authStatus == AuthStatus.notAuthenticated) {
         emit(AdminsNotAuthenticated());
       }
-      if (userAuth.authStatus == AuthStatus.authenticatedWithEmailNotVerified ||
+      if (userAuth.authStatus == AuthStatus.authenticatedNotVerified ||
           userAuth.user?.role == null ||
           userAuth.user?.role != UserRole.admin) {
         emit(AdminsNotAuthorized());

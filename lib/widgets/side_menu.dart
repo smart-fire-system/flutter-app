@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
-import 'package:fire_alarm_system/models/user_auth.dart';
 
 enum ScreenType {
   welcome,
@@ -97,24 +96,6 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                     _defaultOnHomeClick();
                   } else if (widget.preNavigationCallback!()) {
                     _defaultOnHomeClick();
-                  }
-                },
-              ),
-              ListTile(
-                title: Text(
-                  S.of(context).profile,
-                  style: CustomStyle.smallText,
-                ),
-                selected: (widget.screen == ScreenType.profile),
-                leading: const Icon(
-                  Icons.person,
-                  color: Colors.black54,
-                ),
-                onTap: () {
-                  if (widget.preNavigationCallback == null) {
-                    _defaultOnProfileClick();
-                  } else if (widget.preNavigationCallback!()) {
-                    _defaultOnProfileClick();
                   }
                 },
               ),
@@ -472,7 +453,8 @@ class CustomSideMenuState extends State<CustomSideMenu> {
             onTap: () async {
               try {
                 const url = 'ahmedhassandev.com';
-                await launchUrl(Uri(scheme: 'https', path: url), webOnlyWindowName: "_blank" );
+                await launchUrl(Uri(scheme: 'https', path: url),
+                    webOnlyWindowName: "_blank");
               } catch (error) {
                 // No launch
               }
@@ -493,7 +475,10 @@ class CustomSideMenuState extends State<CustomSideMenu> {
   void _defaultOnVisitsClick() {}
   void _defaultOnContractsClick() {}
   void _defaultOnSystemStatusClick() {}
-  void _defaultOnAdminsClick() {Navigator.pushNamed(context, '/admins');}
+  void _defaultOnAdminsClick() {
+    Navigator.pushNamed(context, '/admins');
+  }
+
   void _defaultOnRegionalManagersClick() {}
   void _defaultOnBranchManagersClick() {}
   void _defaultOnEmployeesClick() {}

@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "808637869294",
+    "project_id": "smart-fire-system-app",
+    "storage_bucket": "smart-fire-system-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:808637869294:android:22267adc85b6fed9f2d7ff",
+        "android_client_info": {
+          "package_name": "com.example.fire_alarm_system"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "808637869294-928on0j223nm56ip5kdnrmqlr3l821mo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fire_alarm_system",
+            "certificate_hash": "336e9f521b4411df663cb8d5f5c4a52ba2f0619f"
+          }
+        },
+        {
+          "client_id": "808637869294-4qf1i65a60knbo1673hsh7is34nj0rs0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVz7njpgc4ILHI5OkXdNPiYvPqK_hYglc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "808637869294-4qf1i65a60knbo1673hsh7is34nj0rs0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "808637869294-fb328bha1l8ntl2uld7obq97itbq0lff.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fireAlarmSystem"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

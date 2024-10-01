@@ -36,4 +36,42 @@ class User {
         return S.of(context).noRole;
     }
   }
+
+  static String getRoleId(UserRole role) {
+    switch (role) {
+      case UserRole.admin:
+        return 'admin';
+      case UserRole.regionalManager:
+        return 'regionalManager';
+      case UserRole.branchManager:
+        return 'branchManager';
+      case UserRole.employee:
+        return 'employee';
+      case UserRole.technican:
+        return 'technican';
+      case UserRole.client:
+        return 'client';
+      default:
+        return 'none';
+    }
+  }
+
+  static UserRole getRole(String roleId) {
+    switch (roleId) {
+      case 'admin':
+        return UserRole.admin;
+      case 'regionalManager':
+        return UserRole.regionalManager;
+      case 'branchManager':
+        return UserRole.branchManager;
+      case 'employee':
+        return UserRole.employee;
+      case 'technican':
+        return UserRole.technican;
+      case 'client':
+        return UserRole.client;
+      default:
+        return UserRole.noRole;
+    }
+  }
 }

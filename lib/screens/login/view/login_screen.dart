@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -23,24 +24,15 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen> {
   @override
-  void initState() {
-    super.initState();
-    context.read<LoginBloc>().add(ResetStateRequested());
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
-        if (state is LoginInitial) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.read<LoginBloc>().add(AuthRequested());
-          });
-        } else if (state is LoginNotAuthenticated) {
+        if (state is LoginNotAuthenticated) {
           if (state.error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              CustomAlert.showError(context, state.error!);
-              context.read<LoginBloc>().add(AuthRequested());
+              CustomAlert.showError(context,
+                  Errors.getFirebaseErrorMessage(context, state.error!));
+              context.read<LoginBloc>().add(AuthChanged());
             });
           }
           return _buildLoginScreen(context);
@@ -53,9 +45,10 @@ class LoginScreenState extends State<LoginScreen> {
             if (state.error == null) {
               CustomAlert.showSuccess(context, S.of(context).reset_email_sent);
             } else {
-              CustomAlert.showError(context, state.error!);
+              CustomAlert.showError(context,
+                  Errors.getFirebaseErrorMessage(context, state.error!));
             }
-            context.read<LoginBloc>().add(AuthRequested());
+            context.read<LoginBloc>().add(AuthChanged());
           });
         }
         return const CustomLoading();
@@ -214,17 +207,43 @@ class LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextButton(
-                        child: Text(
-                          S.of(context).forgot_password,
-                          style: CustomStyle.smallText,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextButton(
+                              child: Text(
+                                S.of(context).forgot_password,
+                                style: CustomStyle.smallText,
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                                textAlign: TextAlign.center,
+                              ),
+                              onPressed: () async {
+                                _resetPassword(context);
+                              },
+                            ),
+                          ),
                         ),
-                        onPressed: () async {
-                          _resetPassword(context);
-                        },
-                      ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextButton(
+                              child: Text(
+                                S.of(context).don_t_have_an_account,
+                                style: CustomStyle.smallText,
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                                textAlign: TextAlign.center,
+                              ),
+                              onPressed: () {
+                                Navigator.popAndPushNamed(context, '/signup');
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     Padding(
                       padding: const EdgeInsets.only(
@@ -253,47 +272,13 @@ class LoginScreenState extends State<LoginScreen> {
                         icon: const Icon(FontAwesomeIcons.google,
                             color: Colors.white),
                         label: Text(
-                          S.of(context).login_with_google,
+                          S.of(context).continue_with_google,
                           style: CustomStyle.normalButtonTextSmall,
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
                           minimumSize: const Size(double.infinity, 50),
                         ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          context
-                              .read<LoginBloc>()
-                              .add(FacebookLoginRequested());
-                        },
-                        icon: const FaIcon(FontAwesomeIcons.facebook,
-                            color: Colors.white),
-                        label: Text(
-                          S.of(context).login_with_facebook,
-                          style: CustomStyle.normalButtonTextSmall,
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          minimumSize: const Size(double.infinity, 50),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextButton(
-                        child: Text(
-                          S.of(context).don_t_have_an_account,
-                          style: CustomStyle.smallText,
-                        ),
-                        onPressed: () {
-                          Navigator.popAndPushNamed(context, '/signup');
-                          context.read<LoginBloc>().add(ResetStateRequested());
-                        },
                       ),
                     ),
                   ],

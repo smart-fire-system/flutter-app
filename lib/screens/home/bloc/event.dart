@@ -1,8 +1,9 @@
 abstract class HomeEvent {}
 
-class AuthRequested extends HomeEvent {}
-
-class ResetState extends HomeEvent {}
+class AuthChanged extends HomeEvent {
+  final String? error;
+  AuthChanged({this.error});
+}
 
 class ResendEmailRequested extends HomeEvent {}
 

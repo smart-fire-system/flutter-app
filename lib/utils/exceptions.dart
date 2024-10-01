@@ -1,21 +1,17 @@
 
-
-class NetworkErrorException implements Exception {
-  NetworkErrorException();
+enum CustomExceptionType {
+  generalError,
+  emailAlready
 }
 
-class InvalidCredentialException implements Exception {
-  InvalidCredentialException();
+class CustomException implements Exception {
+  final String message;
+  
+  CustomException(this.message);
+  
+  @override
+  String toString() => 'CustomException: $message';
 }
-
-class NoAcessException implements Exception {
-  NoAcessException();
-}
-
-class UserExistsException implements Exception {
-  UserExistsException();
-}
-
 
 
 

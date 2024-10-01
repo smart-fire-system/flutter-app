@@ -2,10 +2,8 @@
 
 enum AuthStatus {
   notAuthenticated,
-  authenticatedWithEmailVerified,
-  authenticatedWithEmailNotVerified,
-  authenticatedWithGoogle,
-  authenticatedWithFacebook,
+  authenticated,
+  authenticatedNotVerified
 }
 
 enum UserRole {

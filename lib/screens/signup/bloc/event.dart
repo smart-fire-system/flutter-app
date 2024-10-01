@@ -1,12 +1,9 @@
 abstract class SignUpEvent {}
 
-class ResetStateRequested extends SignUpEvent {}
-
-class AuthRequested extends SignUpEvent {}
-
-class GoogleSignUpRequested extends SignUpEvent {}
-
-class FacebookSignUpRequested extends SignUpEvent {}
+class AuthChanged extends SignUpEvent {
+  final String? error;
+  AuthChanged({this.error});
+}
 
 class SignUpRequested extends SignUpEvent {
   final String email;
@@ -21,3 +18,5 @@ class SignUpRequested extends SignUpEvent {
       required this.phone,
       required this.countryCode});
 }
+
+class GoogleSignUpRequested extends SignUpEvent {}

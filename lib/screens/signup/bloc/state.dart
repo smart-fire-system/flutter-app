@@ -8,5 +8,5 @@ class SignUpSuccess extends SignUpState {}
 
 class SignUpNotAuthenticated extends SignUpState {
   final String? error;
-  SignUpNotAuthenticated({required this.error});
+  SignUpNotAuthenticated({this.error});
 }

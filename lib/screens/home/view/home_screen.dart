@@ -1,3 +1,5 @@
+import 'package:fire_alarm_system/utils/errors.dart';
+import 'package:fire_alarm_system/widgets/not_authenticated.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
@@ -27,8 +29,9 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<HomeBloc>().add(AuthRequested());
-    _showSideMenu = (MediaQuery.of(context).size.width > 600);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _showSideMenu = (MediaQuery.of(context).size.width > 600);
+    });
   }
 
   @override
@@ -37,15 +40,22 @@ class HomeScreenState extends State<HomeScreen> {
       builder: (context, state) {
         if (state is HomeError) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
-            context.read<HomeBloc>().add(AuthRequested());
-            await CustomAlert.showError(context, state.error);
+            CustomAlert.showError(
+                context, Errors.getFirebaseErrorMessage(context, state.error));
+            context.read<HomeBloc>().add(AuthChanged());
           });
         } else if (state is HomeNotAuthenticated) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.popAndPushNamed(context, '/welcome');
-          });
+          return const CustomNotAuthenticated();
         } else if (state is HomeNotVerified) {
           _user = state.user;
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (state.error != null) {
+              CustomAlert.showError(context,
+                  Errors.getFirebaseErrorMessage(context, state.error!));
+            } else if (state.emailSent == true) {
+              CustomAlert.showSuccess(context, S.of(context).reset_email_sent);
+            }
+          });
           return CustomAccessDenied(
             user: _user!,
             type: AccessDeniedType.accountNeedsVerification,
@@ -58,14 +68,17 @@ class HomeScreenState extends State<HomeScreen> {
           );
         } else if (state is HomeNoRole) {
           _user = state.user;
+          if (state.error != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              CustomAlert.showError(context,
+                  Errors.getFirebaseErrorMessage(context, state.error!));
+            });
+          }
           return CustomAccessDenied(
             user: _user!,
             type: AccessDeniedType.noRoleForUser,
             onLogoutClick: () async {
               context.read<HomeBloc>().add(LogoutRequested());
-            },
-            onResendClick: () async {
-              context.read<HomeBloc>().add(ResendEmailRequested());
             },
           );
         } else if (state is HomeAuthenticated) {
@@ -104,7 +117,7 @@ class HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () {
-              print("TODO: Navigate to Notifications");
+              context.read<HomeBloc>().add(LogoutRequested());
             },
           ),
           IconButton(
