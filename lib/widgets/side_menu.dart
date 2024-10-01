@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
@@ -6,12 +7,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
 
-enum ScreenType {
-  welcome,
-  login,
-  signup,
-  home,
+enum CustomSideMenuItem {
   profile,
+  home,
   notifications,
   viewSystem,
   configureSystem,
@@ -26,20 +24,22 @@ enum ScreenType {
   employees,
   technicans,
   clients,
+  logout,
 }
 
 class CustomSideMenu extends StatefulWidget {
-  final ScreenType screen;
+  final CustomSideMenuItem highlightedItem;
   final User user;
   final double? width;
-  final bool Function()? preNavigationCallback;
-
+  final Future<void> Function(CustomSideMenuItem item)? onItemClick;
+  final List<CustomSideMenuItem>? noActionItems;
   const CustomSideMenu({
     super.key,
-    required this.screen,
+    required this.highlightedItem,
     required this.user,
     this.width,
-    this.preNavigationCallback,
+    this.onItemClick,
+    this.noActionItems = const [],
   });
 
   @override
@@ -73,10 +73,13 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                   User.getRoleName(context, widget.user.role),
                   style: CustomStyle.smallTextGrey,
                 ),
-                onTap: () {
-                  if (widget.preNavigationCallback == null) {
-                    _defaultOnProfileClick();
-                  } else if (widget.preNavigationCallback!()) {
+                onTap: () async {
+                  if (widget.onItemClick != null) {
+                    await widget
+                        .onItemClick!(CustomSideMenuItem.profile);
+                  }
+                  if (!widget.noActionItems!
+                      .contains(CustomSideMenuItem.profile)) {
                     _defaultOnProfileClick();
                   }
                 },
@@ -86,15 +89,18 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                   S.of(context).home,
                   style: CustomStyle.smallText,
                 ),
-                selected: (widget.screen == ScreenType.home),
+                selected: (widget.highlightedItem == CustomSideMenuItem.home),
                 leading: const Icon(
                   Icons.home,
                   color: Colors.black54,
                 ),
-                onTap: () {
-                  if (widget.preNavigationCallback == null) {
-                    _defaultOnHomeClick();
-                  } else if (widget.preNavigationCallback!()) {
+                onTap: () async {
+                  if (widget.onItemClick != null) {
+                    await widget
+                        .onItemClick!(CustomSideMenuItem.home);
+                  }
+                  if (!widget.noActionItems!
+                      .contains(CustomSideMenuItem.home)) {
                     _defaultOnHomeClick();
                   }
                 },
@@ -104,15 +110,18 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                   S.of(context).notifications,
                   style: CustomStyle.smallText,
                 ),
-                selected: (widget.screen == ScreenType.notifications),
+                selected: (widget.highlightedItem == CustomSideMenuItem.notifications),
                 leading: const Icon(
                   Icons.notifications,
                   color: Colors.black54,
                 ),
-                onTap: () {
-                  if (widget.preNavigationCallback == null) {
-                    _defaultOnNotificationsClick();
-                  } else if (widget.preNavigationCallback!()) {
+                onTap: () async {
+                  if (widget.onItemClick != null) {
+                    await widget.onItemClick!(
+                        CustomSideMenuItem.notifications);
+                  }
+                  if (!widget.noActionItems!
+                      .contains(CustomSideMenuItem.notifications)) {
                     _defaultOnNotificationsClick();
                   }
                 },
@@ -143,15 +152,19 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                             S.of(context).viewAndControlSystem,
                             style: CustomStyle.smallText,
                           ),
-                          selected: (widget.screen == ScreenType.viewSystem),
+                          selected:
+                              (widget.highlightedItem == CustomSideMenuItem.viewSystem),
                           leading: const Icon(
                             Icons.monitor,
                             color: Colors.black54,
                           ),
-                          onTap: () {
-                            if (widget.preNavigationCallback == null) {
-                              _defaultOnViewSystemClick();
-                            } else if (widget.preNavigationCallback!()) {
+                          onTap: () async {
+                            if (widget.onItemClick != null) {
+                              await widget.onItemClick!(
+                                  CustomSideMenuItem.viewSystem);
+                            }
+                            if (!widget.noActionItems!
+                                .contains(CustomSideMenuItem.viewSystem)) {
                               _defaultOnViewSystemClick();
                             }
                           },
@@ -161,16 +174,19 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                             S.of(context).manageAndConfigureSystem,
                             style: CustomStyle.smallText,
                           ),
-                          selected:
-                              (widget.screen == ScreenType.configureSystem),
+                          selected: (widget.highlightedItem ==
+                              CustomSideMenuItem.configureSystem),
                           leading: const Icon(
                             Icons.settings,
                             color: Colors.black54,
                           ),
-                          onTap: () {
-                            if (widget.preNavigationCallback == null) {
-                              _defaultOnConfigureSystemClick();
-                            } else if (widget.preNavigationCallback!()) {
+                          onTap: () async {
+                            if (widget.onItemClick != null) {
+                              await widget.onItemClick!(
+                                  CustomSideMenuItem.configureSystem);
+                            }
+                            if (!widget.noActionItems!
+                                .contains(CustomSideMenuItem.configureSystem)) {
                               _defaultOnConfigureSystemClick();
                             }
                           },
@@ -182,15 +198,19 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         S.of(context).viewAndControlSystem,
                         style: CustomStyle.smallText,
                       ),
-                      selected: (widget.screen == ScreenType.viewSystem),
+                      selected:
+                          (widget.highlightedItem == CustomSideMenuItem.viewSystem),
                       leading: const Icon(
                         Icons.monitor,
                         color: Colors.black54,
                       ),
-                      onTap: () {
-                        if (widget.preNavigationCallback == null) {
-                          _defaultOnViewSystemClick();
-                        } else if (widget.preNavigationCallback!()) {
+                      onTap: () async {
+                        if (widget.onItemClick != null) {
+                          await widget.onItemClick!(
+                              CustomSideMenuItem.viewSystem);
+                        }
+                        if (!widget.noActionItems!
+                            .contains(CustomSideMenuItem.viewSystem)) {
                           _defaultOnViewSystemClick();
                         }
                       },
@@ -206,15 +226,19 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       S.of(context).viewComplaints,
                       style: CustomStyle.smallText,
                     ),
-                    selected: (widget.screen == ScreenType.viewComplaints),
+                    selected:
+                        (widget.highlightedItem == CustomSideMenuItem.viewComplaints),
                     leading: const Icon(
                       Icons.feedback,
                       color: Colors.black54,
                     ),
-                    onTap: () {
-                      if (widget.preNavigationCallback == null) {
-                        _defaultOnViewComplaintsClick();
-                      } else if (widget.preNavigationCallback!()) {
+                    onTap: () async {
+                      if (widget.onItemClick != null) {
+                        await widget.onItemClick!(
+                            CustomSideMenuItem.viewComplaints);
+                      }
+                      if (!widget.noActionItems!
+                          .contains(CustomSideMenuItem.viewComplaints)) {
                         _defaultOnViewComplaintsClick();
                       }
                     },
@@ -224,15 +248,19 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       S.of(context).submitComplaint,
                       style: CustomStyle.smallText,
                     ),
-                    selected: (widget.screen == ScreenType.submitComplaints),
+                    selected:
+                        (widget.highlightedItem == CustomSideMenuItem.submitComplaints),
                     leading: const Icon(
                       Icons.add,
                       color: Colors.black54,
                     ),
-                    onTap: () {
-                      if (widget.preNavigationCallback == null) {
-                        _defaultOnSubmitComplaintClick();
-                      } else if (widget.preNavigationCallback!()) {
+                    onTap: () async {
+                      if (widget.onItemClick != null) {
+                        await widget.onItemClick!(
+                            CustomSideMenuItem.submitComplaints);
+                      }
+                      if (!widget.noActionItems!
+                          .contains(CustomSideMenuItem.submitComplaints)) {
                         _defaultOnSubmitComplaintClick();
                       }
                     },
@@ -250,15 +278,18 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       S.of(context).visits,
                       style: CustomStyle.smallText,
                     ),
-                    selected: (widget.screen == ScreenType.visits),
+                    selected: (widget.highlightedItem == CustomSideMenuItem.visits),
                     leading: const Icon(
                       Icons.note,
                       color: Colors.black54,
                     ),
-                    onTap: () {
-                      if (widget.preNavigationCallback == null) {
-                        _defaultOnVisitsClick();
-                      } else if (widget.preNavigationCallback!()) {
+                    onTap: () async {
+                      if (widget.onItemClick != null) {
+                        await widget
+                            .onItemClick!(CustomSideMenuItem.visits);
+                      }
+                      if (!widget.noActionItems!
+                          .contains(CustomSideMenuItem.visits)) {
                         _defaultOnVisitsClick();
                       }
                     },
@@ -268,15 +299,18 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       S.of(context).maintenanceContracts,
                       style: CustomStyle.smallText,
                     ),
-                    selected: (widget.screen == ScreenType.contracts),
+                    selected: (widget.highlightedItem == CustomSideMenuItem.contracts),
                     leading: const Icon(
                       Icons.note,
                       color: Colors.black54,
                     ),
-                    onTap: () {
-                      if (widget.preNavigationCallback == null) {
-                        _defaultOnContractsClick();
-                      } else if (widget.preNavigationCallback!()) {
+                    onTap: () async {
+                      if (widget.onItemClick != null) {
+                        await widget.onItemClick!(
+                            CustomSideMenuItem.contracts);
+                      }
+                      if (!widget.noActionItems!
+                          .contains(CustomSideMenuItem.contracts)) {
                         _defaultOnContractsClick();
                       }
                     },
@@ -286,15 +320,19 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       S.of(context).systemStatusAndFaults,
                       style: CustomStyle.smallText,
                     ),
-                    selected: (widget.screen == ScreenType.systemStatus),
+                    selected:
+                        (widget.highlightedItem == CustomSideMenuItem.systemStatus),
                     leading: const Icon(
                       Icons.note,
                       color: Colors.black54,
                     ),
-                    onTap: () {
-                      if (widget.preNavigationCallback == null) {
-                        _defaultOnSystemStatusClick();
-                      } else if (widget.preNavigationCallback!()) {
+                    onTap: () async {
+                      if (widget.onItemClick != null) {
+                        await widget.onItemClick!(
+                            CustomSideMenuItem.systemStatus);
+                      }
+                      if (!widget.noActionItems!
+                          .contains(CustomSideMenuItem.systemStatus)) {
                         _defaultOnSystemStatusClick();
                       }
                     },
@@ -313,15 +351,18 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         S.of(context).admins,
                         style: CustomStyle.smallText,
                       ),
-                      selected: (widget.screen == ScreenType.admins),
+                      selected: (widget.highlightedItem == CustomSideMenuItem.admins),
                       leading: const Icon(
                         Icons.group,
                         color: Colors.black54,
                       ),
-                      onTap: () {
-                        if (widget.preNavigationCallback == null) {
-                          _defaultOnAdminsClick();
-                        } else if (widget.preNavigationCallback!()) {
+                      onTap: () async {
+                        if (widget.onItemClick != null) {
+                          await widget.onItemClick!(
+                              CustomSideMenuItem.admins);
+                        }
+                        if (!widget.noActionItems!
+                            .contains(CustomSideMenuItem.admins)) {
                           _defaultOnAdminsClick();
                         }
                       },
@@ -332,15 +373,19 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         S.of(context).regionalManagers,
                         style: CustomStyle.smallText,
                       ),
-                      selected: (widget.screen == ScreenType.regionalManagers),
+                      selected: (widget.highlightedItem ==
+                          CustomSideMenuItem.regionalManagers),
                       leading: const Icon(
                         Icons.group,
                         color: Colors.black54,
                       ),
-                      onTap: () {
-                        if (widget.preNavigationCallback == null) {
-                          _defaultOnRegionalManagersClick();
-                        } else if (widget.preNavigationCallback!()) {
+                      onTap: () async {
+                        if (widget.onItemClick != null) {
+                          await widget.onItemClick!(
+                              CustomSideMenuItem.regionalManagers);
+                        }
+                        if (!widget.noActionItems!
+                            .contains(CustomSideMenuItem.regionalManagers)) {
                           _defaultOnRegionalManagersClick();
                         }
                       },
@@ -352,15 +397,19 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         S.of(context).branchManagers,
                         style: CustomStyle.smallText,
                       ),
-                      selected: (widget.screen == ScreenType.branchManagers),
+                      selected:
+                          (widget.highlightedItem == CustomSideMenuItem.branchManagers),
                       leading: const Icon(
                         Icons.group,
                         color: Colors.black54,
                       ),
-                      onTap: () {
-                        if (widget.preNavigationCallback == null) {
-                          _defaultOnBranchManagersClick();
-                        } else if (widget.preNavigationCallback!()) {
+                      onTap: () async {
+                        if (widget.onItemClick != null) {
+                          await widget.onItemClick!(
+                              CustomSideMenuItem.branchManagers);
+                        }
+                        if (!widget.noActionItems!
+                            .contains(CustomSideMenuItem.branchManagers)) {
                           _defaultOnBranchManagersClick();
                         }
                       },
@@ -373,15 +422,18 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         S.of(context).employees,
                         style: CustomStyle.smallText,
                       ),
-                      selected: (widget.screen == ScreenType.employees),
+                      selected: (widget.highlightedItem == CustomSideMenuItem.employees),
                       leading: const Icon(
                         Icons.group,
                         color: Colors.black54,
                       ),
-                      onTap: () {
-                        if (widget.preNavigationCallback == null) {
-                          _defaultOnEmployeesClick();
-                        } else if (widget.preNavigationCallback!()) {
+                      onTap: () async {
+                        if (widget.onItemClick != null) {
+                          await widget.onItemClick!(
+                              CustomSideMenuItem.employees);
+                        }
+                        if (!widget.noActionItems!
+                            .contains(CustomSideMenuItem.employees)) {
                           _defaultOnEmployeesClick();
                         }
                       },
@@ -394,15 +446,19 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         S.of(context).technicans,
                         style: CustomStyle.smallText,
                       ),
-                      selected: (widget.screen == ScreenType.technicans),
+                      selected:
+                          (widget.highlightedItem == CustomSideMenuItem.technicans),
                       leading: const Icon(
                         Icons.group,
                         color: Colors.black54,
                       ),
-                      onTap: () {
-                        if (widget.preNavigationCallback == null) {
-                          _defaultOnTechnicansClick();
-                        } else if (widget.preNavigationCallback!()) {
+                      onTap: () async {
+                        if (widget.onItemClick != null) {
+                          await widget.onItemClick!(
+                              CustomSideMenuItem.technicans);
+                        }
+                        if (!widget.noActionItems!
+                            .contains(CustomSideMenuItem.technicans)) {
                           _defaultOnTechnicansClick();
                         }
                       },
@@ -417,20 +473,44 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         S.of(context).clients,
                         style: CustomStyle.smallText,
                       ),
-                      selected: (widget.screen == ScreenType.clients),
+                      selected: (widget.highlightedItem == CustomSideMenuItem.clients),
                       leading: const Icon(
                         Icons.group,
                         color: Colors.black54,
                       ),
-                      onTap: () {
-                        if (widget.preNavigationCallback == null) {
-                          _defaultOnClientsClick();
-                        } else if (widget.preNavigationCallback!()) {
+                      onTap: () async {
+                        if (widget.onItemClick != null) {
+                          await widget.onItemClick!(
+                              CustomSideMenuItem.clients);
+                        }
+                        if (!widget.noActionItems!
+                            .contains(CustomSideMenuItem.clients)) {
                           _defaultOnClientsClick();
                         }
                       },
                     ),
                 ],
+              ),
+              ListTile(
+                title: Text(
+                  S.of(context).logout,
+                  style: CustomStyle.smallText,
+                ),
+                selected: false,
+                leading: const Icon(
+                  Icons.logout,
+                  color: Colors.black54,
+                ),
+                onTap: () async {
+                  if (widget.onItemClick != null) {
+                    await widget
+                        .onItemClick!(CustomSideMenuItem.logout);
+                  }
+                  if (!widget.noActionItems!
+                      .contains(CustomSideMenuItem.logout)) {
+                    _defaultOnLogoutClick();
+                  }
+                },
               ),
             ]),
           ),
@@ -484,4 +564,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
   void _defaultOnEmployeesClick() {}
   void _defaultOnTechnicansClick() {}
   void _defaultOnClientsClick() {}
+  void _defaultOnLogoutClick() async {
+    await AuthRepository().signOut();
+  }
 }

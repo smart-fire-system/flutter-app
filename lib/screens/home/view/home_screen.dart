@@ -24,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   bool _showSideMenu = false;
+  bool _userLoggedOut = false;
   User? _user;
 
   @override
@@ -45,7 +46,13 @@ class HomeScreenState extends State<HomeScreen> {
             context.read<HomeBloc>().add(AuthChanged());
           });
         } else if (state is HomeNotAuthenticated) {
-          return const CustomNotAuthenticated();
+          if (_userLoggedOut) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              Navigator.popAndPushNamed(context, '/welcome');
+            });
+          } else {
+            return const CustomNotAuthenticated();
+          }
         } else if (state is HomeNotVerified) {
           _user = state.user;
           WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -116,9 +123,7 @@ class HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.notifications),
-            onPressed: () {
-              context.read<HomeBloc>().add(LogoutRequested());
-            },
+            onPressed: () {},
           ),
           IconButton(
             icon: const Icon(Icons.language),
@@ -135,9 +140,18 @@ class HomeScreenState extends State<HomeScreen> {
           children: [
             _showSideMenu
                 ? CustomSideMenu(
-                    screen: ScreenType.home,
+                    highlightedItem: CustomSideMenuItem.home,
                     user: _user!,
-                    width: 300,
+                    noActionItems: const [
+                      CustomSideMenuItem.home,
+                      CustomSideMenuItem.logout
+                    ],
+                    onItemClick: (item) async {
+                      if (item == CustomSideMenuItem.logout) {
+                        _userLoggedOut = true;
+                        context.read<HomeBloc>().add(LogoutRequested());
+                      }
+                    },
                   )
                 : Container(),
             SizedBox(
@@ -377,7 +391,8 @@ class HomeScreenState extends State<HomeScreen> {
                                                   const EdgeInsets.all(8.0),
                                               child: ElevatedButton(
                                                 onPressed: () {
-                                                  // Perform some action
+                                                  Navigator.pushNamed(
+                                                      context, '/admins');
                                                 },
                                                 child: Text(
                                                     S.of(context).admins,

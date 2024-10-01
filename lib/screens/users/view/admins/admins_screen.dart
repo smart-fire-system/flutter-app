@@ -141,9 +141,8 @@ class AdminsScreenState extends State<AdminsScreen> {
           children: [
             _showSideMenu
                 ? CustomSideMenu(
-                    screen: ScreenType.admins,
+                    highlightedItem: CustomSideMenuItem.admins,
                     user: _userAuth!.user!,
-                    width: 300,
                   )
                 : Container(),
             SizedBox(

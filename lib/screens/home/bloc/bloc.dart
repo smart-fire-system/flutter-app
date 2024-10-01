@@ -65,28 +65,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeLoading());
       try {
         await authRepository.signOut();
-        UserAuth userAuth = await authRepository.refreshUserAuth();
-        if (userAuth.authStatus == AuthStatus.notAuthenticated) {
-          emit(HomeNotAuthenticated());
-        } else if (userAuth.authStatus == AuthStatus.authenticatedNotVerified) {
-          emit(HomeNotVerified(user: userAuth.user!));
-        } else if (userAuth.user!.role == UserRole.noRole) {
-          emit(HomeNoRole(user: userAuth.user!));
-        } else {
-          emit(HomeAuthenticated(user: userAuth.user!));
-        }
       } catch (error) {
-        UserAuth userAuth = authRepository.userAuth;
-        if (userAuth.authStatus == AuthStatus.notAuthenticated) {
-          emit(HomeNotAuthenticated());
-        } else if (userAuth.authStatus == AuthStatus.authenticatedNotVerified) {
-          emit(HomeNotVerified(user: userAuth.user!, error: error.toString()));
-        } else if (userAuth.user!.role == UserRole.noRole) {
-          emit(HomeNoRole(user: userAuth.user!, error: error.toString()));
-        } else {
-          emit(
-              HomeAuthenticated(user: userAuth.user!, error: error.toString()));
-        }
+        // Do nothing.
       }
     });
   }
