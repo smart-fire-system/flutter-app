@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/firebase_options.dart';
 import 'package:fire_alarm_system/widgets/no_internet.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -15,11 +16,13 @@ import 'package:fire_alarm_system/screens/welcome/view/view.dart';
 import 'package:fire_alarm_system/screens/login/view/view.dart';
 import 'package:fire_alarm_system/screens/signup/view/view.dart';
 import 'package:fire_alarm_system/screens/users/view/view.dart';
+import 'package:fire_alarm_system/screens/profile/view/view.dart';
 import 'package:fire_alarm_system/screens/home/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/welcome/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/login/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/signup/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/users/bloc/admins/bloc.dart';
+import 'package:fire_alarm_system/screens/profile/bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -63,6 +66,9 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
   }
 
   Future<bool> checkInternetConnection() async {
+    if (kIsWeb) {
+      return true;
+    }
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.none)) {
       return false;
@@ -99,6 +105,8 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
               create: (_) => HomeBloc(authRepository: _authRepository)),
           BlocProvider(
               create: (_) => AdminsBloc(authRepository: _authRepository)),
+          BlocProvider(
+              create: (_) => ProfileBloc(authRepository: _authRepository)),
         ],
         child: MaterialApp(
           title: 'Smart Fire System',
@@ -165,6 +173,7 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
             '/login': (context) => const LoginScreen(),
             '/signup': (context) => const SignUpScreen(),
             '/admins': (context) => const AdminsScreen(),
+            '/profile': (context) => const ProfileScreen(),
           },
           initialRoute: '/welcome',
         ),

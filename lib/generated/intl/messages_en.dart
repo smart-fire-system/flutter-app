@@ -58,6 +58,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Modify Access Role"),
         "changeLanguage":
             MessageLookupByLibrary.simpleMessage("Change Language"),
+        "change_password":
+            MessageLookupByLibrary.simpleMessage("Change Password"),
         "client": MessageLookupByLibrary.simpleMessage("Client"),
         "clients": MessageLookupByLibrary.simpleMessage("Clients"),
         "complaints": MessageLookupByLibrary.simpleMessage("Complaints"),
@@ -82,6 +84,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "deleteUser": MessageLookupByLibrary.simpleMessage("Remove User"),
         "don_t_have_an_account": MessageLookupByLibrary.simpleMessage(
             "Don\'t have an account? Sign Up"),
+        "edit_information":
+            MessageLookupByLibrary.simpleMessage("Edit Inforamation"),
         "email": MessageLookupByLibrary.simpleMessage("Email Address"),
         "email_already_in_use": MessageLookupByLibrary.simpleMessage(
             "An account already exists with this email address. Please login or use a different email."),
@@ -105,6 +109,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "forgot_password":
             MessageLookupByLibrary.simpleMessage("Forgot your password?"),
         "home": MessageLookupByLibrary.simpleMessage("Home"),
+        "info_updated": MessageLookupByLibrary.simpleMessage(
+            "Profile info updated successfully"),
         "internal": MessageLookupByLibrary.simpleMessage(
             "An internal error occurred. Please try again later."),
         "invalid_action_code": MessageLookupByLibrary.simpleMessage(
@@ -215,6 +221,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "resource_exhausted": MessageLookupByLibrary.simpleMessage(
             "Resource limit exceeded. Please try again later."),
         "role": MessageLookupByLibrary.simpleMessage("Role"),
+        "save_changes": MessageLookupByLibrary.simpleMessage("Save Changes"),
         "select_language":
             MessageLookupByLibrary.simpleMessage("Please choose a language"),
         "session_expired": MessageLookupByLibrary.simpleMessage(

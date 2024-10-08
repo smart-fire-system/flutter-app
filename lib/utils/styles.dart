@@ -45,6 +45,12 @@ class CustomStyle {
     padding: EdgeInsets.zero,
     alignment: Alignment.center,
   );
+    static final ButtonStyle normalButtonGreen = ElevatedButton.styleFrom(
+    backgroundColor: Colors.green,
+    minimumSize: const Size(double.infinity, 50),
+    padding: EdgeInsets.zero,
+    alignment: Alignment.center,
+  );
 
   static final TextStyle normalButtonText = GoogleFonts.cairo(
       fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600);

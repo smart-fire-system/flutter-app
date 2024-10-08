@@ -98,6 +98,10 @@
     "wait_while_loading": "Pleae wait while loading data",
     "login_welcome": "Welcome back! Please log in to your account to continue.",
     "signup_welcome": "Welcome! Create a new account to join us and enjoy our services.",
+    "change_password": "Change Password",
+    "edit_information": "Edit Inforamation",
+    "save_changes": "Save Changes",
+    "info_updated": "Profile info updated successfully",
 
     "invalid_custom_token": "The custom authentication token you provided is invalid. Please check and try again.",
     "custom_token_mismatch": "The custom token provided does not match the expected format. Ensure it is correct.",

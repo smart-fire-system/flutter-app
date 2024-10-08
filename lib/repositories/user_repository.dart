@@ -1,12 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/admin.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase;
 
 class UserRepository {
   final AuthRepository authRepository;
   UserRepository({required this.authRepository});
 
+  Future<void> updateInformation(
+      {required String name,
+      required String countryCode,
+      required String phoneNumber}) async {
+    firebase.User? firebaseUser = firebase.FirebaseAuth.instance.currentUser;
+    Map<String, dynamic> userData = {
+      'name': name,
+      'phoneNumber': phoneNumber,
+      'countryCode': countryCode,
+    };
+    await firebaseUser!.updateDisplayName(name);
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(firebaseUser.uid)
+        .update(userData);
+  }
 
   Future<void> changeAccessRole(String id, UserRole newRole) async {
     print("TODO: changeAccessRole");
@@ -17,7 +35,6 @@ class UserRepository {
     print("TODO: deleteUser");
     await Future.delayed(const Duration(milliseconds: 500));
   }
-
 
   Future<List<Admin>> getAdminsList({bool includeCurrentUser = false}) async {
     print("TODO: Handle getAdminsList");

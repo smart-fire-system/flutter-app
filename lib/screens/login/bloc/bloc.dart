@@ -18,6 +18,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       if (authRepository.userAuth.authStatus == AuthStatus.notAuthenticated) {
         emit(LoginNotAuthenticated(error: event.error));
       } else {
+        print("LoginSuccess");
         emit(LoginSuccess());
       }
     });
@@ -25,7 +26,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<ResetPasswordRequested>((event, emit) async {
       emit(LoginLoading());
       try {
-        await authRepository.sendPasswordResetEmail(event.email);
+        await authRepository.sendPasswordResetEmail();
         emit(ResetEmailSent());
       } catch (error) {
         emit(ResetEmailSent(error: error.toString()));

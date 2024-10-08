@@ -75,8 +75,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                 ),
                 onTap: () async {
                   if (widget.onItemClick != null) {
-                    await widget
-                        .onItemClick!(CustomSideMenuItem.profile);
+                    await widget.onItemClick!(CustomSideMenuItem.profile);
                   }
                   if (!widget.noActionItems!
                       .contains(CustomSideMenuItem.profile)) {
@@ -96,8 +95,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                 ),
                 onTap: () async {
                   if (widget.onItemClick != null) {
-                    await widget
-                        .onItemClick!(CustomSideMenuItem.home);
+                    await widget.onItemClick!(CustomSideMenuItem.home);
                   }
                   if (!widget.noActionItems!
                       .contains(CustomSideMenuItem.home)) {
@@ -110,15 +108,15 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                   S.of(context).notifications,
                   style: CustomStyle.smallText,
                 ),
-                selected: (widget.highlightedItem == CustomSideMenuItem.notifications),
+                selected: (widget.highlightedItem ==
+                    CustomSideMenuItem.notifications),
                 leading: const Icon(
                   Icons.notifications,
                   color: Colors.black54,
                 ),
                 onTap: () async {
                   if (widget.onItemClick != null) {
-                    await widget.onItemClick!(
-                        CustomSideMenuItem.notifications);
+                    await widget.onItemClick!(CustomSideMenuItem.notifications);
                   }
                   if (!widget.noActionItems!
                       .contains(CustomSideMenuItem.notifications)) {
@@ -152,16 +150,16 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                             S.of(context).viewAndControlSystem,
                             style: CustomStyle.smallText,
                           ),
-                          selected:
-                              (widget.highlightedItem == CustomSideMenuItem.viewSystem),
+                          selected: (widget.highlightedItem ==
+                              CustomSideMenuItem.viewSystem),
                           leading: const Icon(
                             Icons.monitor,
                             color: Colors.black54,
                           ),
                           onTap: () async {
                             if (widget.onItemClick != null) {
-                              await widget.onItemClick!(
-                                  CustomSideMenuItem.viewSystem);
+                              await widget
+                                  .onItemClick!(CustomSideMenuItem.viewSystem);
                             }
                             if (!widget.noActionItems!
                                 .contains(CustomSideMenuItem.viewSystem)) {
@@ -198,16 +196,16 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         S.of(context).viewAndControlSystem,
                         style: CustomStyle.smallText,
                       ),
-                      selected:
-                          (widget.highlightedItem == CustomSideMenuItem.viewSystem),
+                      selected: (widget.highlightedItem ==
+                          CustomSideMenuItem.viewSystem),
                       leading: const Icon(
                         Icons.monitor,
                         color: Colors.black54,
                       ),
                       onTap: () async {
                         if (widget.onItemClick != null) {
-                          await widget.onItemClick!(
-                              CustomSideMenuItem.viewSystem);
+                          await widget
+                              .onItemClick!(CustomSideMenuItem.viewSystem);
                         }
                         if (!widget.noActionItems!
                             .contains(CustomSideMenuItem.viewSystem)) {
@@ -226,16 +224,16 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       S.of(context).viewComplaints,
                       style: CustomStyle.smallText,
                     ),
-                    selected:
-                        (widget.highlightedItem == CustomSideMenuItem.viewComplaints),
+                    selected: (widget.highlightedItem ==
+                        CustomSideMenuItem.viewComplaints),
                     leading: const Icon(
                       Icons.feedback,
                       color: Colors.black54,
                     ),
                     onTap: () async {
                       if (widget.onItemClick != null) {
-                        await widget.onItemClick!(
-                            CustomSideMenuItem.viewComplaints);
+                        await widget
+                            .onItemClick!(CustomSideMenuItem.viewComplaints);
                       }
                       if (!widget.noActionItems!
                           .contains(CustomSideMenuItem.viewComplaints)) {
@@ -248,16 +246,16 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       S.of(context).submitComplaint,
                       style: CustomStyle.smallText,
                     ),
-                    selected:
-                        (widget.highlightedItem == CustomSideMenuItem.submitComplaints),
+                    selected: (widget.highlightedItem ==
+                        CustomSideMenuItem.submitComplaints),
                     leading: const Icon(
                       Icons.add,
                       color: Colors.black54,
                     ),
                     onTap: () async {
                       if (widget.onItemClick != null) {
-                        await widget.onItemClick!(
-                            CustomSideMenuItem.submitComplaints);
+                        await widget
+                            .onItemClick!(CustomSideMenuItem.submitComplaints);
                       }
                       if (!widget.noActionItems!
                           .contains(CustomSideMenuItem.submitComplaints)) {
@@ -278,15 +276,15 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       S.of(context).visits,
                       style: CustomStyle.smallText,
                     ),
-                    selected: (widget.highlightedItem == CustomSideMenuItem.visits),
+                    selected:
+                        (widget.highlightedItem == CustomSideMenuItem.visits),
                     leading: const Icon(
                       Icons.note,
                       color: Colors.black54,
                     ),
                     onTap: () async {
                       if (widget.onItemClick != null) {
-                        await widget
-                            .onItemClick!(CustomSideMenuItem.visits);
+                        await widget.onItemClick!(CustomSideMenuItem.visits);
                       }
                       if (!widget.noActionItems!
                           .contains(CustomSideMenuItem.visits)) {
@@ -299,15 +297,15 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       S.of(context).maintenanceContracts,
                       style: CustomStyle.smallText,
                     ),
-                    selected: (widget.highlightedItem == CustomSideMenuItem.contracts),
+                    selected: (widget.highlightedItem ==
+                        CustomSideMenuItem.contracts),
                     leading: const Icon(
                       Icons.note,
                       color: Colors.black54,
                     ),
                     onTap: () async {
                       if (widget.onItemClick != null) {
-                        await widget.onItemClick!(
-                            CustomSideMenuItem.contracts);
+                        await widget.onItemClick!(CustomSideMenuItem.contracts);
                       }
                       if (!widget.noActionItems!
                           .contains(CustomSideMenuItem.contracts)) {
@@ -320,16 +318,16 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       S.of(context).systemStatusAndFaults,
                       style: CustomStyle.smallText,
                     ),
-                    selected:
-                        (widget.highlightedItem == CustomSideMenuItem.systemStatus),
+                    selected: (widget.highlightedItem ==
+                        CustomSideMenuItem.systemStatus),
                     leading: const Icon(
                       Icons.note,
                       color: Colors.black54,
                     ),
                     onTap: () async {
                       if (widget.onItemClick != null) {
-                        await widget.onItemClick!(
-                            CustomSideMenuItem.systemStatus);
+                        await widget
+                            .onItemClick!(CustomSideMenuItem.systemStatus);
                       }
                       if (!widget.noActionItems!
                           .contains(CustomSideMenuItem.systemStatus)) {
@@ -351,15 +349,15 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         S.of(context).admins,
                         style: CustomStyle.smallText,
                       ),
-                      selected: (widget.highlightedItem == CustomSideMenuItem.admins),
+                      selected:
+                          (widget.highlightedItem == CustomSideMenuItem.admins),
                       leading: const Icon(
                         Icons.group,
                         color: Colors.black54,
                       ),
                       onTap: () async {
                         if (widget.onItemClick != null) {
-                          await widget.onItemClick!(
-                              CustomSideMenuItem.admins);
+                          await widget.onItemClick!(CustomSideMenuItem.admins);
                         }
                         if (!widget.noActionItems!
                             .contains(CustomSideMenuItem.admins)) {
@@ -397,16 +395,16 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         S.of(context).branchManagers,
                         style: CustomStyle.smallText,
                       ),
-                      selected:
-                          (widget.highlightedItem == CustomSideMenuItem.branchManagers),
+                      selected: (widget.highlightedItem ==
+                          CustomSideMenuItem.branchManagers),
                       leading: const Icon(
                         Icons.group,
                         color: Colors.black54,
                       ),
                       onTap: () async {
                         if (widget.onItemClick != null) {
-                          await widget.onItemClick!(
-                              CustomSideMenuItem.branchManagers);
+                          await widget
+                              .onItemClick!(CustomSideMenuItem.branchManagers);
                         }
                         if (!widget.noActionItems!
                             .contains(CustomSideMenuItem.branchManagers)) {
@@ -422,15 +420,16 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         S.of(context).employees,
                         style: CustomStyle.smallText,
                       ),
-                      selected: (widget.highlightedItem == CustomSideMenuItem.employees),
+                      selected: (widget.highlightedItem ==
+                          CustomSideMenuItem.employees),
                       leading: const Icon(
                         Icons.group,
                         color: Colors.black54,
                       ),
                       onTap: () async {
                         if (widget.onItemClick != null) {
-                          await widget.onItemClick!(
-                              CustomSideMenuItem.employees);
+                          await widget
+                              .onItemClick!(CustomSideMenuItem.employees);
                         }
                         if (!widget.noActionItems!
                             .contains(CustomSideMenuItem.employees)) {
@@ -446,16 +445,16 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         S.of(context).technicans,
                         style: CustomStyle.smallText,
                       ),
-                      selected:
-                          (widget.highlightedItem == CustomSideMenuItem.technicans),
+                      selected: (widget.highlightedItem ==
+                          CustomSideMenuItem.technicans),
                       leading: const Icon(
                         Icons.group,
                         color: Colors.black54,
                       ),
                       onTap: () async {
                         if (widget.onItemClick != null) {
-                          await widget.onItemClick!(
-                              CustomSideMenuItem.technicans);
+                          await widget
+                              .onItemClick!(CustomSideMenuItem.technicans);
                         }
                         if (!widget.noActionItems!
                             .contains(CustomSideMenuItem.technicans)) {
@@ -473,15 +472,15 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                         S.of(context).clients,
                         style: CustomStyle.smallText,
                       ),
-                      selected: (widget.highlightedItem == CustomSideMenuItem.clients),
+                      selected: (widget.highlightedItem ==
+                          CustomSideMenuItem.clients),
                       leading: const Icon(
                         Icons.group,
                         color: Colors.black54,
                       ),
                       onTap: () async {
                         if (widget.onItemClick != null) {
-                          await widget.onItemClick!(
-                              CustomSideMenuItem.clients);
+                          await widget.onItemClick!(CustomSideMenuItem.clients);
                         }
                         if (!widget.noActionItems!
                             .contains(CustomSideMenuItem.clients)) {
@@ -503,8 +502,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                 ),
                 onTap: () async {
                   if (widget.onItemClick != null) {
-                    await widget
-                        .onItemClick!(CustomSideMenuItem.logout);
+                    await widget.onItemClick!(CustomSideMenuItem.logout);
                   }
                   if (!widget.noActionItems!
                       .contains(CustomSideMenuItem.logout)) {
@@ -532,9 +530,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
             ),
             onTap: () async {
               try {
-                const url = 'ahmedhassandev.com';
-                await launchUrl(Uri(scheme: 'https', path: url),
-                    webOnlyWindowName: "_blank");
+                await launchUrl(Uri.parse('https://ahmedhassandev.com'));
               } catch (error) {
                 // No launch
               }
@@ -546,7 +542,9 @@ class CustomSideMenuState extends State<CustomSideMenu> {
   }
 
   void _defaultOnHomeClick() {}
-  void _defaultOnProfileClick() {}
+  void _defaultOnProfileClick() {
+    Navigator.pushNamed(context, '/profile');
+  }
   void _defaultOnNotificationsClick() {}
   void _defaultOnViewSystemClick() {}
   void _defaultOnConfigureSystemClick() {}

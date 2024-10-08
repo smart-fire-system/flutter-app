@@ -138,7 +138,7 @@ class Errors {
       case 'unauthenticated':
         return S.of(context).unauthenticated;
       default:
-        return S.of(context).unknown_error;
+        return S.of(context).unknown_error + '\n' + code;
     }
   }
 }

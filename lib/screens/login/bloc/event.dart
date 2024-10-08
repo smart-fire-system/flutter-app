@@ -5,10 +5,7 @@ class AuthChanged extends LoginEvent {
   AuthChanged({this.error});
 }
 
-class ResetPasswordRequested extends LoginEvent {
-  final String email;
-  ResetPasswordRequested({required this.email});
-}
+class ResetPasswordRequested extends LoginEvent {}
 
 class LoginRequested extends LoginEvent {
   final String email;

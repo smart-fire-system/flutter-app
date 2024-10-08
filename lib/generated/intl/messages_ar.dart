@@ -56,6 +56,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "changeAccessRole":
             MessageLookupByLibrary.simpleMessage("تغيير صلاحيات الوصول"),
         "changeLanguage": MessageLookupByLibrary.simpleMessage("تغيير اللغة"),
+        "change_password":
+            MessageLookupByLibrary.simpleMessage("تغيير كلمة المرور"),
         "client": MessageLookupByLibrary.simpleMessage("عميل"),
         "clients": MessageLookupByLibrary.simpleMessage("العملاء"),
         "complaints": MessageLookupByLibrary.simpleMessage("الشكاوى"),
@@ -80,6 +82,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "deleteUser": MessageLookupByLibrary.simpleMessage("حذف المستخدم"),
         "don_t_have_an_account":
             MessageLookupByLibrary.simpleMessage("ليس لديك حساب؟ إنشاء حساب"),
+        "edit_information":
+            MessageLookupByLibrary.simpleMessage("تعديل البيانات"),
         "email":
             MessageLookupByLibrary.simpleMessage("عنوان البريد الإلكتروني"),
         "email_already_in_use": MessageLookupByLibrary.simpleMessage(
@@ -103,6 +107,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "forgot_password":
             MessageLookupByLibrary.simpleMessage("هل نسيت كلمة المرور؟"),
         "home": MessageLookupByLibrary.simpleMessage("الصفحة الرئيسية"),
+        "info_updated":
+            MessageLookupByLibrary.simpleMessage("تم تعديل البيانات بنجاح"),
         "internal": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ داخلي. يرجى المحاولة مرة أخرى لاحقاً."),
         "invalid_action_code": MessageLookupByLibrary.simpleMessage(
@@ -208,6 +214,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "resource_exhausted": MessageLookupByLibrary.simpleMessage(
             "تم تجاوز الحد المسموح للموارد. يرجى المحاولة مرة أخرى لاحقاً."),
         "role": MessageLookupByLibrary.simpleMessage("صلاحية الوصول"),
+        "save_changes": MessageLookupByLibrary.simpleMessage("حفظ التعديلات"),
         "select_language":
             MessageLookupByLibrary.simpleMessage("يرجى اختيار اللغة"),
         "session_expired": MessageLookupByLibrary.simpleMessage(

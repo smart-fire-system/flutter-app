@@ -95,7 +95,7 @@ class LoginScreenState extends State<LoginScreen> {
             if (email != "") {
               context
                   .read<LoginBloc>()
-                  .add(ResetPasswordRequested(email: email));
+                  .add(ResetPasswordRequested());
               Navigator.pop(context);
             }
           },

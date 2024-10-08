@@ -52,6 +52,8 @@ class AuthRepository {
     firebase.User? firebaseUser = _firebaseAuth.currentUser;
     if (firebaseUser == null) {
       _setUserNotAuthenticated();
+    } else {
+      await _validateUserRole();
     }
     return _userAuth;
   }
@@ -92,11 +94,15 @@ class AuthRepository {
     }
   }
 
-  Future<void> sendPasswordResetEmail(String email) async {
+  Future<void> sendPasswordResetEmail() async {
+    if (_firebaseAuth.currentUser == null) {
+      return;
+    }
     try {
       await _firebaseAuth
           .setLanguageCode(LocalizationUtil.myLocale.languageCode);
-      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      await _firebaseAuth.sendPasswordResetEmail(
+          email: _firebaseAuth.currentUser!.email!);
     } catch (e) {
       if (e is firebase.FirebaseAuthException) {
         throw Exception(e.code);
@@ -259,8 +265,8 @@ class AuthRepository {
   Future<void> _addUserToFirestore() async {
     firebase.User? firebaseUser = _firebaseAuth.currentUser;
     Map<String, dynamic> userData = {
-      'name': _userAuth.user!.name,
-      'email': _userAuth.user!.email,
+      'name': firebaseUser!.displayName,
+      'email': firebaseUser.email,
       'phoneNumber': _userAuth.user!.phoneNumber,
       'countryCode': _userAuth.user!.countryCode,
       'role': User.getRoleId(_userAuth.user!.role),

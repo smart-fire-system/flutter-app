@@ -910,6 +910,46 @@ class S {
     );
   }
 
+  /// `Change Password`
+  String get change_password {
+    return Intl.message(
+      'Change Password',
+      name: 'change_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Inforamation`
+  String get edit_information {
+    return Intl.message(
+      'Edit Inforamation',
+      name: 'edit_information',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Changes`
+  String get save_changes {
+    return Intl.message(
+      'Save Changes',
+      name: 'save_changes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile info updated successfully`
+  String get info_updated {
+    return Intl.message(
+      'Profile info updated successfully',
+      name: 'info_updated',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `The custom authentication token you provided is invalid. Please check and try again.`
   String get invalid_custom_token {
     return Intl.message(

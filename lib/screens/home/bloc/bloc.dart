@@ -16,7 +16,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     on<AuthChanged>((event, emit) {
+      print(event.error);
       if (event.error == null) {
+        print(authRepository.userAuth.authStatus);
         if (authRepository.userAuth.authStatus == AuthStatus.notAuthenticated) {
           emit(HomeNotAuthenticated());
         } else if (authRepository.userAuth.authStatus ==
