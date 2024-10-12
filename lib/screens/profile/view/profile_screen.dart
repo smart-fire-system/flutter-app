@@ -297,7 +297,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                                               countryCode.dialCode ?? '+966';
                                         },
                                         padding: EdgeInsets.zero,
-                                        initialSelection: _user!.countryCode == ""? 'SA' : _user!.countryCode,
+                                        initialSelection:
+                                            _user!.countryCode == ""
+                                                ? 'SA'
+                                                : _user!.countryCode,
                                         favorite: const ['SA'],
                                         showCountryOnly: false,
                                         showOnlyCountryWhenClosed: false,
