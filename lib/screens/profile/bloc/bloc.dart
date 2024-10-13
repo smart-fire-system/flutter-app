@@ -1,7 +1,6 @@
 import 'package:fire_alarm_system/repositories/user_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
-import 'package:fire_alarm_system/models/user_auth.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'event.dart';
 import 'state.dart';

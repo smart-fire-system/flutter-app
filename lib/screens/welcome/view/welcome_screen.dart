@@ -33,6 +33,7 @@ class WelcomeScreenState extends State<WelcomeScreen> {
 
   Widget _buildWelcome(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           S.of(context).app_name,
@@ -60,9 +61,9 @@ class WelcomeScreenState extends State<WelcomeScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(
-                        left: 50.0, right: 50.0, bottom: 50.0),
+                        left: 20.0, right: 20.0, bottom: 50.0),
                     child: Image.asset(
-                      'assets/images/logo.png',
+                      'assets/images/logo_wide.jpg',
                       fit: BoxFit.contain,
                     ),
                   ),

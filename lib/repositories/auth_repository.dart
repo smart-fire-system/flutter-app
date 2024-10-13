@@ -272,6 +272,6 @@ class AuthRepository {
       'role': User.getRoleId(_userAuth.user!.role),
       'createdAt': FieldValue.serverTimestamp(),
     };
-    await _firestore.collection('users').doc(firebaseUser?.uid).set(userData);
+    await _firestore.collection('users').doc(firebaseUser.uid).set(userData);
   }
 }

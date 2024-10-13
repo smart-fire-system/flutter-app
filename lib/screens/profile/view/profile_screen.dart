@@ -10,7 +10,6 @@ import 'package:fire_alarm_system/widgets/access_denied.dart';
 import 'package:fire_alarm_system/widgets/side_menu.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
-import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/bloc.dart';

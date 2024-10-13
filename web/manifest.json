@@ -1,6 +1,6 @@
 {
-    "name": "fire_alarm_system",
-    "short_name": "fire_alarm_system",
+    "name": "Fire Alarm System",
+    "short_name": "Fire Alarm System",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

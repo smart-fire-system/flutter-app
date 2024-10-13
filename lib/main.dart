@@ -109,7 +109,8 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
               create: (_) => ProfileBloc(authRepository: _authRepository)),
         ],
         child: MaterialApp(
-          title: 'Smart Fire System',
+          title: 'Fire Alarm System',
+          color: Colors.white,
           supportedLocales: const [
             Locale('en', ''),
             Locale('ar', ''),

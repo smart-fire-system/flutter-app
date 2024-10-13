@@ -7,7 +7,7 @@ class CustomNoInternet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Smart Fire System',
+      title: 'Fire Alarm System',
       home: PopScope(
         canPop: false,
         child: Scaffold(
