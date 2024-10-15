@@ -532,7 +532,7 @@ class HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.only(
                         left: 20.0, right: 20.0, bottom: 50.0),
                     child: Image.asset(
-                      'assets/images/logo_wide.jpg',
+                      'assets/images/logo_poster.jpg',
                       fit: BoxFit.contain,
                     ),
                   ),
