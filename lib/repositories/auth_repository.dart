@@ -84,7 +84,6 @@ class AuthRepository {
         await user.sendEmailVerification();
       }
     } catch (e) {
-      _setUserNotAuthenticated();
       if (e is firebase.FirebaseAuthException) {
         throw Exception(e.code);
       } else {
@@ -113,6 +112,13 @@ class AuthRepository {
 
   Future<void> signIn(String email, String password) async {
     try {
+      _userAuth.user = User(
+          id: "",
+          name: "name",
+          email: email,
+          countryCode: "",
+          phoneNumber: "",
+          role: UserRole.noRole);
       await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -127,8 +133,8 @@ class AuthRepository {
     }
   }
 
-  Future<void> signUpWithEmailAndPassword(String email, String password,
-      String name) async {
+  Future<void> signUpWithEmailAndPassword(
+      String email, String password, String name) async {
     try {
       _userAuth.user = User(
           id: "",
@@ -182,6 +188,13 @@ class AuthRepository {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
+      _userAuth.user = User(
+          id: "",
+          name: googleUser.displayName ?? "",
+          email: googleUser.email,
+          countryCode: "",
+          phoneNumber: "",
+          role: UserRole.noRole);
       await _firebaseAuth.signInWithCredential(credential);
     } catch (e) {
       _setUserNotAuthenticated();
@@ -195,24 +208,23 @@ class AuthRepository {
     }
   }
 
-  Future<UserAuth> signInWithFacebook() async {
-    _setUserNotAuthenticated();
-    throw Exception('unavailable');
-  }
-
   void _setUserNotAuthenticated() {
     _userAuth.authStatus = AuthStatus.notAuthenticated;
     _userAuth.user = null;
   }
 
   Future<void> _validateUserRole() async {
-    _userAuth.user ??= User(
-        id: _firebaseAuth.currentUser!.uid,
-        name: "",
-        email: "",
-        countryCode: "",
-        phoneNumber: "",
-        role: UserRole.noRole);
+    if (_userAuth.user != null) {
+      _userAuth.user!.id = _firebaseAuth.currentUser!.uid;
+    } else {
+      _userAuth.user = User(
+          id: _firebaseAuth.currentUser!.uid,
+          name: "",
+          email: "",
+          countryCode: "",
+          phoneNumber: "",
+          role: UserRole.noRole);
+    }
     DocumentSnapshot documentSnapshot =
         await _firestore.collection('users').doc(_userAuth.user!.id).get();
     if (documentSnapshot.exists) {
@@ -259,18 +271,22 @@ class AuthRepository {
     } else {
       await _addUserToFirestore();
     }
+    // TODO: Remove this in production
+    if (_userAuth.user!.email.endsWith("@test.com")) {
+      _userAuth.authStatus = AuthStatus.authenticated;
+    }
   }
 
   Future<void> _addUserToFirestore() async {
     firebase.User? firebaseUser = _firebaseAuth.currentUser;
     Map<String, dynamic> userData = {
-      'name': firebaseUser!.displayName,
-      'email': firebaseUser.email,
+      'name': _userAuth.user!.name,
+      'email': _userAuth.user!.email,
       'phoneNumber': _userAuth.user!.phoneNumber,
       'countryCode': _userAuth.user!.countryCode,
       'role': User.getRoleId(_userAuth.user!.role),
       'createdAt': FieldValue.serverTimestamp(),
     };
-    await _firestore.collection('users').doc(firebaseUser.uid).set(userData);
+    await _firestore.collection('users').doc(firebaseUser!.uid).set(userData);
   }
 }

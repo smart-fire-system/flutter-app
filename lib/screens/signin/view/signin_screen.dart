@@ -136,11 +136,11 @@ class SignInScreenState extends State<SignInScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.lightBlue[900],
         title: Text(
           S.of(context).login,
           style: CustomStyle.appBarText,
         ),
+        backgroundColor: Colors.lightBlue[900],
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
@@ -326,10 +326,13 @@ class SignInScreenState extends State<SignInScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.lightBlue[900],
         title: Text(
           S.of(context).signup,
           style: CustomStyle.appBarText,
+        ),
+        backgroundColor: Colors.lightBlue[900],
+        iconTheme: const IconThemeData(
+          color: Colors.white,
         ),
         actions: <Widget>[
           IconButton(
