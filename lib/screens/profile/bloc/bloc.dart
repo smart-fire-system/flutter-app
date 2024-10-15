@@ -19,16 +19,16 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if (event.error == null) {
         if (authRepository.userAuth.authStatus == AuthStatus.notAuthenticated) {
           emit(ProfileNotAuthenticated());
-        } else if (authRepository.userAuth.authStatus ==
-            AuthStatus.authenticatedNotVerified) {
-          emit(ProfileNotVerified(user: authRepository.userAuth.user!));
-        } else if (authRepository.userAuth.user!.role == UserRole.noRole) {
-          emit(ProfileNoRole(user: authRepository.userAuth.user!));
         } else {
-          emit(ProfileAuthenticated(user: authRepository.userAuth.user!));
+          emit(ProfileAuthenticated(
+              user: authRepository.userAuth.user!,
+              isAuthorized: authRepository.userAuth.authStatus ==
+                      AuthStatus.authenticated &&
+                  authRepository.userAuth.user!.role != UserRole.noRole &&
+                  authRepository.userAuth.user!.phoneNumber.isNotEmpty));
         }
       } else {
-        emit(ProfileError(error: event.error!));
+        emit(ProfileNotAuthenticated(error: event.error!));
       }
     });
 
@@ -41,9 +41,21 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
             countryCode: event.countryCode,
             phoneNumber: event.phoneNumber);
         await authRepository.refreshUserAuth();
-        emit(InfoUpdated());
+        emit(ProfileAuthenticated(
+            user: authRepository.userAuth.user!,
+            isAuthorized: authRepository.userAuth.authStatus ==
+                    AuthStatus.authenticated &&
+                authRepository.userAuth.user!.role != UserRole.noRole &&
+                authRepository.userAuth.user!.phoneNumber.isNotEmpty,
+            message: ProfileMessage.infoUpdated));
       } catch (error) {
-        emit(InfoUpdated(error: error.toString()));
+        emit(ProfileAuthenticated(
+            user: authRepository.userAuth.user!,
+            isAuthorized: authRepository.userAuth.authStatus ==
+                    AuthStatus.authenticated &&
+                authRepository.userAuth.user!.role != UserRole.noRole &&
+                authRepository.userAuth.user!.phoneNumber.isNotEmpty,
+            error: error.toString()));
       }
     });
 
@@ -60,19 +72,42 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileLoading());
       try {
         await authRepository.sendPasswordResetEmail();
-        emit(ResetEmailSent());
+        emit(ProfileAuthenticated(
+            user: authRepository.userAuth.user!,
+            isAuthorized: authRepository.userAuth.authStatus ==
+                    AuthStatus.authenticated &&
+                authRepository.userAuth.user!.role != UserRole.noRole &&
+                authRepository.userAuth.user!.phoneNumber.isNotEmpty,
+            message: ProfileMessage.resetPasswordEmailSent));
       } catch (error) {
-        emit(ResetEmailSent(error: error.toString()));
+        emit(ProfileAuthenticated(
+            user: authRepository.userAuth.user!,
+            isAuthorized: authRepository.userAuth.authStatus ==
+                    AuthStatus.authenticated &&
+                authRepository.userAuth.user!.role != UserRole.noRole &&
+                authRepository.userAuth.user!.phoneNumber.isNotEmpty,
+            error: error.toString()));
       }
     });
 
-    on<ResendEmailRequested>((event, emit) async {
+    on<RefreshRequested>((event, emit) async {
       emit(ProfileLoading());
       try {
-        await authRepository.resendActivationEmail();
-        emit(VerificationEmailSent());
+        await authRepository.refreshUserAuth();
+        emit(ProfileAuthenticated(
+            user: authRepository.userAuth.user!,
+            isAuthorized: authRepository.userAuth.authStatus ==
+                    AuthStatus.authenticated &&
+                authRepository.userAuth.user!.role != UserRole.noRole &&
+                authRepository.userAuth.user!.phoneNumber.isNotEmpty));
       } catch (error) {
-        emit(VerificationEmailSent(error: error.toString()));
+        emit(ProfileAuthenticated(
+            user: authRepository.userAuth.user!,
+            isAuthorized: authRepository.userAuth.authStatus ==
+                    AuthStatus.authenticated &&
+                authRepository.userAuth.user!.role != UserRole.noRole &&
+                authRepository.userAuth.user!.phoneNumber.isNotEmpty,
+            error: error.toString()));
       }
     });
   }

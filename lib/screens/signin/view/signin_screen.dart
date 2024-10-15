@@ -27,10 +27,14 @@ class SignInScreenState extends State<SignInScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-    if (args.containsKey('signup')) {
-      _currentView = 'signup';
+    try {
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+      if (args.containsKey('signup')) {
+        _currentView = 'signup';
+      }
+    } catch (error) {
+      /* Do Nothing. */
     }
   }
 
@@ -130,14 +134,19 @@ class SignInScreenState extends State<SignInScreen> {
     final formKey = GlobalKey<FormState>();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.lightBlue[900],
         title: Text(
           S.of(context).login,
           style: CustomStyle.appBarText,
         ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.language),
+            icon: const Icon(Icons.language, color: Colors.white),
             onPressed: () {
               LocalizationUtil.showEditLanguageDialog(context);
             },
@@ -315,14 +324,16 @@ class SignInScreenState extends State<SignInScreen> {
     final formKey = GlobalKey<FormState>();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.lightBlue[900],
         title: Text(
           S.of(context).signup,
           style: CustomStyle.appBarText,
         ),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.language),
+            icon: const Icon(Icons.language, color: Colors.white),
             onPressed: () {
               LocalizationUtil.showEditLanguageDialog(context);
             },

@@ -50,10 +50,10 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `Smart Fire Alarm System`
+  /// `Fire Alarm System`
   String get app_name {
     return Intl.message(
-      'Smart Fire Alarm System',
+      'Fire Alarm System',
       name: 'app_name',
       desc: '',
       args: [],
@@ -610,10 +610,10 @@ class S {
     );
   }
 
-  /// `Welcome to the Smart Fire Alarm System. Please login or sign up.`
+  /// `Welcome to the Fire Alarm System. Please login or sign up.`
   String get welcome_message {
     return Intl.message(
-      'Welcome to the Smart Fire Alarm System. Please login or sign up.',
+      'Welcome to the Fire Alarm System. Please login or sign up.',
       name: 'welcome_message',
       desc: '',
       args: [],

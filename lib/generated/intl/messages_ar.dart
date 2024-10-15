@@ -46,8 +46,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("المورد موجود بالفعل."),
         "already_have_an_account": MessageLookupByLibrary.simpleMessage(
             "لديك حساب بالفعل؟ تسجيل الدخول"),
-        "app_name":
-            MessageLookupByLibrary.simpleMessage("نظام تنبيه الحريق الذكي"),
+        "app_name": MessageLookupByLibrary.simpleMessage("نظام إنذار الحريق"),
         "app_not_authorized": MessageLookupByLibrary.simpleMessage(
             "هذا التطبيق غير مصرح له. تواصل مع المسؤول."),
         "branchManager": MessageLookupByLibrary.simpleMessage("مدير فرع"),
@@ -307,7 +306,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "كلمة المرور ضعيفة. يرجى استخدام كلمة مرور أقوى."),
         "welcome": MessageLookupByLibrary.simpleMessage("مرحبا"),
         "welcome_message": MessageLookupByLibrary.simpleMessage(
-            "مرحبًا في نظام تنبيه الحريق الذكي. يرجى تسجيل الدخول أو إنشاء حساب."),
+            "مرحبًا في نظام إنذار الحريق. يرجى تسجيل الدخول أو إنشاء حساب."),
         "wrong_password": MessageLookupByLibrary.simpleMessage(
             "كلمة المرور غير صحيحة. يرجى المحاولة مجددًا.")
       };

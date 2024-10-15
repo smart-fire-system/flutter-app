@@ -8,21 +8,25 @@ class HomeLoading extends HomeState {}
 
 class HomeAuthenticated extends HomeState {
   final User user;
+  final bool isEmailVerified;
+  final bool isPhoneAdded;
+  final bool hasUserRole;
+  final String? message;
   final String? error;
-  HomeAuthenticated({required this.user, this.error});
-}
-
-class HomeAuthenticatedNotVerified extends HomeState {
-  final User user;
-  final String? error;
-  final bool? emailSent;
-  HomeAuthenticatedNotVerified(
-      {required this.user, this.error, this.emailSent});
+  HomeAuthenticated({
+    required this.user,
+    required this.isEmailVerified,
+    required this.isPhoneAdded,
+    required this.hasUserRole,
+    this.message,
+    this.error,
+  });
 }
 
 class HomeNotAuthenticated extends HomeState {
+  String? message;
   String? error;
-  HomeNotAuthenticated({this.error});
+  HomeNotAuthenticated({this.message, this.error});
 }
 
 class HomeNoInternet extends HomeState {}

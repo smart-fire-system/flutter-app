@@ -43,43 +43,37 @@ class HomeScreenState extends State<HomeScreen> {
               CustomAlert.showError(context,
                   Errors.getFirebaseErrorMessage(context, state.error!));
             });
+          } else if (state.error != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              CustomAlert.showSuccess(context, state.message!);
+            });
           }
           return _buildWelcome(context);
-        } else if (state is HomeAuthenticatedNotVerified) {
+        } else if (state is HomeAuthenticated) {
           _user = state.user;
           if (state.error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               CustomAlert.showError(context,
                   Errors.getFirebaseErrorMessage(context, state.error!));
             });
-          } else if (state.emailSent == true) {
+          } else if (state.message != null && state.message == 'Email Sent') {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               CustomAlert.showSuccess(context, S.of(context).reset_email_sent);
             });
           }
-          return _buildNotAuthorized(
-              context: context,
-              isEmailVerified: false,
-              isPhoneAdded: (_user!.phoneNumber != ""),
-              hasUserRole: (_user!.role != UserRole.noRole));
-        } else if (state is HomeAuthenticated) {
-          _user = state.user;
-          if (_user!.phoneNumber == "" || _user!.role == UserRole.noRole) {
+          if (state.isEmailVerified &&
+              state.isPhoneAdded &&
+              state.hasUserRole) {
+            return _buildHome(context);
+          } else {
             return _buildNotAuthorized(
                 context: context,
-                isEmailVerified: true,
-                isPhoneAdded: (_user!.phoneNumber != ""),
-                hasUserRole: (_user!.role != UserRole.noRole));
+                isEmailVerified: state.isEmailVerified,
+                isPhoneAdded: state.isPhoneAdded,
+                hasUserRole: state.hasUserRole);
           }
-          //return _buildHome(context);
-          return _buildNotAuthorized(
-              context: context,
-              isEmailVerified: false,
-              isPhoneAdded: false,
-              hasUserRole: false);
-        } else {
-          return const CustomLoading();
         }
+        return const CustomLoading();
       },
     );
   }
@@ -92,14 +86,17 @@ class HomeScreenState extends State<HomeScreen> {
           S.of(context).home,
           style: CustomStyle.appBarText,
         ),
+        backgroundColor: Colors.lightBlue[900],
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         leading: IconButton(
           icon: Icon(
-            Icons.menu,
-            color: _showSideMenu ? Colors.white : Colors.black,
+            _showSideMenu ? Icons.keyboard_return : Icons.menu,
+            color: _showSideMenu ? Colors.red : Colors.black,
           ),
           style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(
-                  _showSideMenu ? Colors.blueAccent : Colors.white)),
+              backgroundColor: WidgetStateProperty.all(Colors.white)),
           onPressed: () {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               setState(() {
@@ -110,390 +107,376 @@ class HomeScreenState extends State<HomeScreen> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.language),
+            icon: const Icon(Icons.language, color: Colors.white),
             onPressed: () {
               LocalizationUtil.showEditLanguageDialog(context);
             },
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        scrollDirection: Axis.horizontal,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<HomeBloc>().add(RefreshRequested());
+        },
         child: Row(
           children: [
-            _showSideMenu
-                ? CustomSideMenu(
-                    highlightedItem: CustomSideMenuItem.home,
-                    user: _user!,
-                    noActionItems: const [
-                      CustomSideMenuItem.home,
-                      CustomSideMenuItem.logout
-                    ],
-                    onItemClick: (item) async {
-                      if (item == CustomSideMenuItem.logout) {
-                        _showSideMenu =
-                            (MediaQuery.of(context).size.width > 600);
-                        context.read<HomeBloc>().add(LogoutRequested());
-                      }
-                    },
-                  )
-                : Container(),
-            SizedBox(
-              width: _showSideMenu
-                  ? MediaQuery.of(context).size.width < 600
-                      ? 300
-                      : MediaQuery.of(context).size.width - 300
-                  : MediaQuery.of(context).size.width,
-              child: Row(
-                children: [
-                  Flexible(
-                    child: GestureDetector(
-                      onTap: () {
-                        if (MediaQuery.of(context).size.width < 600 &&
-                            _showSideMenu) {
-                          setState(() {
-                            _showSideMenu = false;
-                          });
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: ListView(
-                          children: <Widget>[
-                            Text(
-                              S.of(context).app_name,
-                              style: CustomStyle.largeTextB,
-                              textAlign: TextAlign.center,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Card(
-                                clipBehavior: Clip.antiAlias,
-                                color: Colors.blue[100],
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ListTile(
-                                      leading: const Icon(Icons.analytics,
-                                          color: Colors.black),
-                                      title: Text(
-                                        S.of(context).system_monitoring_control,
-                                        style: CustomStyle.smallTextB,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text(
-                                        S
-                                            .of(context)
-                                            .system_monitoring_description,
-                                        style: CustomStyle.smallText,
-                                      ),
-                                    ),
-                                    Wrap(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              // Perform some action
-                                            },
-                                            child: Text(
-                                                S
-                                                    .of(context)
-                                                    .viewAndControlSystem,
-                                                style: CustomStyle.smallText),
-                                          ),
-                                        ),
-                                        if (_user!.role == UserRole.admin ||
-                                            _user!.role == UserRole.technican)
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: ElevatedButton(
-                                              onPressed: () {
-                                                // Perform some action
-                                              },
-                                              child: Text(
-                                                  S
-                                                      .of(context)
-                                                      .manageAndConfigureSystem,
-                                                  style: CustomStyle.smallText),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Card(
-                                clipBehavior: Clip.antiAlias,
-                                color: Colors.blue[100],
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ListTile(
-                                      leading: const Icon(Icons.summarize,
-                                          color: Colors.black),
-                                      title: Text(S.of(context).reports,
-                                          style: CustomStyle.smallTextB),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text(
-                                        S.of(context).reportsDescription,
-                                        style: CustomStyle.smallText,
-                                      ),
-                                    ),
-                                    Wrap(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              // Perform some action
-                                            },
-                                            child: Text(S.of(context).visits,
-                                                style: CustomStyle.smallText),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              // Perform some action
-                                            },
-                                            child: Text(
-                                                S
-                                                    .of(context)
-                                                    .maintenanceContracts,
-                                                style: CustomStyle.smallText),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              // Perform some action
-                                            },
-                                            child: Text(
-                                                S
-                                                    .of(context)
-                                                    .systemStatusAndFaults,
-                                                style: CustomStyle.smallText),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Card(
-                                clipBehavior: Clip.antiAlias,
-                                color: Colors.blue[100],
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ListTile(
-                                      leading: const Icon(Icons.feedback,
-                                          color: Colors.black),
-                                      title: Text(S.of(context).complaints,
-                                          style: CustomStyle.smallTextB),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Text(
-                                          S.of(context).complaintsDescription,
-                                          style: CustomStyle.smallText),
-                                    ),
-                                    Wrap(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              // Perform some action
-                                            },
-                                            child: Text(
-                                                S.of(context).viewComplaints,
-                                                style: CustomStyle.smallText),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              // Perform some action
-                                            },
-                                            child: Text(
-                                                S.of(context).submitComplaint,
-                                                style: CustomStyle.smallText),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            if (_user!.role == UserRole.admin ||
-                                _user!.role == UserRole.regionalManager ||
-                                _user!.role == UserRole.branchManager ||
-                                _user!.role == UserRole.employee ||
-                                _user!.role == UserRole.technican)
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Card(
-                                  clipBehavior: Clip.antiAlias,
-                                  color: Colors.blue[100],
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      ListTile(
-                                        leading: const Icon(Icons.group,
-                                            color: Colors.black),
-                                        title: Text(S.of(context).users,
-                                            style: CustomStyle.smallTextB),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Text(
-                                            S.of(context).usersDescription,
-                                            style: CustomStyle.smallText),
-                                      ),
-                                      Wrap(
-                                        children: [
-                                          if (_user!.role == UserRole.admin)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.pushNamed(
-                                                      context, '/admins');
-                                                },
-                                                child: Text(
-                                                    S.of(context).admins,
-                                                    style:
-                                                        CustomStyle.smallText),
-                                              ),
-                                            ),
-                                          if (_user!.role == UserRole.admin)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  // Perform some action
-                                                },
-                                                child: Text(
-                                                    S
-                                                        .of(context)
-                                                        .regionalManagers,
-                                                    style:
-                                                        CustomStyle.smallText),
-                                              ),
-                                            ),
-                                          if (_user!.role == UserRole.admin ||
-                                              _user!.role ==
-                                                  UserRole.regionalManager)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  // Perform some action
-                                                },
-                                                child: Text(
-                                                    S
-                                                        .of(context)
-                                                        .branchManagers,
-                                                    style:
-                                                        CustomStyle.smallText),
-                                              ),
-                                            ),
-                                          if (_user!.role == UserRole.admin ||
-                                              _user!.role ==
-                                                  UserRole.regionalManager ||
-                                              _user!.role ==
-                                                  UserRole.branchManager)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  // Perform some action
-                                                },
-                                                child: Text(
-                                                    S.of(context).employees,
-                                                    style:
-                                                        CustomStyle.smallText),
-                                              ),
-                                            ),
-                                          if (_user!.role == UserRole.admin ||
-                                              _user!.role ==
-                                                  UserRole.regionalManager ||
-                                              _user!.role ==
-                                                  UserRole.branchManager)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  // Perform some action
-                                                },
-                                                child: Text(
-                                                    S.of(context).technicans,
-                                                    style:
-                                                        CustomStyle.smallText),
-                                              ),
-                                            ),
-                                          if (_user!.role == UserRole.admin ||
-                                              _user!.role ==
-                                                  UserRole.regionalManager ||
-                                              _user!.role ==
-                                                  UserRole.branchManager ||
-                                              _user!.role ==
-                                                  UserRole.employee ||
-                                              _user!.role == UserRole.technican)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  // Perform some action
-                                                },
-                                                child: Text(
-                                                    S.of(context).clients,
-                                                    style:
-                                                        CustomStyle.smallText),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                          ],
+            if (_showSideMenu || MediaQuery.of(context).size.width > 600)
+              CustomSideMenu(
+                highlightedItem: CustomSideMenuItem.home,
+                user: _user!,
+                width: MediaQuery.of(context).size.width > 600
+                    ? 300
+                    : MediaQuery.of(context).size.width,
+                noActionItems: const [
+                  CustomSideMenuItem.home,
+                  CustomSideMenuItem.logout
+                ],
+                onItemClick: (item) async {
+                  if (item == CustomSideMenuItem.logout) {
+                    _showSideMenu = (MediaQuery.of(context).size.width > 600);
+                    context.read<HomeBloc>().add(LogoutRequested());
+                  }
+                  if (item == CustomSideMenuItem.home) {
+                    _showSideMenu = (MediaQuery.of(context).size.width > 600);
+                    context.read<HomeBloc>().add(RefreshRequested());
+                  }
+                },
+              ),
+            if (!_showSideMenu || MediaQuery.of(context).size.width > 600)
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListView(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Image.asset(
+                          'assets/images/logo_poster.png',
+                          fit: BoxFit.contain,
+                          height: 100,
                         ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          clipBehavior: Clip.antiAlias,
+                          color: Colors.blue[100],
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListTile(
+                                leading: const Icon(Icons.analytics,
+                                    color: Colors.black),
+                                title: Text(
+                                  S.of(context).system_monitoring_control,
+                                  style: CustomStyle.smallTextB,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  S.of(context).system_monitoring_description,
+                                  style: CustomStyle.smallText,
+                                ),
+                              ),
+                              Wrap(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        // Perform some action
+                                      },
+                                      child: Text(
+                                          S.of(context).viewAndControlSystem,
+                                          style: CustomStyle.smallText),
+                                    ),
+                                  ),
+                                  if (_user!.role == UserRole.admin ||
+                                      _user!.role == UserRole.technican)
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          // Perform some action
+                                        },
+                                        child: Text(
+                                            S
+                                                .of(context)
+                                                .manageAndConfigureSystem,
+                                            style: CustomStyle.smallText),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          clipBehavior: Clip.antiAlias,
+                          color: Colors.blue[100],
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListTile(
+                                leading: const Icon(Icons.summarize,
+                                    color: Colors.black),
+                                title: Text(S.of(context).reports,
+                                    style: CustomStyle.smallTextB),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  S.of(context).reportsDescription,
+                                  style: CustomStyle.smallText,
+                                ),
+                              ),
+                              Wrap(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        // Perform some action
+                                      },
+                                      child: Text(S.of(context).visits,
+                                          style: CustomStyle.smallText),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        // Perform some action
+                                      },
+                                      child: Text(
+                                          S.of(context).maintenanceContracts,
+                                          style: CustomStyle.smallText),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        // Perform some action
+                                      },
+                                      child: Text(
+                                          S.of(context).systemStatusAndFaults,
+                                          style: CustomStyle.smallText),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          clipBehavior: Clip.antiAlias,
+                          color: Colors.blue[100],
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListTile(
+                                leading: const Icon(Icons.feedback,
+                                    color: Colors.black),
+                                title: Text(S.of(context).complaints,
+                                    style: CustomStyle.smallTextB),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(S.of(context).complaintsDescription,
+                                    style: CustomStyle.smallText),
+                              ),
+                              Wrap(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        // Perform some action
+                                      },
+                                      child: Text(S.of(context).viewComplaints,
+                                          style: CustomStyle.smallText),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        // Perform some action
+                                      },
+                                      child: Text(S.of(context).submitComplaint,
+                                          style: CustomStyle.smallText),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      if (_user!.role == UserRole.admin ||
+                          _user!.role == UserRole.regionalManager ||
+                          _user!.role == UserRole.branchManager ||
+                          _user!.role == UserRole.employee ||
+                          _user!.role == UserRole.technican)
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Card(
+                            clipBehavior: Clip.antiAlias,
+                            color: Colors.blue[100],
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ListTile(
+                                  leading: const Icon(Icons.group,
+                                      color: Colors.black),
+                                  title: Text(S.of(context).users,
+                                      style: CustomStyle.smallTextB),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Text(S.of(context).usersDescription,
+                                      style: CustomStyle.smallText),
+                                ),
+                                Wrap(
+                                  children: [
+                                    if (_user!.role == UserRole.admin)
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pushNamed(
+                                                context, '/admins');
+                                          },
+                                          child: Text(S.of(context).admins,
+                                              style: CustomStyle.smallText),
+                                        ),
+                                      ),
+                                    if (_user!.role == UserRole.admin)
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            // Perform some action
+                                          },
+                                          child: Text(
+                                              S.of(context).regionalManagers,
+                                              style: CustomStyle.smallText),
+                                        ),
+                                      ),
+                                    if (_user!.role == UserRole.admin ||
+                                        _user!.role == UserRole.regionalManager)
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            // Perform some action
+                                          },
+                                          child: Text(
+                                              S.of(context).branchManagers,
+                                              style: CustomStyle.smallText),
+                                        ),
+                                      ),
+                                    if (_user!.role == UserRole.admin ||
+                                        _user!.role ==
+                                            UserRole.regionalManager ||
+                                        _user!.role == UserRole.branchManager)
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            // Perform some action
+                                          },
+                                          child: Text(S.of(context).employees,
+                                              style: CustomStyle.smallText),
+                                        ),
+                                      ),
+                                    if (_user!.role == UserRole.admin ||
+                                        _user!.role ==
+                                            UserRole.regionalManager ||
+                                        _user!.role == UserRole.branchManager)
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            // Perform some action
+                                          },
+                                          child: Text(S.of(context).technicans,
+                                              style: CustomStyle.smallText),
+                                        ),
+                                      ),
+                                    if (_user!.role == UserRole.admin ||
+                                        _user!.role ==
+                                            UserRole.regionalManager ||
+                                        _user!.role == UserRole.branchManager ||
+                                        _user!.role == UserRole.employee ||
+                                        _user!.role == UserRole.technican)
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            // Perform some action
+                                          },
+                                          child: Text(S.of(context).clients,
+                                              style: CustomStyle.smallText),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -508,9 +491,16 @@ class HomeScreenState extends State<HomeScreen> {
           S.of(context).app_name,
           style: CustomStyle.appBarText,
         ),
+        backgroundColor: Colors.lightBlue[900],
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.language),
+            icon: const Icon(
+              Icons.language,
+              color: Colors.white,
+            ),
             onPressed: () {
               LocalizationUtil.showEditLanguageDialog(context);
             },
@@ -532,7 +522,7 @@ class HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.only(
                         left: 20.0, right: 20.0, bottom: 50.0),
                     child: Image.asset(
-                      'assets/images/logo_poster.jpg',
+                      'assets/images/logo_poster.png',
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -541,7 +531,7 @@ class HomeScreenState extends State<HomeScreen> {
                         left: 16.0, right: 16.0, bottom: 50.0),
                     child: Text(
                       S.of(context).welcome_message,
-                      style: CustomStyle.largeText30,
+                      style: CustomStyle.largeText25,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -626,143 +616,175 @@ class HomeScreenState extends State<HomeScreen> {
       required bool isPhoneAdded,
       required bool hasUserRole}) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(S.of(context).app_name),
+        title: Text(
+          S.of(context).app_name,
+          style: CustomStyle.appBarText,
+        ),
+        backgroundColor: Colors.lightBlue[900],
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.language, color: Colors.white),
+            onPressed: () {
+              LocalizationUtil.showEditLanguageDialog(context);
+            },
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ListTile(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<HomeBloc>().add(RefreshRequested());
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: <Widget>[
+              ListTile(
                 title: Text(
-                  _user!.name,
+                  S.of(context).stepsToComplete,
                   style: CustomStyle.largeTextB,
                 ),
-                subtitle: Text(_user!.email, style: CustomStyle.mediumText),
-                leading: const Icon(Icons.person, size: 40),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(S.of(context).stepsToComplete,
-                  style: CustomStyle.mediumText),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.lightBlue, width: 1.0),
-                    borderRadius: BorderRadius.circular(8.0)),
-                child: ListTile(
-                  leading: isEmailVerified
-                      ? const Icon(
-                          Icons.check_circle,
-                          color: Colors.green,
-                          size: 30,
-                        )
-                      : const Icon(
-                          Icons.cancel,
-                          color: Colors.red,
-                          size: 30,
-                        ),
-                  title: Text(
-                    S.of(context).emailVerificationTitle,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  subtitle: Text(
-                    isEmailVerified
-                        ? S.of(context).emailVerified
-                        : S.of(context).emailNotVerified,
-                    style: CustomStyle.mediumText,
-                  ),
-                  onTap: () {
-                    if (!isEmailVerified) {
-                      context.read<HomeBloc>().add(ResendEmailRequested());
-                    }
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.lightBlue, width: 1.0),
-                    borderRadius: BorderRadius.circular(8.0)),
-                child: ListTile(
-                  leading: isPhoneAdded
-                      ? const Icon(
-                          Icons.check_circle,
-                          color: Colors.green,
-                          size: 30,
-                        )
-                      : const Icon(
-                          Icons.cancel,
-                          color: Colors.red,
-                          size: 30,
-                        ),
-                  title: Text(
-                    S.of(context).phoneNumberTitle,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  subtitle: Text(
-                    isPhoneAdded
-                        ? S.of(context).phoneNumberAdded
-                        : S.of(context).phoneNumberNotAdded,
-                    style: CustomStyle.mediumText,
-                  ),
-                  onTap: () {},
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.lightBlue, width: 1.0),
-                    borderRadius: BorderRadius.circular(8.0)),
-                child: ListTile(
-                  leading: isPhoneAdded
-                      ? const Icon(
-                          Icons.check_circle,
-                          color: Colors.green,
-                          size: 30,
-                        )
-                      : const Icon(
-                          Icons.cancel,
-                          color: Colors.red,
-                          size: 30,
-                        ),
-                  title: Text(
-                    S.of(context).accessRoleTitle,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  subtitle: Text(
-                    isPhoneAdded
-                        ? S.of(context).roleAssigned
-                        : S.of(context).roleNotAssigned,
-                    style: CustomStyle.mediumText,
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  context.read<HomeBloc>().add(LogoutRequested());
+                leading: const Icon(Icons.refresh, size: 40),
+                onTap: () {
+                  context.read<HomeBloc>().add(RefreshRequested());
                 },
-                icon: const Icon(Icons.logout, color: Colors.white),
-                label: Text(
-                  S.of(context).logout,
-                  style: CustomStyle.normalButtonTextSmall,
-                ),
-                style: CustomStyle.normalButtonRed,
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.only(right: 16, left: 16, top: 16),
+                child: ListTile(
+                  title: Text(
+                    _user!.name,
+                    style: CustomStyle.largeTextB,
+                  ),
+                  subtitle: Text(_user!.email, style: CustomStyle.mediumText),
+                  leading: const Icon(Icons.person, size: 40),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.lightBlue, width: 1.0),
+                      borderRadius: BorderRadius.circular(8.0)),
+                  child: ListTile(
+                    leading: isEmailVerified
+                        ? const Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 30,
+                          )
+                        : const Icon(
+                            Icons.cancel,
+                            color: Colors.red,
+                            size: 30,
+                          ),
+                    title: Text(
+                      S.of(context).emailVerificationTitle,
+                      style: CustomStyle.largeTextB,
+                    ),
+                    subtitle: Text(
+                      isEmailVerified
+                          ? S.of(context).emailVerified
+                          : S.of(context).emailNotVerified,
+                      style: CustomStyle.mediumText,
+                    ),
+                    onTap: isEmailVerified
+                        ? null
+                        : () {
+                            context
+                                .read<HomeBloc>()
+                                .add(ResendEmailRequested());
+                          },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.lightBlue, width: 1.0),
+                      borderRadius: BorderRadius.circular(8.0)),
+                  child: ListTile(
+                    leading: isPhoneAdded
+                        ? const Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 30,
+                          )
+                        : const Icon(
+                            Icons.cancel,
+                            color: Colors.red,
+                            size: 30,
+                          ),
+                    title: Text(
+                      S.of(context).phoneNumberTitle,
+                      style: CustomStyle.largeTextB,
+                    ),
+                    subtitle: Text(
+                      isPhoneAdded
+                          ? S.of(context).phoneNumberAdded
+                          : S.of(context).phoneNumberNotAdded,
+                      style: CustomStyle.mediumText,
+                    ),
+                    onTap: isPhoneAdded
+                        ? null
+                        : () {
+                            Navigator.pushNamed(context, '/profile');
+                          },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.lightBlue, width: 1.0),
+                      borderRadius: BorderRadius.circular(8.0)),
+                  child: ListTile(
+                    leading: hasUserRole
+                        ? const Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 30,
+                          )
+                        : const Icon(
+                            Icons.cancel,
+                            color: Colors.red,
+                            size: 30,
+                          ),
+                    title: Text(
+                      S.of(context).accessRoleTitle,
+                      style: CustomStyle.largeTextB,
+                    ),
+                    subtitle: Text(
+                      hasUserRole
+                          ? '${S.of(context).roleAssigned} [${User.getRoleName(context, _user!.role)}]'
+                          : S.of(context).roleNotAssigned,
+                      style: CustomStyle.mediumText,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    context.read<HomeBloc>().add(LogoutRequested());
+                  },
+                  icon: const Icon(Icons.logout, color: Colors.white),
+                  label: Text(
+                    S.of(context).logout,
+                    style: CustomStyle.normalButtonTextSmall,
+                  ),
+                  style: CustomStyle.normalButtonRed,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

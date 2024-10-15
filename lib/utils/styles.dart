@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CustomStyle {
   static final TextStyle appBarText = GoogleFonts.cairo(
-      fontSize: 20, color: Colors.black, fontWeight: FontWeight.w700);
+      fontSize: 25, color: Colors.white, fontWeight: FontWeight.w500);
 
   static final TextStyle largeText30 = GoogleFonts.cairo(
       fontSize: 30, color: Colors.black, fontWeight: FontWeight.w500);

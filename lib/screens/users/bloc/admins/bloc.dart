@@ -4,7 +4,6 @@ import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/repositories/user_repository.dart';
-import 'package:fire_alarm_system/models/user_auth.dart';
 import 'event.dart';
 import 'state.dart';
 
@@ -17,20 +16,21 @@ class AdminsBloc extends Bloc<AdminsEvent, AdminsState> {
     });
     on<AuthRequested>((event, emit) async {
       emit(AdminsLoading());
-      UserAuth userAuth = await authRepository.refreshUserAuth();
-      if (userAuth.authStatus == AuthStatus.notAuthenticated) {
+      await authRepository.refreshUserAuth();
+      if (authRepository.userAuth.authStatus == AuthStatus.notAuthenticated) {
         emit(AdminsNotAuthenticated());
       }
-      if (userAuth.authStatus == AuthStatus.authenticatedNotVerified ||
-          userAuth.user?.role == null ||
-          userAuth.user?.role != UserRole.admin) {
+      if (authRepository.userAuth.authStatus ==
+              AuthStatus.authenticatedNotVerified ||
+          authRepository.userAuth.user?.role == null ||
+          authRepository.userAuth.user?.role != UserRole.admin) {
         emit(AdminsNotAuthorized());
       } else {
         UserRepository userRepository =
             UserRepository(authRepository: authRepository);
         try {
           List<Admin> admins = await userRepository.getAdminsList();
-          emit(AdminsAuthenticated(user: userAuth, admins: admins));
+          emit(AdminsAuthenticated(user: authRepository.userAuth, admins: admins));
         } catch (e) {
           emit(AdminsError(error: e.toString()));
         }

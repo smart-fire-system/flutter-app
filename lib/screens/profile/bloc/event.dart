@@ -9,7 +9,7 @@ class ResetPasswordRequested extends ProfileEvent {}
 
 class LogoutRequested extends ProfileEvent {}
 
-class ResendEmailRequested extends ProfileEvent {}
+class RefreshRequested extends ProfileEvent {}
 
 class ChangeInfoRequested extends ProfileEvent {
   final String name;

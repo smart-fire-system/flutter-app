@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
-import 'package:fire_alarm_system/models/user_auth.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'event.dart';
 import 'state.dart';
@@ -9,6 +8,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final AuthRepository authRepository;
 
   HomeBloc({required this.authRepository}) : super(HomeInitial()) {
+    HomeState getHomeState({String? message, String? error}) {
+      if (authRepository.userAuth.authStatus == AuthStatus.notAuthenticated) {
+        return HomeNotAuthenticated(message: message, error: error);
+      } else {
+        return HomeAuthenticated(
+            user: authRepository.userAuth.user!,
+            isEmailVerified:
+                authRepository.userAuth.authStatus == AuthStatus.authenticated,
+            isPhoneAdded: authRepository.userAuth.user!.phoneNumber.isNotEmpty,
+            hasUserRole: authRepository.userAuth.user!.role != UserRole.noRole,
+            message: message,
+            error: error);
+      }
+    }
+
     authRepository.authStateChanges.listen((data) {
       add(AuthChanged(error: data == "" ? null : data));
     }, onError: (error) {
@@ -17,17 +31,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     on<AuthChanged>((event, emit) {
       if (event.error == null) {
-        if (authRepository.userAuth.authStatus == AuthStatus.notAuthenticated) {
-          emit(HomeNotAuthenticated());
-        } else if (authRepository.userAuth.authStatus ==
-            AuthStatus.authenticatedNotVerified) {
-          emit(HomeAuthenticatedNotVerified(
-              user: authRepository.userAuth.user!));
-        } else {
-          emit(HomeAuthenticated(user: authRepository.userAuth.user!));
-        }
+        emit(getHomeState());
       } else {
-        emit(HomeNotAuthenticated(error: event.error!));
+        emit(getHomeState(error: event.error!));
       }
     });
 
@@ -36,7 +42,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       try {
         await authRepository.signInWithGoogle();
       } catch (error) {
-        emit(HomeNotAuthenticated(error: error.toString()));
+        emit(getHomeState(error: error.toString()));
       }
     });
 
@@ -44,13 +50,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeLoading());
       try {
         await authRepository.resendActivationEmail();
-        UserAuth userAuth = await authRepository.refreshUserAuth();
-        emit(HomeAuthenticatedNotVerified(
-            user: userAuth.user!, emailSent: true));
+        emit(getHomeState(message: "Email Sent"));
       } catch (error) {
-        UserAuth userAuth = authRepository.userAuth;
-        emit(HomeAuthenticatedNotVerified(
-            user: userAuth.user!, error: error.toString()));
+        emit(getHomeState(error: error.toString()));
+      }
+    });
+
+    on<RefreshRequested>((event, emit) async {
+      emit(HomeLoading());
+      try {
+        await authRepository.refreshUserAuth();
+        emit(getHomeState());
+      } catch (error) {
+        emit(getHomeState(error: error.toString()));
       }
     });
 
@@ -59,7 +71,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       try {
         await authRepository.signOut();
       } catch (error) {
-        emit(HomeNotAuthenticated(error: error.toString()));
+        emit(getHomeState(error: error.toString()));
       }
     });
   }

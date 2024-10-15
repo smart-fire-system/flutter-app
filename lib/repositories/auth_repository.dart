@@ -47,7 +47,7 @@ class AuthRepository {
     });
   }
 
-  Future<UserAuth> refreshUserAuth() async {
+  Future<void> refreshUserAuth() async {
     await _firebaseAuth.currentUser?.reload();
     firebase.User? firebaseUser = _firebaseAuth.currentUser;
     if (firebaseUser == null) {
@@ -55,7 +55,6 @@ class AuthRepository {
     } else {
       await _validateUserRole();
     }
-    return _userAuth;
   }
 
   Future<void> signOut() async {

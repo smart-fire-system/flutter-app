@@ -45,8 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "The resource already exists."),
         "already_have_an_account": MessageLookupByLibrary.simpleMessage(
             "Already have an account? Log In"),
-        "app_name":
-            MessageLookupByLibrary.simpleMessage("Smart Fire Alarm System"),
+        "app_name": MessageLookupByLibrary.simpleMessage("Fire Alarm System"),
         "app_not_authorized": MessageLookupByLibrary.simpleMessage(
             "This app is not authorized to access the Firebase project. Contact the administrator."),
         "branchManager": MessageLookupByLibrary.simpleMessage("Branch Manager"),
@@ -315,7 +314,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "The password entered is too weak. Use a stronger password with more characters."),
         "welcome": MessageLookupByLibrary.simpleMessage("Welcome"),
         "welcome_message": MessageLookupByLibrary.simpleMessage(
-            "Welcome to the Smart Fire Alarm System. Please login or sign up."),
+            "Welcome to the Fire Alarm System. Please login or sign up."),
         "wrong_password": MessageLookupByLibrary.simpleMessage(
             "The password you entered is incorrect. Please try again.")
       };
