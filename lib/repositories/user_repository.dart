@@ -27,17 +27,14 @@ class UserRepository {
   }
 
   Future<void> changeAccessRole(String id, UserRole newRole) async {
-    print("TODO: changeAccessRole");
     await Future.delayed(const Duration(milliseconds: 500));
   }
 
   Future<void> deleteUser(String id) async {
-    print("TODO: deleteUser");
     await Future.delayed(const Duration(milliseconds: 500));
   }
 
   Future<List<Admin>> getAdminsList({bool includeCurrentUser = false}) async {
-    print("TODO: Handle getAdminsList");
     await Future.delayed(const Duration(milliseconds: 500));
     List<Admin> admins = [
       Admin(
@@ -66,7 +63,6 @@ class UserRepository {
   }
 
   Future<List<User>> getNoRoleList() async {
-    print("TODO: Handle getNoRoleList");
     await Future.delayed(const Duration(milliseconds: 500));
     List<User> users = [
       User(

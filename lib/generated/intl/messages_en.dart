@@ -26,6 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "The operation was aborted due to a conflict."),
         "accessRoleChangedSuccessMessage": MessageLookupByLibrary.simpleMessage(
             "User\'s access role has been successfully updated."),
+        "accessRoleTitle": MessageLookupByLibrary.simpleMessage("Access Role"),
         "access_denied_message": MessageLookupByLibrary.simpleMessage(
             "You do not have access to this section. Please wait until the system administrators grant you access."),
         "access_denied_title":
@@ -87,6 +88,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "edit_information":
             MessageLookupByLibrary.simpleMessage("Edit Inforamation"),
         "email": MessageLookupByLibrary.simpleMessage("Email Address"),
+        "emailNotVerified": MessageLookupByLibrary.simpleMessage(
+            "Your email is not verified. Click here to resend the verification email."),
+        "emailVerificationTitle":
+            MessageLookupByLibrary.simpleMessage("Email Verification"),
+        "emailVerified": MessageLookupByLibrary.simpleMessage(
+            "Your email has been successfully verified."),
         "email_already_in_use": MessageLookupByLibrary.simpleMessage(
             "An account already exists with this email address. Please login or use a different email."),
         "employee": MessageLookupByLibrary.simpleMessage("Employee"),
@@ -200,6 +207,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "permission_denied": MessageLookupByLibrary.simpleMessage(
             "You do not have permission to perform this action."),
         "phone": MessageLookupByLibrary.simpleMessage("Phone Number"),
+        "phoneNumberAdded": MessageLookupByLibrary.simpleMessage(
+            "Your phone number has been added."),
+        "phoneNumberNotAdded": MessageLookupByLibrary.simpleMessage(
+            "You have not added a phone number. Click here to add your phone number."),
+        "phoneNumberTitle":
+            MessageLookupByLibrary.simpleMessage("Add Phone Number"),
         "profile": MessageLookupByLibrary.simpleMessage("Profile"),
         "provider_already_linked": MessageLookupByLibrary.simpleMessage(
             "This account is already linked to another authentication provider."),
@@ -221,6 +234,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "resource_exhausted": MessageLookupByLibrary.simpleMessage(
             "Resource limit exceeded. Please try again later."),
         "role": MessageLookupByLibrary.simpleMessage("Role"),
+        "roleAssigned": MessageLookupByLibrary.simpleMessage(
+            "You have been assigned an access role."),
+        "roleNotAssigned": MessageLookupByLibrary.simpleMessage(
+            "You don\'t have an access role yet. Please wait for an administrator to grant you access."),
         "save_changes": MessageLookupByLibrary.simpleMessage("Save Changes"),
         "select_language":
             MessageLookupByLibrary.simpleMessage("Please choose a language"),
@@ -241,6 +258,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sign up with Facebook"),
         "signup_with_google":
             MessageLookupByLibrary.simpleMessage("Sign up with Google"),
+        "stepsToComplete": MessageLookupByLibrary.simpleMessage(
+            "To continue using the application, please complete the following steps:"),
         "submitComplaint":
             MessageLookupByLibrary.simpleMessage("Submit Complaint"),
         "system": MessageLookupByLibrary.simpleMessage("System"),

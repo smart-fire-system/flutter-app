@@ -4,10 +4,10 @@ import 'package:fire_alarm_system/utils/enums.dart';
 import 'event.dart';
 import 'state.dart';
 
-class LoginBloc extends Bloc<LoginEvent, LoginState> {
+class SignInBloc extends Bloc<SignInEvent, SignInState> {
   final AuthRepository authRepository;
 
-  LoginBloc({required this.authRepository}) : super(LoginInitial()) {
+  SignInBloc({required this.authRepository}) : super(SignInInitial()) {
     authRepository.authStateChanges.listen((data) {
       add(AuthChanged(error: data == "" ? null : data));
     }, onError: (error) {
@@ -16,15 +16,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     on<AuthChanged>((event, emit) async {
       if (authRepository.userAuth.authStatus == AuthStatus.notAuthenticated) {
-        emit(LoginNotAuthenticated(error: event.error));
+        emit(SignInNotAuthenticated(error: event.error));
       } else {
-        print("LoginSuccess");
-        emit(LoginSuccess());
+        emit(SignInSuccess());
       }
     });
 
     on<ResetPasswordRequested>((event, emit) async {
-      emit(LoginLoading());
+      emit(SignInLoading());
       try {
         await authRepository.sendPasswordResetEmail();
         emit(ResetEmailSent());
@@ -34,20 +33,30 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     });
 
     on<LoginRequested>((event, emit) async {
-      emit(LoginLoading());
+      emit(SignInLoading());
       try {
         await authRepository.signIn(event.email, event.password);
       } catch (error) {
-        emit(LoginNotAuthenticated(error: error.toString()));
+        emit(SignInNotAuthenticated(error: error.toString()));
       }
     });
 
-    on<GoogleLoginRequested>((event, emit) async {
-      emit(LoginLoading());
+    on<SignUpRequested>((event, emit) async {
+      emit(SignInLoading());
+      try {
+        await authRepository.signUpWithEmailAndPassword(event.email,
+            event.password, event.name);
+      } catch (error) {
+        emit(SignInNotAuthenticated(error: error.toString()));
+      }
+    });
+
+    on<GoogleSignInRequested>((event, emit) async {
+      emit(SignInLoading());
       try {
         await authRepository.signInWithGoogle();
       } catch (error) {
-        emit(LoginNotAuthenticated(error: error.toString()));
+        emit(SignInNotAuthenticated(error: error.toString()));
       }
     });
   }

@@ -103,6 +103,17 @@
     "save_changes": "Save Changes",
     "info_updated": "Profile info updated successfully",
 
+    "stepsToComplete": "To continue using the application, please complete the following steps:",
+    "emailVerificationTitle": "Email Verification",
+    "emailVerified": "Your email has been successfully verified.",
+    "emailNotVerified": "Your email is not verified. Click here to resend the verification email.",
+    "phoneNumberTitle": "Add Phone Number",
+    "phoneNumberAdded": "Your phone number has been added.",
+    "phoneNumberNotAdded": "You have not added a phone number. Click here to add your phone number.",
+    "accessRoleTitle": "Access Role",
+    "roleAssigned": "You have been assigned an access role.",
+    "roleNotAssigned": "You don't have an access role yet. Please wait for an administrator to grant you access.",
+
     "invalid_custom_token": "The custom authentication token you provided is invalid. Please check and try again.",
     "custom_token_mismatch": "The custom token provided does not match the expected format. Ensure it is correct.",
     "invalid_email": "The email address entered is not valid. Please provide a valid email address.",

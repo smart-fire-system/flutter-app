@@ -11,34 +11,49 @@ import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/utils/data_validator_util.dart';
 
-import 'package:fire_alarm_system/screens/login/bloc/bloc.dart';
-import 'package:fire_alarm_system/screens/login/bloc/event.dart';
-import 'package:fire_alarm_system/screens/login/bloc/state.dart';
+import 'package:fire_alarm_system/screens/signin/bloc/bloc.dart';
+import 'package:fire_alarm_system/screens/signin/bloc/event.dart';
+import 'package:fire_alarm_system/screens/signin/bloc/state.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
 
   @override
-  LoginScreenState createState() => LoginScreenState();
+  SignInScreenState createState() => SignInScreenState();
 }
 
-class LoginScreenState extends State<LoginScreen> {
+class SignInScreenState extends State<SignInScreen> {
+  String _currentView = 'login';
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    if (args.containsKey('signup')) {
+      _currentView = 'signup';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
+    return BlocBuilder<SignInBloc, SignInState>(
       builder: (context, state) {
-        if (state is LoginNotAuthenticated) {
+        if (state is SignInNotAuthenticated) {
           if (state.error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               CustomAlert.showError(context,
                   Errors.getFirebaseErrorMessage(context, state.error!));
-              context.read<LoginBloc>().add(AuthChanged());
+              context.read<SignInBloc>().add(AuthChanged());
             });
           }
-          return _buildLoginScreen(context);
-        } else if (state is LoginSuccess) {
+          if (_currentView == 'login') {
+            return _buildLoginScreen(context);
+          } else {
+            return _buildSignUpScreen(context);
+          }
+        } else if (state is SignInSuccess) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.popAndPushNamed(context, '/home');
+            Navigator.pop(context);
           });
         } else if (state is ResetEmailSent) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -48,7 +63,7 @@ class LoginScreenState extends State<LoginScreen> {
               CustomAlert.showError(context,
                   Errors.getFirebaseErrorMessage(context, state.error!));
             }
-            context.read<LoginBloc>().add(AuthChanged());
+            context.read<SignInBloc>().add(AuthChanged());
           });
         }
         return const CustomLoading();
@@ -93,9 +108,7 @@ class LoginScreenState extends State<LoginScreen> {
           child: Text(S.of(context).ok, style: CustomStyle.normalButtonText),
           onPressed: () {
             if (email != "") {
-              context
-                  .read<LoginBloc>()
-                  .add(ResetPasswordRequested());
+              context.read<SignInBloc>().add(ResetPasswordRequested());
               Navigator.pop(context);
             }
           },
@@ -194,7 +207,7 @@ class LoginScreenState extends State<LoginScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (formKey.currentState?.validate() ?? false) {
-                            context.read<LoginBloc>().add(LoginRequested(
+                            context.read<SignInBloc>().add(LoginRequested(
                                   email: emailController.text,
                                   password: passwordController.text,
                                 ));
@@ -238,7 +251,9 @@ class LoginScreenState extends State<LoginScreen> {
                                 textAlign: TextAlign.center,
                               ),
                               onPressed: () {
-                                Navigator.popAndPushNamed(context, '/signup');
+                                setState(() {
+                                  _currentView = 'signup';
+                                });
                               },
                             ),
                           ),
@@ -267,9 +282,205 @@ class LoginScreenState extends State<LoginScreen> {
                           left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
                       child: ElevatedButton.icon(
                         onPressed: () {
-                          context.read<LoginBloc>().add(GoogleLoginRequested());
+                          context
+                              .read<SignInBloc>()
+                              .add(GoogleSignInRequested());
                         },
                         icon: const Icon(FontAwesomeIcons.google,
+                            color: Colors.white),
+                        label: Text(
+                          S.of(context).continue_with_google,
+                          style: CustomStyle.normalButtonTextSmall,
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignUpScreen(BuildContext context) {
+    final nameController = TextEditingController();
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          S.of(context).signup,
+          style: CustomStyle.appBarText,
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.language),
+            onPressed: () {
+              LocalizationUtil.showEditLanguageDialog(context);
+            },
+          ),
+        ],
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: formKey,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: 600,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, bottom: 50.0),
+                      child: Text(
+                        S.of(context).signup_welcome,
+                        style: CustomStyle.largeText30,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+                      child: TextFormField(
+                        controller: nameController,
+                        keyboardType: TextInputType.name,
+                        decoration: InputDecoration(
+                          icon: const Icon(Icons.person),
+                          labelText: S.of(context).name,
+                          labelStyle: CustomStyle.smallText,
+                          border: const OutlineInputBorder(),
+                        ),
+                        style: CustomStyle.smallText,
+                        validator: (value) =>
+                            DataValidator.validateName(context, value),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+                      child: TextFormField(
+                        controller: emailController,
+                        textDirection: TextDirection.ltr,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          icon: const Icon(Icons.email),
+                          labelText: S.of(context).email,
+                          labelStyle: CustomStyle.smallText,
+                          border: const OutlineInputBorder(),
+                        ),
+                        style: CustomStyle.smallText,
+                        validator: (value) =>
+                            DataValidator.validateEmail(context, value),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+                      child: TextFormField(
+                        controller: passwordController,
+                        textDirection: TextDirection.ltr,
+                        keyboardType: TextInputType.visiblePassword,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          icon: const Icon(Icons.key),
+                          labelText: S.of(context).password,
+                          labelStyle: CustomStyle.smallText,
+                          border: const OutlineInputBorder(),
+                        ),
+                        style: CustomStyle.smallText,
+                        validator: (value) =>
+                            DataValidator.validatePassword(context, value),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+                      child: TextFormField(
+                        keyboardType: TextInputType.visiblePassword,
+                        textDirection: TextDirection.ltr,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          icon: const Icon(Icons.key),
+                          labelText: S.of(context).confirm_password,
+                          labelStyle: CustomStyle.smallText,
+                          border: const OutlineInputBorder(),
+                        ),
+                        style: CustomStyle.smallText,
+                        validator: (value) =>
+                            DataValidator.validateConfirmPassword(
+                                context, value, passwordController),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (formKey.currentState?.validate() ?? false) {
+                            context.read<SignInBloc>().add(SignUpRequested(
+                                email: emailController.text,
+                                password: passwordController.text,
+                                name: nameController.text));
+                          }
+                        },
+                        style: CustomStyle.normalButton,
+                        child: Text(
+                          S.of(context).signup,
+                          style: CustomStyle.normalButtonText,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      child: Text(
+                        S.of(context).already_have_an_account,
+                        style: CustomStyle.smallText,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _currentView = 'login';
+                        });
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, top: 30.0, bottom: 30.0),
+                      child: Row(
+                        children: <Widget>[
+                          const Expanded(child: Divider()),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              S.of(context).or,
+                              style: CustomStyle.smallText,
+                            ),
+                          ),
+                          const Expanded(child: Divider()),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          context
+                              .read<SignInBloc>()
+                              .add(GoogleSignInRequested());
+                        },
+                        icon: const FaIcon(FontAwesomeIcons.google,
                             color: Colors.white),
                         label: Text(
                           S.of(context).continue_with_google,

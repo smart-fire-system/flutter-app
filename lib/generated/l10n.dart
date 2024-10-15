@@ -950,6 +950,106 @@ class S {
     );
   }
 
+  /// `To continue using the application, please complete the following steps:`
+  String get stepsToComplete {
+    return Intl.message(
+      'To continue using the application, please complete the following steps:',
+      name: 'stepsToComplete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email Verification`
+  String get emailVerificationTitle {
+    return Intl.message(
+      'Email Verification',
+      name: 'emailVerificationTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your email has been successfully verified.`
+  String get emailVerified {
+    return Intl.message(
+      'Your email has been successfully verified.',
+      name: 'emailVerified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your email is not verified. Click here to resend the verification email.`
+  String get emailNotVerified {
+    return Intl.message(
+      'Your email is not verified. Click here to resend the verification email.',
+      name: 'emailNotVerified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Phone Number`
+  String get phoneNumberTitle {
+    return Intl.message(
+      'Add Phone Number',
+      name: 'phoneNumberTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your phone number has been added.`
+  String get phoneNumberAdded {
+    return Intl.message(
+      'Your phone number has been added.',
+      name: 'phoneNumberAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You have not added a phone number. Click here to add your phone number.`
+  String get phoneNumberNotAdded {
+    return Intl.message(
+      'You have not added a phone number. Click here to add your phone number.',
+      name: 'phoneNumberNotAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Role`
+  String get accessRoleTitle {
+    return Intl.message(
+      'Access Role',
+      name: 'accessRoleTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You have been assigned an access role.`
+  String get roleAssigned {
+    return Intl.message(
+      'You have been assigned an access role.',
+      name: 'roleAssigned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You don't have an access role yet. Please wait for an administrator to grant you access.`
+  String get roleNotAssigned {
+    return Intl.message(
+      'You don\'t have an access role yet. Please wait for an administrator to grant you access.',
+      name: 'roleNotAssigned',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `The custom authentication token you provided is invalid. Please check and try again.`
   String get invalid_custom_token {
     return Intl.message(

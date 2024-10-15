@@ -12,22 +12,17 @@ class HomeAuthenticated extends HomeState {
   HomeAuthenticated({required this.user, this.error});
 }
 
-class HomeNotVerified extends HomeState {
+class HomeAuthenticatedNotVerified extends HomeState {
   final User user;
   final String? error;
   final bool? emailSent;
-  HomeNotVerified({required this.user, this.error, this.emailSent});
+  HomeAuthenticatedNotVerified(
+      {required this.user, this.error, this.emailSent});
 }
 
-class HomeNoRole extends HomeState {
-  final User user;
-  final String? error;
-  HomeNoRole({required this.user, this.error});
+class HomeNotAuthenticated extends HomeState {
+  String? error;
+  HomeNotAuthenticated({this.error});
 }
 
-class HomeError extends HomeState {
-  final String error;
-  HomeError({required this.error});
-}
-
-class HomeNotAuthenticated extends HomeState {}
+class HomeNoInternet extends HomeState {}

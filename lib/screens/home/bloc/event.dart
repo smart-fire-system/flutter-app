@@ -8,3 +8,5 @@ class AuthChanged extends HomeEvent {
 class ResendEmailRequested extends HomeEvent {}
 
 class LogoutRequested extends HomeEvent {}
+
+class GoogleLoginRequested extends HomeEvent {}

@@ -16,21 +16,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     on<AuthChanged>((event, emit) {
-      print(event.error);
       if (event.error == null) {
-        print(authRepository.userAuth.authStatus);
         if (authRepository.userAuth.authStatus == AuthStatus.notAuthenticated) {
           emit(HomeNotAuthenticated());
         } else if (authRepository.userAuth.authStatus ==
             AuthStatus.authenticatedNotVerified) {
-          emit(HomeNotVerified(user: authRepository.userAuth.user!));
-        } else if (authRepository.userAuth.user!.role == UserRole.noRole) {
-          emit(HomeNoRole(user: authRepository.userAuth.user!));
+          emit(HomeAuthenticatedNotVerified(
+              user: authRepository.userAuth.user!));
         } else {
           emit(HomeAuthenticated(user: authRepository.userAuth.user!));
         }
       } else {
-        emit(HomeError(error: event.error!));
+        emit(HomeNotAuthenticated(error: event.error!));
+      }
+    });
+
+    on<GoogleLoginRequested>((event, emit) async {
+      emit(HomeLoading());
+      try {
+        await authRepository.signInWithGoogle();
+      } catch (error) {
+        emit(HomeNotAuthenticated(error: error.toString()));
       }
     });
 
@@ -39,27 +45,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       try {
         await authRepository.resendActivationEmail();
         UserAuth userAuth = await authRepository.refreshUserAuth();
-        if (userAuth.authStatus == AuthStatus.notAuthenticated) {
-          emit(HomeNotAuthenticated());
-        } else if (userAuth.authStatus == AuthStatus.authenticatedNotVerified) {
-          emit(HomeNotVerified(user: userAuth.user!, emailSent: true));
-        } else if (userAuth.user!.role == UserRole.noRole) {
-          emit(HomeNoRole(user: userAuth.user!));
-        } else {
-          emit(HomeAuthenticated(user: userAuth.user!));
-        }
+        emit(HomeAuthenticatedNotVerified(
+            user: userAuth.user!, emailSent: true));
       } catch (error) {
         UserAuth userAuth = authRepository.userAuth;
-        if (userAuth.authStatus == AuthStatus.notAuthenticated) {
-          emit(HomeNotAuthenticated());
-        } else if (userAuth.authStatus == AuthStatus.authenticatedNotVerified) {
-          emit(HomeNotVerified(user: userAuth.user!, error: error.toString()));
-        } else if (userAuth.user!.role == UserRole.noRole) {
-          emit(HomeNoRole(user: userAuth.user!, error: error.toString()));
-        } else {
-          emit(
-              HomeAuthenticated(user: userAuth.user!, error: error.toString()));
-        }
+        emit(HomeAuthenticatedNotVerified(
+            user: userAuth.user!, error: error.toString()));
       }
     });
 
@@ -68,7 +59,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       try {
         await authRepository.signOut();
       } catch (error) {
-        // Do nothing.
+        emit(HomeNotAuthenticated(error: error.toString()));
       }
     });
   }

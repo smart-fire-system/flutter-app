@@ -78,7 +78,10 @@ class AdminsScreenState extends State<AdminsScreen> {
           });
         } else if (state is AdminsNotAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.popAndPushNamed(context, '/welcome');
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              '/home',
+              (Route<dynamic> route) => false,
+            );
             context.read<AdminsBloc>().add(ResetState());
           });
         } else if (state is AdminsNotAuthorized) {

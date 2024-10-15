@@ -1,10 +1,8 @@
 import 'package:fire_alarm_system/utils/errors.dart';
-import 'package:fire_alarm_system/widgets/not_authenticated.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
-import 'package:fire_alarm_system/widgets/access_denied.dart';
 import 'package:fire_alarm_system/widgets/side_menu.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
@@ -14,6 +12,7 @@ import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/screens/home/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/home/bloc/event.dart';
 import 'package:fire_alarm_system/screens/home/bloc/state.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   bool _showSideMenu = false;
-  bool _userLoggedOut = false;
   User? _user;
 
   @override
@@ -39,66 +37,56 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        if (state is HomeError) {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            CustomAlert.showError(
-                context, Errors.getFirebaseErrorMessage(context, state.error));
-            context.read<HomeBloc>().add(AuthChanged());
-          });
-        } else if (state is HomeNotAuthenticated) {
-          if (_userLoggedOut) {
-            WidgetsBinding.instance.addPostFrameCallback((_) async {
-              Navigator.popAndPushNamed(context, '/welcome');
-            });
-          } else {
-            return const CustomNotAuthenticated();
-          }
-        } else if (state is HomeNotVerified) {
-          _user = state.user;
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            if (state.error != null) {
-              CustomAlert.showError(context,
-                  Errors.getFirebaseErrorMessage(context, state.error!));
-            } else if (state.emailSent == true) {
-              CustomAlert.showSuccess(context, S.of(context).reset_email_sent);
-            }
-          });
-          return CustomAccessDenied(
-            user: _user!,
-            type: AccessDeniedType.accountNeedsVerification,
-            onLogoutClick: () async {
-              context.read<HomeBloc>().add(LogoutRequested());
-            },
-            onResendClick: () async {
-              context.read<HomeBloc>().add(ResendEmailRequested());
-            },
-          );
-        } else if (state is HomeNoRole) {
-          _user = state.user;
+        if (state is HomeNotAuthenticated) {
           if (state.error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               CustomAlert.showError(context,
                   Errors.getFirebaseErrorMessage(context, state.error!));
             });
           }
-          return CustomAccessDenied(
-            user: _user!,
-            type: AccessDeniedType.noRoleForUser,
-            onLogoutClick: () async {
-              context.read<HomeBloc>().add(LogoutRequested());
-            },
-          );
+          return _buildWelcome(context);
+        } else if (state is HomeAuthenticatedNotVerified) {
+          _user = state.user;
+          if (state.error != null) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              CustomAlert.showError(context,
+                  Errors.getFirebaseErrorMessage(context, state.error!));
+            });
+          } else if (state.emailSent == true) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              CustomAlert.showSuccess(context, S.of(context).reset_email_sent);
+            });
+          }
+          return _buildNotAuthorized(
+              context: context,
+              isEmailVerified: false,
+              isPhoneAdded: (_user!.phoneNumber != ""),
+              hasUserRole: (_user!.role != UserRole.noRole));
         } else if (state is HomeAuthenticated) {
           _user = state.user;
-          return _buildHome(context);
+          if (_user!.phoneNumber == "" || _user!.role == UserRole.noRole) {
+            return _buildNotAuthorized(
+                context: context,
+                isEmailVerified: true,
+                isPhoneAdded: (_user!.phoneNumber != ""),
+                hasUserRole: (_user!.role != UserRole.noRole));
+          }
+          //return _buildHome(context);
+          return _buildNotAuthorized(
+              context: context,
+              isEmailVerified: false,
+              isPhoneAdded: false,
+              hasUserRole: false);
+        } else {
+          return const CustomLoading();
         }
-        return const CustomLoading();
       },
     );
   }
 
   Widget _buildHome(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           S.of(context).home,
@@ -148,7 +136,8 @@ class HomeScreenState extends State<HomeScreen> {
                     ],
                     onItemClick: (item) async {
                       if (item == CustomSideMenuItem.logout) {
-                        _userLoggedOut = true;
+                        _showSideMenu =
+                            (MediaQuery.of(context).size.width > 600);
                         context.read<HomeBloc>().add(LogoutRequested());
                       }
                     },
@@ -503,6 +492,274 @@ class HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWelcome(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          S.of(context).app_name,
+          style: CustomStyle.appBarText,
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.language),
+            onPressed: () {
+              LocalizationUtil.showEditLanguageDialog(context);
+            },
+          ),
+        ],
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: 600,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 20.0, right: 20.0, bottom: 50.0),
+                    child: Image.asset(
+                      'assets/images/logo_wide.jpg',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, bottom: 50.0),
+                    child: Text(
+                      S.of(context).welcome_message,
+                      style: CustomStyle.largeText30,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/signIn',
+                            arguments: {'login': true});
+                      },
+                      style: CustomStyle.normalButton,
+                      child: Text(
+                        S.of(context).login,
+                        style: CustomStyle.normalButtonText,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/signIn',
+                            arguments: {'signup': true});
+                      },
+                      style: CustomStyle.normalButton,
+                      child: Text(
+                        S.of(context).signup,
+                        style: CustomStyle.normalButtonText,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, top: 30.0, bottom: 30.0),
+                    child: Row(
+                      children: <Widget>[
+                        const Expanded(child: Divider()),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            S.of(context).or,
+                            style: CustomStyle.smallText,
+                          ),
+                        ),
+                        const Expanded(child: Divider()),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        context.read<HomeBloc>().add(GoogleLoginRequested());
+                      },
+                      icon: const Icon(FontAwesomeIcons.google,
+                          color: Colors.white),
+                      label: Text(
+                        S.of(context).continue_with_google,
+                        style: CustomStyle.normalButtonTextSmall,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        minimumSize: const Size(double.infinity, 50),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNotAuthorized(
+      {required BuildContext context,
+      required bool isEmailVerified,
+      required bool isPhoneAdded,
+      required bool hasUserRole}) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(S.of(context).app_name),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListTile(
+                title: Text(
+                  _user!.name,
+                  style: CustomStyle.largeTextB,
+                ),
+                subtitle: Text(_user!.email, style: CustomStyle.mediumText),
+                leading: const Icon(Icons.person, size: 40),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(S.of(context).stepsToComplete,
+                  style: CustomStyle.mediumText),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.lightBlue, width: 1.0),
+                    borderRadius: BorderRadius.circular(8.0)),
+                child: ListTile(
+                  leading: isEmailVerified
+                      ? const Icon(
+                          Icons.check_circle,
+                          color: Colors.green,
+                          size: 30,
+                        )
+                      : const Icon(
+                          Icons.cancel,
+                          color: Colors.red,
+                          size: 30,
+                        ),
+                  title: Text(
+                    S.of(context).emailVerificationTitle,
+                    style: CustomStyle.largeTextB,
+                  ),
+                  subtitle: Text(
+                    isEmailVerified
+                        ? S.of(context).emailVerified
+                        : S.of(context).emailNotVerified,
+                    style: CustomStyle.mediumText,
+                  ),
+                  onTap: () {
+                    if (!isEmailVerified) {
+                      context.read<HomeBloc>().add(ResendEmailRequested());
+                    }
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.lightBlue, width: 1.0),
+                    borderRadius: BorderRadius.circular(8.0)),
+                child: ListTile(
+                  leading: isPhoneAdded
+                      ? const Icon(
+                          Icons.check_circle,
+                          color: Colors.green,
+                          size: 30,
+                        )
+                      : const Icon(
+                          Icons.cancel,
+                          color: Colors.red,
+                          size: 30,
+                        ),
+                  title: Text(
+                    S.of(context).phoneNumberTitle,
+                    style: CustomStyle.largeTextB,
+                  ),
+                  subtitle: Text(
+                    isPhoneAdded
+                        ? S.of(context).phoneNumberAdded
+                        : S.of(context).phoneNumberNotAdded,
+                    style: CustomStyle.mediumText,
+                  ),
+                  onTap: () {},
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.lightBlue, width: 1.0),
+                    borderRadius: BorderRadius.circular(8.0)),
+                child: ListTile(
+                  leading: isPhoneAdded
+                      ? const Icon(
+                          Icons.check_circle,
+                          color: Colors.green,
+                          size: 30,
+                        )
+                      : const Icon(
+                          Icons.cancel,
+                          color: Colors.red,
+                          size: 30,
+                        ),
+                  title: Text(
+                    S.of(context).accessRoleTitle,
+                    style: CustomStyle.largeTextB,
+                  ),
+                  subtitle: Text(
+                    isPhoneAdded
+                        ? S.of(context).roleAssigned
+                        : S.of(context).roleNotAssigned,
+                    style: CustomStyle.mediumText,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  context.read<HomeBloc>().add(LogoutRequested());
+                },
+                icon: const Icon(Icons.logout, color: Colors.white),
+                label: Text(
+                  S.of(context).logout,
+                  style: CustomStyle.normalButtonTextSmall,
+                ),
+                style: CustomStyle.normalButtonRed,
               ),
             ),
           ],

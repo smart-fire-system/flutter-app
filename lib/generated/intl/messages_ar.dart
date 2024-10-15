@@ -26,6 +26,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "تم إلغاء العملية بسبب تعارض."),
         "accessRoleChangedSuccessMessage": MessageLookupByLibrary.simpleMessage(
             "تم تحديث صلاحيات وصول المستخدم بنجاح."),
+        "accessRoleTitle":
+            MessageLookupByLibrary.simpleMessage("صلاحية الوصول"),
         "access_denied_message": MessageLookupByLibrary.simpleMessage(
             "ليس لديك صلاحية الوصول إلى هذا القسم. يرجى الانتظار حتى يتم منحك الصلاحيات من مسؤولي النظام."),
         "access_denied_title":
@@ -86,6 +88,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("تعديل البيانات"),
         "email":
             MessageLookupByLibrary.simpleMessage("عنوان البريد الإلكتروني"),
+        "emailNotVerified": MessageLookupByLibrary.simpleMessage(
+            "لم يتم التحقق من بريدك الإلكتروني. اضغط هنا لإعادة إرسال بريد التفعيل."),
+        "emailVerificationTitle":
+            MessageLookupByLibrary.simpleMessage("التحقق من البريد الإلكتروني"),
+        "emailVerified": MessageLookupByLibrary.simpleMessage(
+            "تم التحقق من بريدك الإلكتروني بنجاح."),
         "email_already_in_use": MessageLookupByLibrary.simpleMessage(
             "البريد الإلكتروني مستخدم بالفعل. يرجى تسجيل الدخول أو استخدام بريد آخر."),
         "employee": MessageLookupByLibrary.simpleMessage("موظف"),
@@ -194,6 +202,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "permission_denied": MessageLookupByLibrary.simpleMessage(
             "ليس لديك إذن لإجراء هذا العمل."),
         "phone": MessageLookupByLibrary.simpleMessage("رقم الهاتف"),
+        "phoneNumberAdded":
+            MessageLookupByLibrary.simpleMessage("تم إضافة رقم هاتفك."),
+        "phoneNumberNotAdded": MessageLookupByLibrary.simpleMessage(
+            "لم تقم بإضافة رقم هاتف. اضغط هنا لإضافة رقم هاتفك."),
+        "phoneNumberTitle":
+            MessageLookupByLibrary.simpleMessage("إضافة رقم هاتف"),
         "profile": MessageLookupByLibrary.simpleMessage("الملف الشخصي"),
         "provider_already_linked":
             MessageLookupByLibrary.simpleMessage("هذا الحساب مرتبط بمزود آخر."),
@@ -214,6 +228,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "resource_exhausted": MessageLookupByLibrary.simpleMessage(
             "تم تجاوز الحد المسموح للموارد. يرجى المحاولة مرة أخرى لاحقاً."),
         "role": MessageLookupByLibrary.simpleMessage("صلاحية الوصول"),
+        "roleAssigned":
+            MessageLookupByLibrary.simpleMessage("تم تعيين صلاحية وصول لك."),
+        "roleNotAssigned": MessageLookupByLibrary.simpleMessage(
+            "لم يتم تعيين صلاحية وصول لك بعد. يرجى انتظار موافقة المديرين لمنحك صلاحية وصول."),
         "save_changes": MessageLookupByLibrary.simpleMessage("حفظ التعديلات"),
         "select_language":
             MessageLookupByLibrary.simpleMessage("يرجى اختيار اللغة"),
@@ -234,6 +252,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("إنشاء حساب باستخدام فيسبوك"),
         "signup_with_google":
             MessageLookupByLibrary.simpleMessage("إنشاء حساب باستخدام جوجل"),
+        "stepsToComplete": MessageLookupByLibrary.simpleMessage(
+            "لمتابعة استخدام التطبيق، يرجى إكمال الخطوات التالية:"),
         "submitComplaint": MessageLookupByLibrary.simpleMessage("تقديم شكوى"),
         "system": MessageLookupByLibrary.simpleMessage("النظام"),
         "systemStatusAndFaults":

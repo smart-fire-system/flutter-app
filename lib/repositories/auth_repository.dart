@@ -129,14 +129,14 @@ class AuthRepository {
   }
 
   Future<void> signUpWithEmailAndPassword(String email, String password,
-      String name, String phoneNumber, String countryCode) async {
+      String name) async {
     try {
       _userAuth.user = User(
           id: "",
           name: name,
           email: email,
-          countryCode: countryCode,
-          phoneNumber: phoneNumber,
+          countryCode: "",
+          phoneNumber: "",
           role: UserRole.noRole);
       await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
