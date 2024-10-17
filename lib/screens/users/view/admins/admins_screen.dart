@@ -69,12 +69,14 @@ class AdminsScreenState extends State<AdminsScreen> {
         if (state is AdminsAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (state.error != null) {
-              await CustomAlert.showError(context,
+              CustomAlert.showError(context,
                   Errors.getFirebaseErrorMessage(context, state.error!));
+              state.error = null;
             } else if (state.message != null) {
               if (state.message == AdminMessage.userModified) {
-                await CustomAlert.showSuccess(
+                CustomAlert.showSuccess(
                     context, S.of(context).accessRoleChangedSuccessMessage);
+              state.message = null;
               }
             }
           });
@@ -84,6 +86,9 @@ class AdminsScreenState extends State<AdminsScreen> {
             _filterRequested = false;
           } else {
             _filteredAdmins = state.admins;
+            _searchController.removeListener(_filterAdmins);
+            _searchController.clear();
+            _searchController.addListener(_filterAdmins);
           }
           _users = state.users;
           return _buildAdmins(context);
