@@ -545,6 +545,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
   void _defaultOnProfileClick() {
     Navigator.pushNamed(context, '/profile');
   }
+
   void _defaultOnNotificationsClick() {}
   void _defaultOnViewSystemClick() {}
   void _defaultOnConfigureSystemClick() {}
@@ -563,6 +564,10 @@ class CustomSideMenuState extends State<CustomSideMenu> {
   void _defaultOnTechnicansClick() {}
   void _defaultOnClientsClick() {}
   void _defaultOnLogoutClick() async {
-    await AuthRepository().signOut();
+    try {
+      await AuthRepository().signOut();
+    } catch (error) {
+      // Do Nothing.
+    }
   }
 }

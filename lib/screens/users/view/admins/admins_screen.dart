@@ -1,10 +1,11 @@
 import 'package:fire_alarm_system/models/admin.dart';
+import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/users/view/admins/admins_add.dart';
+import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:fire_alarm_system/generated/l10n.dart';
-import 'package:fire_alarm_system/models/user_auth.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/widgets/side_menu.dart';
@@ -26,15 +27,38 @@ class AdminsScreen extends StatefulWidget {
 
 class AdminsScreenState extends State<AdminsScreen> {
   bool _showSideMenu = false;
-  UserAuth? _userAuth;
+  bool _filterRequested = false;
+  User? _user;
   List<Admin> _admins = [];
+  List<Admin> _filteredAdmins = [];
+  List<User> _users = [];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    context.read<AdminsBloc>().add(AuthRequested());
+    _searchController.addListener(_filterAdmins);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _showSideMenu = (MediaQuery.of(context).size.width > 600);
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _filterAdmins() {
+    String query = _searchController.text.toLowerCase();
+    setState(() {
+      _filterRequested = true;
+      _filteredAdmins = _admins
+          .where((admin) =>
+              admin.name.toLowerCase().contains(query) ||
+              admin.email.toLowerCase() == query ||
+              admin.phoneNumber.toLowerCase() == query)
+          .toList();
     });
   }
 
@@ -42,57 +66,35 @@ class AdminsScreenState extends State<AdminsScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<AdminsBloc, AdminsState>(
       builder: (context, state) {
-        if (state is AdminModifed) {
+        if (state is AdminsAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
-            context.read<AdminsBloc>().add(AuthRequested());
             if (state.error != null) {
-              await CustomAlert.showError(context, state.error!);
-            } else {
-              await CustomAlert.showSuccess(
-                  context, S.of(context).accessRoleChangedSuccessMessage);
+              await CustomAlert.showError(context,
+                  Errors.getFirebaseErrorMessage(context, state.error!));
+            } else if (state.message != null) {
+              if (state.message == AdminMessage.userModified) {
+                await CustomAlert.showSuccess(
+                    context, S.of(context).accessRoleChangedSuccessMessage);
+              }
             }
           });
-        } else if (state is AdminDeleted) {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            context.read<AdminsBloc>().add(AuthRequested());
-            if (state.error != null) {
-              await CustomAlert.showError(context, state.error!);
-            } else {
-              await CustomAlert.showSuccess(
-                  context, S.of(context).userDeletedSuccessMessage);
-            }
-          });
-        } else if (state is NoRoleListLoaded) {
-          context.read<AdminsBloc>().add(AuthRequested());
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddAdmin(users: state.users),
-                ));
-          });
-        } else if (state is AdminsError) {
-          context.read<AdminsBloc>().add(AuthRequested());
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            await CustomAlert.showError(context, state.error);
-          });
+          _user = state.user;
+          _admins = state.admins;
+          if (_filterRequested) {
+            _filterRequested = false;
+          } else {
+            _filteredAdmins = state.admins;
+          }
+          _users = state.users;
+          return _buildAdmins(context);
         } else if (state is AdminsNotAuthenticated) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(context).pushNamedAndRemoveUntil(
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
               '/home',
               (Route<dynamic> route) => false,
             );
-            context.read<AdminsBloc>().add(ResetState());
           });
-        } else if (state is AdminsNotAuthorized) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.popAndPushNamed(context, '/home');
-            context.read<AdminsBloc>().add(ResetState());
-          });
-        } else if (state is AdminsAuthenticated) {
-          _userAuth = state.user;
-          _admins = state.admins;
-          return _buildAdmins(context);
         }
         return const CustomLoading();
       },
@@ -106,14 +108,17 @@ class AdminsScreenState extends State<AdminsScreen> {
           S.of(context).admins,
           style: CustomStyle.appBarText,
         ),
+        backgroundColor: Colors.lightBlue[900],
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         leading: IconButton(
           icon: Icon(
-            Icons.menu,
-            color: _showSideMenu ? Colors.white : Colors.black,
+            _showSideMenu ? Icons.keyboard_return : Icons.menu,
+            color: _showSideMenu ? Colors.red : Colors.black,
           ),
           style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(
-                  _showSideMenu ? Colors.blueAccent : Colors.white)),
+              backgroundColor: WidgetStateProperty.all(Colors.white)),
           onPressed: () {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               setState(() {
@@ -124,131 +129,127 @@ class AdminsScreenState extends State<AdminsScreen> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              // Action for notifications
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.language),
+            icon: const Icon(Icons.language, color: Colors.white),
             onPressed: () {
               LocalizationUtil.showEditLanguageDialog(context);
             },
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        scrollDirection: Axis.horizontal,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<AdminsBloc>().add(AuthChanged());
+        },
         child: Row(
           children: [
-            _showSideMenu
-                ? CustomSideMenu(
-                    highlightedItem: CustomSideMenuItem.admins,
-                    user: _userAuth!.user!,
-                  )
-                : Container(),
-            SizedBox(
-              width: _showSideMenu
-                  ? MediaQuery.of(context).size.width < 600
-                      ? 300
-                      : MediaQuery.of(context).size.width - 300
-                  : MediaQuery.of(context).size.width,
-              child: Row(
-                children: [
-                  Flexible(
-                    child: GestureDetector(
-                      onTap: () {
-                        if (MediaQuery.of(context).size.width < 600 &&
-                            _showSideMenu) {
-                          setState(() {
-                            _showSideMenu = false;
-                          });
-                        }
-                      },
-                      child: Padding(
+            if (_showSideMenu || MediaQuery.of(context).size.width > 600)
+              CustomSideMenu(
+                highlightedItem: CustomSideMenuItem.admins,
+                user: _user!,
+                width: MediaQuery.of(context).size.width > 600
+                    ? 300
+                    : MediaQuery.of(context).size.width,
+                noActionItems: const [
+                  CustomSideMenuItem.admins,
+                ],
+                onItemClick: (item) async {
+                  if (item == CustomSideMenuItem.admins) {
+                    _showSideMenu = (MediaQuery.of(context).size.width > 600);
+                    context.read<AdminsBloc>().add(AuthChanged());
+                  }
+                },
+              ),
+            if (!_showSideMenu || MediaQuery.of(context).size.width > 600)
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ListView(
+                    children: <Widget>[
+                      Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: ListView(
-                          children: <Widget>[
-                            ElevatedButton(
-                              onPressed: () {
-                                context
-                                    .read<AdminsBloc>()
-                                    .add(NoRoleListRequested());
-                              },
-                              style: CustomStyle.normalButton,
-                              child: Text(S.of(context).addNewAdmin,
-                                  style: CustomStyle.normalButtonText),
-                            ),
-                            _buildUserTable(_admins, (index) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        AdminDetails(admin: _admins[index - 1]),
-                                  ));
-                            }),
-                          ],
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddAdmin(users: _users),
+                                ));
+                          },
+                          style: CustomStyle.normalButton,
+                          child: Text(S.of(context).addNewAdmin,
+                              style: CustomStyle.normalButtonText),
                         ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: TextField(
+                          controller: _searchController,
+                          decoration: InputDecoration(
+                            labelText: S.of(context).searchBy,
+                            border: const OutlineInputBorder(),
+                            prefixIcon: const Icon(Icons.search),
+                          ),
+                        ),
+                      ),
+                      _buildUserTable(_admins, (admin) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AdminDetails(admin: admin),
+                            ));
+                      }),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildUserTable(List<Admin> admins, Function(int) onRowTap) {
+  Widget _buildUserTable(List<Admin> admins, Function(Admin) onRowTap) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Table(
         border: const TableBorder(
             horizontalInside: BorderSide(width: 0.5, color: Colors.grey)),
         columnWidths: const {
-          0: FlexColumnWidth(1),
+          0: FixedColumnWidth(50.0),
           1: FlexColumnWidth(5),
         },
-        children: [
-          ...admins.map((user) {
-            return TableRow(
-              decoration: BoxDecoration(
-                color: (user.index % 2 == 0)
-                    ? Colors.transparent
-                    : Colors.transparent,
+        children: _filteredAdmins.asMap().entries.map((entry) {
+          var admin = entry.value;
+
+          return TableRow(
+            children: [
+              TableRowInkWell(
+                onTap: () => onRowTap(admin),
+                child: Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Text((entry.key + 1).toString()),
+                ),
               ),
-              children: [
-                TableRowInkWell(
-                  onTap: () => onRowTap(user.index),
-                  child: Padding(
-                    padding: const EdgeInsets.all(25.0),
-                    child: Text(user.index.toString()),
+              TableRowInkWell(
+                onTap: () => onRowTap(admin),
+                child: Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        admin.name,
+                        style: CustomStyle.smallText,
+                      ),
+                      const Spacer(),
+                      const Icon(Icons.arrow_forward_ios,
+                          color: Colors.grey, size: 16),
+                    ],
                   ),
                 ),
-                TableRowInkWell(
-                  onTap: () => onRowTap(user.index),
-                  child: Padding(
-                    padding: const EdgeInsets.all(25.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          user.name,
-                          style: CustomStyle.smallText,
-                        ),
-                        const Spacer(),
-                        const Icon(Icons.arrow_forward_ios,
-                            color: Colors.grey, size: 16),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }),
-        ],
+              ),
+            ],
+          );
+        }).toList(),
       ),
     );
   }

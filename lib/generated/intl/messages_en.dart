@@ -238,6 +238,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "roleNotAssigned": MessageLookupByLibrary.simpleMessage(
             "You don\'t have an access role yet. Please wait for an administrator to grant you access."),
         "save_changes": MessageLookupByLibrary.simpleMessage("Save Changes"),
+        "searchBy": MessageLookupByLibrary.simpleMessage(
+            "Search by name, email or phone number ..."),
         "select_language":
             MessageLookupByLibrary.simpleMessage("Please choose a language"),
         "session_expired": MessageLookupByLibrary.simpleMessage(

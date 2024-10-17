@@ -7,7 +7,9 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase;
 
 class UserRepository {
   final AuthRepository authRepository;
-  UserRepository({required this.authRepository});
+  final FirebaseFirestore _firestore;
+  UserRepository({required this.authRepository})
+      : _firestore = FirebaseFirestore.instance;
 
   Future<void> updateInformation(
       {required String name,
@@ -26,8 +28,42 @@ class UserRepository {
         .update(userData);
   }
 
-  Future<void> changeAccessRole(String id, UserRole newRole) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+  Future<void> changeAccessRole(
+      String id, UserRole oldRole, UserRole newRole) async {
+    try {
+      await _firestore.runTransaction((transaction) async {
+        try {
+          DocumentReference userRef = _firestore.collection('users').doc(id);
+          DocumentSnapshot userSnapshot = await transaction.get(userRef);
+          if (!userSnapshot.exists) {
+            throw Exception("User not found");
+          }
+          transaction.update(userRef, {'role': User.getRoleId(newRole)});
+          if (oldRole != UserRole.noRole) {
+            DocumentReference oldRoleRef =
+                _firestore.collection('${User.getRoleId(oldRole)}s').doc(id);
+            transaction.delete(oldRoleRef);
+          }
+          if (newRole != UserRole.noRole) {
+            DocumentReference newRoleRef =
+                _firestore.collection('${User.getRoleId(newRole)}s').doc(id);
+            transaction.set(newRoleRef, <String, dynamic>{});
+          }
+        } catch (e) {
+          if (e is FirebaseException) {
+            throw Exception(e.code);
+          } else {
+            throw Exception(e.toString());
+          }
+        }
+      });
+    } catch (e) {
+      if (e is FirebaseException) {
+        throw Exception(e.code);
+      } else {
+        throw Exception(e.toString());
+      }
+    }
   }
 
   Future<void> deleteUser(String id) async {
@@ -35,58 +71,65 @@ class UserRepository {
   }
 
   Future<List<Admin>> getAdminsList({bool includeCurrentUser = false}) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    List<Admin> admins = [
-      Admin(
-          index: 1,
-          id: "ID1",
-          name: "John Doe 1",
-          email: "example1@example.com",
-          countryCode: "+251",
-          phoneNumber: "01005155"),
-      Admin(
-          index: 2,
-          id: "ID2",
-          name: "John Doe 2",
-          email: "example2@example.com",
-          countryCode: "+252",
-          phoneNumber: "6516541102"),
-      Admin(
-          index: 3,
-          id: "ID3",
-          name: "John Doe 3",
-          email: "example3@example.com",
-          countryCode: "+253",
-          phoneNumber: "6419641669"),
-    ];
-    return admins;
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('users')
+          .where('role', isEqualTo: 'admin')
+          .orderBy('name')
+          .get();
+      List<Admin> admins = [];
+
+      for (var doc in querySnapshot.docs) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        DocumentSnapshot adminDocSnapshot =
+            await _firestore.collection('admins').doc(doc.id).get();
+        if (adminDocSnapshot.exists) {
+          Admin admin = Admin(
+            id: doc.id,
+            name: data['name'] ?? '',
+            email: data['email'] ?? '',
+            phoneNumber: data['phoneNumber'] ?? '',
+            countryCode: data['countryCode'] ?? '',
+          );
+          admins.add(admin);
+        }
+      }
+      return admins;
+    } catch (e) {
+      if (e is FirebaseException) {
+        throw Exception(e.code);
+      } else {
+        throw Exception(e.toString());
+      }
+    }
   }
 
   Future<List<User>> getNoRoleList() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    List<User> users = [
-      User(
-          id: "ID1",
-          name: "John Doe 1",
-          email: "example1@example.com",
-          countryCode: "+251",
-          phoneNumber: "01005155",
-          role: UserRole.noRole),
-      User(
-          id: "ID2",
-          name: "John Doe 2",
-          email: "example2@example.com",
-          countryCode: "+252",
-          phoneNumber: "6516541102",
-          role: UserRole.noRole),
-      User(
-          id: "ID3",
-          name: "John Doe 3",
-          email: "example3@example.com",
-          countryCode: "+253",
-          phoneNumber: "6419641669",
-          role: UserRole.noRole),
-    ];
-    return users;
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('users')
+          .where('role', isEqualTo: 'none')
+          .orderBy('name')
+          .get();
+      List<User> users = querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        User user = User(
+          id: doc.id,
+          name: data['name'] ?? '',
+          email: data['email'] ?? '',
+          phoneNumber: data['phoneNumber'] ?? '',
+          countryCode: data['countryCode'] ?? '',
+          role: UserRole.noRole,
+        );
+        return user;
+      }).toList();
+      return users;
+    } catch (e) {
+      if (e is FirebaseException) {
+        throw Exception(e.code);
+      } else {
+        throw Exception(e.toString());
+      }
+    }
   }
 }

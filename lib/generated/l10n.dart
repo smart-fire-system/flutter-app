@@ -170,6 +170,16 @@ class S {
     );
   }
 
+  /// `Search by name, email or phone number ...`
+  String get searchBy {
+    return Intl.message(
+      'Search by name, email or phone number ...',
+      name: 'searchBy',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Home`
   String get home {
     return Intl.message(

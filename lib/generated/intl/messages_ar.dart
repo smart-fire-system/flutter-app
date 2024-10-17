@@ -232,6 +232,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "roleNotAssigned": MessageLookupByLibrary.simpleMessage(
             "لم يتم تعيين صلاحية وصول لك بعد. يرجى انتظار موافقة المديرين لمنحك صلاحية وصول."),
         "save_changes": MessageLookupByLibrary.simpleMessage("حفظ التعديلات"),
+        "searchBy": MessageLookupByLibrary.simpleMessage(
+            "بحث بالاسم، البريد الالكتروني أو رقم الهاتف ..."),
         "select_language":
             MessageLookupByLibrary.simpleMessage("يرجى اختيار اللغة"),
         "session_expired": MessageLookupByLibrary.simpleMessage(

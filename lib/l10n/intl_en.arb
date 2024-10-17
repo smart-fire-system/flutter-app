@@ -18,6 +18,8 @@
     "enter_email_to_reset": "Please enter your email address to reset your password.",
     "reset_email_sent": "A password reset email has been sent. Please check your inbox.",
 
+    "searchBy": "Search by name, email or phone number ...",
+
     "home": "Home",
     "profile": "Profile",
     "notifications": "Notifications",

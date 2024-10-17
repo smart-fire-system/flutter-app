@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/models/admin.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
+import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,12 +37,23 @@ class AdminDetailsState extends State<AdminDetails> {
           S.of(context).admins,
           style: CustomStyle.appBarText,
         ),
+        backgroundColor: Colors.lightBlue[900],
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.language, color: Colors.white),
+            onPressed: () {
+              LocalizationUtil.showEditLanguageDialog(context);
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: <Widget>[
-            const Divider(),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
@@ -131,55 +143,10 @@ class AdminDetailsState extends State<AdminDetails> {
                 },
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 30, left: 8, right: 8),
-              child: ElevatedButton(
-                onPressed: () {
-                  _deleteAdmin();
-                },
-                style: CustomStyle.normalButtonRed,
-                child: Text(S.of(context).deleteUser,
-                    style: CustomStyle.normalButtonText),
-              ),
-            ),
           ],
         ),
       ),
     );
-  }
-
-  Future<void> _deleteAdmin() async {
-    await Alert(
-      context: context,
-      title: S.of(context).deleteUser,
-      desc:
-          '${S.of(context).confirmDeleteUser}\n${S.of(context).name}: ${widget.admin.name}',
-      type: AlertType.warning,
-      style: AlertStyle(
-        titleStyle: CustomStyle.largeTextB,
-        descStyle: CustomStyle.mediumText,
-        animationType: AnimationType.grow,
-      ),
-      buttons: [
-        DialogButton(
-          child: Text(S.of(context).ok, style: CustomStyle.normalButtonText),
-          onPressed: () {
-            Navigator.pop(context);
-            context
-                .read<AdminsBloc>()
-                .add(DeleteRequested(id: widget.admin.id));
-            Navigator.pop(context);
-          },
-        ),
-        DialogButton(
-          child:
-              Text(S.of(context).cancel, style: CustomStyle.normalButtonText),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ],
-    ).show();
   }
 
   Future<void> _changeRole() async {
@@ -331,8 +298,10 @@ class AdminDetailsState extends State<AdminDetails> {
                       style: CustomStyle.normalButtonText),
                   onPressed: () {
                     Navigator.pop(context);
-                    context.read<AdminsBloc>().add(
-                        ModifyRequested(id: widget.admin.id, newRole: newRole));
+                    context.read<AdminsBloc>().add(ModifyRequested(
+                        id: widget.admin.id,
+                        oldRole: UserRole.admin,
+                        newRole: newRole));
                     Navigator.pop(context);
                   },
                 ),
