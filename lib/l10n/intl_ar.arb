@@ -64,7 +64,7 @@
     "userDeletedSuccessMessage": "تم حذف المستخدم بنجاح من النظام.",
     "accessRoleChangedSuccessMessage": "تم تحديث صلاحيات وصول المستخدم بنجاح.",
     "addNewAdmin": "إضافة مسئول جديد",
-
+    "add": "إضافة",
     "welcome": "مرحبا",
     "welcome_message": "مرحبًا في نظام إنذار الحريق. يرجى تسجيل الدخول أو إنشاء حساب.",
     "login": "تسجيل الدخول",

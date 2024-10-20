@@ -38,6 +38,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Your account is not verified. Please check your email for the verification link."),
         "account_not_verified_title":
             MessageLookupByLibrary.simpleMessage("Account Not Verified"),
+        "add": MessageLookupByLibrary.simpleMessage("Add"),
         "addNewAdmin": MessageLookupByLibrary.simpleMessage("Add New Admin"),
         "admin": MessageLookupByLibrary.simpleMessage("Admin"),
         "admins": MessageLookupByLibrary.simpleMessage("Admins"),

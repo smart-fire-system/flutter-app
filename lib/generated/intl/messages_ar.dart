@@ -39,6 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "حسابك غير مُفعّل. يرجى التحقق من بريدك الإلكتروني للحصول على رابط التفعيل."),
         "account_not_verified_title":
             MessageLookupByLibrary.simpleMessage("الحساب غير مُفعّل"),
+        "add": MessageLookupByLibrary.simpleMessage("إضافة"),
         "addNewAdmin": MessageLookupByLibrary.simpleMessage("إضافة مسئول جديد"),
         "admin": MessageLookupByLibrary.simpleMessage("مسئول"),
         "admins": MessageLookupByLibrary.simpleMessage("المسؤولون"),

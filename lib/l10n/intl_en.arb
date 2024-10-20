@@ -63,6 +63,7 @@
     "confirmChangeAccessRole": "Do you want to proceed with changing the user's access permissions?",
     "userDeletedSuccessMessage": "User has been successfully deleted from the system.",
     "accessRoleChangedSuccessMessage": "User's access role has been successfully updated.",
+    "add": "Add",
     "addNewAdmin": "Add New Admin",
 
     "not_authenticated" : "You are not logged in. To access this feature, please log in with your account.",
