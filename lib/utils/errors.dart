@@ -135,6 +135,8 @@ class Errors {
         return S.of(context).unavailable;
       case 'data-loss':
         return S.of(context).data_loss;
+      case 'popup_closed':
+        return S.of(context).cancelled;
       case 'unauthenticated':
         return S.of(context).unauthenticated;
       default:

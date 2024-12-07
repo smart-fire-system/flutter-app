@@ -113,7 +113,7 @@ class AdminsScreenState extends State<AdminsScreen> {
           S.of(context).admins,
           style: CustomStyle.appBarText,
         ),
-        backgroundColor: Colors.lightBlue[900],
+        backgroundColor: CustomStyle.appBarColor,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),

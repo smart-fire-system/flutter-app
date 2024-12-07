@@ -86,7 +86,7 @@ class HomeScreenState extends State<HomeScreen> {
           S.of(context).home,
           style: CustomStyle.appBarText,
         ),
-        backgroundColor: Colors.lightBlue[900],
+        backgroundColor: CustomStyle.appBarColor,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
@@ -491,7 +491,7 @@ class HomeScreenState extends State<HomeScreen> {
           S.of(context).app_name,
           style: CustomStyle.appBarText,
         ),
-        backgroundColor: Colors.lightBlue[900],
+        backgroundColor: CustomStyle.appBarColor,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
@@ -522,17 +522,8 @@ class HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.only(
                         left: 20.0, right: 20.0, bottom: 50.0),
                     child: Image.asset(
-                      'assets/images/logo_poster.png',
+                      'assets/images/logo/2.jpg',
                       fit: BoxFit.contain,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16.0, right: 16.0, bottom: 50.0),
-                    child: Text(
-                      S.of(context).welcome_message,
-                      style: CustomStyle.largeText25,
-                      textAlign: TextAlign.center,
                     ),
                   ),
                   Padding(
@@ -622,7 +613,7 @@ class HomeScreenState extends State<HomeScreen> {
           S.of(context).app_name,
           style: CustomStyle.appBarText,
         ),
-        backgroundColor: Colors.lightBlue[900],
+        backgroundColor: CustomStyle.appBarColor,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),

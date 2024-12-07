@@ -60,7 +60,7 @@ class AddAdminState extends State<AddAdmin> {
               S.of(context).addNewAdmin,
               style: CustomStyle.appBarText,
             ),
-            backgroundColor: Colors.lightBlue[900],
+        backgroundColor: CustomStyle.appBarColor,
             iconTheme: const IconThemeData(
               color: Colors.white,
             ),

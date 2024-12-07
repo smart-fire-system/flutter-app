@@ -96,7 +96,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           S.of(context).profile,
           style: CustomStyle.appBarText,
         ),
-        backgroundColor: Colors.lightBlue[900],
+        backgroundColor: CustomStyle.appBarColor,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),

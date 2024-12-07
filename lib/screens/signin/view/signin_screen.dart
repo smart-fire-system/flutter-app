@@ -140,7 +140,7 @@ class SignInScreenState extends State<SignInScreen> {
           S.of(context).login,
           style: CustomStyle.appBarText,
         ),
-        backgroundColor: Colors.lightBlue[900],
+        backgroundColor: CustomStyle.appBarColor,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
@@ -330,7 +330,7 @@ class SignInScreenState extends State<SignInScreen> {
           S.of(context).signup,
           style: CustomStyle.appBarText,
         ),
-        backgroundColor: Colors.lightBlue[900],
+        backgroundColor: CustomStyle.appBarColor,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
