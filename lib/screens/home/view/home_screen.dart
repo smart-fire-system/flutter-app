@@ -1,13 +1,13 @@
 import 'package:fire_alarm_system/utils/errors.dart';
+import 'package:fire_alarm_system/widgets/app_bar.dart';
+import 'package:fire_alarm_system/widgets/bottom_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
-import 'package:fire_alarm_system/widgets/side_menu.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
-import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/screens/home/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/home/bloc/event.dart';
@@ -15,21 +15,35 @@ import 'package:fire_alarm_system/screens/home/bloc/state.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final CustomBottomNavigatorItems currentTab;
+
+  const HomeScreen({
+    this.currentTab = CustomBottomNavigatorItems.system,
+    super.key,
+  });
 
   @override
   HomeScreenState createState() => HomeScreenState();
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  bool _showSideMenu = false;
   User? _user;
+  CustomBottomNavigatorItems selectedTab = CustomBottomNavigatorItems.system;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _showSideMenu = (MediaQuery.of(context).size.width > 600);
+    selectedTab = widget.currentTab;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _onItemTapped(CustomBottomNavigatorItems item) {
+    setState(() {
+      selectedTab = item;
     });
   }
 
@@ -64,7 +78,19 @@ class HomeScreenState extends State<HomeScreen> {
           if (state.isEmailVerified &&
               state.isPhoneAdded &&
               state.hasUserRole) {
-            return _buildHome(context);
+            if (selectedTab == CustomBottomNavigatorItems.reports) {
+              return _buildReportsTab(context);
+            } else if (selectedTab == CustomBottomNavigatorItems.complaints) {
+              return _buildComplaintsTab(context);
+            } else if (selectedTab == CustomBottomNavigatorItems.users) {
+              return _buildUsersTab(context);
+            } else if (selectedTab == CustomBottomNavigatorItems.system) {
+              return _buildSystemTab(context);
+            } else if (selectedTab == CustomBottomNavigatorItems.profile) {
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                Navigator.pushReplacementNamed(context, '/profile');
+              });
+            }
           } else {
             return _buildNotAuthorized(
                 context: context,
@@ -78,403 +104,405 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildHome(BuildContext context) {
+  Widget _buildUsersTab(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          S.of(context).home,
-          style: CustomStyle.appBarText,
-        ),
-        backgroundColor: CustomStyle.appBarColor,
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        leading: IconButton(
-          icon: Icon(
-            _showSideMenu ? Icons.keyboard_return : Icons.menu,
-            color: _showSideMenu ? Colors.red : Colors.black,
-          ),
-          style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(Colors.white)),
-          onPressed: () {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              setState(() {
-                _showSideMenu = !_showSideMenu;
-              });
-            });
-          },
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.language, color: Colors.white),
-            onPressed: () {
-              LocalizationUtil.showEditLanguageDialog(context);
-            },
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          context.read<HomeBloc>().add(RefreshRequested());
+      appBar: CustomAppBar(title: S.of(context).complaints),
+      bottomNavigationBar: CustomBottomNavigator(
+        selectedItem: CustomBottomNavigatorItems.users,
+        onItemClick: (CustomBottomNavigatorItems item) {
+          setState(() {
+            selectedTab = item;
+          });
         },
-        child: Row(
-          children: [
-            if (_showSideMenu || MediaQuery.of(context).size.width > 600)
-              CustomSideMenu(
-                highlightedItem: CustomSideMenuItem.home,
-                user: _user!,
-                width: MediaQuery.of(context).size.width > 600
-                    ? 300
-                    : MediaQuery.of(context).size.width,
-                noActionItems: const [
-                  CustomSideMenuItem.home,
-                  CustomSideMenuItem.logout
-                ],
-                onItemClick: (item) async {
-                  if (item == CustomSideMenuItem.logout) {
-                    _showSideMenu = (MediaQuery.of(context).size.width > 600);
-                    context.read<HomeBloc>().add(LogoutRequested());
-                  }
-                  if (item == CustomSideMenuItem.home) {
-                    _showSideMenu = (MediaQuery.of(context).size.width > 600);
-                    context.read<HomeBloc>().add(RefreshRequested());
-                  }
-                },
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                leading: Image.asset(
+                  'assets/images/logo/2.jpg',
+                ),
+                title: Text(
+                  S.of(context).users,
+                  style: CustomStyle.largeTextB,
+                ),
+                subtitle: Text(
+                  S.of(context).usersDescription,
+                  style: CustomStyle.smallText,
+                ),
               ),
-            if (!_showSideMenu || MediaQuery.of(context).size.width > 600)
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ListView(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Image.asset(
-                          'assets/images/logo_poster.png',
-                          fit: BoxFit.contain,
-                          height: 100,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                          clipBehavior: Clip.antiAlias,
-                          color: Colors.blue[100],
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ListTile(
-                                leading: const Icon(Icons.analytics,
-                                    color: Colors.black),
-                                title: Text(
-                                  S.of(context).system_monitoring_control,
-                                  style: CustomStyle.smallTextB,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text(
-                                  S.of(context).system_monitoring_description,
-                                  style: CustomStyle.smallText,
-                                ),
-                              ),
-                              Wrap(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                      ),
-                                      onPressed: () {
-                                        // Perform some action
-                                      },
-                                      child: Text(
-                                          S.of(context).viewAndControlSystem,
-                                          style: CustomStyle.smallText),
-                                    ),
-                                  ),
-                                  if (_user!.role == UserRole.admin ||
-                                      _user!.role == UserRole.technican)
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                        ),
-                                        onPressed: () {
-                                          // Perform some action
-                                        },
-                                        child: Text(
-                                            S
-                                                .of(context)
-                                                .manageAndConfigureSystem,
-                                            style: CustomStyle.smallText),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                          clipBehavior: Clip.antiAlias,
-                          color: Colors.blue[100],
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ListTile(
-                                leading: const Icon(Icons.summarize,
-                                    color: Colors.black),
-                                title: Text(S.of(context).reports,
-                                    style: CustomStyle.smallTextB),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text(
-                                  S.of(context).reportsDescription,
-                                  style: CustomStyle.smallText,
-                                ),
-                              ),
-                              Wrap(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                      ),
-                                      onPressed: () {
-                                        // Perform some action
-                                      },
-                                      child: Text(S.of(context).visits,
-                                          style: CustomStyle.smallText),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                      ),
-                                      onPressed: () {
-                                        // Perform some action
-                                      },
-                                      child: Text(
-                                          S.of(context).maintenanceContracts,
-                                          style: CustomStyle.smallText),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                      ),
-                                      onPressed: () {
-                                        // Perform some action
-                                      },
-                                      child: Text(
-                                          S.of(context).systemStatusAndFaults,
-                                          style: CustomStyle.smallText),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                          clipBehavior: Clip.antiAlias,
-                          color: Colors.blue[100],
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ListTile(
-                                leading: const Icon(Icons.feedback,
-                                    color: Colors.black),
-                                title: Text(S.of(context).complaints,
-                                    style: CustomStyle.smallTextB),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text(S.of(context).complaintsDescription,
-                                    style: CustomStyle.smallText),
-                              ),
-                              Wrap(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                      ),
-                                      onPressed: () {
-                                        // Perform some action
-                                      },
-                                      child: Text(S.of(context).viewComplaints,
-                                          style: CustomStyle.smallText),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                      ),
-                                      onPressed: () {
-                                        // Perform some action
-                                      },
-                                      child: Text(S.of(context).submitComplaint,
-                                          style: CustomStyle.smallText),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      if (_user!.role == UserRole.admin ||
-                          _user!.role == UserRole.regionalManager ||
-                          _user!.role == UserRole.branchManager ||
-                          _user!.role == UserRole.employee ||
-                          _user!.role == UserRole.technican)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Card(
-                            clipBehavior: Clip.antiAlias,
-                            color: Colors.blue[100],
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ListTile(
-                                  leading: const Icon(Icons.group,
-                                      color: Colors.black),
-                                  title: Text(S.of(context).users,
-                                      style: CustomStyle.smallTextB),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Text(S.of(context).usersDescription,
-                                      style: CustomStyle.smallText),
-                                ),
-                                Wrap(
-                                  children: [
-                                    if (_user!.role == UserRole.admin)
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.white,
-                                          ),
-                                          onPressed: () {
-                                            Navigator.pushNamed(
-                                                context, '/admins');
-                                          },
-                                          child: Text(S.of(context).admins,
-                                              style: CustomStyle.smallText),
-                                        ),
-                                      ),
-                                    if (_user!.role == UserRole.admin)
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.white,
-                                          ),
-                                          onPressed: () {
-                                            // Perform some action
-                                          },
-                                          child: Text(
-                                              S.of(context).regionalManagers,
-                                              style: CustomStyle.smallText),
-                                        ),
-                                      ),
-                                    if (_user!.role == UserRole.admin ||
-                                        _user!.role == UserRole.regionalManager)
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.white,
-                                          ),
-                                          onPressed: () {
-                                            // Perform some action
-                                          },
-                                          child: Text(
-                                              S.of(context).branchManagers,
-                                              style: CustomStyle.smallText),
-                                        ),
-                                      ),
-                                    if (_user!.role == UserRole.admin ||
-                                        _user!.role ==
-                                            UserRole.regionalManager ||
-                                        _user!.role == UserRole.branchManager)
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.white,
-                                          ),
-                                          onPressed: () {
-                                            // Perform some action
-                                          },
-                                          child: Text(S.of(context).employees,
-                                              style: CustomStyle.smallText),
-                                        ),
-                                      ),
-                                    if (_user!.role == UserRole.admin ||
-                                        _user!.role ==
-                                            UserRole.regionalManager ||
-                                        _user!.role == UserRole.branchManager)
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.white,
-                                          ),
-                                          onPressed: () {
-                                            // Perform some action
-                                          },
-                                          child: Text(S.of(context).technicans,
-                                              style: CustomStyle.smallText),
-                                        ),
-                                      ),
-                                    if (_user!.role == UserRole.admin ||
-                                        _user!.role ==
-                                            UserRole.regionalManager ||
-                                        _user!.role == UserRole.branchManager ||
-                                        _user!.role == UserRole.employee ||
-                                        _user!.role == UserRole.technican)
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.white,
-                                          ),
-                                          onPressed: () {
-                                            // Perform some action
-                                          },
-                                          child: Text(S.of(context).clients,
-                                              style: CustomStyle.smallText),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                    ],
+            ),
+            if (_user!.role == UserRole.admin)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Text(
+                    S.of(context).admins,
+                    style: CustomStyle.largeTextB,
                   ),
+                  leading: const Icon(
+                    Icons.looks_one,
+                    color: CustomStyle.redDark,
+                  ),
+                  trailing: const Icon(
+                    Icons.chevron_right,
+                    color: CustomStyle.redDark,
+                  ),
+                  onTap: () {},
+                ),
+              ),
+            if (_user!.role == UserRole.admin)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Text(
+                    S.of(context).regionalManagers,
+                    style: CustomStyle.largeTextB,
+                  ),
+                  leading: const Icon(
+                    Icons.looks_two,
+                    color: CustomStyle.redDark,
+                  ),
+                  trailing: const Icon(
+                    Icons.chevron_right,
+                    color: CustomStyle.redDark,
+                  ),
+                  onTap: () {},
+                ),
+              ),
+            if (_user!.role == UserRole.admin ||
+                _user!.role == UserRole.regionalManager)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Text(
+                    S.of(context).branchManagers,
+                    style: CustomStyle.largeTextB,
+                  ),
+                  leading: Icon(
+                    _user!.role == UserRole.admin
+                        ? Icons.looks_3
+                        : Icons.looks_one,
+                    color: CustomStyle.redDark,
+                  ),
+                  trailing: const Icon(
+                    Icons.chevron_right,
+                    color: CustomStyle.redDark,
+                  ),
+                  onTap: () {},
+                ),
+              ),
+            if (_user!.role == UserRole.admin ||
+                _user!.role == UserRole.regionalManager ||
+                _user!.role == UserRole.branchManager)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Text(
+                    S.of(context).employees,
+                    style: CustomStyle.largeTextB,
+                  ),
+                  leading: Icon(
+                    _user!.role == UserRole.admin
+                        ? Icons.looks_6
+                        : _user!.role == UserRole.regionalManager
+                            ? Icons.looks_two
+                            : Icons.looks_one,
+                    color: CustomStyle.redDark,
+                  ),
+                  trailing: const Icon(
+                    Icons.chevron_right,
+                    color: CustomStyle.redDark,
+                  ),
+                  onTap: () {},
+                ),
+              ),
+            if (_user!.role == UserRole.admin ||
+                _user!.role == UserRole.regionalManager ||
+                _user!.role == UserRole.branchManager)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Text(
+                    S.of(context).technicans,
+                    style: CustomStyle.largeTextB,
+                  ),
+                  leading: Icon(
+                    _user!.role == UserRole.admin
+                        ? Icons.looks_5
+                        : _user!.role == UserRole.regionalManager
+                            ? Icons.looks_3
+                            : Icons.looks_two,
+                    color: CustomStyle.redDark,
+                  ),
+                  trailing: const Icon(
+                    Icons.chevron_right,
+                    color: CustomStyle.redDark,
+                  ),
+                  onTap: () {},
+                ),
+              ),
+            if (_user!.role == UserRole.admin ||
+                _user!.role == UserRole.regionalManager ||
+                _user!.role == UserRole.branchManager ||
+                _user!.role == UserRole.employee ||
+                _user!.role == UserRole.technican)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Text(
+                    S.of(context).clients,
+                    style: CustomStyle.largeTextB,
+                  ),
+                  leading: Icon(
+                    _user!.role == UserRole.admin
+                        ? Icons.looks_6
+                        : _user!.role == UserRole.regionalManager
+                            ? Icons.looks_4
+                            : _user!.role == UserRole.branchManager
+                                ? Icons.looks_3
+                                : Icons.looks_one,
+                    color: CustomStyle.redDark,
+                  ),
+                  trailing: const Icon(
+                    Icons.chevron_right,
+                    color: CustomStyle.redDark,
+                  ),
+                  onTap: () {},
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildComplaintsTab(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: CustomAppBar(title: S.of(context).complaints),
+      bottomNavigationBar: CustomBottomNavigator(
+        selectedItem: CustomBottomNavigatorItems.complaints,
+        onItemClick: _onItemTapped,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                leading: Image.asset(
+                  'assets/images/logo/2.jpg',
+                ),
+                title: Text(
+                  S.of(context).complaints,
+                  style: CustomStyle.largeTextB,
+                ),
+                subtitle: Text(
+                  S.of(context).complaintsDescription,
+                  style: CustomStyle.smallText,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                title: Text(
+                  S.of(context).viewComplaints,
+                  style: CustomStyle.largeTextB,
+                ),
+                leading: const Icon(
+                  Icons.list,
+                  color: CustomStyle.redDark,
+                ),
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: CustomStyle.redDark,
+                ),
+                onTap: () {},
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                title: Text(
+                  S.of(context).submitComplaint,
+                  style: CustomStyle.largeTextB,
+                ),
+                leading: const Icon(
+                  Icons.support_agent,
+                  color: CustomStyle.redDark,
+                ),
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: CustomStyle.redDark,
+                ),
+                onTap: () {},
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReportsTab(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: CustomAppBar(title: S.of(context).reports),
+      bottomNavigationBar: CustomBottomNavigator(
+        selectedItem: CustomBottomNavigatorItems.reports,
+        onItemClick: _onItemTapped,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                leading: Image.asset(
+                  'assets/images/logo/2.jpg',
+                ),
+                title: Text(
+                  S.of(context).reports,
+                  style: CustomStyle.largeTextB,
+                ),
+                subtitle: Text(
+                  S.of(context).reportsDescription,
+                  style: CustomStyle.smallText,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                title: Text(
+                  S.of(context).visits,
+                  style: CustomStyle.largeTextB,
+                ),
+                leading: const Icon(
+                  Icons.article,
+                  color: CustomStyle.redDark,
+                ),
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: CustomStyle.redDark,
+                ),
+                onTap: () {},
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                title: Text(
+                  S.of(context).maintenanceContracts,
+                  style: CustomStyle.largeTextB,
+                ),
+                leading: const Icon(
+                  Icons.article,
+                  color: CustomStyle.redDark,
+                ),
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: CustomStyle.redDark,
+                ),
+                onTap: () {},
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                title: Text(
+                  S.of(context).systemStatusAndFaults,
+                  style: CustomStyle.largeTextB,
+                ),
+                leading: const Icon(
+                  Icons.article,
+                  color: CustomStyle.redDark,
+                ),
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: CustomStyle.redDark,
+                ),
+                onTap: () {},
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSystemTab(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: CustomAppBar(title: S.of(context).system),
+      bottomNavigationBar: CustomBottomNavigator(
+        selectedItem: CustomBottomNavigatorItems.system,
+        onItemClick: _onItemTapped,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                leading: Image.asset(
+                  'assets/images/logo/2.jpg',
+                ),
+                title: Text(
+                  S.of(context).system_monitoring_control,
+                  style: CustomStyle.largeTextB,
+                ),
+                subtitle: Text(
+                  S.of(context).system_monitoring_description,
+                  style: CustomStyle.smallText,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                title: Text(
+                  S.of(context).viewAndControlSystem,
+                  style: CustomStyle.largeTextB,
+                ),
+                leading: const Icon(
+                  Icons.bar_chart_outlined,
+                  color: CustomStyle.redDark,
+                ),
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: CustomStyle.redDark,
+                ),
+                onTap: () {},
+              ),
+            ),
+            if (_user!.role == UserRole.admin ||
+                _user!.role == UserRole.technican)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Text(
+                    S.of(context).manageAndConfigureSystem,
+                    style: CustomStyle.largeTextB,
+                  ),
+                  leading: const Icon(
+                    Icons.settings,
+                    color: CustomStyle.redDark,
+                  ),
+                  trailing: const Icon(
+                    Icons.chevron_right,
+                    color: CustomStyle.redDark,
+                  ),
+                  onTap: () {},
                 ),
               ),
           ],
@@ -486,27 +514,7 @@ class HomeScreenState extends State<HomeScreen> {
   Widget _buildWelcome(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          S.of(context).app_name,
-          style: CustomStyle.appBarText,
-        ),
-        backgroundColor: CustomStyle.appBarColor,
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(
-              Icons.language,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              LocalizationUtil.showEditLanguageDialog(context);
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: S.of(context).app_name),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -584,7 +592,7 @@ class HomeScreenState extends State<HomeScreen> {
                           color: Colors.white),
                       label: Text(
                         S.of(context).continue_with_google,
-                        style: CustomStyle.normalButtonTextSmall,
+                        style: CustomStyle.normalButtonTextSmallWhite,
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
@@ -608,24 +616,7 @@ class HomeScreenState extends State<HomeScreen> {
       required bool hasUserRole}) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          S.of(context).app_name,
-          style: CustomStyle.appBarText,
-        ),
-        backgroundColor: CustomStyle.appBarColor,
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.language, color: Colors.white),
-            onPressed: () {
-              LocalizationUtil.showEditLanguageDialog(context);
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: S.of(context).app_name),
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<HomeBloc>().add(RefreshRequested());
@@ -769,7 +760,7 @@ class HomeScreenState extends State<HomeScreen> {
                   icon: const Icon(Icons.logout, color: Colors.white),
                   label: Text(
                     S.of(context).logout,
-                    style: CustomStyle.normalButtonTextSmall,
+                    style: CustomStyle.normalButtonTextSmallWhite,
                   ),
                   style: CustomStyle.normalButtonRed,
                 ),

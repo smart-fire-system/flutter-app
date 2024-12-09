@@ -1,8 +1,8 @@
 
 class Branch {
-  String index;
   String id;
   String name;
+  String description;
 
-  Branch({required this.index, required this.id, required this.name});
+  Branch({required this.id, required this.name, required this.description});
 }

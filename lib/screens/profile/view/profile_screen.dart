@@ -1,6 +1,8 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:fire_alarm_system/utils/data_validator_util.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
+import 'package:fire_alarm_system/widgets/app_bar.dart';
+import 'package:fire_alarm_system/widgets/bottom_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
@@ -8,7 +10,6 @@ import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/widgets/side_menu.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
-import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/event.dart';
@@ -91,41 +92,22 @@ class ProfileScreenState extends State<ProfileScreen> {
     phoneController.value = TextEditingValue(text: _user!.phoneNumber);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          S.of(context).profile,
-          style: CustomStyle.appBarText,
-        ),
-        backgroundColor: CustomStyle.appBarColor,
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        leading: !_isAuthorized
-            ? null
-            : IconButton(
-                icon: Icon(
-                  _showSideMenu ? Icons.keyboard_return : Icons.menu,
-                  color: _showSideMenu ? Colors.red : Colors.black,
-                ),
-                style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(
-                        _showSideMenu ? Colors.blueAccent : Colors.white)),
-                onPressed: () {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    setState(() {
-                      _showSideMenu = !_showSideMenu;
-                    });
-                  });
-                },
-              ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.language, color: Colors.white),
-            onPressed: () {
-              LocalizationUtil.showEditLanguageDialog(context);
-            },
-          ),
-        ],
+      appBar: CustomAppBar(title: S.of(context).profile),
+      bottomNavigationBar: CustomBottomNavigator(
+        selectedItem: CustomBottomNavigatorItems.profile,
+        onItemClick: (CustomBottomNavigatorItems item) {
+          if (item == CustomBottomNavigatorItems.system) {
+            Navigator.pushReplacementNamed(context, '/system', arguments: item);
+          } else if (item == CustomBottomNavigatorItems.users) {
+            Navigator.pushReplacementNamed(context, '/users', arguments: item);
+          } else if (item == CustomBottomNavigatorItems.complaints) {
+            Navigator.pushReplacementNamed(context, '/complaints',
+                arguments: item);
+          } else if (item == CustomBottomNavigatorItems.reports) {
+            Navigator.pushReplacementNamed(context, '/reports',
+                arguments: item);
+          }
+        },
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -276,7 +258,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                             _editMode
                                 ? S.of(context).save_changes
                                 : S.of(context).edit_information,
-                            style: CustomStyle.normalButtonTextSmall,
+                            style: _editMode
+                                ? CustomStyle.normalButtonTextSmallWhite
+                                : CustomStyle.normalButtonTextSmall,
                           ),
                           style: _editMode
                               ? CustomStyle.normalButtonGreen
@@ -308,7 +292,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                           icon: const Icon(Icons.logout, color: Colors.white),
                           label: Text(
                             S.of(context).logout,
-                            style: CustomStyle.normalButtonTextSmall,
+                            style: CustomStyle.normalButtonTextSmallWhite,
                           ),
                           style: CustomStyle.normalButtonRed,
                         ),

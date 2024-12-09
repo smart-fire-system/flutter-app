@@ -9,7 +9,11 @@ class CustomStyle {
   static const Color greyMedium = Color.fromARGB(255, 144, 147, 149);
   static const Color greyLight = Color.fromARGB(255, 189, 189, 189);
 
-  static const Color appBarColor = redDark;
+  static final TextStyle navBarText = GoogleFonts.cairo(
+      fontSize: 12, color: greyLight, fontWeight: FontWeight.w500);
+
+  static final TextStyle navBarTextHighLighted = GoogleFonts.cairo(
+      fontSize: 14, color: redDark, fontWeight: FontWeight.w700);
 
   static final TextStyle appBarText = GoogleFonts.cairo(
       fontSize: 25, color: Colors.white, fontWeight: FontWeight.w500);
@@ -71,7 +75,14 @@ class CustomStyle {
   static final TextStyle normalButtonText = GoogleFonts.cairo(
       fontSize: 20, color: redDark, fontWeight: FontWeight.w600);
   static final TextStyle normalButtonTextMedium = GoogleFonts.cairo(
-      fontSize: 18, color: Colors.white, fontWeight: FontWeight.w500);
+      fontSize: 18, color: redDark, fontWeight: FontWeight.w500);
   static final TextStyle normalButtonTextSmall = GoogleFonts.cairo(
+      fontSize: 16, color: redDark, fontWeight: FontWeight.w500);
+
+  static final TextStyle normalButtonTextWhite = GoogleFonts.cairo(
+      fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600);
+  static final TextStyle normalButtonTextMediumWhite = GoogleFonts.cairo(
+      fontSize: 18, color: Colors.white, fontWeight: FontWeight.w500);
+  static final TextStyle normalButtonTextSmallWhite = GoogleFonts.cairo(
       fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500);
 }

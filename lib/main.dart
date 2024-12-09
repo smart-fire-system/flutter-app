@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/firebase_options.dart';
+import 'package:fire_alarm_system/widgets/bottom_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -99,6 +100,10 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
           },
           routes: {
             '/home': (context) => const HomeScreen(),
+            '/system': (context) => const HomeScreen(currentTab: CustomBottomNavigatorItems.system),
+            '/reports': (context) => const HomeScreen(currentTab: CustomBottomNavigatorItems.reports),
+            '/complaints': (context) => const HomeScreen(currentTab: CustomBottomNavigatorItems.complaints),
+            '/users': (context) => const HomeScreen(currentTab: CustomBottomNavigatorItems.users),
             '/signIn': (context) => const SignInScreen(),
             '/admins': (context) => const AdminsScreen(),
             '/profile': (context) => const ProfileScreen(),

@@ -1,6 +1,6 @@
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
-import 'package:fire_alarm_system/utils/localization_util.dart';
+import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -55,24 +55,7 @@ class AddAdminState extends State<AddAdmin> {
     return BlocBuilder<AdminsBloc, AdminsState>(
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              S.of(context).addNewAdmin,
-              style: CustomStyle.appBarText,
-            ),
-        backgroundColor: CustomStyle.appBarColor,
-            iconTheme: const IconThemeData(
-              color: Colors.white,
-            ),
-            actions: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.language, color: Colors.white),
-                onPressed: () {
-                  LocalizationUtil.showEditLanguageDialog(context);
-                },
-              ),
-            ],
-          ),
+          appBar: CustomAppBar(title: S.of(context).addNewAdmin),
           body: Column(
             children: [
               Padding(

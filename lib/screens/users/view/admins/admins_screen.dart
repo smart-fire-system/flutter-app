@@ -2,6 +2,7 @@ import 'package:fire_alarm_system/models/admin.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/users/view/admins/admins_add.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
+import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,7 +10,6 @@ import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/widgets/side_menu.dart';
-import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
 import 'package:fire_alarm_system/screens/users/bloc/admins/bloc.dart';
@@ -108,39 +108,7 @@ class AdminsScreenState extends State<AdminsScreen> {
 
   Widget _buildAdmins(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          S.of(context).admins,
-          style: CustomStyle.appBarText,
-        ),
-        backgroundColor: CustomStyle.appBarColor,
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        leading: IconButton(
-          icon: Icon(
-            _showSideMenu ? Icons.keyboard_return : Icons.menu,
-            color: _showSideMenu ? Colors.red : Colors.black,
-          ),
-          style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(Colors.white)),
-          onPressed: () {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              setState(() {
-                _showSideMenu = !_showSideMenu;
-              });
-            });
-          },
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.language, color: Colors.white),
-            onPressed: () {
-              LocalizationUtil.showEditLanguageDialog(context);
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: S.of(context).admins),
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<AdminsBloc>().add(AuthChanged());

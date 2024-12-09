@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/utils/errors.dart';
+import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,7 +9,6 @@ import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
-import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/utils/data_validator_util.dart';
 
 import 'package:fire_alarm_system/screens/signin/bloc/bloc.dart';
@@ -135,24 +135,7 @@ class SignInScreenState extends State<SignInScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          S.of(context).login,
-          style: CustomStyle.appBarText,
-        ),
-        backgroundColor: CustomStyle.appBarColor,
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.language, color: Colors.white),
-            onPressed: () {
-              LocalizationUtil.showEditLanguageDialog(context);
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: S.of(context).login),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -299,7 +282,7 @@ class SignInScreenState extends State<SignInScreen> {
                             color: Colors.white),
                         label: Text(
                           S.of(context).continue_with_google,
-                          style: CustomStyle.normalButtonTextSmall,
+                          style: CustomStyle.normalButtonTextSmallWhite,
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
@@ -325,24 +308,7 @@ class SignInScreenState extends State<SignInScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          S.of(context).signup,
-          style: CustomStyle.appBarText,
-        ),
-        backgroundColor: CustomStyle.appBarColor,
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.language, color: Colors.white),
-            onPressed: () {
-              LocalizationUtil.showEditLanguageDialog(context);
-            },
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: S.of(context).signup),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -498,7 +464,7 @@ class SignInScreenState extends State<SignInScreen> {
                             color: Colors.white),
                         label: Text(
                           S.of(context).continue_with_google,
-                          style: CustomStyle.normalButtonTextSmall,
+                          style: CustomStyle.normalButtonTextSmallWhite,
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
