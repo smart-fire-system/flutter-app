@@ -53,6 +53,7 @@ dependencies:
   connectivity_plus: ^6.0.5
   flutter_native_splash: ^2.4.1
   persistent_bottom_nav_bar: ^6.2.1
+  drop_down_list: ^0.0.8
 
 
 dev_dependencies:

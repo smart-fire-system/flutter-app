@@ -1,4 +1,7 @@
 import 'package:fire_alarm_system/firebase_options.dart';
+import 'package:fire_alarm_system/models/branch.dart';
+import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
+import 'package:fire_alarm_system/screens/branches/view/branches_screen.dart';
 import 'package:fire_alarm_system/widgets/bottom_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -71,6 +74,8 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
               create: (_) => AdminsBloc(authRepository: _authRepository)),
           BlocProvider(
               create: (_) => ProfileBloc(authRepository: _authRepository)),
+          BlocProvider(
+              create: (_) => BranchesBloc(authRepository: _authRepository)),
         ],
         child: MaterialApp(
           title: 'Fire Alarm System',
@@ -107,6 +112,7 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
             '/signIn': (context) => const SignInScreen(),
             '/admins': (context) => const AdminsScreen(),
             '/profile': (context) => const ProfileScreen(),
+            '/branches': (context) => const BranchesScreen(),
           },
           initialRoute: '/home',
         ),

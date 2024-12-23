@@ -13,6 +13,7 @@
     "error": "Error",
     "ok": "Ok",
     "cancel": "Cancel",
+    "and": "and",
 
     "forgot_password": "Forgot your password?",
     "enter_email_to_reset": "Please enter your email address to reset your password.",
@@ -32,6 +33,8 @@
     "submitComplaint": "Submit Complaint",
     "reports": "Reports",
     "visits": "Visits",
+    "branches": "Branches",
+    "buildings": "Buildings",
     "maintenanceContracts": "Maintenance Contracts",
     "systemStatusAndFaults": "System Status and Faults",
     "users": "Users",
@@ -56,6 +59,7 @@
     "reportsDescription": "Show reports for maintenance contracts, visits and system status.",
     "complaintsDescription": "Show open compaints or submit new one.",
     "usersDescription": "Show and give or remove access from users",
+    "branchesDescription": "Add or remove branches",
 
     "deleteUser": "Remove User",
     "changeAccessRole": "Modify Access Role",
@@ -63,6 +67,23 @@
     "confirmChangeAccessRole": "Do you want to proceed with changing the user's access permissions?",
     "userDeletedSuccessMessage": "User has been successfully deleted from the system.",
     "accessRoleChangedSuccessMessage": "User's access role has been successfully updated.",
+
+    "addBranch": "Add New Branch",
+    "branchModified": "The branch details have been updated successfully.",
+    "branchAdded": "The branch has been added successfully.",
+    "branchDeleted": "The branch has been deleted successfully.",
+    "branchModifyWarning": "Please double-check the updated branch details before saving. Are you sure you want to proceed?",
+    "branchAddWarning": "Ensure all required branch fields are filled correctly before adding. Are you sure you want to proceed?",
+    "branchDeleteWarning": "Deleting this branch is irreversible. Are you sure you want to proceed?",
+    
+    "addBuilding": "Add New Building",
+    "buildingModified": "The building details have been updated successfully.",
+    "buildingAdded": "The building has been added successfully.",
+    "buildingDeleted": "The building has been deleted successfully.",
+    "buildingModifyWarning": "Please double-check the updated building details before saving. Are you sure you want to proceed?",
+    "buildingAddWarning": "Ensure all required building fields are filled correctly before adding. Are you sure you want to proceed?",
+    "buildingDeleteWarning": "Deleting this building is irreversible. Are you sure you want to proceed?",
+
     "add": "Add",
     "addNewAdmin": "Add New Admin",
 

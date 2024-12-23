@@ -107,8 +107,12 @@ class HomeScreenState extends State<HomeScreen> {
   Widget _buildUsersTab(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).complaints),
+      appBar: CustomAppBar(
+          title: _user!.role == UserRole.admin
+              ? '${S.of(context).users} ${S.of(context).and} ${S.of(context).branches}'
+              : S.of(context).users),
       bottomNavigationBar: CustomBottomNavigator(
+        user: _user!,
         selectedItem: CustomBottomNavigatorItems.users,
         onItemClick: (CustomBottomNavigatorItems item) {
           setState(() {
@@ -120,6 +124,61 @@ class HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: <Widget>[
+            if (_user!.role == UserRole.admin)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  leading: Image.asset(
+                    'assets/images/logo/2.jpg',
+                  ),
+                  title: Text(
+                    S.of(context).branches,
+                    style: CustomStyle.largeTextB,
+                  ),
+                  subtitle: Text(
+                    S.of(context).branchesDescription,
+                    style: CustomStyle.smallText,
+                  ),
+                ),
+              ),
+            if (_user!.role == UserRole.admin)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Text(
+                    S.of(context).branches,
+                    style: CustomStyle.largeTextB,
+                  ),
+                  leading: const Icon(
+                    Icons.looks_one,
+                    color: CustomStyle.redDark,
+                  ),
+                  trailing: const Icon(
+                    Icons.chevron_right,
+                    color: CustomStyle.redDark,
+                  ),
+                  onTap: () {},
+                ),
+              ),
+            if (_user!.role == UserRole.admin)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Text(
+                    S.of(context).buildings,
+                    style: CustomStyle.largeTextB,
+                  ),
+                  leading: const Icon(
+                    Icons.looks_two,
+                    color: CustomStyle.redDark,
+                  ),
+                  trailing: const Icon(
+                    Icons.chevron_right,
+                    color: CustomStyle.redDark,
+                  ),
+                  onTap: () {},
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListTile(
@@ -286,6 +345,7 @@ class HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: S.of(context).complaints),
       bottomNavigationBar: CustomBottomNavigator(
+        user: _user!,
         selectedItem: CustomBottomNavigatorItems.complaints,
         onItemClick: _onItemTapped,
       ),
@@ -356,6 +416,7 @@ class HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: S.of(context).reports),
       bottomNavigationBar: CustomBottomNavigator(
+        user: _user!,
         selectedItem: CustomBottomNavigatorItems.reports,
         onItemClick: _onItemTapped,
       ),
@@ -444,6 +505,7 @@ class HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: S.of(context).system),
       bottomNavigationBar: CustomBottomNavigator(
+        user: _user!,
         selectedItem: CustomBottomNavigatorItems.system,
         onItemClick: _onItemTapped,
       ),
@@ -482,7 +544,10 @@ class HomeScreenState extends State<HomeScreen> {
                   Icons.chevron_right,
                   color: CustomStyle.redDark,
                 ),
-                onTap: () {},
+                onTap: () {
+                  print("==========================");
+                  Navigator.pushNamed(context, '/branches');
+                },
               ),
             ),
             if (_user!.role == UserRole.admin ||

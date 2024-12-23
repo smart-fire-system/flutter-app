@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "account_not_verified_title":
             MessageLookupByLibrary.simpleMessage("Account Not Verified"),
         "add": MessageLookupByLibrary.simpleMessage("Add"),
+        "addBranch": MessageLookupByLibrary.simpleMessage("Add New Branch"),
+        "addBuilding": MessageLookupByLibrary.simpleMessage("Add New Building"),
         "addNewAdmin": MessageLookupByLibrary.simpleMessage("Add New Admin"),
         "admin": MessageLookupByLibrary.simpleMessage("Admin"),
         "admins": MessageLookupByLibrary.simpleMessage("Admins"),
@@ -46,12 +48,41 @@ class MessageLookup extends MessageLookupByLibrary {
             "The resource already exists."),
         "already_have_an_account": MessageLookupByLibrary.simpleMessage(
             "Already have an account? Log In"),
+        "and": MessageLookupByLibrary.simpleMessage("and"),
         "app_name": MessageLookupByLibrary.simpleMessage("Fire Alarm System"),
         "app_not_authorized": MessageLookupByLibrary.simpleMessage(
             "This app is not authorized to access the Firebase project. Contact the administrator."),
+        "branchAddWarning": MessageLookupByLibrary.simpleMessage(
+            "Ensure all required branch fields are filled correctly before adding. Are you sure you want to proceed?"),
+        "branchAdded": MessageLookupByLibrary.simpleMessage(
+            "The branch has been added successfully."),
+        "branchDeleteWarning": MessageLookupByLibrary.simpleMessage(
+            "Deleting this branch is irreversible. Are you sure you want to proceed?"),
+        "branchDeleted": MessageLookupByLibrary.simpleMessage(
+            "The branch has been deleted successfully."),
         "branchManager": MessageLookupByLibrary.simpleMessage("Branch Manager"),
         "branchManagers":
             MessageLookupByLibrary.simpleMessage("Branch Managers"),
+        "branchModified": MessageLookupByLibrary.simpleMessage(
+            "The branch details have been updated successfully."),
+        "branchModifyWarning": MessageLookupByLibrary.simpleMessage(
+            "Please double-check the updated branch details before saving. Are you sure you want to proceed?"),
+        "branches": MessageLookupByLibrary.simpleMessage("Branches"),
+        "branchesDescription":
+            MessageLookupByLibrary.simpleMessage("Add or remove branches"),
+        "buildingAddWarning": MessageLookupByLibrary.simpleMessage(
+            "Ensure all required building fields are filled correctly before adding. Are you sure you want to proceed?"),
+        "buildingAdded": MessageLookupByLibrary.simpleMessage(
+            "The building has been added successfully."),
+        "buildingDeleteWarning": MessageLookupByLibrary.simpleMessage(
+            "Deleting this building is irreversible. Are you sure you want to proceed?"),
+        "buildingDeleted": MessageLookupByLibrary.simpleMessage(
+            "The building has been deleted successfully."),
+        "buildingModified": MessageLookupByLibrary.simpleMessage(
+            "The building details have been updated successfully."),
+        "buildingModifyWarning": MessageLookupByLibrary.simpleMessage(
+            "Please double-check the updated building details before saving. Are you sure you want to proceed?"),
+        "buildings": MessageLookupByLibrary.simpleMessage("Buildings"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "cancelled": MessageLookupByLibrary.simpleMessage(
             "The operation was cancelled. Please try again."),

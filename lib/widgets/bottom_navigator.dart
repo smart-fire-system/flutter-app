@@ -1,3 +1,5 @@
+import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
@@ -24,13 +26,13 @@ class CustomBottomNavigatorItemData {
 
 class CustomBottomNavigator extends StatefulWidget {
   final CustomBottomNavigatorItems selectedItem;
-  final bool includeUsers;
-  final void Function(CustomBottomNavigatorItems item) onItemClick;
+  final User user;
+  final void Function(CustomBottomNavigatorItems item)? onItemClick;
   const CustomBottomNavigator({
     super.key,
     required this.selectedItem,
-    required this.onItemClick,
-    this.includeUsers = true,
+    this.onItemClick,
+    required this.user,
   });
 
   @override
@@ -38,6 +40,10 @@ class CustomBottomNavigator extends StatefulWidget {
 }
 
 class CustomBottomNavigatorState extends State<CustomBottomNavigator> {
+  void _defaultOnItemClick(CustomBottomNavigatorItems item) {
+    print("Default onItemClick triggered for $item");
+  }
+
   @override
   void initState() {
     super.initState();
@@ -67,7 +73,7 @@ class CustomBottomNavigatorState extends State<CustomBottomNavigator> {
           icon: Icons.group,
           label: S.of(context).users),
     ];
-    if (widget.includeUsers == false) {
+    if (widget.user.role == UserRole.client) {
       items.removeAt(CustomBottomNavigatorItems.users.index);
     }
     return Container(
@@ -86,7 +92,7 @@ class CustomBottomNavigatorState extends State<CustomBottomNavigator> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: items.asMap().entries.map((entry) {
           return GestureDetector(
-            onTap: () => widget.onItemClick(entry.value.item),
+            onTap: () => widget.onItemClick!(entry.value.item),
             child: _buildNavItem(entry.value),
           );
         }).toList(),
@@ -96,7 +102,11 @@ class CustomBottomNavigatorState extends State<CustomBottomNavigator> {
 
   Widget _buildNavItem(CustomBottomNavigatorItemData itemData) {
     final isSelected = widget.selectedItem == itemData.item;
-
+    if (itemData.item == CustomBottomNavigatorItems.users &&
+        widget.user.role == UserRole.admin) {
+      itemData.label =
+          '${S.of(context).users} ${S.of(context).and} ${S.of(context).branches}';
+    }
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(

@@ -35,16 +35,23 @@ class CustomStyle {
 
   static final TextStyle mediumText = GoogleFonts.cairo(
       fontSize: 18, color: Colors.black, fontWeight: FontWeight.w500);
+  static final TextStyle mediumTextWhite = GoogleFonts.cairo(
+      fontSize: 18, color: Colors.white, fontWeight: FontWeight.w500);
   static final TextStyle mediumTextB = GoogleFonts.cairo(
       fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700);
 
   static final TextStyle smallText = GoogleFonts.cairo(
       fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500);
+  static final TextStyle smallTextRed = GoogleFonts.cairo(
+      fontSize: 16, color: redDark, fontWeight: FontWeight.w500);
+  static final TextStyle smallTextGrey = GoogleFonts.cairo(
+      fontSize: 16, color: greyDark, fontWeight: FontWeight.w500);
   static final TextStyle smallTextB = GoogleFonts.cairo(
       fontSize: 16, color: Colors.black, fontWeight: FontWeight.w700);
 
-  static final TextStyle smallTextGrey = GoogleFonts.cairo(
-      fontSize: 16, color: Colors.grey, fontWeight: FontWeight.w500);
+  static final TextStyle smallTextBWhite = GoogleFonts.cairo(
+      fontSize: 16, color: Colors.white, fontWeight: FontWeight.w700);
+
 
   static final ButtonStyle normalButton = ElevatedButton.styleFrom(
     backgroundColor: Colors.white,

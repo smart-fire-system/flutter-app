@@ -94,6 +94,7 @@ class ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: CustomAppBar(title: S.of(context).profile),
       bottomNavigationBar: CustomBottomNavigator(
+        user: _user!,
         selectedItem: CustomBottomNavigatorItems.profile,
         onItemClick: (CustomBottomNavigatorItems item) {
           if (item == CustomBottomNavigatorItems.system) {

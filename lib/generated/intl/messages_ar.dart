@@ -40,6 +40,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "account_not_verified_title":
             MessageLookupByLibrary.simpleMessage("الحساب غير مُفعّل"),
         "add": MessageLookupByLibrary.simpleMessage("إضافة"),
+        "addBranch": MessageLookupByLibrary.simpleMessage("إضافة فرع جديد"),
+        "addBuilding": MessageLookupByLibrary.simpleMessage("إضافة مبنى جديد"),
         "addNewAdmin": MessageLookupByLibrary.simpleMessage("إضافة مسئول جديد"),
         "admin": MessageLookupByLibrary.simpleMessage("مسئول"),
         "admins": MessageLookupByLibrary.simpleMessage("المسؤولون"),
@@ -47,11 +49,40 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("المورد موجود بالفعل."),
         "already_have_an_account": MessageLookupByLibrary.simpleMessage(
             "لديك حساب بالفعل؟ تسجيل الدخول"),
+        "and": MessageLookupByLibrary.simpleMessage("و"),
         "app_name": MessageLookupByLibrary.simpleMessage("نظام إنذار الحريق"),
         "app_not_authorized": MessageLookupByLibrary.simpleMessage(
             "هذا التطبيق غير مصرح له. تواصل مع المسؤول."),
+        "branchAddWarning": MessageLookupByLibrary.simpleMessage(
+            "تأكد من ملء جميع الحقول المطلوبة للفرع بشكل صحيح قبل الإضافة. هل أنت متأكد أنك تريد المتابعة؟"),
+        "branchAdded":
+            MessageLookupByLibrary.simpleMessage("تم إضافة الفرع بنجاح."),
+        "branchDeleteWarning": MessageLookupByLibrary.simpleMessage(
+            "حذف هذا الفرع لا يمكن التراجع عنه. هل أنت متأكد أنك تريد المتابعة؟"),
+        "branchDeleted":
+            MessageLookupByLibrary.simpleMessage("تم حذف الفرع بنجاح."),
         "branchManager": MessageLookupByLibrary.simpleMessage("مدير فرع"),
         "branchManagers": MessageLookupByLibrary.simpleMessage("مديرو الفروع"),
+        "branchModified": MessageLookupByLibrary.simpleMessage(
+            "تم تحديث تفاصيل الفرع بنجاح."),
+        "branchModifyWarning": MessageLookupByLibrary.simpleMessage(
+            "يرجى التحقق من صحة تفاصيل الفرع المحدثة قبل الحفظ. هل أنت متأكد أنك تريد المتابعة؟"),
+        "branches": MessageLookupByLibrary.simpleMessage("الفروع"),
+        "branchesDescription":
+            MessageLookupByLibrary.simpleMessage("إضافة أو حذف الفروع"),
+        "buildingAddWarning": MessageLookupByLibrary.simpleMessage(
+            "تأكد من ملء جميع الحقول المطلوبة للمبنى بشكل صحيح قبل الإضافة. هل أنت متأكد أنك تريد المتابعة؟"),
+        "buildingAdded":
+            MessageLookupByLibrary.simpleMessage("تم إضافة المبنى بنجاح."),
+        "buildingDeleteWarning": MessageLookupByLibrary.simpleMessage(
+            "حذف هذا المبنى لا يمكن التراجع عنه. هل أنت متأكد أنك تريد المتابعة؟"),
+        "buildingDeleted":
+            MessageLookupByLibrary.simpleMessage("تم حذف المبنى بنجاح."),
+        "buildingModified": MessageLookupByLibrary.simpleMessage(
+            "تم تحديث تفاصيل المبنى بنجاح."),
+        "buildingModifyWarning": MessageLookupByLibrary.simpleMessage(
+            "يرجى التحقق من صحة تفاصيل المبنى المحدثة قبل الحفظ. هل أنت متأكد أنك تريد المتابعة؟"),
+        "buildings": MessageLookupByLibrary.simpleMessage("المباني"),
         "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
         "cancelled": MessageLookupByLibrary.simpleMessage(
             "تم إلغاء العملية. حاول مجددًا."),

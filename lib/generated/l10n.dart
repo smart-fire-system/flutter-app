@@ -140,6 +140,16 @@ class S {
     );
   }
 
+  /// `and`
+  String get and {
+    return Intl.message(
+      'and',
+      name: 'and',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Forgot your password?`
   String get forgot_password {
     return Intl.message(
@@ -295,6 +305,26 @@ class S {
     return Intl.message(
       'Visits',
       name: 'visits',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Branches`
+  String get branches {
+    return Intl.message(
+      'Branches',
+      name: 'branches',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Buildings`
+  String get buildings {
+    return Intl.message(
+      'Buildings',
+      name: 'buildings',
       desc: '',
       args: [],
     );
@@ -530,6 +560,16 @@ class S {
     );
   }
 
+  /// `Add or remove branches`
+  String get branchesDescription {
+    return Intl.message(
+      'Add or remove branches',
+      name: 'branchesDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Remove User`
   String get deleteUser {
     return Intl.message(
@@ -585,6 +625,146 @@ class S {
     return Intl.message(
       'User\'s access role has been successfully updated.',
       name: 'accessRoleChangedSuccessMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add New Branch`
+  String get addBranch {
+    return Intl.message(
+      'Add New Branch',
+      name: 'addBranch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The branch details have been updated successfully.`
+  String get branchModified {
+    return Intl.message(
+      'The branch details have been updated successfully.',
+      name: 'branchModified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The branch has been added successfully.`
+  String get branchAdded {
+    return Intl.message(
+      'The branch has been added successfully.',
+      name: 'branchAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The branch has been deleted successfully.`
+  String get branchDeleted {
+    return Intl.message(
+      'The branch has been deleted successfully.',
+      name: 'branchDeleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please double-check the updated branch details before saving. Are you sure you want to proceed?`
+  String get branchModifyWarning {
+    return Intl.message(
+      'Please double-check the updated branch details before saving. Are you sure you want to proceed?',
+      name: 'branchModifyWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ensure all required branch fields are filled correctly before adding. Are you sure you want to proceed?`
+  String get branchAddWarning {
+    return Intl.message(
+      'Ensure all required branch fields are filled correctly before adding. Are you sure you want to proceed?',
+      name: 'branchAddWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deleting this branch is irreversible. Are you sure you want to proceed?`
+  String get branchDeleteWarning {
+    return Intl.message(
+      'Deleting this branch is irreversible. Are you sure you want to proceed?',
+      name: 'branchDeleteWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add New Building`
+  String get addBuilding {
+    return Intl.message(
+      'Add New Building',
+      name: 'addBuilding',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The building details have been updated successfully.`
+  String get buildingModified {
+    return Intl.message(
+      'The building details have been updated successfully.',
+      name: 'buildingModified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The building has been added successfully.`
+  String get buildingAdded {
+    return Intl.message(
+      'The building has been added successfully.',
+      name: 'buildingAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The building has been deleted successfully.`
+  String get buildingDeleted {
+    return Intl.message(
+      'The building has been deleted successfully.',
+      name: 'buildingDeleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please double-check the updated building details before saving. Are you sure you want to proceed?`
+  String get buildingModifyWarning {
+    return Intl.message(
+      'Please double-check the updated building details before saving. Are you sure you want to proceed?',
+      name: 'buildingModifyWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ensure all required building fields are filled correctly before adding. Are you sure you want to proceed?`
+  String get buildingAddWarning {
+    return Intl.message(
+      'Ensure all required building fields are filled correctly before adding. Are you sure you want to proceed?',
+      name: 'buildingAddWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deleting this building is irreversible. Are you sure you want to proceed?`
+  String get buildingDeleteWarning {
+    return Intl.message(
+      'Deleting this building is irreversible. Are you sure you want to proceed?',
+      name: 'buildingDeleteWarning',
       desc: '',
       args: [],
     );
