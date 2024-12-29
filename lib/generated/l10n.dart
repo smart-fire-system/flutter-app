@@ -240,6 +240,26 @@ class S {
     );
   }
 
+  /// `Settings`
+  String get settings {
+    return Intl.message(
+      'Settings',
+      name: 'settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile`
+  String get myProfile {
+    return Intl.message(
+      'Profile',
+      name: 'myProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `View and Control System`
   String get viewAndControlSystem {
     return Intl.message(

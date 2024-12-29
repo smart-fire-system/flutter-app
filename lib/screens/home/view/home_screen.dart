@@ -1,26 +1,23 @@
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
-import 'package:fire_alarm_system/widgets/bottom_navigator.dart';
+import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
-import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/screens/home/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/home/bloc/event.dart';
 import 'package:fire_alarm_system/screens/home/bloc/state.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class HomeScreen extends StatefulWidget {
-  final CustomBottomNavigatorItems currentTab;
+final GlobalKey<HomeScreenState> homeScreenKey = GlobalKey<HomeScreenState>();
 
-  const HomeScreen({
-    this.currentTab = CustomBottomNavigatorItems.system,
-    super.key,
-  });
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
   HomeScreenState createState() => HomeScreenState();
@@ -28,12 +25,13 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   User? _user;
-  CustomBottomNavigatorItems selectedTab = CustomBottomNavigatorItems.system;
+  Screen _currentScreen = Screen.system;
+  final List<Screen> _activeScreens = [Screen.system];
+  bool _canPop = true;
 
   @override
   void initState() {
     super.initState();
-    selectedTab = widget.currentTab;
   }
 
   @override
@@ -41,10 +39,29 @@ class HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  void _onItemTapped(CustomBottomNavigatorItems item) {
+  void setCurrentScreen(Screen screen) {
     setState(() {
-      selectedTab = item;
+      _currentScreen = screen;
     });
+  }
+
+  Screen getCurrentScreen() {
+    return _currentScreen;
+  }
+
+  void goBack() {
+    setState(() {
+      if (_activeScreens.length > 1) {
+        _activeScreens.removeLast();
+        _currentScreen = _activeScreens.last;
+      } else {
+        SystemNavigator.pop();
+      }
+    });
+  }
+
+  bool canPop() {
+    return _canPop;
   }
 
   @override
@@ -78,19 +95,10 @@ class HomeScreenState extends State<HomeScreen> {
           if (state.isEmailVerified &&
               state.isPhoneAdded &&
               state.hasUserRole) {
-            if (selectedTab == CustomBottomNavigatorItems.reports) {
-              return _buildReportsTab(context);
-            } else if (selectedTab == CustomBottomNavigatorItems.complaints) {
-              return _buildComplaintsTab(context);
-            } else if (selectedTab == CustomBottomNavigatorItems.users) {
-              return _buildUsersTab(context);
-            } else if (selectedTab == CustomBottomNavigatorItems.system) {
-              return _buildSystemTab(context);
-            } else if (selectedTab == CustomBottomNavigatorItems.profile) {
-              WidgetsBinding.instance.addPostFrameCallback((_) async {
-                Navigator.pushReplacementNamed(context, '/profile');
-              });
-            }
+            //WidgetsBinding.instance.addPostFrameCallback((_) async {
+            //  context.go('/system');
+            //});
+            return _buildHome(context);
           } else {
             return _buildNotAuthorized(
                 context: context,
@@ -104,472 +112,70 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildUsersTab(BuildContext context) {
+  Widget _buildHome(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(
-          title: _user!.role == UserRole.admin
-              ? '${S.of(context).users} ${S.of(context).and} ${S.of(context).branches}'
-              : S.of(context).users),
-      bottomNavigationBar: CustomBottomNavigator(
-        user: _user!,
-        selectedItem: CustomBottomNavigatorItems.users,
-        onItemClick: (CustomBottomNavigatorItems item) {
-          setState(() {
-            selectedTab = item;
-          });
-        },
+      body: IndexedStack(
+        index: _currentScreen.index,
+        children: const [
+          TabNavigator(screen: Screen.system),
+          TabNavigator(screen: Screen.reports),
+          TabNavigator(screen: Screen.profile),
+          TabNavigator(screen: Screen.complaints),
+          TabNavigator(screen: Screen.settigns),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: <Widget>[
-            if (_user!.role == UserRole.admin)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListTile(
-                  leading: Image.asset(
-                    'assets/images/logo/2.jpg',
-                  ),
-                  title: Text(
-                    S.of(context).branches,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  subtitle: Text(
-                    S.of(context).branchesDescription,
-                    style: CustomStyle.smallText,
-                  ),
-                ),
-              ),
-            if (_user!.role == UserRole.admin)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListTile(
-                  title: Text(
-                    S.of(context).branches,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  leading: const Icon(
-                    Icons.looks_one,
-                    color: CustomStyle.redDark,
-                  ),
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: CustomStyle.redDark,
-                  ),
-                  onTap: () {},
-                ),
-              ),
-            if (_user!.role == UserRole.admin)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListTile(
-                  title: Text(
-                    S.of(context).buildings,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  leading: const Icon(
-                    Icons.looks_two,
-                    color: CustomStyle.redDark,
-                  ),
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: CustomStyle.redDark,
-                  ),
-                  onTap: () {},
-                ),
-              ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                leading: Image.asset(
-                  'assets/images/logo/2.jpg',
-                ),
-                title: Text(
-                  S.of(context).users,
-                  style: CustomStyle.largeTextB,
-                ),
-                subtitle: Text(
-                  S.of(context).usersDescription,
-                  style: CustomStyle.smallText,
-                ),
-              ),
-            ),
-            if (_user!.role == UserRole.admin)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListTile(
-                  title: Text(
-                    S.of(context).admins,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  leading: const Icon(
-                    Icons.looks_one,
-                    color: CustomStyle.redDark,
-                  ),
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: CustomStyle.redDark,
-                  ),
-                  onTap: () {},
-                ),
-              ),
-            if (_user!.role == UserRole.admin)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListTile(
-                  title: Text(
-                    S.of(context).regionalManagers,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  leading: const Icon(
-                    Icons.looks_two,
-                    color: CustomStyle.redDark,
-                  ),
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: CustomStyle.redDark,
-                  ),
-                  onTap: () {},
-                ),
-              ),
-            if (_user!.role == UserRole.admin ||
-                _user!.role == UserRole.regionalManager)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListTile(
-                  title: Text(
-                    S.of(context).branchManagers,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  leading: Icon(
-                    _user!.role == UserRole.admin
-                        ? Icons.looks_3
-                        : Icons.looks_one,
-                    color: CustomStyle.redDark,
-                  ),
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: CustomStyle.redDark,
-                  ),
-                  onTap: () {},
-                ),
-              ),
-            if (_user!.role == UserRole.admin ||
-                _user!.role == UserRole.regionalManager ||
-                _user!.role == UserRole.branchManager)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListTile(
-                  title: Text(
-                    S.of(context).employees,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  leading: Icon(
-                    _user!.role == UserRole.admin
-                        ? Icons.looks_6
-                        : _user!.role == UserRole.regionalManager
-                            ? Icons.looks_two
-                            : Icons.looks_one,
-                    color: CustomStyle.redDark,
-                  ),
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: CustomStyle.redDark,
-                  ),
-                  onTap: () {},
-                ),
-              ),
-            if (_user!.role == UserRole.admin ||
-                _user!.role == UserRole.regionalManager ||
-                _user!.role == UserRole.branchManager)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListTile(
-                  title: Text(
-                    S.of(context).technicans,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  leading: Icon(
-                    _user!.role == UserRole.admin
-                        ? Icons.looks_5
-                        : _user!.role == UserRole.regionalManager
-                            ? Icons.looks_3
-                            : Icons.looks_two,
-                    color: CustomStyle.redDark,
-                  ),
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: CustomStyle.redDark,
-                  ),
-                  onTap: () {},
-                ),
-              ),
-            if (_user!.role == UserRole.admin ||
-                _user!.role == UserRole.regionalManager ||
-                _user!.role == UserRole.branchManager ||
-                _user!.role == UserRole.employee ||
-                _user!.role == UserRole.technican)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListTile(
-                  title: Text(
-                    S.of(context).clients,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  leading: Icon(
-                    _user!.role == UserRole.admin
-                        ? Icons.looks_6
-                        : _user!.role == UserRole.regionalManager
-                            ? Icons.looks_4
-                            : _user!.role == UserRole.branchManager
-                                ? Icons.looks_3
-                                : Icons.looks_one,
-                    color: CustomStyle.redDark,
-                  ),
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: CustomStyle.redDark,
-                  ),
-                  onTap: () {},
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildComplaintsTab(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).complaints),
-      bottomNavigationBar: CustomBottomNavigator(
-        user: _user!,
-        selectedItem: CustomBottomNavigatorItems.complaints,
-        onItemClick: _onItemTapped,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                leading: Image.asset(
-                  'assets/images/logo/2.jpg',
-                ),
-                title: Text(
-                  S.of(context).complaints,
-                  style: CustomStyle.largeTextB,
-                ),
-                subtitle: Text(
-                  S.of(context).complaintsDescription,
-                  style: CustomStyle.smallText,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                title: Text(
-                  S.of(context).viewComplaints,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.list,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {},
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                title: Text(
-                  S.of(context).submitComplaint,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.support_agent,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {},
-              ),
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromARGB(255, 205, 202, 202),
+              spreadRadius: 2,
+              blurRadius: 10,
+              offset: Offset(0, -2),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildReportsTab(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).reports),
-      bottomNavigationBar: CustomBottomNavigator(
-        user: _user!,
-        selectedItem: CustomBottomNavigatorItems.reports,
-        onItemClick: _onItemTapped,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                leading: Image.asset(
-                  'assets/images/logo/2.jpg',
-                ),
-                title: Text(
-                  S.of(context).reports,
-                  style: CustomStyle.largeTextB,
-                ),
-                subtitle: Text(
-                  S.of(context).reportsDescription,
-                  style: CustomStyle.smallText,
-                ),
-              ),
+        child: BottomNavigationBar(
+          selectedLabelStyle: CustomStyle.smallTextRed,
+          unselectedLabelStyle: CustomStyle.smallTextGrey,
+          backgroundColor: Colors.green,
+          selectedItemColor: CustomStyle.redDark,
+          unselectedItemColor: CustomStyle.greyMedium,
+          showUnselectedLabels: true,
+          type: BottomNavigationBarType.shifting,
+          currentIndex: _currentScreen.index,
+          onTap: (int newIndex) {
+            setState(() {
+              _currentScreen = Screen.values[newIndex];
+              _activeScreens.remove(_currentScreen);
+              _activeScreens.add(_currentScreen);
+              if (_activeScreens.length > 1) {
+                _canPop = false;
+              }
+            });
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.bar_chart_outlined),
+              label: S.of(context).system,
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                title: Text(
-                  S.of(context).visits,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.article,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {},
-              ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.article),
+              label: S.of(context).reports,
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                title: Text(
-                  S.of(context).maintenanceContracts,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.article,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {},
-              ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.person),
+              label: S.of(context).myProfile,
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                title: Text(
-                  S.of(context).systemStatusAndFaults,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.article,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {},
-              ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.support_agent),
+              label: S.of(context).complaints,
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSystemTab(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).system),
-      bottomNavigationBar: CustomBottomNavigator(
-        user: _user!,
-        selectedItem: CustomBottomNavigatorItems.system,
-        onItemClick: _onItemTapped,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                leading: Image.asset(
-                  'assets/images/logo/2.jpg',
-                ),
-                title: Text(
-                  S.of(context).system_monitoring_control,
-                  style: CustomStyle.largeTextB,
-                ),
-                subtitle: Text(
-                  S.of(context).system_monitoring_description,
-                  style: CustomStyle.smallText,
-                ),
-              ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.settings),
+              label: S.of(context).settings,
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                title: Text(
-                  S.of(context).viewAndControlSystem,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.bar_chart_outlined,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {
-                  print("==========================");
-                  Navigator.pushNamed(context, '/branches');
-                },
-              ),
-            ),
-            if (_user!.role == UserRole.admin ||
-                _user!.role == UserRole.technican)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListTile(
-                  title: Text(
-                    S.of(context).manageAndConfigureSystem,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  leading: const Icon(
-                    Icons.settings,
-                    color: CustomStyle.redDark,
-                  ),
-                  trailing: const Icon(
-                    Icons.chevron_right,
-                    color: CustomStyle.redDark,
-                  ),
-                  onTap: () {},
-                ),
-              ),
           ],
         ),
       ),

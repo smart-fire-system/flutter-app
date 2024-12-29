@@ -206,6 +206,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "رمز التحقق مفقود. يرجى إدخال الرمز المرسل."),
         "missing_verification_id": MessageLookupByLibrary.simpleMessage(
             "معرف التحقق مفقود. حاول مرة أخرى."),
+        "myProfile": MessageLookupByLibrary.simpleMessage("صفحتي"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
         "network_request_failed": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ في الشبكة أثناء تسجيل الدخول. يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى."),
@@ -270,6 +271,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("يرجى اختيار اللغة"),
         "session_expired": MessageLookupByLibrary.simpleMessage(
             "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجددًا."),
+        "settings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
         "sign_in_cancelled": MessageLookupByLibrary.simpleMessage(
             "تم إلغاء عملية تسجيل الدخول. يرجى المحاولة مرة أخرى إذا كنت ترغب في المتابعة."),
         "sign_in_failed": MessageLookupByLibrary.simpleMessage(

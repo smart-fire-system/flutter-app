@@ -209,6 +209,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "The verification code is missing. Please enter the code sent to you."),
         "missing_verification_id": MessageLookupByLibrary.simpleMessage(
             "The verification ID is missing. Please try the process again."),
+        "myProfile": MessageLookupByLibrary.simpleMessage("Profile"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "network_error": MessageLookupByLibrary.simpleMessage(
             "A network error occurred during sign-in. Please check your internet connection and try again."),
@@ -276,6 +277,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Please choose a language"),
         "session_expired": MessageLookupByLibrary.simpleMessage(
             "The session has expired. Please log in again."),
+        "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "sign_in_cancelled": MessageLookupByLibrary.simpleMessage(
             "The sign-in process was cancelled. Please try again if you want to continue."),
         "sign_in_failed": MessageLookupByLibrary.simpleMessage(

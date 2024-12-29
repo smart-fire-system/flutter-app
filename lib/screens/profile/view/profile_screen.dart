@@ -2,7 +2,6 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:fire_alarm_system/utils/data_validator_util.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
-import 'package:fire_alarm_system/widgets/bottom_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
@@ -44,7 +43,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             Navigator.pushNamedAndRemoveUntil(
               context,
-              '/home',
+              '/',
               (Route<dynamic> route) => false,
             );
           });
@@ -93,23 +92,7 @@ class ProfileScreenState extends State<ProfileScreen> {
 
     return Scaffold(
       appBar: CustomAppBar(title: S.of(context).profile),
-      bottomNavigationBar: CustomBottomNavigator(
-        user: _user!,
-        selectedItem: CustomBottomNavigatorItems.profile,
-        onItemClick: (CustomBottomNavigatorItems item) {
-          if (item == CustomBottomNavigatorItems.system) {
-            Navigator.pushReplacementNamed(context, '/system', arguments: item);
-          } else if (item == CustomBottomNavigatorItems.users) {
-            Navigator.pushReplacementNamed(context, '/users', arguments: item);
-          } else if (item == CustomBottomNavigatorItems.complaints) {
-            Navigator.pushReplacementNamed(context, '/complaints',
-                arguments: item);
-          } else if (item == CustomBottomNavigatorItems.reports) {
-            Navigator.pushReplacementNamed(context, '/reports',
-                arguments: item);
-          }
-        },
-      ),
+      backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<ProfileBloc>().add(RefreshRequested());

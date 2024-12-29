@@ -96,7 +96,7 @@ class AdminsScreenState extends State<AdminsScreen> {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             Navigator.pushNamedAndRemoveUntil(
               context,
-              '/home',
+              '/',
               (Route<dynamic> route) => false,
             );
           });

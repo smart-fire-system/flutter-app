@@ -1,8 +1,9 @@
 import 'package:fire_alarm_system/firebase_options.dart';
-import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/branches/view/branches_screen.dart';
-import 'package:fire_alarm_system/widgets/bottom_navigator.dart';
+import 'package:fire_alarm_system/screens/complaints/view/complaints_screen.dart';
+import 'package:fire_alarm_system/screens/settings/view/settings_screen.dart';
+import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -79,7 +80,17 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
         ],
         child: MaterialApp(
           title: 'Fire Alarm System',
-          color: Colors.white,
+          theme: ThemeData(
+            primaryColor: CustomStyle.redDark,
+            colorScheme: ColorScheme.fromSwatch(
+              primarySwatch: Colors.red,
+              cardColor: Colors.white,
+            ).copyWith(
+              secondary: Colors.green, // Secondary color
+            ),
+            scaffoldBackgroundColor:
+                Colors.white, // Set default background to white
+          ),
           supportedLocales: const [
             Locale('en', ''),
             Locale('ar', ''),
@@ -104,17 +115,17 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
             return supportedLocales.first;
           },
           routes: {
-            '/home': (context) => const HomeScreen(),
-            '/system': (context) => const HomeScreen(currentTab: CustomBottomNavigatorItems.system),
-            '/reports': (context) => const HomeScreen(currentTab: CustomBottomNavigatorItems.reports),
-            '/complaints': (context) => const HomeScreen(currentTab: CustomBottomNavigatorItems.complaints),
-            '/users': (context) => const HomeScreen(currentTab: CustomBottomNavigatorItems.users),
+            '/': (context) => HomeScreen(
+                  key: homeScreenKey,
+                ),
+            '/profile': (context) => const ProfileScreen(),
+            '/complaints': (context) => const ComplaintsScreen(),
+            '/settings': (context) => const SettingsScreen(),
             '/signIn': (context) => const SignInScreen(),
             '/admins': (context) => const AdminsScreen(),
-            '/profile': (context) => const ProfileScreen(),
             '/branches': (context) => const BranchesScreen(),
           },
-          initialRoute: '/home',
+          initialRoute: '/',
         ),
       ),
     );

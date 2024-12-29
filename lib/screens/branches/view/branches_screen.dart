@@ -2,7 +2,6 @@ import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
-import 'package:fire_alarm_system/widgets/bottom_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -104,7 +103,7 @@ class BranchesScreenState extends State<BranchesScreen> {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             Navigator.pushNamedAndRemoveUntil(
               context,
-              '/home',
+              '/',
               (Route<dynamic> route) => false,
             );
           });
@@ -118,10 +117,6 @@ class BranchesScreenState extends State<BranchesScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: S.of(context).branches),
-      bottomNavigationBar: CustomBottomNavigator(
-        user: _user!,
-        selectedItem: CustomBottomNavigatorItems.reports,
-      ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.green,
         onPressed: () {},

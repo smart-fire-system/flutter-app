@@ -8,6 +8,7 @@ class CustomStyle {
   static const Color greyDark = Color.fromARGB(255, 80, 82, 84);
   static const Color greyMedium = Color.fromARGB(255, 144, 147, 149);
   static const Color greyLight = Color.fromARGB(255, 189, 189, 189);
+  static const Color greySuperLight = Color.fromARGB(255, 238, 237, 237);
 
   static final TextStyle navBarText = GoogleFonts.cairo(
       fontSize: 12, color: greyLight, fontWeight: FontWeight.w500);
