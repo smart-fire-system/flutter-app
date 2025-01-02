@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 class CustomDropdownMulti extends StatefulWidget {
   final String title;
   final String subtitle;
-  final String selectAllText;
   final String allSelectedText;
   final String noSelectedText;
-  final void Function(List<String> selevtedItems) onChanged;
   final List<String> items;
+  final void Function(List<String> selectedItems) onChanged;
+  final IconData? icon;
   const CustomDropdownMulti({
     super.key,
     required this.title,
     required this.subtitle,
-    required this.selectAllText,
     required this.allSelectedText,
     required this.noSelectedText,
-    required this.onChanged,
     required this.items,
+    required this.onChanged,
+    this.icon,
   });
 
   @override
@@ -32,6 +32,7 @@ class CustomDropdownMultiState extends State<CustomDropdownMulti> {
   void initState() {
     super.initState();
     _selectedItems = List.from(widget.items);
+    _controller.text = widget.allSelectedText;
   }
 
   @override
@@ -168,10 +169,11 @@ class CustomDropdownMultiState extends State<CustomDropdownMulti> {
           },
           decoration: InputDecoration(
             labelText: widget.title,
-            labelStyle: CustomStyle.smallTextGrey,
+            labelStyle: CustomStyle.smallTextBRed,
             border: const OutlineInputBorder(),
-            prefixIcon:
-                const Icon(Icons.filter_alt, color: CustomStyle.redDark),
+            prefixIcon: (widget.icon == null)
+                ? null
+                : Icon(widget.icon, color: CustomStyle.redDark),
             focusedBorder: const OutlineInputBorder(
               borderSide: BorderSide(
                 color: CustomStyle.redDark,
@@ -179,6 +181,154 @@ class CustomDropdownMultiState extends State<CustomDropdownMulti> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomDropdownSingle extends StatefulWidget {
+  final String title;
+  final String subtitle;
+  final List<String> items;
+  final void Function(String selectedItem) onChanged;
+  final String? initialValue;
+  final IconData? icon;
+  const CustomDropdownSingle({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.items,
+    required this.onChanged,
+    this.initialValue,
+    this.icon,
+  });
+
+  @override
+  CustomDropdownSingleState createState() => CustomDropdownSingleState();
+}
+
+class CustomDropdownSingleState extends State<CustomDropdownSingle> {
+  String? _selectedItem;
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedItem = widget.initialValue;
+    _controller.text = widget.initialValue ?? "";
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding:
+          const EdgeInsets.symmetric(vertical: 10.0),
+      child: Center(
+        child: TextField(
+          controller: _controller,
+          readOnly: true,
+          style: CustomStyle.mediumText,
+          decoration: InputDecoration(
+            labelText: widget.title,
+            prefixIcon: (widget.icon == null)
+                ? null
+                : Icon(widget.icon, color: CustomStyle.redDark),
+            labelStyle: CustomStyle.smallTextBRed,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: const BorderSide(
+                color: CustomStyle.greyMedium,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: const BorderSide(
+                color: CustomStyle.greyMedium,
+                width: 1.0,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: const BorderSide(
+                color: CustomStyle.redDark,
+                width: 2.0,
+              ),
+            ),
+          ),
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (context) {
+                return StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                  return Container(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(16.0),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                widget.subtitle,
+                                style: CustomStyle.mediumTextB,
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.keyboard_return,
+                                  color: CustomStyle.redDark,
+                                  size: 30,
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: ListView(
+                            children: widget.items.asMap().entries.map((entry) {
+                              var item = entry.value;
+                              return RadioListTile<String>(
+                                title: Text(item),
+                                value: item,
+                                groupValue: _selectedItem,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedItem = value;
+                                    _controller.text = value!;
+                                    widget.onChanged(value);
+                                  });
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                });
+              },
+            );
+          },
         ),
       ),
     );

@@ -47,6 +47,8 @@ class CustomStyle {
       fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500);
   static final TextStyle smallTextRed = GoogleFonts.cairo(
       fontSize: 16, color: redDark, fontWeight: FontWeight.w500);
+  static final TextStyle smallTextBRed = GoogleFonts.cairo(
+      fontSize: 16, color: redDark, fontWeight: FontWeight.w700);
   static final TextStyle smallTextGrey = GoogleFonts.cairo(
       fontSize: 16, color: greyDark, fontWeight: FontWeight.w500);
   static final TextStyle smallTextB = GoogleFonts.cairo(

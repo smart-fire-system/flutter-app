@@ -36,14 +36,20 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
             List<Branch> branches = data['branches'] as List<Branch>;
             List<Company> companies = data['companies'] as List<Company>;
             emit(BranchesAuthenticated(
-              user: authRepository.userAuth.user!,
               branches: branches,
               companies: companies,
               message: event.message,
+              canViewBranches: true,
+              canEditBranches: true,
+              canAddBranches: true,
+              canDeleteBranches: true,
+              canViewCompanies: true,
+              canEditCompanies: true,
+              canAddCompanies: true,
+              canDeleteCompanies: true,
             ));
           } catch (e) {
             emit(BranchesAuthenticated(
-              user: authRepository.userAuth.user!,
               branches: [],
               companies: [],
               error: e.toString(),

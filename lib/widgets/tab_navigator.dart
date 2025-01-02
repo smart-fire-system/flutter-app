@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/models/branch.dart';
+import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/screens/branches/view/branches_details.dart';
 import 'package:fire_alarm_system/screens/branches/view/branches_edit.dart';
 import 'package:fire_alarm_system/screens/branches/view/branches_screen.dart';
@@ -75,10 +76,10 @@ class TabNavigator extends StatelessWidget {
               page = const BranchesScreen();
               break;
             case '/branches/details':
-              page = BranchDetails(branch: routeSettings.arguments as Branch);
+              page = BranchDetails(branchId: routeSettings.arguments as String);
               break;
             case '/branches/edit':
-              page = EditBranchScreen(branch: routeSettings.arguments as Branch);
+              page = EditBranchScreen(branchId: routeSettings.arguments as String);
               break;
             case '/companies':
               page = const CustomLoading();

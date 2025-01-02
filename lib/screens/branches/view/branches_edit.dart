@@ -1,7 +1,14 @@
 import 'package:fire_alarm_system/models/admin.dart';
 import 'package:fire_alarm_system/models/branch.dart';
+import 'package:fire_alarm_system/models/company.dart';
+import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
+import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
+import 'package:fire_alarm_system/widgets/dropdown.dart';
+import 'package:fire_alarm_system/widgets/loading.dart';
+import 'package:fire_alarm_system/widgets/tab_navigator.dart';
+import 'package:fire_alarm_system/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,39 +21,39 @@ import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class EditBranchScreen extends StatefulWidget {
-  final Branch branch;
-  const EditBranchScreen({super.key, required this.branch});
+  final String branchId;
+  const EditBranchScreen({
+    super.key,
+    required this.branchId,
+  });
 
   @override
   EditBranchScreenState createState() => EditBranchScreenState();
 }
 
 class EditBranchScreenState extends State<EditBranchScreen> {
-  late TextEditingController nameController;
-  late TextEditingController addressController;
-  late TextEditingController phoneController;
-  late TextEditingController emailController;
-  late TextEditingController commentController;
+  late TextEditingController _nameController;
+  late TextEditingController _addressController;
+  late TextEditingController _phoneController;
+  late TextEditingController _emailController;
+  late TextEditingController _commentController;
+  bool _canDeleteBranches = false;
+  bool _isFirstCall = true;
+  Branch? _branch;
+  List<Company>? _companies = [];
 
   @override
   void initState() {
     super.initState();
-    // Initialize controllers with the current branch details
-    nameController = TextEditingController(text: widget.branch.name);
-    addressController = TextEditingController(text: widget.branch.address);
-    phoneController = TextEditingController(text: widget.branch.phoneNumber);
-    emailController = TextEditingController(text: widget.branch.email);
-    commentController = TextEditingController(text: widget.branch.comment);
   }
 
   @override
   void dispose() {
-    // Dispose controllers to avoid memory leaks
-    nameController.dispose();
-    addressController.dispose();
-    phoneController.dispose();
-    emailController.dispose();
-    commentController.dispose();
+    _nameController.dispose();
+    _addressController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _commentController.dispose();
     super.dispose();
   }
 
@@ -54,17 +61,63 @@ class EditBranchScreenState extends State<EditBranchScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<BranchesBloc, BranchesState>(
       builder: (context, state) {
-        return _buildDetails(context);
+        if (state is BranchesAuthenticated && state.canEditBranches) {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (state.error != null) {
+              CustomAlert.showError(context,
+                  Errors.getFirebaseErrorMessage(context, state.error!));
+              state.error = null;
+            } else if (state.message != null &&
+                state.message == BranchesMessage.branchModified) {
+              TabNavigator.settings.currentState?.pop();
+            }
+          });
+          _canDeleteBranches = state.canDeleteBranches;
+          _branch = state.branches
+              .firstWhere((branch) => branch.id == widget.branchId);
+          _companies = state.companies;
+          if (_isFirstCall) {
+            _isFirstCall = false;
+            _nameController = TextEditingController(text: _branch!.name);
+            _addressController = TextEditingController(text: _branch!.address);
+            _phoneController =
+                TextEditingController(text: _branch!.phoneNumber);
+            _emailController = TextEditingController(text: _branch!.email);
+            _commentController = TextEditingController(text: _branch!.comment);
+          }
+          return _buildEditor(context);
+        } else if (state is BranchesNotAuthenticated) {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            Navigator.pushNamed(context, '/signIn');
+          });
+        }
+        return const CustomLoading();
       },
     );
   }
 
-  Widget _buildDetails(BuildContext context) {
+  Widget _buildEditor(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: widget.branch.name),
+      appBar: CustomAppBar(title: _branch!.name),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.green,
-        onPressed: () {},
+        onPressed: () {
+          // Create an updated branch object
+          Branch updatedBranch = Branch(
+            code: _branch!.code,
+            id: _branch!.id,
+            name: _nameController.text,
+            address: _addressController.text,
+            phoneNumber: _phoneController.text,
+            email: _emailController.text,
+            comment: _commentController.text,
+            createdAt: _branch!.createdAt,
+            company: _branch!.company,
+          );
+
+          // Pass the updated branch back to the previous screen
+          Navigator.pop(context, updatedBranch);
+        },
         icon: const Icon(
           Icons.save,
           size: 30,
@@ -78,40 +131,34 @@ class EditBranchScreenState extends State<EditBranchScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              buildTextField("Branch Name", nameController),
-              buildTextField("Address", addressController),
-              buildTextField("Phone Number", phoneController,
-                  inputType: TextInputType.phone),
-              buildTextField("Email", emailController,
-                  inputType: TextInputType.emailAddress),
-              buildTextField("Comment", commentController, maxLines: 3),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  // Create an updated branch object
-                  Branch updatedBranch = Branch(
-                    code: widget.branch.code,
-                    id: widget.branch.id,
-                    name: nameController.text,
-                    address: addressController.text,
-                    phoneNumber: phoneController.text,
-                    email: emailController.text,
-                    comment: commentController.text,
-                    createdAt: widget.branch.createdAt,
-                    company: widget.branch.company,
-                  );
-
-                  // Pass the updated branch back to the previous screen
-                  Navigator.pop(context, updatedBranch);
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 24.0),
-                ),
-                child: const Text(
-                  "Save Changes",
-                  style: TextStyle(fontSize: 16.0),
-                ),
+              CustomTextField(
+                label: 'Branch Name',
+                controller: _nameController,
+              ),
+              CustomTextField(
+                label: 'Address',
+                controller: _addressController,
+              ),
+              CustomTextField(
+                label: 'Phone Number',
+                controller: _phoneController,
+                inputType: TextInputType.phone,
+              ),
+              CustomTextField(
+                label: 'Email',
+                controller: _emailController,
+                inputType: TextInputType.emailAddress,
+              ),
+              CustomTextField(
+                label: 'Comment',
+                controller: _commentController,
+                maxLines: 3,
+              ),
+              CustomDropdownSingle(
+                title: 'Company',
+                subtitle: 'Change Company',
+                items: _companies!.map((company) => company.name).toList(),
+                onChanged: (newCompany) {},
               ),
             ],
           ),

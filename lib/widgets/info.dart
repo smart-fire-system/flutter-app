@@ -5,38 +5,45 @@ class CustomInfoCard extends StatelessWidget {
   final String title;
   final IconData icon;
   final List<Widget> children;
+  final void Function()? onTap;
 
   const CustomInfoCard({
     super.key,
     required this.title,
     required this.icon,
     required this.children,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      elevation: 4.0,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, color: CustomStyle.redDark),
-                const SizedBox(width: 8.0),
-                Text(
-                  title,
-                  style: CustomStyle.mediumTextBRed,
-                ),
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            ...children,
-          ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 10.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        elevation: 4.0,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(icon, color: CustomStyle.redDark),
+                  const SizedBox(width: 8.0),
+                  Text(
+                    title,
+                    style: CustomStyle.mediumTextBRed,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10.0),
+              ...children,
+            ],
+          ),
         ),
       ),
     );
