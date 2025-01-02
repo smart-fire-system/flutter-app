@@ -2,6 +2,7 @@ import 'package:fire_alarm_system/models/admin.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
+import 'package:fire_alarm_system/widgets/info.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,158 +67,77 @@ class BranchDetailsState extends State<BranchDetails> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Branch Information Card
-              buildCard(
+              CustomInfoCard(
                 title: "Branch Information",
                 icon: Icons.info_outline,
                 children: [
-                  buildRow("Name", widget.branch.name),
-                  buildRow("Code", widget.branch.code.toString()),
-                  buildRow("Created At",
-                      widget.branch.createdAt.toDate().toString()),
-                ],
-              ),
-
-              // Contact Information Card
-              buildCard(
-                title: "Contact Information",
-                icon: Icons.contact_phone_outlined,
-                children: [
-                  buildRow("Phone", widget.branch.phoneNumber),
-                  buildRow("Email", widget.branch.email),
-                ],
-              ),
-
-              // Address Card
-              buildCard(
-                title: "Address",
-                icon: Icons.location_on_outlined,
-                children: [
-                  Text(
-                    widget.branch.address,
-                    style: const TextStyle(fontSize: 16.0),
+                  CustomInfoItem(
+                    title: "Name",
+                    value: widget.branch.name,
+                  ),
+                  CustomInfoItem(
+                    title: "Code",
+                    value: widget.branch.code.toString(),
+                  ),
+                  CustomInfoItem(
+                    title: "Created At",
+                    value: widget.branch.createdAt.toDate().toString(),
                   ),
                 ],
               ),
-
-              // Comment Section
-              if (widget.branch.comment.isNotEmpty)
-                buildCard(
-                  title: "Comment",
-                  icon: Icons.comment_outlined,
-                  children: [
-                    Text(
-                      widget.branch.comment.isNotEmpty
-                          ? widget.branch.comment
-                          : "No comments available",
-                      style: const TextStyle(fontSize: 16.0),
-                    ),
-                  ],
-                ),
-
-              // Company Information Card
-              buildCard(
+              CustomInfoCard(
                 title: "Company Information",
                 icon: Icons.business_outlined,
                 children: [
-                  buildRow("Company Name", widget.branch.company.name),
-                  if (widget.branch.company.comment.isNotEmpty)
-                    Text(
-                      widget.branch.company.comment,
-                      style: const TextStyle(fontSize: 16.0),
+                  ListTile(
+                    title: Text(widget.branch.company.name,
+                        style: CustomStyle.smallTextB),
+                    subtitle: Text(widget.branch.company.comment,
+                        style: CustomStyle.smallText),
+                    leading: CircleAvatar(
+                      backgroundImage:
+                          NetworkImage(widget.branch.company.logoURL),
+                      radius: 25.0,
                     ),
+                  ),
                 ],
               ),
+              CustomInfoCard(
+                title: "Contact Information",
+                icon: Icons.contact_phone_outlined,
+                children: [
+                  CustomInfoItem(
+                    title: "Phone",
+                    value: widget.branch.phoneNumber,
+                  ),
+                  CustomInfoItem(
+                    title: "Email",
+                    value: widget.branch.email,
+                  ),
+                ],
+              ),
+              CustomInfoCard(
+                title: "Address",
+                icon: Icons.location_on_outlined,
+                children: [
+                  CustomInfoItem(
+                    value: widget.branch.address,
+                  ),
+                ],
+              ),
+              if (widget.branch.comment.isNotEmpty)
+                CustomInfoCard(
+                  title: "Comment",
+                  icon: Icons.comment_outlined,
+                  children: [
+                    CustomInfoItem(
+                      value: widget.branch.comment,
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  // Build a Card Section
-  Widget buildCard(
-      {required String title,
-      required IconData icon,
-      required List<Widget> children}) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      elevation: 4.0,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, color: CustomStyle.redDark),
-                const SizedBox(width: 8.0),
-                Text(
-                  title,
-                  style: CustomStyle.mediumTextBRed,
-                ),
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            ...children,
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Build a Row for Key-Value Pairs
-  Widget buildRow(String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        children: [
-          Text(
-            "$title: ",
-            style: CustomStyle.smallTextB,
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: CustomStyle.smallText,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class InfoTile extends StatelessWidget {
-  final String title;
-  final String value;
-
-  const InfoTile({Key? key, required this.title, required this.value})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "$title: ",
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 16.0),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 3,
-            ),
-          ),
-        ],
       ),
     );
   }
