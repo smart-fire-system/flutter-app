@@ -2,6 +2,7 @@ import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
+import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -315,7 +316,10 @@ class BranchesScreenState extends State<BranchesScreen> {
                         style: CustomStyle.smallText,
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios),
-                      onTap: () {},
+                      onTap: () {
+                        TabNavigator.settings.currentState
+                            ?.pushNamed('/branches/details', arguments: branch);
+                      },
                     );
                   }).toList(),
                 ),

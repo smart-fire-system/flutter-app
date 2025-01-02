@@ -1,6 +1,8 @@
 import 'package:fire_alarm_system/models/admin.dart';
+import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
+import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,8 +15,8 @@ import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class BranchDetails extends StatefulWidget {
-  final Admin admin;
-  const BranchDetails({super.key, required this.admin});
+  final Branch branch;
+  const BranchDetails({super.key, required this.branch});
 
   @override
   BranchDetailsState createState() => BranchDetailsState();
@@ -32,282 +34,191 @@ class BranchDetailsState extends State<BranchDetails> {
 
   Widget _buildDetails(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).branches),
+      appBar: CustomAppBar(title: widget.branch.name),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: CustomStyle.redDark,
+        onPressed: () async {
+          final updatedBranch = await TabNavigator.settings.currentState
+              ?.pushNamed('/branches/edit', arguments: widget.branch);
+          if (updatedBranch != null && updatedBranch is Branch) {
+            setState(() {
+              // Update the branch details with the edited values
+              widget.branch.name = updatedBranch.name;
+              widget.branch.address = updatedBranch.address;
+              widget.branch.phoneNumber = updatedBranch.phoneNumber;
+              widget.branch.email = updatedBranch.email;
+              widget.branch.comment = updatedBranch.comment;
+            });
+          }
+        },
+        icon: const Icon(
+          Icons.edit,
+          size: 30,
+          color: Colors.white,
+        ),
+        label: Text("Edit", style: CustomStyle.mediumTextWhite),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Branch Information Card
+              buildCard(
+                title: "Branch Information",
+                icon: Icons.info_outline,
                 children: [
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      '${S.of(context).name}:',
-                      style: CustomStyle.mediumTextB,
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 5,
-                    child: Text(
-                      widget.admin.name,
-                      style: CustomStyle.mediumText,
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                    ),
+                  buildRow("Name", widget.branch.name),
+                  buildRow("Code", widget.branch.code.toString()),
+                  buildRow("Created At",
+                      widget.branch.createdAt.toDate().toString()),
+                ],
+              ),
+
+              // Contact Information Card
+              buildCard(
+                title: "Contact Information",
+                icon: Icons.contact_phone_outlined,
+                children: [
+                  buildRow("Phone", widget.branch.phoneNumber),
+                  buildRow("Email", widget.branch.email),
+                ],
+              ),
+
+              // Address Card
+              buildCard(
+                title: "Address",
+                icon: Icons.location_on_outlined,
+                children: [
+                  Text(
+                    widget.branch.address,
+                    style: const TextStyle(fontSize: 16.0),
                   ),
                 ],
               ),
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
+
+              // Comment Section
+              if (widget.branch.comment.isNotEmpty)
+                buildCard(
+                  title: "Comment",
+                  icon: Icons.comment_outlined,
+                  children: [
+                    Text(
+                      widget.branch.comment.isNotEmpty
+                          ? widget.branch.comment
+                          : "No comments available",
+                      style: const TextStyle(fontSize: 16.0),
+                    ),
+                  ],
+                ),
+
+              // Company Information Card
+              buildCard(
+                title: "Company Information",
+                icon: Icons.business_outlined,
                 children: [
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      '${S.of(context).email}:',
-                      style: CustomStyle.mediumTextB,
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
+                  buildRow("Company Name", widget.branch.company.name),
+                  if (widget.branch.company.comment.isNotEmpty)
+                    Text(
+                      widget.branch.company.comment,
+                      style: const TextStyle(fontSize: 16.0),
                     ),
-                  ),
-                  Expanded(
-                    flex: 5,
-                    child: Text(
-                      widget.admin.email,
-                      style: CustomStyle.mediumText,
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
                 ],
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Build a Card Section
+  Widget buildCard(
+      {required String title,
+      required IconData icon,
+      required List<Widget> children}) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      elevation: 4.0,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, color: CustomStyle.redDark),
+                const SizedBox(width: 8.0),
+                Text(
+                  title,
+                  style: CustomStyle.mediumTextBRed,
+                ),
+              ],
             ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      '${S.of(context).phone}:',
-                      style: CustomStyle.mediumTextB,
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 5,
-                    child: Text(
-                      '${widget.admin.countryCode}    ${widget.admin.phoneNumber}',
-                      style: CustomStyle.mediumText,
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.only(top: 30, left: 8, right: 8),
-              child: ElevatedButton(
-                style: CustomStyle.normalButton,
-                child: Text(S.of(context).changeAccessRole,
-                    style: CustomStyle.normalButtonText),
-                onPressed: () {
-                  _changeRole();
-                },
-              ),
-            ),
+            const SizedBox(height: 10.0),
+            ...children,
           ],
         ),
       ),
     );
   }
 
-  Future<void> _changeRole() async {
-    String? selectedValue = S.of(context).admin;
-    await Alert(
-      context: context,
-      title: S.of(context).changeAccessRole,
-      type: AlertType.none,
-      style: AlertStyle(
-        titleStyle: CustomStyle.largeTextB,
-        descStyle: CustomStyle.mediumText,
-        animationType: AnimationType.grow,
+  // Build a Row for Key-Value Pairs
+  Widget buildRow(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        children: [
+          Text(
+            "$title: ",
+            style: CustomStyle.smallTextB,
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: CustomStyle.smallText,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+          ),
+        ],
       ),
-      content: StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RadioListTile<String>(
-                  title: Text(S.of(context).admin),
-                  value: S.of(context).admin,
-                  groupValue: selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedValue = value;
-                    });
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RadioListTile<String>(
-                  title: Text(S.of(context).regionalManager),
-                  value: S.of(context).regionalManager,
-                  groupValue: selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedValue = value;
-                    });
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RadioListTile<String>(
-                  title: Text(S.of(context).branchManager),
-                  value: S.of(context).branchManager,
-                  groupValue: selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedValue = value;
-                    });
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RadioListTile<String>(
-                  title: Text(S.of(context).employee),
-                  value: S.of(context).employee,
-                  groupValue: selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedValue = value;
-                    });
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RadioListTile<String>(
-                  title: Text(S.of(context).technican),
-                  value: S.of(context).technican,
-                  groupValue: selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedValue = value;
-                    });
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RadioListTile<String>(
-                  title: Text(S.of(context).client),
-                  value: S.of(context).client,
-                  groupValue: selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedValue = value;
-                    });
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RadioListTile<String>(
-                  title: Text(S.of(context).noRole),
-                  value: S.of(context).noRole,
-                  groupValue: selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedValue = value;
-                    });
-                  },
-                ),
-              ),
-            ],
-          );
-        },
+    );
+  }
+}
+
+class InfoTile extends StatelessWidget {
+  final String title;
+  final String value;
+
+  const InfoTile({Key? key, required this.title, required this.value})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "$title: ",
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(fontSize: 16.0),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 3,
+            ),
+          ),
+        ],
       ),
-      buttons: [
-        DialogButton(
-          child: Text(S.of(context).ok, style: CustomStyle.normalButtonText),
-          onPressed: () async {
-            UserRole newRole = UserRole.admin;
-            if (selectedValue == S.of(context).regionalManager) {
-              newRole = UserRole.regionalManager;
-            } else if (selectedValue == S.of(context).branchManager) {
-              newRole = UserRole.branchManager;
-            } else if (selectedValue == S.of(context).employee) {
-              newRole = UserRole.employee;
-            } else if (selectedValue == S.of(context).technican) {
-              newRole = UserRole.technican;
-            } else if (selectedValue == S.of(context).client) {
-              newRole = UserRole.client;
-            } else if (selectedValue == S.of(context).noRole) {
-              newRole = UserRole.noRole;
-            } else {
-              Navigator.pop(context);
-              return;
-            }
-            Navigator.pop(context);
-            await Alert(
-              context: context,
-              title: S.of(context).changeAccessRole,
-              desc:
-                  '${S.of(context).confirmChangeAccessRole}\n${S.of(context).name}: ${widget.admin.name}\n${S.of(context).role}: ${selectedValue!}',
-              type: AlertType.warning,
-              style: AlertStyle(
-                titleStyle: CustomStyle.largeTextB,
-                descStyle: CustomStyle.mediumText,
-                animationType: AnimationType.grow,
-              ),
-              buttons: [
-                DialogButton(
-                  child: Text(S.of(context).ok,
-                      style: CustomStyle.normalButtonText),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    /*
-                    context.read<BranchesBloc>().add(ModifyRequested(
-                        id: widget.admin.id,
-                        oldRole: UserRole.admin,
-                        newRole: newRole));
-                    Navigator.pop(context);*/
-                  },
-                ),
-                DialogButton(
-                  child: Text(S.of(context).cancel,
-                      style: CustomStyle.normalButtonText),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ).show();
-          },
-        ),
-        DialogButton(
-          child:
-              Text(S.of(context).cancel, style: CustomStyle.normalButtonText),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ],
-    ).show();
+    );
   }
 }

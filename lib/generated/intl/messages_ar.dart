@@ -82,7 +82,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "تم تحديث تفاصيل المبنى بنجاح."),
         "buildingModifyWarning": MessageLookupByLibrary.simpleMessage(
             "يرجى التحقق من صحة تفاصيل المبنى المحدثة قبل الحفظ. هل أنت متأكد أنك تريد المتابعة؟"),
-        "buildings": MessageLookupByLibrary.simpleMessage("المباني"),
         "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
         "cancelled": MessageLookupByLibrary.simpleMessage(
             "تم إلغاء العملية. حاول مجددًا."),
@@ -93,6 +92,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("تغيير كلمة المرور"),
         "client": MessageLookupByLibrary.simpleMessage("عميل"),
         "clients": MessageLookupByLibrary.simpleMessage("العملاء"),
+        "companies": MessageLookupByLibrary.simpleMessage("الشركات"),
+        "companiesAndBranches":
+            MessageLookupByLibrary.simpleMessage("الشركات والفروع"),
+        "companiesAndBranchesDescription": MessageLookupByLibrary.simpleMessage(
+            "إدارة الشركات والفروع. أضف أو احذف الشركات والفروع، واطلع على تفاصيلها."),
         "complaints": MessageLookupByLibrary.simpleMessage("الشكاوى"),
         "complaintsDescription": MessageLookupByLibrary.simpleMessage(
             "عرض الشكاوى المفتوحة أو تقديم شكوى جديدة."),
@@ -337,7 +341,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "viewComplaints": MessageLookupByLibrary.simpleMessage("عرض الشكاوى"),
         "visits": MessageLookupByLibrary.simpleMessage("الزيارات"),
         "wait_while_loading": MessageLookupByLibrary.simpleMessage(
-            "يرجى الانتظار أثناء تحميل البيانات"),
+            "يرجى الانتظار أثناء تحميل البيانات ..."),
         "weak_password": MessageLookupByLibrary.simpleMessage(
             "كلمة المرور ضعيفة. يرجى استخدام كلمة مرور أقوى."),
         "welcome": MessageLookupByLibrary.simpleMessage("مرحبا"),

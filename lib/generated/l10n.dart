@@ -340,11 +340,11 @@ class S {
     );
   }
 
-  /// `Buildings`
-  String get buildings {
+  /// `Companies`
+  String get companies {
     return Intl.message(
-      'Buildings',
-      name: 'buildings',
+      'Companies',
+      name: 'companies',
       desc: '',
       args: [],
     );
@@ -645,6 +645,26 @@ class S {
     return Intl.message(
       'User\'s access role has been successfully updated.',
       name: 'accessRoleChangedSuccessMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Companies and Branches`
+  String get companiesAndBranches {
+    return Intl.message(
+      'Companies and Branches',
+      name: 'companiesAndBranches',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage companies and their branches. Add or remove companies and branches, and view detailed information about them.`
+  String get companiesAndBranchesDescription {
+    return Intl.message(
+      'Manage companies and their branches. Add or remove companies and branches, and view detailed information about them.',
+      name: 'companiesAndBranchesDescription',
       desc: '',
       args: [],
     );
@@ -1100,10 +1120,10 @@ class S {
     );
   }
 
-  /// `Pleae wait while loading data`
+  /// `Pleae wait while loading data ...`
   String get wait_while_loading {
     return Intl.message(
-      'Pleae wait while loading data',
+      'Pleae wait while loading data ...',
       name: 'wait_while_loading',
       desc: '',
       args: [],

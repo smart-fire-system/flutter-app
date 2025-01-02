@@ -1,4 +1,9 @@
+import 'package:fire_alarm_system/models/branch.dart';
+import 'package:fire_alarm_system/screens/branches/view/branches_details.dart';
+import 'package:fire_alarm_system/screens/branches/view/branches_edit.dart';
+import 'package:fire_alarm_system/screens/branches/view/branches_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/home_screen.dart';
+import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/screens/complaints/view/view.dart';
 import 'package:fire_alarm_system/screens/profile/view/view.dart';
@@ -66,11 +71,17 @@ class TabNavigator extends StatelessWidget {
             case '/':
               page = _buildMainScreen(screen);
               break;
-            case '/system':
-              page = SystemScreen();
+            case '/branches':
+              page = const BranchesScreen();
               break;
-            case '/reports':
-              page = ReportsScreen();
+            case '/branches/details':
+              page = BranchDetails(branch: routeSettings.arguments as Branch);
+              break;
+            case '/branches/edit':
+              page = EditBranchScreen(branch: routeSettings.arguments as Branch);
+              break;
+            case '/companies':
+              page = const CustomLoading();
               break;
             default:
               page = Scaffold(

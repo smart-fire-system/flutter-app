@@ -36,7 +36,7 @@
     "reports": "Reports",
     "visits": "Visits",
     "branches": "Branches",
-    "buildings": "Buildings",
+    "companies": "Companies",
     "maintenanceContracts": "Maintenance Contracts",
     "systemStatusAndFaults": "System Status and Faults",
     "users": "Users",
@@ -69,6 +69,10 @@
     "confirmChangeAccessRole": "Do you want to proceed with changing the user's access permissions?",
     "userDeletedSuccessMessage": "User has been successfully deleted from the system.",
     "accessRoleChangedSuccessMessage": "User's access role has been successfully updated.",
+
+    "companiesAndBranches": "Companies and Branches",
+    "companiesAndBranchesDescription": "Manage companies and their branches. Add or remove companies and branches, and view detailed information about them.",
+
 
     "addBranch": "Add New Branch",
     "branchModified": "The branch details have been updated successfully.",
@@ -121,7 +125,7 @@
     "valid_email": "Please enter a valid email address",
     "logging_in_progress": "Please wait while logging you in",
     "signup_in_progress": "Please wait while creating your account",
-    "wait_while_loading": "Pleae wait while loading data",
+    "wait_while_loading": "Pleae wait while loading data ...",
     "login_welcome": "Welcome back! Please log in to your account to continue.",
     "signup_welcome": "Welcome! Create a new account to join us and enjoy our services.",
     "change_password": "Change Password",

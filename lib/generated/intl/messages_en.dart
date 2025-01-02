@@ -82,7 +82,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "The building details have been updated successfully."),
         "buildingModifyWarning": MessageLookupByLibrary.simpleMessage(
             "Please double-check the updated building details before saving. Are you sure you want to proceed?"),
-        "buildings": MessageLookupByLibrary.simpleMessage("Buildings"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "cancelled": MessageLookupByLibrary.simpleMessage(
             "The operation was cancelled. Please try again."),
@@ -94,6 +93,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Change Password"),
         "client": MessageLookupByLibrary.simpleMessage("Client"),
         "clients": MessageLookupByLibrary.simpleMessage("Clients"),
+        "companies": MessageLookupByLibrary.simpleMessage("Companies"),
+        "companiesAndBranches":
+            MessageLookupByLibrary.simpleMessage("Companies and Branches"),
+        "companiesAndBranchesDescription": MessageLookupByLibrary.simpleMessage(
+            "Manage companies and their branches. Add or remove companies and branches, and view detailed information about them."),
         "complaints": MessageLookupByLibrary.simpleMessage("Complaints"),
         "complaintsDescription": MessageLookupByLibrary.simpleMessage(
             "Show open compaints or submit new one."),
@@ -345,7 +349,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("View Complaints"),
         "visits": MessageLookupByLibrary.simpleMessage("Visits"),
         "wait_while_loading": MessageLookupByLibrary.simpleMessage(
-            "Pleae wait while loading data"),
+            "Pleae wait while loading data ..."),
         "weak_password": MessageLookupByLibrary.simpleMessage(
             "The password entered is too weak. Use a stronger password with more characters."),
         "welcome": MessageLookupByLibrary.simpleMessage("Welcome"),

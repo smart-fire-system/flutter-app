@@ -35,7 +35,7 @@
     "reports": "التقارير",
     "visits": "الزيارات",
     "branches": "الفروع",
-    "buildings": "المباني",
+    "companies": "الشركات",
     "maintenanceContracts": "عقود الصيانة",
     "systemStatusAndFaults": "حالة النظام والأعطال",
     "users": "المستخدمون",
@@ -69,6 +69,9 @@
     "confirmChangeAccessRole": "هل تريد المتابعة لتغيير صلاحيات وصول المستخدم؟",
     "userDeletedSuccessMessage": "تم حذف المستخدم بنجاح من النظام.",
     "accessRoleChangedSuccessMessage": "تم تحديث صلاحيات وصول المستخدم بنجاح.",
+
+    "companiesAndBranches": "الشركات والفروع",
+    "companiesAndBranchesDescription": "إدارة الشركات والفروع. أضف أو احذف الشركات والفروع، واطلع على تفاصيلها.",
 
     "addBranch": "إضافة فرع جديد",
     "branchModified": "تم تحديث تفاصيل الفرع بنجاح.",
@@ -117,7 +120,7 @@
     "enter_email": "يرجى إدخال عنوان بريدك الإلكتروني",
     "valid_email": "يرجى إدخال عنوان بريد إلكتروني صالح",
     "signup_in_progress": "يرجى الانتظار أثناء إنشاء الحساب",
-    "wait_while_loading": "يرجى الانتظار أثناء تحميل البيانات",
+    "wait_while_loading": "يرجى الانتظار أثناء تحميل البيانات ...",
     "login_welcome": "مرحبًا بعودتك! يرجى تسجيل الدخول إلى حسابك للمتابعة.",
     "signup_welcome": "مرحبًا! أنشئ حسابًا جديدًا للانضمام إلينا والاستمتاع بالخدمات.",
     "change_password": "تغيير كلمة المرور",
