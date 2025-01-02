@@ -9,14 +9,23 @@ class User {
   String phoneNumber;
   String countryCode;
   UserRole role;
+  bool canViewBranches;
+  bool canEditBranches;
+  bool canAddBranches;
+  bool canDeleteBranches;
 
-  User(
-      {required this.id,
-      required this.name,
-      required this.email,
-      required this.countryCode,
-      required this.phoneNumber,
-      required this.role});
+  User({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.countryCode,
+    required this.phoneNumber,
+    required this.role,
+    this.canViewBranches = false,
+    this.canEditBranches = false,
+    this.canAddBranches = false,
+    this.canDeleteBranches = false,
+  });
 
   static String getRoleName(BuildContext context, UserRole role) {
     switch (role) {

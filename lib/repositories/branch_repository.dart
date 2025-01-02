@@ -6,7 +6,7 @@ class BranchRepository {
   final FirebaseFirestore _firestore;
   BranchRepository() : _firestore = FirebaseFirestore.instance;
 
-  Future<List<Branch>> getBranchesList() async {
+  Future<Map<String, List<dynamic>>> getBranchesList() async {
     try {
       List<Company> companies = [];
       List<Branch> branches = [];
@@ -22,8 +22,7 @@ class BranchRepository {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         branches.add(Branch.fromMap(data, doc.id, companies));
       }
-      branches = List.generate(20, (index) => branches.first); // TODO: Remove this line
-      return branches;
+      return {'branches': branches, 'companies': companies};
     } catch (e) {
       if (e is FirebaseException) {
         throw Exception(e.code);

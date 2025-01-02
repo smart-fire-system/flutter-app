@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/models/branch.dart';
+import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/user.dart';
 
 enum BranchesMessage {
@@ -16,11 +17,13 @@ class BranchesLoading extends BranchesState {}
 class BranchesAuthenticated extends BranchesState {
   final User user;
   final List<Branch> branches;
+  final List<Company> companies;
   BranchesMessage? message;
   String? error;
   BranchesAuthenticated({
     required this.user,
     required this.branches,
+    required this.companies,
     this.message,
     this.error,
   });

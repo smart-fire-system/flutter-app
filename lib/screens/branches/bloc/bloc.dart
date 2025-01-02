@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/models/branch.dart';
+import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
@@ -31,16 +32,20 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
           emit(BranchesNotAuthenticated());
         } else {
           try {
-            List<Branch> branches = await branchRepository.getBranchesList();
+            final data = await branchRepository.getBranchesList();
+            List<Branch> branches = data['branches'] as List<Branch>;
+            List<Company> companies = data['companies'] as List<Company>;
             emit(BranchesAuthenticated(
               user: authRepository.userAuth.user!,
               branches: branches,
+              companies: companies,
               message: event.message,
             ));
           } catch (e) {
             emit(BranchesAuthenticated(
               user: authRepository.userAuth.user!,
               branches: [],
+              companies: [],
               error: e.toString(),
             ));
           }

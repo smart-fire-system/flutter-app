@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/models/branch.dart';
+import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -26,11 +27,11 @@ class BranchesScreenState extends State<BranchesScreen> {
   bool _filterRequested = false;
   User? _user;
   List<Branch> _branches = [];
+  List<Company> _companies = [];
   List<Branch> _filteredBranches = [];
+  List<Company> _filteredCompanies = [];
   final TextEditingController _searchController = TextEditingController();
-  List<String> _companies = [];
-  List<String> _filteredCompanies = [];
-  final TextEditingController _companiesFieldController =
+  final TextEditingController _companiesFilterController =
       TextEditingController();
 
   @override
@@ -51,9 +52,13 @@ class BranchesScreenState extends State<BranchesScreen> {
       _filterRequested = true;
       _filteredBranches = _branches
           .where((branch) =>
-              branch.name.toLowerCase().contains(query.toLowerCase()) ||
-              branch.comment.toLowerCase().contains(query.toLowerCase()) ||
-              branch.code.toString() == query)
+              _filteredCompanies.contains(branch.company) &&
+              (branch.name.toLowerCase().contains(query.toLowerCase()) ||
+                  branch.comment.toLowerCase().contains(query.toLowerCase()) ||
+                  branch.company.name
+                      .toLowerCase()
+                      .contains(query.toLowerCase()) ||
+                  branch.code.toString() == query))
           .toList();
     });
   }
@@ -83,22 +88,17 @@ class BranchesScreenState extends State<BranchesScreen> {
           });
           _user = state.user;
           _branches = state.branches;
+          _companies = state.companies;
           if (_filterRequested) {
             _filterRequested = false;
           } else {
-            _filteredBranches = state.branches;
+            _filteredBranches = List.from(_branches);
+            _filteredCompanies = List.from(_companies);
+            _companiesFilterController.text = "All Companies";
             _searchController.removeListener(_filterBranches);
             _searchController.clear();
             _searchController.addListener(_filterBranches);
           }
-          _branches = state.branches;
-          _companies =
-              _branches.map((branch) => branch.company.name).toSet().toList();
-          _companies.add("Company 2"); // TODO: Remove
-          _companies.add("Company 3"); // TODO: Remove
-          _filteredCompanies = List.from(_companies);
-          _companiesFieldController.text = "All Companies";
-
           return _buildBranches(context);
         } else if (state is BranchesNotAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -142,7 +142,7 @@ class BranchesScreenState extends State<BranchesScreen> {
                     left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
                 child: Center(
                   child: TextField(
-                    controller: _companiesFieldController,
+                    controller: _companiesFilterController,
                     readOnly: true,
                     onTap: () {
                       showModalBottomSheet(
@@ -200,18 +200,19 @@ class BranchesScreenState extends State<BranchesScreen> {
                                             ? false
                                             : null,
                                     onChanged: (bool? value) {
+                                      if (_filteredCompanies.length ==
+                                          _companies.length) {
+                                        _filteredCompanies = [];
+                                        _companiesFilterController.text =
+                                            "No Selected Company";
+                                      } else {
+                                        _filteredCompanies =
+                                            List.from(_companies);
+                                        _companiesFilterController.text =
+                                            "All Companies";
+                                      }
                                       setState(() {
-                                        if (_filteredCompanies.length ==
-                                            _companies.length) {
-                                          _filteredCompanies = [];
-                                          _companiesFieldController.text =
-                                              "No Selected Company";
-                                        } else {
-                                          _filteredCompanies =
-                                              List.from(_companies);
-                                          _companiesFieldController.text =
-                                              "All Companies";
-                                        }
+                                        _filterBranches();
                                       });
                                     },
                                   ),
@@ -224,31 +225,51 @@ class BranchesScreenState extends State<BranchesScreen> {
                                           .map((entry) {
                                         var company = entry.value;
                                         return CheckboxListTile(
-                                          title: Text(company),
+                                          title: Text(company.name),
+                                          subtitle: Text(company.comment),
                                           activeColor: CustomStyle.redDark,
                                           value: _filteredCompanies
                                               .contains(company),
                                           onChanged: (bool? value) {
-                                            setState(() {
-                                              if (_filteredCompanies
-                                                  .contains(company)) {
-                                                _filteredCompanies
-                                                    .remove(company);
-                                                _companiesFieldController.text =
-                                                    _filteredCompanies
-                                                        .join(", ");
-                                                if (_filteredCompanies
-                                                    .isEmpty) {
-                                                  _companiesFieldController
-                                                          .text =
-                                                      "No Selected Company";
-                                                }
+                                            if (_filteredCompanies
+                                                .contains(company)) {
+                                              _filteredCompanies
+                                                  .remove(company);
+                                              if (_filteredCompanies.isEmpty) {
+                                                _companiesFilterController
+                                                        .text =
+                                                    "No Selected Company";
                                               } else {
-                                                _filteredCompanies.add(company);
-                                                _companiesFieldController.text =
+                                                _companiesFilterController
+                                                        .text =
                                                     _filteredCompanies
-                                                        .join(", ");
+                                                        .asMap()
+                                                        .entries
+                                                        .map((entry) {
+                                                  var company = entry.value;
+                                                  return company.name;
+                                                }).join(", ");
                                               }
+                                            } else {
+                                              _filteredCompanies.add(company);
+                                              if (_filteredCompanies.length ==
+                                                  _companies.length) {
+                                                _companiesFilterController
+                                                    .text = "All Companies";
+                                              } else {
+                                                _companiesFilterController
+                                                        .text =
+                                                    _filteredCompanies
+                                                        .asMap()
+                                                        .entries
+                                                        .map((entry) {
+                                                  var company = entry.value;
+                                                  return company.name;
+                                                }).join(", ");
+                                              }
+                                            }
+                                            setState(() {
+                                              _filterBranches();
                                             });
                                           },
                                         );
