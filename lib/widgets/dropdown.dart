@@ -1,13 +1,30 @@
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 
+class CustomDropdownItem {
+  final String title;
+  final String value;
+  CustomDropdownItem({required this.title, required this.value});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CustomDropdownItem &&
+          runtimeType == other.runtimeType &&
+          title == other.title &&
+          value == other.value;
+
+  @override
+  int get hashCode => title.hashCode ^ value.hashCode;
+}
+
 class CustomDropdownMulti extends StatefulWidget {
   final String title;
   final String subtitle;
   final String allSelectedText;
   final String noSelectedText;
-  final List<String> items;
-  final void Function(List<String> selectedItems) onChanged;
+  final List<CustomDropdownItem> items;
+  final void Function(List<CustomDropdownItem> selectedItems) onChanged;
   final IconData? icon;
   const CustomDropdownMulti({
     super.key,
@@ -25,7 +42,7 @@ class CustomDropdownMulti extends StatefulWidget {
 }
 
 class CustomDropdownMultiState extends State<CustomDropdownMulti> {
-  List<String> _selectedItems = [];
+  List<CustomDropdownItem> _selectedItems = [];
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -104,15 +121,16 @@ class CustomDropdownMultiState extends State<CustomDropdownMulti> {
                                   ? false
                                   : null,
                           onChanged: (bool? value) {
-                            if (_selectedItems.length == widget.items.length) {
-                              _selectedItems = [];
-                              _controller.text = widget.noSelectedText;
-                            } else {
-                              _selectedItems = List.from(widget.items);
-                              _controller.text = widget.allSelectedText;
-                            }
                             setState(() {
-                              widget.onChanged(_selectedItems);
+                              if (_selectedItems.length ==
+                                  widget.items.length) {
+                                _selectedItems = [];
+                                _controller.text = widget.noSelectedText;
+                              } else {
+                                _selectedItems = List.from(widget.items);
+                                _controller.text = widget.allSelectedText;
+                              }
+                              widget.onChanged(List.from(_selectedItems));
                             });
                           },
                         ),
@@ -122,38 +140,40 @@ class CustomDropdownMultiState extends State<CustomDropdownMulti> {
                             children: widget.items.asMap().entries.map((entry) {
                               var item = entry.value;
                               return CheckboxListTile(
-                                title: Text(item),
+                                title: Text(item.title),
                                 activeColor: CustomStyle.redDark,
                                 value: _selectedItems.contains(item),
                                 onChanged: (bool? value) {
-                                  if (_selectedItems.contains(item)) {
-                                    _selectedItems.remove(item);
-                                    if (_selectedItems.isEmpty) {
-                                      _controller.text = widget.noSelectedText;
-                                    } else {
-                                      _controller.text = _selectedItems
-                                          .asMap()
-                                          .entries
-                                          .map((entry) {
-                                        return entry.value;
-                                      }).join(", ");
-                                    }
-                                  } else {
-                                    _selectedItems.add(item);
-                                    if (_selectedItems.length ==
-                                        widget.items.length) {
-                                      _controller.text = widget.allSelectedText;
-                                    } else {
-                                      _controller.text = _selectedItems
-                                          .asMap()
-                                          .entries
-                                          .map((entry) {
-                                        return entry.value;
-                                      }).join(", ");
-                                    }
-                                  }
                                   setState(() {
-                                    widget.onChanged(_selectedItems);
+                                    if (_selectedItems.contains(item)) {
+                                      _selectedItems.remove(item);
+                                      if (_selectedItems.isEmpty) {
+                                        _controller.text =
+                                            widget.noSelectedText;
+                                      } else {
+                                        _controller.text = _selectedItems
+                                            .asMap()
+                                            .entries
+                                            .map((entry) {
+                                          return entry.value.title;
+                                        }).join(", ");
+                                      }
+                                    } else {
+                                      _selectedItems.add(item);
+                                      if (_selectedItems.length ==
+                                          widget.items.length) {
+                                        _controller.text =
+                                            widget.allSelectedText;
+                                      } else {
+                                        _controller.text = _selectedItems
+                                            .asMap()
+                                            .entries
+                                            .map((entry) {
+                                          return entry.value.title;
+                                        }).join(", ");
+                                      }
+                                    }
+                                    widget.onChanged(List.from(_selectedItems));
                                   });
                                 },
                               );
@@ -190,9 +210,9 @@ class CustomDropdownMultiState extends State<CustomDropdownMulti> {
 class CustomDropdownSingle extends StatefulWidget {
   final String title;
   final String subtitle;
-  final List<String> items;
-  final void Function(String selectedItem) onChanged;
-  final String? initialValue;
+  final List<CustomDropdownItem> items;
+  final void Function(CustomDropdownItem selectedItem) onChanged;
+  final CustomDropdownItem? initialItem;
   final IconData? icon;
   const CustomDropdownSingle({
     super.key,
@@ -200,7 +220,7 @@ class CustomDropdownSingle extends StatefulWidget {
     required this.subtitle,
     required this.items,
     required this.onChanged,
-    this.initialValue,
+    this.initialItem,
     this.icon,
   });
 
@@ -215,8 +235,8 @@ class CustomDropdownSingleState extends State<CustomDropdownSingle> {
   @override
   void initState() {
     super.initState();
-    _selectedItem = widget.initialValue;
-    _controller.text = widget.initialValue ?? "";
+    _selectedItem = widget.initialItem!.value;
+    _controller.text = widget.initialItem!.title;
   }
 
   @override
@@ -228,8 +248,7 @@ class CustomDropdownSingleState extends State<CustomDropdownSingle> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(vertical: 10.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Center(
         child: TextField(
           controller: _controller,
@@ -308,14 +327,17 @@ class CustomDropdownSingleState extends State<CustomDropdownSingle> {
                             children: widget.items.asMap().entries.map((entry) {
                               var item = entry.value;
                               return RadioListTile<String>(
-                                title: Text(item),
-                                value: item,
+                                title: Text(item.title),
+                                value: item.value,
                                 groupValue: _selectedItem,
                                 onChanged: (value) {
                                   setState(() {
                                     _selectedItem = value;
                                     _controller.text = value!;
-                                    widget.onChanged(value);
+                                    widget.onChanged(
+                                      CustomDropdownItem(
+                                          value: value, title: item.title),
+                                    );
                                   });
                                 },
                               );

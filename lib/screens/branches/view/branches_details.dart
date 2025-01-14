@@ -1,8 +1,5 @@
-import 'package:fire_alarm_system/models/admin.dart';
 import 'package:fire_alarm_system/models/branch.dart';
-import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
-import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/info.dart';
@@ -15,9 +12,7 @@ import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
-import 'package:fire_alarm_system/screens/branches/bloc/event.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class BranchDetails extends StatefulWidget {
   final String branchId;

@@ -1,6 +1,5 @@
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
-import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/dropdown.dart';
@@ -26,7 +25,6 @@ class BranchesScreen extends StatefulWidget {
 
 class BranchesScreenState extends State<BranchesScreen> {
   bool _filterRequested = false;
-  User? _user;
   List<Branch> _branches = [];
   List<Company> _companies = [];
   List<Branch> _filteredBranches = [];
@@ -139,13 +137,17 @@ class BranchesScreenState extends State<BranchesScreen> {
                 subtitle: 'Select Compnies',
                 allSelectedText: 'All Companies',
                 noSelectedText: 'No Company Selected',
-                items: _companies.map((company) => company.name).toList(),
+                items: _companies.map((company) {
+                  return CustomDropdownItem(
+                      title: company.name, value: company.id);
+                }).toList(),
                 icon: Icons.filter_alt,
                 onChanged: (filteredItems) {
                   setState(() {
+                    final filteredIds =
+                        filteredItems.map((item) => item.value).toSet();
                     _filteredCompanies = _companies
-                        .where(
-                            (company) => filteredItems.contains(company.name))
+                        .where((company) => filteredIds.contains(company.id))
                         .toList();
                     _filterBranches();
                   });
@@ -190,11 +192,9 @@ class BranchesScreenState extends State<BranchesScreen> {
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios),
                       onTap: () {
-                        TabNavigator.settings.currentState
-                            ?.pushNamed('/branches/details', arguments: {
-                          "branch": branch,
-                          "companies": _companies,
-                        });
+                        TabNavigator.settings.currentState?.pushNamed(
+                            '/branches/details',
+                            arguments: branch.id);
                       },
                     );
                   }).toList(),

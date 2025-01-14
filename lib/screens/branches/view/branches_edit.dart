@@ -40,7 +40,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
   bool _canDeleteBranches = false;
   bool _isFirstCall = true;
   Branch? _branch;
-  List<Company>? _companies = [];
+  List<Company> _companies = [];
 
   @override
   void initState() {
@@ -149,56 +149,27 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                 controller: _emailController,
                 inputType: TextInputType.emailAddress,
               ),
+              CustomDropdownSingle(
+                title: 'Company',
+                subtitle: 'Change Company',
+                initialItem: CustomDropdownItem(
+                  title: _branch!.company.name,
+                  value: _branch!.company.id,
+                ),
+                items: _companies.map((company) {
+                  return CustomDropdownItem(
+                    title: company.name,
+                    value: company.id,
+                  );
+                }).toList(),
+                onChanged: (newCompany) {},
+              ),
               CustomTextField(
                 label: 'Comment',
                 controller: _commentController,
                 maxLines: 3,
               ),
-              CustomDropdownSingle(
-                title: 'Company',
-                subtitle: 'Change Company',
-                items: _companies!.map((company) => company.name).toList(),
-                onChanged: (newCompany) {},
-              ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Build a Card Section
-  Widget buildTextField(String label, TextEditingController controller,
-      {TextInputType inputType = TextInputType.text, int maxLines = 1}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: TextField(
-        controller: controller,
-        keyboardType: inputType,
-        maxLines: maxLines,
-        style: CustomStyle.mediumText,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: CustomStyle.mediumTextBRed,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-            borderSide: const BorderSide(
-              color: CustomStyle.greyMedium,
-            ),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-            borderSide: const BorderSide(
-              color: CustomStyle.greyMedium,
-              width: 1.0,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-            borderSide: const BorderSide(
-              color: CustomStyle.redDark,
-              width: 2.0,
-            ),
           ),
         ),
       ),
