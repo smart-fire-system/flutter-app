@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 
@@ -49,22 +50,97 @@ class CustomLoadingState extends State<CustomLoading>
                 scale: _animation,
                 child: Image.asset(
                   'assets/images/logo/2.jpg',
-                  width: 200,
-                  height: 200,
+                  width: 100,
+                  height: 100,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 40.0),
-                child: Text(
-                  widget.text ?? S.of(context).wait_while_loading,
-                  style: CustomStyle.largeText30,
-                  textAlign: TextAlign.center,
+              if (widget.text != null)
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 16.0, right: 16.0, top: 40.0),
+                  child: Text(
+                    widget.text!,
+                    style: CustomStyle.largeText30,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class AppLoading {
+  static final AppLoading _instance = AppLoading._internal();
+  final Map<AppScreen, BuildContext?> _appScreenContexts = {
+    for (var screen in AppScreen.values) screen: null,
+  };
+  AppLoading._internal();
+  factory AppLoading() {
+    return _instance;
+  }
+  void dismiss({required BuildContext context, required AppScreen screen}) {
+    if (_appScreenContexts[screen] != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pop(_appScreenContexts[screen]!);
+        _appScreenContexts[screen] = null;
+      });
+    }
+  }
+
+  void show({
+    required BuildContext context,
+    required AppScreen screen,
+    String? title,
+  }) {
+    if (_appScreenContexts[screen] == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            _appScreenContexts[screen] = context;
+            return PopScope(
+              canPop: false,
+              child: Center(
+                child: Container(
+                  width: MediaQuery.of(context).size.width < 500
+                      ? MediaQuery.of(context).size.width * 0.8
+                      : 400,
+                  constraints: BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.height < 800
+                        ? MediaQuery.of(context).size.height * 0.7
+                        : 400,
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      Image.asset(
+                        'assets/gif/loading.gif',
+                        height: 75,
+                      ),
+                      Center(
+                        child: Text(
+                          title ?? S.of(context).wait_while_loading,
+                          style: CustomStyle.largeText25B,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      });
+    }
   }
 }

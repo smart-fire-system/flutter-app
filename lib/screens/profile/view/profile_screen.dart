@@ -56,18 +56,25 @@ class ProfileScreenState extends State<ProfileScreen> {
           if (state.error != null) {
             _editMode = false;
             WidgetsBinding.instance.addPostFrameCallback((_) async {
-              CustomAlert.showError(context,
-                  Errors.getFirebaseErrorMessage(context, state.error!));
+              CustomAlert.showError(
+                context: context,
+                title: Errors.getFirebaseErrorMessage(context, state.error!),
+              );
               context.read<ProfileBloc>().add(AuthChanged());
             });
           } else if (state.message != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
               if (state.message! == ProfileMessage.infoUpdated) {
-                CustomAlert.showSuccess(context, S.of(context).info_updated);
+                CustomAlert.showSuccess(
+                  context: context,
+                  title: S.of(context).info_updated,
+                );
               } else if (state.message! ==
                   ProfileMessage.resetPasswordEmailSent) {
                 CustomAlert.showSuccess(
-                    context, S.of(context).reset_email_sent);
+                  context: context,
+                  title: S.of(context).reset_email_sent,
+                );
               }
               context.read<ProfileBloc>().add(AuthChanged());
             });

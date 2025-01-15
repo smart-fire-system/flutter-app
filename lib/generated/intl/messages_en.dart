@@ -44,6 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "addNewAdmin": MessageLookupByLibrary.simpleMessage("Add New Admin"),
         "admin": MessageLookupByLibrary.simpleMessage("Admin"),
         "admins": MessageLookupByLibrary.simpleMessage("Admins"),
+        "allCompanies": MessageLookupByLibrary.simpleMessage("All companies"),
         "already_exists": MessageLookupByLibrary.simpleMessage(
             "The resource already exists."),
         "already_have_an_account": MessageLookupByLibrary.simpleMessage(
@@ -219,6 +220,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "A network error occurred during sign-in. Please check your internet connection and try again."),
         "network_request_failed": MessageLookupByLibrary.simpleMessage(
             "A network error occurred. Please check your connection and try again."),
+        "noBranchesToView":
+            MessageLookupByLibrary.simpleMessage("No branches to view"),
+        "noCompaniesSelected":
+            MessageLookupByLibrary.simpleMessage("No companies selected"),
         "noRole": MessageLookupByLibrary.simpleMessage("No Role"),
         "no_signed_in_user": MessageLookupByLibrary.simpleMessage(
             "No user is signed in. Please log in to continue."),
@@ -277,6 +282,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "save_changes": MessageLookupByLibrary.simpleMessage("Save Changes"),
         "searchBy": MessageLookupByLibrary.simpleMessage(
             "Search by name, email or phone number ..."),
+        "searchByNameCode":
+            MessageLookupByLibrary.simpleMessage("Search by name or code ..."),
+        "selectCompanies":
+            MessageLookupByLibrary.simpleMessage("Select companies to view"),
         "select_language":
             MessageLookupByLibrary.simpleMessage("Please choose a language"),
         "session_expired": MessageLookupByLibrary.simpleMessage(

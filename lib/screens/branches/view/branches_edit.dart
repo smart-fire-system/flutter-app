@@ -64,28 +64,43 @@ class EditBranchScreenState extends State<EditBranchScreen> {
         if (state is BranchesAuthenticated && state.canEditBranches) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (state.error != null) {
-              CustomAlert.showError(context,
-                  Errors.getFirebaseErrorMessage(context, state.error!));
+              CustomAlert.showError(
+                context: context,
+                title: Errors.getFirebaseErrorMessage(context, state.error!),
+              );
               state.error = null;
             } else if (state.message != null &&
-                state.message == BranchesMessage.branchModified) {
-              TabNavigator.settings.currentState?.pop();
+                BranchesMessage.branchModified == state.message) {
+              state.message = null;
+              CustomAlert.showSuccess(
+                context: context,
+                title: S.of(context).branchModified,
+              );
             }
           });
-          _canDeleteBranches = state.canDeleteBranches;
-          _branch = state.branches
-              .firstWhere((branch) => branch.id == widget.branchId);
-          _companies = state.companies;
-          if (_isFirstCall) {
-            _isFirstCall = false;
-            _nameController = TextEditingController(text: _branch!.name);
-            _addressController = TextEditingController(text: _branch!.address);
-            _phoneController =
-                TextEditingController(text: _branch!.phoneNumber);
-            _emailController = TextEditingController(text: _branch!.email);
-            _commentController = TextEditingController(text: _branch!.comment);
+          if (BranchesMessage.branchDeleted == state.message) {
+            state.message = null;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              TabNavigator.settings.currentState?.pop();
+            });
+          } else {
+            _canDeleteBranches = state.canDeleteBranches;
+            _branch = state.branches
+                .firstWhere((branch) => branch.id == widget.branchId);
+            _companies = state.companies;
+            if (_isFirstCall) {
+              _isFirstCall = false;
+              _nameController = TextEditingController(text: _branch!.name);
+              _addressController =
+                  TextEditingController(text: _branch!.address);
+              _phoneController =
+                  TextEditingController(text: _branch!.phoneNumber);
+              _emailController = TextEditingController(text: _branch!.email);
+              _commentController =
+                  TextEditingController(text: _branch!.comment);
+            }
+            return _buildEditor(context);
           }
-          return _buildEditor(context);
         } else if (state is BranchesNotAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             Navigator.pushNamed(context, '/signIn');
@@ -100,30 +115,32 @@ class EditBranchScreenState extends State<EditBranchScreen> {
     return Scaffold(
       appBar: CustomAppBar(title: _branch!.name),
       floatingActionButton: FloatingActionButton.extended(
+        label: Text("Save Changes", style: CustomStyle.mediumTextWhite),
         backgroundColor: Colors.green,
-        onPressed: () {
-          // Create an updated branch object
-          Branch updatedBranch = Branch(
-            code: _branch!.code,
-            id: _branch!.id,
-            name: _nameController.text,
-            address: _addressController.text,
-            phoneNumber: _phoneController.text,
-            email: _emailController.text,
-            comment: _commentController.text,
-            createdAt: _branch!.createdAt,
-            company: _branch!.company,
-          );
-
-          // Pass the updated branch back to the previous screen
-          Navigator.pop(context, updatedBranch);
-        },
         icon: const Icon(
           Icons.save,
           size: 30,
           color: Colors.white,
         ),
-        label: Text("Save", style: CustomStyle.mediumTextWhite),
+        onPressed: () async {
+          await CustomAlert.showSuccess(
+              context: context, title: "Hello", subtitle: "World");
+          print("Done");
+          return;
+          context.read<BranchesBloc>().add(BranchModifyRequested(
+                branch: Branch(
+                  code: _branch!.code,
+                  id: _branch!.id,
+                  name: _nameController.text,
+                  address: _addressController.text,
+                  phoneNumber: _phoneController.text,
+                  email: _emailController.text,
+                  comment: _commentController.text,
+                  createdAt: _branch!.createdAt,
+                  company: _branch!.company,
+                ),
+              ));
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Padding(

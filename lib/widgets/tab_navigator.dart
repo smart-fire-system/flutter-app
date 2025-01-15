@@ -12,7 +12,7 @@ import 'package:fire_alarm_system/screens/reports/view/view.dart';
 import 'package:fire_alarm_system/screens/settings/view/view.dart';
 import 'package:fire_alarm_system/screens/system/view/view.dart';
 
-enum Screen {
+enum AppTab {
   system,
   reports,
   profile,
@@ -21,7 +21,7 @@ enum Screen {
 }
 
 class TabNavigator extends StatelessWidget {
-  final Screen screen;
+  final AppTab screen;
   const TabNavigator({super.key, required this.screen});
 
   static final GlobalKey<NavigatorState> system = GlobalKey<NavigatorState>();
@@ -35,26 +35,26 @@ class TabNavigator extends StatelessWidget {
   Widget build(BuildContext context) {
     GlobalKey<NavigatorState> navigatorKey = system;
     switch (screen) {
-      case Screen.system:
+      case AppTab.system:
         navigatorKey = system;
         break;
-      case Screen.reports:
+      case AppTab.reports:
         navigatorKey = reports;
         break;
-      case Screen.profile:
+      case AppTab.profile:
         navigatorKey = profile;
         break;
-      case Screen.complaints:
+      case AppTab.complaints:
         navigatorKey = complaints;
         break;
-      case Screen.settigns:
+      case AppTab.settigns:
         navigatorKey = settings;
         break;
     }
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (popInvocation, x) async {
-        if (screen == homeScreenKey.currentState!.getCurrentScreen())
+        if (screen == homeScreenKey.currentState!.getCurrentTab())
         {
           final didPopNested =
               await navigatorKey.currentState?.maybePop() ?? false;
@@ -101,17 +101,17 @@ class TabNavigator extends StatelessWidget {
     );
   }
 
-  Widget _buildMainScreen(Screen screen) {
+  Widget _buildMainScreen(AppTab screen) {
     switch (screen) {
-      case Screen.system:
+      case AppTab.system:
         return const SystemScreen();
-      case Screen.reports:
+      case AppTab.reports:
         return const ReportsScreen();
-      case Screen.profile:
+      case AppTab.profile:
         return const ProfileScreen();
-      case Screen.complaints:
+      case AppTab.complaints:
         return const ComplaintsScreen();
-      case Screen.settigns:
+      case AppTab.settigns:
         return const SettingsScreen();
     }
   }

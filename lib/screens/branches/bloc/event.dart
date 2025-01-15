@@ -9,17 +9,17 @@ class AuthChanged extends BranchesEvent {
   AuthChanged({this.message, this.error});
 }
 
-class ModifyRequested extends BranchesEvent {
+class BranchModifyRequested extends BranchesEvent {
   Branch branch;
-  ModifyRequested({required this.branch});
+  BranchModifyRequested({required this.branch});
 }
 
-class AddRequested extends BranchesEvent {
+class BranchAddRequested extends BranchesEvent {
   Branch branch;
-  AddRequested({required this.branch});
+  BranchAddRequested({required this.branch});
 }
 
-class DeleteRequested extends BranchesEvent {
+class BranchDeleteRequested extends BranchesEvent {
   String id;
-  DeleteRequested({required this.id});
+  BranchDeleteRequested({required this.id});
 }

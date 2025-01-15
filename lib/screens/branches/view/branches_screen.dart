@@ -1,15 +1,17 @@
+import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
+import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/dropdown.dart';
+import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
-import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
@@ -29,6 +31,7 @@ class BranchesScreenState extends State<BranchesScreen> {
   List<Company> _companies = [];
   List<Branch> _filteredBranches = [];
   List<Company> _filteredCompanies = [];
+  bool _canAddBranches = false;
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -51,10 +54,6 @@ class BranchesScreenState extends State<BranchesScreen> {
           .where((branch) =>
               _filteredCompanies.contains(branch.company) &&
               (branch.name.toLowerCase().contains(query.toLowerCase()) ||
-                  branch.comment.toLowerCase().contains(query.toLowerCase()) ||
-                  branch.company.name
-                      .toLowerCase()
-                      .contains(query.toLowerCase()) ||
                   branch.code.toString() == query))
           .toList();
     });
@@ -67,24 +66,16 @@ class BranchesScreenState extends State<BranchesScreen> {
         if (state is BranchesAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (state.error != null) {
-              CustomAlert.showError(context,
-                  Errors.getFirebaseErrorMessage(context, state.error!));
+              CustomAlert.showError(
+                context: context,
+                title: Errors.getFirebaseErrorMessage(context, state.error!),
+              );
               state.error = null;
-            } else if (state.message != null) {
-              if (state.message == BranchesMessage.branchModified) {
-                CustomAlert.showSuccess(context, S.of(context).branchModified);
-                state.message = null;
-              } else if (state.message == BranchesMessage.branchAdded) {
-                CustomAlert.showSuccess(context, S.of(context).branchAdded);
-                state.message = null;
-              } else if (state.message == BranchesMessage.branchDeleted) {
-                CustomAlert.showSuccess(context, S.of(context).branchDeleted);
-                state.message = null;
-              }
             }
           });
-          _branches = state.branches;
-          _companies = state.companies;
+          _branches = List.from(state.branches);
+          _companies = List.from(state.companies);
+          _canAddBranches = state.canAddBranches;
           if (_filterRequested) {
             _filterRequested = false;
           } else {
@@ -96,34 +87,39 @@ class BranchesScreenState extends State<BranchesScreen> {
           }
           return _buildBranches(context);
         } else if (state is BranchesNotAuthenticated) {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushNamedAndRemoveUntil(
               context,
               '/',
-              (Route<dynamic> route) => false,
+              (route) => false,
             );
           });
         }
-        return const CustomLoading();
+        return _buildLoading(context);
       },
     );
   }
 
   Widget _buildBranches(BuildContext context) {
+    AppLoading().dismiss(context: context, screen: AppScreen.viewBranches);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: S.of(context).branches),
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.green,
-        onPressed: () {},
-        icon: const Icon(
-          Icons.add,
-          size: 30,
-          color: Colors.white,
-        ),
-        label: Text("Add", style: CustomStyle.mediumTextWhite),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: !_canAddBranches
+          ? null
+          : FloatingActionButton.extended(
+              backgroundColor: Colors.green,
+              onPressed: () {},
+              icon: const Icon(
+                Icons.add,
+                size: 30,
+                color: Colors.white,
+              ),
+              label: Text(S.of(context).addBranch,
+                  style: CustomStyle.mediumTextWhite),
+            ),
+      floatingActionButtonLocation:
+          !_canAddBranches ? null : FloatingActionButtonLocation.endFloat,
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<BranchesBloc>().add(AuthChanged());
@@ -133,10 +129,10 @@ class BranchesScreenState extends State<BranchesScreen> {
           child: Column(
             children: [
               CustomDropdownMulti(
-                title: 'Companies',
-                subtitle: 'Select Compnies',
-                allSelectedText: 'All Companies',
-                noSelectedText: 'No Company Selected',
+                title: S.of(context).companies,
+                subtitle: S.of(context).selectCompanies,
+                allSelectedText: S.of(context).allCompanies,
+                noSelectedText: S.of(context).noCompaniesSelected,
                 items: _companies.map((company) {
                   return CustomDropdownItem(
                       title: company.name, value: company.id);
@@ -154,11 +150,11 @@ class BranchesScreenState extends State<BranchesScreen> {
                 },
               ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    labelText: S.of(context).searchBy,
+                    labelText: S.of(context).searchByNameCode,
                     labelStyle: CustomStyle.smallTextGrey,
                     border: const OutlineInputBorder(),
                     prefixIcon:
@@ -172,36 +168,104 @@ class BranchesScreenState extends State<BranchesScreen> {
                   ),
                 ),
               ),
-              Flexible(
-                child: ListView(
-                  children: _filteredBranches.asMap().entries.map((entry) {
-                    var branch = entry.value;
+              _filteredBranches.isEmpty
+                  ? Text(
+                      S.of(context).noBranchesToView,
+                      style: CustomStyle.mediumTextB,
+                    )
+                  : Flexible(
+                      child: ListView(
+                        children:
+                            _filteredBranches.asMap().entries.map((entry) {
+                          var branch = entry.value;
 
-                    return ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: NetworkImage(branch.company.logoURL),
-                        radius: 25.0,
+                          return ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(branch.company.logoURL),
+                              radius: 25.0,
+                            ),
+                            title: Text(
+                              branch.name,
+                              style: CustomStyle.mediumTextB,
+                            ),
+                            subtitle: Text(
+                              branch.company.name,
+                              style: CustomStyle.smallText,
+                            ),
+                            trailing: const Icon(Icons.arrow_forward_ios),
+                            onTap: () {
+                              TabNavigator.settings.currentState?.pushNamed(
+                                  '/branches/details',
+                                  arguments: branch.id);
+                            },
+                          );
+                        }).toList(),
                       ),
-                      title: Text(
-                        branch.name,
-                        style: CustomStyle.mediumTextB,
-                      ),
-                      subtitle: Text(
-                        branch.company.name,
-                        style: CustomStyle.smallText,
-                      ),
-                      trailing: const Icon(Icons.arrow_forward_ios),
-                      onTap: () {
-                        TabNavigator.settings.currentState?.pushNamed(
-                            '/branches/details',
-                            arguments: branch.id);
-                      },
-                    );
-                  }).toList(),
-                ),
-              ),
+                    ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoading(BuildContext context) {
+    AppLoading().show(context: context, screen: AppScreen.viewBranches);
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: CustomAppBar(title: S.of(context).branches),
+      floatingActionButton: !_canAddBranches
+          ? null
+          : FloatingActionButton.extended(
+              backgroundColor: Colors.green,
+              onPressed: () {},
+              icon: const Icon(
+                Icons.add,
+                size: 30,
+                color: Colors.white,
+              ),
+              label: Text(S.of(context).addBranch,
+                  style: CustomStyle.mediumTextWhite),
+            ),
+      floatingActionButtonLocation:
+          !_canAddBranches ? null : FloatingActionButtonLocation.endFloat,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            CustomDropdownMulti(
+              title: S.of(context).companies,
+              subtitle: S.of(context).selectCompanies,
+              allSelectedText: S.of(context).allCompanies,
+              noSelectedText: S.of(context).noCompaniesSelected,
+              items: const [],
+              icon: Icons.filter_alt,
+              onChanged: (_) {},
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: S.of(context).searchByNameCode,
+                  labelStyle: CustomStyle.smallTextGrey,
+                  border: const OutlineInputBorder(),
+                  prefixIcon:
+                      const Icon(Icons.search, color: CustomStyle.redDark),
+                ),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: 5, // Simulate loading for 5 items
+                itemBuilder: (context, index) => const CardLoading(
+                  height: 80,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  margin: EdgeInsets.only(bottom: 16),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

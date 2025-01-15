@@ -15,3 +15,11 @@ enum UserRole {
   client,
   noRole
 }
+
+
+enum AppScreen {
+  viewBranches,
+  viewBranchDetails,
+  editBranches,
+  addBranhes,
+}

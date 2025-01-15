@@ -33,6 +33,8 @@ class CustomStyle {
       fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500);
   static final TextStyle largeTextB = GoogleFonts.cairo(
       fontSize: 20, color: Colors.black, fontWeight: FontWeight.w700);
+  static final TextStyle largeTextBWhite = GoogleFonts.cairo(
+      fontSize: 20, color: Colors.white, fontWeight: FontWeight.w700);
 
   static final TextStyle mediumText = GoogleFonts.cairo(
       fontSize: 18, color: Colors.black, fontWeight: FontWeight.w500);

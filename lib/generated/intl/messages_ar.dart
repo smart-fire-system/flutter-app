@@ -45,6 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "addNewAdmin": MessageLookupByLibrary.simpleMessage("إضافة مسئول جديد"),
         "admin": MessageLookupByLibrary.simpleMessage("مسئول"),
         "admins": MessageLookupByLibrary.simpleMessage("المسؤولون"),
+        "allCompanies": MessageLookupByLibrary.simpleMessage("كل الشركات"),
         "already_exists":
             MessageLookupByLibrary.simpleMessage("المورد موجود بالفعل."),
         "already_have_an_account": MessageLookupByLibrary.simpleMessage(
@@ -214,6 +215,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
         "network_request_failed": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ في الشبكة أثناء تسجيل الدخول. يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى."),
+        "noBranchesToView":
+            MessageLookupByLibrary.simpleMessage("لا يوجد فروع لعرضها"),
+        "noCompaniesSelected":
+            MessageLookupByLibrary.simpleMessage("لم يتم اختيار أي شركات"),
         "noRole": MessageLookupByLibrary.simpleMessage("بدون صلاحية وصول"),
         "no_signed_in_user": MessageLookupByLibrary.simpleMessage(
             "لا يوجد مستخدم مسجل الدخول. يرجى تسجيل الدخول."),
@@ -271,6 +276,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "save_changes": MessageLookupByLibrary.simpleMessage("حفظ التعديلات"),
         "searchBy": MessageLookupByLibrary.simpleMessage(
             "بحث بالاسم، البريد الالكتروني أو رقم الهاتف ..."),
+        "searchByNameCode":
+            MessageLookupByLibrary.simpleMessage("بحث بالإسم أو الكود ..."),
+        "selectCompanies":
+            MessageLookupByLibrary.simpleMessage("يرجى اختيار الشركات للعرض"),
         "select_language":
             MessageLookupByLibrary.simpleMessage("يرجى اختيار اللغة"),
         "session_expired": MessageLookupByLibrary.simpleMessage(

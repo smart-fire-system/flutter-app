@@ -54,6 +54,7 @@ dependencies:
   flutter_native_splash: ^2.4.1
   persistent_bottom_nav_bar: ^6.2.1
   drop_down_list: ^0.0.8
+  card_loading: ^0.3.2
 
 
 dev_dependencies:
@@ -81,6 +82,7 @@ flutter:
   generate: true
   assets:
     - assets/images/
+    - assets/gif/
     - assets/images/logo/
 
   # To add assets to your application, add an assets section, like this:

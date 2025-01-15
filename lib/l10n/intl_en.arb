@@ -20,6 +20,7 @@
     "reset_email_sent": "A password reset email has been sent. Please check your inbox.",
 
     "searchBy": "Search by name, email or phone number ...",
+    "searchByNameCode": "Search by name or code ...",
 
     "home": "Home",
     "profile": "Profile",
@@ -132,6 +133,18 @@
     "edit_information": "Edit Inforamation",
     "save_changes": "Save Changes",
     "info_updated": "Profile info updated successfully",
+
+    "selectCompanies": "Select companies to view",
+    "allCompanies": "All companies",
+    "noCompaniesSelected": "No companies selected",
+    "noBranchesToView": "No branches to view",
+
+
+
+
+
+
+
 
     "stepsToComplete": "To continue using the application, please complete the following steps:",
     "emailVerificationTitle": "Email Verification",

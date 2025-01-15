@@ -1,11 +1,13 @@
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
-import 'package:fire_alarm_system/models/user.dart';
 
 enum BranchesMessage {
   branchModified,
   branchAdded,
   branchDeleted,
+  companyModified,
+  companyAdded,
+  companyDeleted,
 }
 
 abstract class BranchesState {}
@@ -25,6 +27,7 @@ class BranchesAuthenticated extends BranchesState {
   final bool canEditCompanies;
   final bool canAddCompanies;
   final bool canDeleteCompanies;
+  String? createdId;
   BranchesMessage? message;
   String? error;
   BranchesAuthenticated({
@@ -38,6 +41,7 @@ class BranchesAuthenticated extends BranchesState {
     this.canEditCompanies = false,
     this.canAddCompanies = false,
     this.canDeleteCompanies = false,
+    this.createdId,
     this.message,
     this.error,
   });

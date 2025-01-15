@@ -25,8 +25,8 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   User? _user;
-  Screen _currentScreen = Screen.system;
-  final List<Screen> _activeScreens = [Screen.system];
+  AppTab _currentTab = AppTab.system;
+  final List<AppTab> _activeTabs = [AppTab.system];
   bool _canPop = true;
 
   @override
@@ -39,21 +39,21 @@ class HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  void setCurrentScreen(Screen screen) {
+  void setCurrentTab(AppTab tab) {
     setState(() {
-      _currentScreen = screen;
+      _currentTab = tab;
     });
   }
 
-  Screen getCurrentScreen() {
-    return _currentScreen;
+  AppTab getCurrentTab() {
+    return _currentTab;
   }
 
   void goBack() {
     setState(() {
-      if (_activeScreens.length > 1) {
-        _activeScreens.removeLast();
-        _currentScreen = _activeScreens.last;
+      if (_activeTabs.length > 1) {
+        _activeTabs.removeLast();
+        _currentTab = _activeTabs.last;
       } else {
         SystemNavigator.pop();
       }
@@ -71,12 +71,14 @@ class HomeScreenState extends State<HomeScreen> {
         if (state is HomeNotAuthenticated) {
           if (state.error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
-              CustomAlert.showError(context,
-                  Errors.getFirebaseErrorMessage(context, state.error!));
+              CustomAlert.showError(
+                context: context,
+                title: Errors.getFirebaseErrorMessage(context, state.error!),
+              );
             });
           } else if (state.error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
-              CustomAlert.showSuccess(context, state.message!);
+              CustomAlert.showSuccess(context: context, title: state.message!);
             });
           }
           return _buildWelcome(context);
@@ -84,12 +86,17 @@ class HomeScreenState extends State<HomeScreen> {
           _user = state.user;
           if (state.error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
-              CustomAlert.showError(context,
-                  Errors.getFirebaseErrorMessage(context, state.error!));
+              CustomAlert.showError(
+                context: context,
+                title: Errors.getFirebaseErrorMessage(context, state.error!),
+              );
             });
           } else if (state.message != null && state.message == 'Email Sent') {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
-              CustomAlert.showSuccess(context, S.of(context).reset_email_sent);
+              CustomAlert.showSuccess(
+                context: context,
+                title: S.of(context).reset_email_sent,
+              );
             });
           }
           if (state.isEmailVerified &&
@@ -115,13 +122,13 @@ class HomeScreenState extends State<HomeScreen> {
   Widget _buildHome(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
-        index: _currentScreen.index,
+        index: _currentTab.index,
         children: const [
-          TabNavigator(screen: Screen.system),
-          TabNavigator(screen: Screen.reports),
-          TabNavigator(screen: Screen.profile),
-          TabNavigator(screen: Screen.complaints),
-          TabNavigator(screen: Screen.settigns),
+          TabNavigator(screen: AppTab.system),
+          TabNavigator(screen: AppTab.reports),
+          TabNavigator(screen: AppTab.profile),
+          TabNavigator(screen: AppTab.complaints),
+          TabNavigator(screen: AppTab.settigns),
         ],
       ),
       bottomNavigationBar: Container(
@@ -144,13 +151,13 @@ class HomeScreenState extends State<HomeScreen> {
           unselectedItemColor: CustomStyle.greyMedium,
           showUnselectedLabels: true,
           type: BottomNavigationBarType.shifting,
-          currentIndex: _currentScreen.index,
+          currentIndex: _currentTab.index,
           onTap: (int newIndex) {
             setState(() {
-              _currentScreen = Screen.values[newIndex];
-              _activeScreens.remove(_currentScreen);
-              _activeScreens.add(_currentScreen);
-              if (_activeScreens.length > 1) {
+              _currentTab = AppTab.values[newIndex];
+              _activeTabs.remove(_currentTab);
+              _activeTabs.add(_currentTab);
+              if (_activeTabs.length > 1) {
                 _canPop = false;
               }
             });

@@ -81,10 +81,11 @@ class BranchRepository {
     }
   }
 
-  Future<void> addBranch(Branch branch) async {
+  Future<String> addBranch(Branch branch) async {
     try {
       branch.createdAt = FieldValue.serverTimestamp() as Timestamp;
-      await _firestore.collection('branches').add(branch.toMap());
+      DocumentReference branchRef = await _firestore.collection('branches').add(branch.toMap());
+      return branchRef.id;
     } catch (e) {
       if (e is FirebaseException) {
         throw Exception(e.code);

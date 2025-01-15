@@ -190,6 +190,16 @@ class S {
     );
   }
 
+  /// `Search by name or code ...`
+  String get searchByNameCode {
+    return Intl.message(
+      'Search by name or code ...',
+      name: 'searchByNameCode',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Home`
   String get home {
     return Intl.message(
@@ -1185,6 +1195,46 @@ class S {
     return Intl.message(
       'Profile info updated successfully',
       name: 'info_updated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select companies to view`
+  String get selectCompanies {
+    return Intl.message(
+      'Select companies to view',
+      name: 'selectCompanies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All companies`
+  String get allCompanies {
+    return Intl.message(
+      'All companies',
+      name: 'allCompanies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No companies selected`
+  String get noCompaniesSelected {
+    return Intl.message(
+      'No companies selected',
+      name: 'noCompaniesSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No branches to view`
+  String get noBranchesToView {
+    return Intl.message(
+      'No branches to view',
+      name: 'noBranchesToView',
       desc: '',
       args: [],
     );

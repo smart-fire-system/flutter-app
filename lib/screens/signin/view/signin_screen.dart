@@ -45,8 +45,10 @@ class SignInScreenState extends State<SignInScreen> {
         if (state is SignInNotAuthenticated) {
           if (state.error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              CustomAlert.showError(context,
-                  Errors.getFirebaseErrorMessage(context, state.error!));
+              CustomAlert.showError(
+                context: context,
+                title: Errors.getFirebaseErrorMessage(context, state.error!),
+              );
               context.read<SignInBloc>().add(AuthChanged());
             });
           }
@@ -62,10 +64,15 @@ class SignInScreenState extends State<SignInScreen> {
         } else if (state is ResetEmailSent) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (state.error == null) {
-              CustomAlert.showSuccess(context, S.of(context).reset_email_sent);
+              CustomAlert.showSuccess(
+                context: context,
+                title: S.of(context).reset_email_sent,
+              );
             } else {
-              CustomAlert.showError(context,
-                  Errors.getFirebaseErrorMessage(context, state.error!));
+              CustomAlert.showError(
+                context: context,
+                title: Errors.getFirebaseErrorMessage(context, state.error!),
+              );
             }
             context.read<SignInBloc>().add(AuthChanged());
           });

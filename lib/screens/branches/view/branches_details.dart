@@ -34,15 +34,19 @@ class BranchDetailsState extends State<BranchDetails> {
         if (state is BranchesAuthenticated && state.canViewBranches) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (state.error != null) {
-              CustomAlert.showError(context,
-                  Errors.getFirebaseErrorMessage(context, state.error!));
+              CustomAlert.showError(
+                context: context,
+                title: Errors.getFirebaseErrorMessage(context, state.error!),
+              );
               state.error = null;
             } else if (state.message != null) {
               if (state.message == BranchesMessage.branchModified) {
-                CustomAlert.showSuccess(context, S.of(context).branchModified);
+                CustomAlert.showSuccess(
+                    context: context, title: S.of(context).branchModified);
                 state.message = null;
               } else if (state.message == BranchesMessage.branchAdded) {
-                CustomAlert.showSuccess(context, S.of(context).branchAdded);
+                CustomAlert.showSuccess(
+                    context: context, title: S.of(context).branchAdded);
                 state.message = null;
               }
             }
