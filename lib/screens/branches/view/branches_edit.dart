@@ -200,6 +200,32 @@ class EditBranchScreenState extends State<EditBranchScreen> {
   }
 
   void _saveChanges(BuildContext context) async {
+    if (_nameController.text.isEmpty) {
+      CustomAlert.showError(
+        context: context,
+        title: S.of(context).enterBranchName,
+      );
+      return;
+    } else if (_addressController.text.isEmpty) {
+      CustomAlert.showError(
+        context: context,
+        title: S.of(context).enterBranchAddress,
+      );
+      return;
+    } else if (_phoneController.text.isEmpty) {
+      CustomAlert.showError(
+        context: context,
+        title: S.of(context).enterBranchPhone,
+      );
+      return;
+    } else if (_emailController.text.isEmpty) {
+      CustomAlert.showError(
+        context: context,
+        title: S.of(context).enterBranchEmail,
+      );
+      return;
+    }
+
     int? confirm = await CustomAlert.showConfirmation(
       context: context,
       title: S.of(context).editBranch,
@@ -228,14 +254,11 @@ class EditBranchScreenState extends State<EditBranchScreen> {
       );
       context.read<BranchesBloc>().add(BranchModifyRequested(
             branch: Branch(
-              code: _branch!.code,
-              id: _branch!.id,
               name: _nameController.text,
               address: _addressController.text,
               phoneNumber: _phoneController.text,
               email: _emailController.text,
               comment: _commentController.text,
-              createdAt: _branch!.createdAt,
               company: _branch!.company,
             ),
           ));
@@ -271,7 +294,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
       );
       context.read<BranchesBloc>().add(
             BranchDeleteRequested(
-              id: _branch!.id,
+              id: _branch!.id!,
             ),
           );
     }

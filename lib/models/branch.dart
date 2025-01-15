@@ -2,38 +2,36 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/company.dart';
 
 class Branch {
-  int code;
-  String id;
+  int? code;
+  String? id;
   String name;
   String address;
   String phoneNumber;
   String email;
   String comment;
-  Timestamp createdAt;
+  Timestamp? createdAt;
   Company company;
 
   Branch({
-    required this.code,
-    required this.id,
+    this.id,
+    this.code,
+    this.createdAt,
     required this.company,
     required this.name,
     required this.address,
     required this.phoneNumber,
     required this.email,
     required this.comment,
-    required this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'code': code,
       'company': company.id,
       'name': name,
       'address': address,
       'phoneNumber': phoneNumber,
       'email': email,
       'comment': comment,
-      'createdAt': createdAt,
     };
   }
 

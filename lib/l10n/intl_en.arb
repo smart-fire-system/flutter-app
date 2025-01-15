@@ -157,6 +157,11 @@
     "noCancel": "No, cancel",
     "waitDeltingBranch": "Please wait while deleting branch",
     "waitSavingBranch": "Please wait while saving branch information",
+    "enterBranchName":"Please enter the branch name",
+    "enterBranchAddress":"Please enter the branch address",
+    "enterBranchPhone":"Please enter the branch phone number",
+    "enterBranchEmail":"Please enter the branch email address",
+    "enterBranchCompany":"Please choose a company for this branch",
 
 
 

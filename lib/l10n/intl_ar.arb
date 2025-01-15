@@ -153,6 +153,11 @@
     "noCancel": "لا، إلغاء",
     "waitDeltingBranch": "برجاء الانتظار، جاري حذف الفرع",
     "waitSavingBranch": "برجاء الانتظار، جاري حفظ بيانات الفرع",
+    "enterBranchName":"برجاء إدخال اسم الفرع",
+    "enterBranchAddress":"برجاء إدخال عنوان الفرع",
+    "enterBranchPhone":"برجاء إدخال رقم الهاتف للفرع",
+    "enterBranchEmail":"برجاء إدخال البريد الالكتروني للفرع",
+    "enterBranchCompany":"برجاء إختيار شركة للفرع",
 
 
 

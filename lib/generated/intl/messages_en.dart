@@ -149,6 +149,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "An account already exists with this email address. Please login or use a different email."),
         "employee": MessageLookupByLibrary.simpleMessage("Employee"),
         "employees": MessageLookupByLibrary.simpleMessage("Employees"),
+        "enterBranchAddress": MessageLookupByLibrary.simpleMessage(
+            "Please enter the branch address"),
+        "enterBranchCompany": MessageLookupByLibrary.simpleMessage(
+            "Please choose a company for this branch"),
+        "enterBranchEmail": MessageLookupByLibrary.simpleMessage(
+            "Please enter the branch email address"),
+        "enterBranchName": MessageLookupByLibrary.simpleMessage(
+            "Please enter the branch name"),
+        "enterBranchPhone": MessageLookupByLibrary.simpleMessage(
+            "Please enter the branch phone number"),
         "enter_email": MessageLookupByLibrary.simpleMessage(
             "Please enter your email address"),
         "enter_email_to_reset": MessageLookupByLibrary.simpleMessage(

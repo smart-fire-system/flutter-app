@@ -97,7 +97,7 @@ class BranchDetailsState extends State<BranchDetails> {
                   ),
                   CustomInfoItem(
                     title: S.of(context).createdAt,
-                    value: _branch!.createdAt.toDate().toString(),
+                    value: _branch!.createdAt!.toDate().toString(),
                   ),
                 ],
               ),

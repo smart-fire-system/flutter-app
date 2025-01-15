@@ -149,6 +149,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "البريد الإلكتروني مستخدم بالفعل. يرجى تسجيل الدخول أو استخدام بريد آخر."),
         "employee": MessageLookupByLibrary.simpleMessage("موظف"),
         "employees": MessageLookupByLibrary.simpleMessage("الموظفون"),
+        "enterBranchAddress":
+            MessageLookupByLibrary.simpleMessage("برجاء إدخال عنوان الفرع"),
+        "enterBranchCompany":
+            MessageLookupByLibrary.simpleMessage("برجاء إختيار شركة للفرع"),
+        "enterBranchEmail": MessageLookupByLibrary.simpleMessage(
+            "برجاء إدخال البريد الالكتروني للفرع"),
+        "enterBranchName":
+            MessageLookupByLibrary.simpleMessage("برجاء إدخال اسم الفرع"),
+        "enterBranchPhone": MessageLookupByLibrary.simpleMessage(
+            "برجاء إدخال رقم الهاتف للفرع"),
         "enter_email": MessageLookupByLibrary.simpleMessage(
             "يرجى إدخال عنوان بريدك الإلكتروني"),
         "enter_email_to_reset": MessageLookupByLibrary.simpleMessage(

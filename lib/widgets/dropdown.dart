@@ -235,8 +235,10 @@ class CustomDropdownSingleState extends State<CustomDropdownSingle> {
   @override
   void initState() {
     super.initState();
-    _selectedItem = widget.initialItem!.value;
-    _controller.text = widget.initialItem!.title;
+    if (widget.initialItem != null) {
+      _selectedItem = widget.initialItem!.value;
+      _controller.text = widget.initialItem!.title;
+    }
   }
 
   @override
@@ -333,10 +335,10 @@ class CustomDropdownSingleState extends State<CustomDropdownSingle> {
                                 onChanged: (value) {
                                   setState(() {
                                     _selectedItem = value;
-                                    _controller.text = value!;
+                                    _controller.text = item.title;
                                     widget.onChanged(
                                       CustomDropdownItem(
-                                          value: value, title: item.title),
+                                          value: item.value, title: item.title),
                                     );
                                   });
                                 },

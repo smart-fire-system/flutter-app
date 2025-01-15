@@ -26,10 +26,9 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     });
 
     on<AuthChanged>((event, emit) async {
-      if ((event.error != null) ||
-          (authRepository.userAuth.authStatus != AuthStatus.authenticated ||
-              authRepository.userAuth.user!.phoneNumber.isEmpty ||
-              authRepository.userAuth.user!.role != UserRole.admin)) {
+      if (authRepository.userAuth.authStatus != AuthStatus.authenticated ||
+          authRepository.userAuth.user!.phoneNumber.isEmpty ||
+          authRepository.userAuth.user!.role != UserRole.admin) {
         emit(BranchesNotAuthenticated(error: event.error));
         return;
       }
@@ -51,12 +50,13 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
           canEditCompanies: true,
           canAddCompanies: true,
           canDeleteCompanies: true,
+          error: event.error,
         ));
       } catch (e) {
         emit(BranchesAuthenticated(
           branches: [],
           companies: [],
-          error: e.toString(),
+          error: event.error ?? e.toString(),
         ));
       }
     });
@@ -74,8 +74,10 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<BranchAddRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
+        print("Adding");
         createdId = await branchRepository.addBranch(event.branch);
         add(AuthChanged(message: BranchesMessage.branchAdded));
+        print("Done");
       } catch (e) {
         add(AuthChanged(error: e.toString()));
       }

@@ -1410,6 +1410,56 @@ class S {
     );
   }
 
+  /// `Please enter the branch name`
+  String get enterBranchName {
+    return Intl.message(
+      'Please enter the branch name',
+      name: 'enterBranchName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the branch address`
+  String get enterBranchAddress {
+    return Intl.message(
+      'Please enter the branch address',
+      name: 'enterBranchAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the branch phone number`
+  String get enterBranchPhone {
+    return Intl.message(
+      'Please enter the branch phone number',
+      name: 'enterBranchPhone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the branch email address`
+  String get enterBranchEmail {
+    return Intl.message(
+      'Please enter the branch email address',
+      name: 'enterBranchEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please choose a company for this branch`
+  String get enterBranchCompany {
+    return Intl.message(
+      'Please choose a company for this branch',
+      name: 'enterBranchCompany',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `To continue using the application, please complete the following steps:`
   String get stepsToComplete {
     return Intl.message(

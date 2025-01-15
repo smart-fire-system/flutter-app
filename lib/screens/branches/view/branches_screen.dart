@@ -109,7 +109,10 @@ class BranchesScreenState extends State<BranchesScreen> {
           ? null
           : FloatingActionButton.extended(
               backgroundColor: Colors.green,
-              onPressed: () {},
+              onPressed: () {
+                TabNavigator.settings.currentState?.popAndPushNamed(
+                    '/branches/add');
+              },
               icon: const Icon(
                 Icons.add,
                 size: 30,
@@ -211,7 +214,7 @@ class BranchesScreenState extends State<BranchesScreen> {
   }
 
   Widget _buildLoading(BuildContext context) {
-    if (ModalRoute.of(context)?.isCurrent?? false) {
+    if (ModalRoute.of(context)?.isCurrent ?? false) {
       AppLoading().show(context: context, screen: AppScreen.viewBranches);
     }
     return Scaffold(

@@ -83,8 +83,19 @@ class BranchRepository {
 
   Future<String> addBranch(Branch branch) async {
     try {
-      branch.createdAt = FieldValue.serverTimestamp() as Timestamp;
-      DocumentReference branchRef = await _firestore.collection('branches').add(branch.toMap());
+      final docSnapshot =
+          await _firestore.collection('info').doc('maxBranchCode').get();
+      await _firestore
+          .collection('info')
+          .doc('maxBranchCode')
+          .update({'value': FieldValue.increment(1)});
+      DocumentReference branchRef = await _firestore.collection('branches').add(
+        {
+          'code': docSnapshot.data()?['value'] + 1,
+          'createdAt': FieldValue.serverTimestamp(),
+          ...branch.toMap(),
+        },
+      );
       return branchRef.id;
     } catch (e) {
       if (e is FirebaseException) {
