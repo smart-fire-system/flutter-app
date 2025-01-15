@@ -3,6 +3,19 @@ import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/button.dart';
 import 'package:flutter/material.dart';
 
+class CustomAlertConfirmationButton {
+  final String title;
+  final int value;
+  final Color backgroundColor;
+  final Color textColor;
+  CustomAlertConfirmationButton({
+    required this.title,
+    required this.value,
+    required this.backgroundColor,
+    required this.textColor,
+  });
+}
+
 class CustomAlert {
   static Future<void> showSuccess({
     required BuildContext context,
@@ -12,7 +25,7 @@ class CustomAlert {
     bool barrierDismissible = true,
     bool canPop = true,
   }) async {
-    await showDialog(
+    return showDialog(
       context: context,
       barrierDismissible: barrierDismissible,
       builder: (BuildContext context) {
@@ -50,7 +63,7 @@ class CustomAlert {
                     Center(
                       child: Text(
                         subtitle,
-                        style: CustomStyle.mediumText,
+                        style: CustomStyle.largeText,
                       ),
                     ),
                   CustomBasicButton(
@@ -68,15 +81,15 @@ class CustomAlert {
     );
   }
 
-  static Future<void> showWarning({
+  static Future<int?> showConfirmation({
     required BuildContext context,
     required String title,
     String? subtitle,
-    String? buttonText,
+    required List<CustomAlertConfirmationButton> buttons,
     bool barrierDismissible = true,
     bool canPop = true,
   }) async {
-    bool isConfirmed = false;
+    int? pressedValue;
     await showDialog(
       context: context,
       barrierDismissible: barrierDismissible,
@@ -115,15 +128,20 @@ class CustomAlert {
                     Center(
                       child: Text(
                         subtitle,
-                        style: CustomStyle.mediumText,
+                        style: CustomStyle.largeText,
                       ),
                     ),
-                  CustomBasicButton(
-                    label: buttonText ?? S.of(context).ok,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
+                  ...List.generate(buttons.length, (index) {
+                    return CustomNormalButton(
+                      label: buttons[index].title,
+                      backgroundColor: buttons[index].backgroundColor,
+                      textColor: buttons[index].textColor,
+                      onPressed: () {
+                        pressedValue = buttons[index].value;
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  }),
                 ],
               ),
             ),
@@ -131,6 +149,7 @@ class CustomAlert {
         );
       },
     );
+    return pressedValue;
   }
 
   static Future<void> showError({
@@ -141,7 +160,7 @@ class CustomAlert {
     bool barrierDismissible = true,
     bool canPop = true,
   }) async {
-    await showDialog(
+    return showDialog(
       context: context,
       barrierDismissible: barrierDismissible,
       builder: (BuildContext context) {
@@ -179,7 +198,7 @@ class CustomAlert {
                     Center(
                       child: Text(
                         subtitle,
-                        style: CustomStyle.mediumText,
+                        style: CustomStyle.largeText,
                       ),
                     ),
                   CustomBasicButton(
@@ -195,71 +214,5 @@ class CustomAlert {
         );
       },
     );
-  }
-
-  static BuildContext showLoading({
-    required BuildContext context,
-    required BuildContext? loadingContext,
-    String? title,
-    GlobalKey<NavigatorState>? key,
-  }) {
-    if (loadingContext == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            loadingContext = context;
-            return PopScope(
-              canPop: false,
-              child: Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width < 500
-                      ? MediaQuery.of(context).size.width * 0.8
-                      : 400,
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height < 800
-                        ? MediaQuery.of(context).size.height * 0.7
-                        : 400,
-                  ),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      Image.asset(
-                        'assets/gif/warning.gif',
-                        height: 75,
-                      ),
-                      Center(
-                        child: Text(
-                          title ?? S.of(context).wait_while_loading,
-                          style: CustomStyle.largeText25B,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      });
-    }
-    return loadingContext!;
-  }
-
-  static BuildContext? dismissLoading({
-    required BuildContext? loadingContext,
-  }) {
-    if (loadingContext != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pop(loadingContext);
-      });
-    }
-    return null;
   }
 }

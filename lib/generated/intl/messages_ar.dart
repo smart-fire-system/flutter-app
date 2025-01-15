@@ -43,6 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "addBranch": MessageLookupByLibrary.simpleMessage("إضافة فرع جديد"),
         "addBuilding": MessageLookupByLibrary.simpleMessage("إضافة مبنى جديد"),
         "addNewAdmin": MessageLookupByLibrary.simpleMessage("إضافة مسئول جديد"),
+        "address": MessageLookupByLibrary.simpleMessage("العنوان"),
         "admin": MessageLookupByLibrary.simpleMessage("مسئول"),
         "admins": MessageLookupByLibrary.simpleMessage("المسؤولون"),
         "allCompanies": MessageLookupByLibrary.simpleMessage("كل الشركات"),
@@ -62,12 +63,15 @@ class MessageLookup extends MessageLookupByLibrary {
             "حذف هذا الفرع لا يمكن التراجع عنه. هل أنت متأكد أنك تريد المتابعة؟"),
         "branchDeleted":
             MessageLookupByLibrary.simpleMessage("تم حذف الفرع بنجاح."),
+        "branchInformation":
+            MessageLookupByLibrary.simpleMessage("بيانات الفرع"),
         "branchManager": MessageLookupByLibrary.simpleMessage("مدير فرع"),
         "branchManagers": MessageLookupByLibrary.simpleMessage("مديرو الفروع"),
         "branchModified": MessageLookupByLibrary.simpleMessage(
             "تم تحديث تفاصيل الفرع بنجاح."),
         "branchModifyWarning": MessageLookupByLibrary.simpleMessage(
             "يرجى التحقق من صحة تفاصيل الفرع المحدثة قبل الحفظ. هل أنت متأكد أنك تريد المتابعة؟"),
+        "branchName": MessageLookupByLibrary.simpleMessage("إسم الفرع"),
         "branches": MessageLookupByLibrary.simpleMessage("الفروع"),
         "branchesDescription":
             MessageLookupByLibrary.simpleMessage("إضافة أو حذف الفروع"),
@@ -88,16 +92,22 @@ class MessageLookup extends MessageLookupByLibrary {
             "تم إلغاء العملية. حاول مجددًا."),
         "changeAccessRole":
             MessageLookupByLibrary.simpleMessage("تغيير صلاحيات الوصول"),
+        "changeCompany": MessageLookupByLibrary.simpleMessage("تغيير الشركة"),
         "changeLanguage": MessageLookupByLibrary.simpleMessage("تغيير اللغة"),
         "change_password":
             MessageLookupByLibrary.simpleMessage("تغيير كلمة المرور"),
         "client": MessageLookupByLibrary.simpleMessage("عميل"),
         "clients": MessageLookupByLibrary.simpleMessage("العملاء"),
+        "code": MessageLookupByLibrary.simpleMessage("الكود"),
+        "comment": MessageLookupByLibrary.simpleMessage("التعليقات"),
         "companies": MessageLookupByLibrary.simpleMessage("الشركات"),
         "companiesAndBranches":
             MessageLookupByLibrary.simpleMessage("الشركات والفروع"),
         "companiesAndBranchesDescription": MessageLookupByLibrary.simpleMessage(
             "إدارة الشركات والفروع. أضف أو احذف الشركات والفروع، واطلع على تفاصيلها."),
+        "company": MessageLookupByLibrary.simpleMessage("الشركة"),
+        "companyInformation":
+            MessageLookupByLibrary.simpleMessage("بيانات الشركة"),
         "complaints": MessageLookupByLibrary.simpleMessage("الشكاوى"),
         "complaintsDescription": MessageLookupByLibrary.simpleMessage(
             "عرض الشكاوى المفتوحة أو تقديم شكوى جديدة."),
@@ -107,8 +117,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "هل أنت متأكد من أنك تريد حذف هذا المستخدم نهائيًا من النظام؟"),
         "confirm_password":
             MessageLookupByLibrary.simpleMessage("يرجى تأكيد كلمة المرور"),
+        "contactInformation":
+            MessageLookupByLibrary.simpleMessage("بيانات التواصل"),
         "continue_with_google":
             MessageLookupByLibrary.simpleMessage("المتابعة باستخدام جوجل"),
+        "createdAt": MessageLookupByLibrary.simpleMessage("تاريخ الإضافة"),
         "credential_already_in_use": MessageLookupByLibrary.simpleMessage(
             "تم استخدام هذه البيانات في حساب آخر. حاول بطريقة مختلفة."),
         "custom_token_mismatch": MessageLookupByLibrary.simpleMessage(
@@ -117,9 +130,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "حدث فقدان للبيانات. يرجى المحاولة مرة أخرى لاحقاً."),
         "deadline_exceeded": MessageLookupByLibrary.simpleMessage(
             "استغرقت العملية وقتاً طويلاً لإكمالها. يرجى المحاولة مرة أخرى لاحقاً."),
+        "deleteBranch": MessageLookupByLibrary.simpleMessage("حذف الفرع"),
         "deleteUser": MessageLookupByLibrary.simpleMessage("حذف المستخدم"),
         "don_t_have_an_account":
             MessageLookupByLibrary.simpleMessage("ليس لديك حساب؟ إنشاء حساب"),
+        "editBranch": MessageLookupByLibrary.simpleMessage("تعديل الفرع"),
         "edit_information":
             MessageLookupByLibrary.simpleMessage("تعديل البيانات"),
         "email":
@@ -217,6 +232,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "حدث خطأ في الشبكة أثناء تسجيل الدخول. يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى."),
         "noBranchesToView":
             MessageLookupByLibrary.simpleMessage("لا يوجد فروع لعرضها"),
+        "noCancel": MessageLookupByLibrary.simpleMessage("لا، إلغاء"),
         "noCompaniesSelected":
             MessageLookupByLibrary.simpleMessage("لم يتم اختيار أي شركات"),
         "noRole": MessageLookupByLibrary.simpleMessage("بدون صلاحية وصول"),
@@ -349,6 +365,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("عرض والتحكم في النظام"),
         "viewComplaints": MessageLookupByLibrary.simpleMessage("عرض الشكاوى"),
         "visits": MessageLookupByLibrary.simpleMessage("الزيارات"),
+        "waitDeltingBranch": MessageLookupByLibrary.simpleMessage(
+            "برجاء الانتظار، جاري حذف الفرع"),
+        "waitSavingBranch": MessageLookupByLibrary.simpleMessage(
+            "برجاء الانتظار، جاري حفظ بيانات الفرع"),
         "wait_while_loading": MessageLookupByLibrary.simpleMessage(
             "يرجى الانتظار أثناء تحميل البيانات ..."),
         "weak_password": MessageLookupByLibrary.simpleMessage(
@@ -357,6 +377,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "welcome_message": MessageLookupByLibrary.simpleMessage(
             "مرحبًا في نظام إنذار الحريق. يرجى تسجيل الدخول أو إنشاء حساب."),
         "wrong_password": MessageLookupByLibrary.simpleMessage(
-            "كلمة المرور غير صحيحة. يرجى المحاولة مجددًا.")
+            "كلمة المرور غير صحيحة. يرجى المحاولة مجددًا."),
+        "yesDeleteBranch":
+            MessageLookupByLibrary.simpleMessage("نعم، حذف الفرع"),
+        "yesSaveChanges":
+            MessageLookupByLibrary.simpleMessage("نعم، حفظ التغييرات")
       };
 }

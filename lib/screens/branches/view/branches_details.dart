@@ -1,9 +1,9 @@
+import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/info.dart';
-import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,16 +39,6 @@ class BranchDetailsState extends State<BranchDetails> {
                 title: Errors.getFirebaseErrorMessage(context, state.error!),
               );
               state.error = null;
-            } else if (state.message != null) {
-              if (state.message == BranchesMessage.branchModified) {
-                CustomAlert.showSuccess(
-                    context: context, title: S.of(context).branchModified);
-                state.message = null;
-              } else if (state.message == BranchesMessage.branchAdded) {
-                CustomAlert.showSuccess(
-                    context: context, title: S.of(context).branchAdded);
-                state.message = null;
-              }
             }
           });
           _canEditBranches = state.canEditBranches;
@@ -61,7 +51,7 @@ class BranchDetailsState extends State<BranchDetails> {
             Navigator.pushNamed(context, '/signIn');
           });
         }
-        return const CustomLoading();
+        return _buildLoading(context);
       },
     );
   }
@@ -82,7 +72,8 @@ class BranchDetailsState extends State<BranchDetails> {
                 size: 30,
                 color: Colors.white,
               ),
-              label: Text("Edit", style: CustomStyle.mediumTextWhite),
+              label: Text(S.of(context).edit_information,
+                  style: CustomStyle.mediumTextWhite),
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Padding(
@@ -93,25 +84,25 @@ class BranchDetailsState extends State<BranchDetails> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomInfoCard(
-                title: "Branch Information",
+                title: S.of(context).branchInformation,
                 icon: Icons.info_outline,
                 children: [
                   CustomInfoItem(
-                    title: "Name",
+                    title: S.of(context).name,
                     value: _branch!.name,
                   ),
                   CustomInfoItem(
-                    title: "Code",
+                    title: S.of(context).code,
                     value: _branch!.code.toString(),
                   ),
                   CustomInfoItem(
-                    title: "Created At",
+                    title: S.of(context).createdAt,
                     value: _branch!.createdAt.toDate().toString(),
                   ),
                 ],
               ),
               CustomInfoCard(
-                title: "Company Information",
+                title: S.of(context).companyInformation,
                 icon: Icons.business_outlined,
                 onTap: !_canViewCompanies
                     ? null
@@ -134,21 +125,21 @@ class BranchDetailsState extends State<BranchDetails> {
                 ],
               ),
               CustomInfoCard(
-                title: "Contact Information",
+                title: S.of(context).contactInformation,
                 icon: Icons.contact_phone_outlined,
                 children: [
                   CustomInfoItem(
-                    title: "Phone",
+                    title: S.of(context).phone,
                     value: _branch!.phoneNumber,
                   ),
                   CustomInfoItem(
-                    title: "Email",
+                    title: S.of(context).email,
                     value: _branch!.email,
                   ),
                 ],
               ),
               CustomInfoCard(
-                title: "Address",
+                title: S.of(context).address,
                 icon: Icons.location_on_outlined,
                 children: [
                   CustomInfoItem(
@@ -158,7 +149,7 @@ class BranchDetailsState extends State<BranchDetails> {
               ),
               if (_branch!.comment.isNotEmpty)
                 CustomInfoCard(
-                  title: "Comment",
+                  title: S.of(context).comment,
                   icon: Icons.comment_outlined,
                   children: [
                     CustomInfoItem(
@@ -168,6 +159,30 @@ class BranchDetailsState extends State<BranchDetails> {
                 ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+    Widget _buildLoading(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: CustomAppBar(title: S.of(context).branchInformation),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: 5, // Simulate loading for 5 items
+                itemBuilder: (context, index) => const CardLoading(
+                  height: 80,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  margin: EdgeInsets.only(bottom: 16),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

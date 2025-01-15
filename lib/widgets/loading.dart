@@ -82,18 +82,21 @@ class AppLoading {
     return _instance;
   }
   void dismiss({required BuildContext context, required AppScreen screen}) {
-    if (_appScreenContexts[screen] != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pop(_appScreenContexts[screen]!);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_appScreenContexts[screen] != null) {
+        if (_appScreenContexts[screen]!.mounted) {
+          Navigator.pop(_appScreenContexts[screen]!);
+        }
         _appScreenContexts[screen] = null;
-      });
-    }
+      }
+    });
   }
 
   void show({
     required BuildContext context,
     required AppScreen screen,
     String? title,
+    String type = 'loading',
   }) {
     if (_appScreenContexts[screen] == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -123,7 +126,7 @@ class AppLoading {
                     shrinkWrap: true,
                     children: [
                       Image.asset(
-                        'assets/gif/loading.gif',
+                        'assets/gif/$type.gif',
                         height: 75,
                       ),
                       Center(

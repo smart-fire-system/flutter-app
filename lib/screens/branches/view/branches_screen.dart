@@ -211,7 +211,9 @@ class BranchesScreenState extends State<BranchesScreen> {
   }
 
   Widget _buildLoading(BuildContext context) {
-    AppLoading().show(context: context, screen: AppScreen.viewBranches);
+    if (ModalRoute.of(context)?.isCurrent?? false) {
+      AppLoading().show(context: context, screen: AppScreen.viewBranches);
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: S.of(context).branches),

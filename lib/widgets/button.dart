@@ -28,14 +28,13 @@ class CustomNormalButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
-          elevation: 50.0,
           overlayColor: CustomStyle.redLight,
           minimumSize: fullWidth ? const Size(double.infinity, 50) : null,
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
           alignment: Alignment.center,
           shape: RoundedRectangleBorder(
-            side: const BorderSide(color: CustomStyle.greyDark, width: 0.2),
-            borderRadius: BorderRadius.circular(15),
+            side: BorderSide(color: backgroundColor, width: 0.0),
+            borderRadius: BorderRadius.circular(20),
           ),
         ),
         icon: icon != null

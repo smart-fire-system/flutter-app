@@ -720,31 +720,11 @@ class S {
     );
   }
 
-  /// `Please double-check the updated branch details before saving. Are you sure you want to proceed?`
-  String get branchModifyWarning {
-    return Intl.message(
-      'Please double-check the updated branch details before saving. Are you sure you want to proceed?',
-      name: 'branchModifyWarning',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Ensure all required branch fields are filled correctly before adding. Are you sure you want to proceed?`
   String get branchAddWarning {
     return Intl.message(
       'Ensure all required branch fields are filled correctly before adding. Are you sure you want to proceed?',
       name: 'branchAddWarning',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Deleting this branch is irreversible. Are you sure you want to proceed?`
-  String get branchDeleteWarning {
-    return Intl.message(
-      'Deleting this branch is irreversible. Are you sure you want to proceed?',
-      name: 'branchDeleteWarning',
       desc: '',
       args: [],
     );
@@ -1235,6 +1215,196 @@ class S {
     return Intl.message(
       'No branches to view',
       name: 'noBranchesToView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Branch Information`
+  String get branchInformation {
+    return Intl.message(
+      'Branch Information',
+      name: 'branchInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Company Information`
+  String get companyInformation {
+    return Intl.message(
+      'Company Information',
+      name: 'companyInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact Information`
+  String get contactInformation {
+    return Intl.message(
+      'Contact Information',
+      name: 'contactInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Address`
+  String get address {
+    return Intl.message(
+      'Address',
+      name: 'address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Code`
+  String get code {
+    return Intl.message(
+      'Code',
+      name: 'code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Created At`
+  String get createdAt {
+    return Intl.message(
+      'Created At',
+      name: 'createdAt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comment`
+  String get comment {
+    return Intl.message(
+      'Comment',
+      name: 'comment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Branch Name`
+  String get branchName {
+    return Intl.message(
+      'Branch Name',
+      name: 'branchName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Branch`
+  String get editBranch {
+    return Intl.message(
+      'Edit Branch',
+      name: 'editBranch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Company`
+  String get company {
+    return Intl.message(
+      'Company',
+      name: 'company',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Company`
+  String get changeCompany {
+    return Intl.message(
+      'Change Company',
+      name: 'changeCompany',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Branch`
+  String get deleteBranch {
+    return Intl.message(
+      'Delete Branch',
+      name: 'deleteBranch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please double-check the updated branch details before saving. Are you sure you want to proceed?`
+  String get branchModifyWarning {
+    return Intl.message(
+      'Please double-check the updated branch details before saving. Are you sure you want to proceed?',
+      name: 'branchModifyWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deleting this branch is irreversible. Are you sure you want to proceed?`
+  String get branchDeleteWarning {
+    return Intl.message(
+      'Deleting this branch is irreversible. Are you sure you want to proceed?',
+      name: 'branchDeleteWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes, delete branch`
+  String get yesDeleteBranch {
+    return Intl.message(
+      'Yes, delete branch',
+      name: 'yesDeleteBranch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes, save changes`
+  String get yesSaveChanges {
+    return Intl.message(
+      'Yes, save changes',
+      name: 'yesSaveChanges',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No, cancel`
+  String get noCancel {
+    return Intl.message(
+      'No, cancel',
+      name: 'noCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please wait while deleting branch`
+  String get waitDeltingBranch {
+    return Intl.message(
+      'Please wait while deleting branch',
+      name: 'waitDeltingBranch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please wait while saving branch information`
+  String get waitSavingBranch {
+    return Intl.message(
+      'Please wait while saving branch information',
+      name: 'waitSavingBranch',
       desc: '',
       args: [],
     );

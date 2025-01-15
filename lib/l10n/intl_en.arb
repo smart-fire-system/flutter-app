@@ -79,9 +79,7 @@
     "branchModified": "The branch details have been updated successfully.",
     "branchAdded": "The branch has been added successfully.",
     "branchDeleted": "The branch has been deleted successfully.",
-    "branchModifyWarning": "Please double-check the updated branch details before saving. Are you sure you want to proceed?",
     "branchAddWarning": "Ensure all required branch fields are filled correctly before adding. Are you sure you want to proceed?",
-    "branchDeleteWarning": "Deleting this branch is irreversible. Are you sure you want to proceed?",
     
     "addBuilding": "Add New Building",
     "buildingModified": "The building details have been updated successfully.",
@@ -139,7 +137,26 @@
     "noCompaniesSelected": "No companies selected",
     "noBranchesToView": "No branches to view",
 
+    "branchInformation": "Branch Information",
+    "companyInformation": "Company Information",
+    "contactInformation": "Contact Information",
+    "address" : "Address",
+    "code": "Code",
+    "createdAt": "Created At",
+    "comment": "Comment",
 
+    "branchName": "Branch Name",
+    "editBranch": "Edit Branch",
+    "company": "Company",
+    "changeCompany": "Change Company",
+    "deleteBranch": "Delete Branch",
+    "branchModifyWarning": "Please double-check the updated branch details before saving. Are you sure you want to proceed?",
+    "branchDeleteWarning": "Deleting this branch is irreversible. Are you sure you want to proceed?",
+    "yesDeleteBranch": "Yes, delete branch",
+    "yesSaveChanges": "Yes, save changes",
+    "noCancel": "No, cancel",
+    "waitDeltingBranch": "Please wait while deleting branch",
+    "waitSavingBranch": "Please wait while saving branch information",
 
 
 

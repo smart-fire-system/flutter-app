@@ -42,6 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "addBranch": MessageLookupByLibrary.simpleMessage("Add New Branch"),
         "addBuilding": MessageLookupByLibrary.simpleMessage("Add New Building"),
         "addNewAdmin": MessageLookupByLibrary.simpleMessage("Add New Admin"),
+        "address": MessageLookupByLibrary.simpleMessage("Address"),
         "admin": MessageLookupByLibrary.simpleMessage("Admin"),
         "admins": MessageLookupByLibrary.simpleMessage("Admins"),
         "allCompanies": MessageLookupByLibrary.simpleMessage("All companies"),
@@ -61,6 +62,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Deleting this branch is irreversible. Are you sure you want to proceed?"),
         "branchDeleted": MessageLookupByLibrary.simpleMessage(
             "The branch has been deleted successfully."),
+        "branchInformation":
+            MessageLookupByLibrary.simpleMessage("Branch Information"),
         "branchManager": MessageLookupByLibrary.simpleMessage("Branch Manager"),
         "branchManagers":
             MessageLookupByLibrary.simpleMessage("Branch Managers"),
@@ -68,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "The branch details have been updated successfully."),
         "branchModifyWarning": MessageLookupByLibrary.simpleMessage(
             "Please double-check the updated branch details before saving. Are you sure you want to proceed?"),
+        "branchName": MessageLookupByLibrary.simpleMessage("Branch Name"),
         "branches": MessageLookupByLibrary.simpleMessage("Branches"),
         "branchesDescription":
             MessageLookupByLibrary.simpleMessage("Add or remove branches"),
@@ -88,17 +92,23 @@ class MessageLookup extends MessageLookupByLibrary {
             "The operation was cancelled. Please try again."),
         "changeAccessRole":
             MessageLookupByLibrary.simpleMessage("Modify Access Role"),
+        "changeCompany": MessageLookupByLibrary.simpleMessage("Change Company"),
         "changeLanguage":
             MessageLookupByLibrary.simpleMessage("Change Language"),
         "change_password":
             MessageLookupByLibrary.simpleMessage("Change Password"),
         "client": MessageLookupByLibrary.simpleMessage("Client"),
         "clients": MessageLookupByLibrary.simpleMessage("Clients"),
+        "code": MessageLookupByLibrary.simpleMessage("Code"),
+        "comment": MessageLookupByLibrary.simpleMessage("Comment"),
         "companies": MessageLookupByLibrary.simpleMessage("Companies"),
         "companiesAndBranches":
             MessageLookupByLibrary.simpleMessage("Companies and Branches"),
         "companiesAndBranchesDescription": MessageLookupByLibrary.simpleMessage(
             "Manage companies and their branches. Add or remove companies and branches, and view detailed information about them."),
+        "company": MessageLookupByLibrary.simpleMessage("Company"),
+        "companyInformation":
+            MessageLookupByLibrary.simpleMessage("Company Information"),
         "complaints": MessageLookupByLibrary.simpleMessage("Complaints"),
         "complaintsDescription": MessageLookupByLibrary.simpleMessage(
             "Show open compaints or submit new one."),
@@ -108,8 +118,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "Are you sure you want to permanently delete this user from the system?"),
         "confirm_password": MessageLookupByLibrary.simpleMessage(
             "Please confirm your password"),
+        "contactInformation":
+            MessageLookupByLibrary.simpleMessage("Contact Information"),
         "continue_with_google":
             MessageLookupByLibrary.simpleMessage("Continue with Google"),
+        "createdAt": MessageLookupByLibrary.simpleMessage("Created At"),
         "credential_already_in_use": MessageLookupByLibrary.simpleMessage(
             "This credential is already in use with another account. Try a different login method."),
         "custom_token_mismatch": MessageLookupByLibrary.simpleMessage(
@@ -118,9 +131,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "Data loss occurred. Please try again later."),
         "deadline_exceeded": MessageLookupByLibrary.simpleMessage(
             "The operation took too long to complete. Please try again later."),
+        "deleteBranch": MessageLookupByLibrary.simpleMessage("Delete Branch"),
         "deleteUser": MessageLookupByLibrary.simpleMessage("Remove User"),
         "don_t_have_an_account": MessageLookupByLibrary.simpleMessage(
             "Don\'t have an account? Sign Up"),
+        "editBranch": MessageLookupByLibrary.simpleMessage("Edit Branch"),
         "edit_information":
             MessageLookupByLibrary.simpleMessage("Edit Inforamation"),
         "email": MessageLookupByLibrary.simpleMessage("Email Address"),
@@ -222,6 +237,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "A network error occurred. Please check your connection and try again."),
         "noBranchesToView":
             MessageLookupByLibrary.simpleMessage("No branches to view"),
+        "noCancel": MessageLookupByLibrary.simpleMessage("No, cancel"),
         "noCompaniesSelected":
             MessageLookupByLibrary.simpleMessage("No companies selected"),
         "noRole": MessageLookupByLibrary.simpleMessage("No Role"),
@@ -357,6 +373,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "viewComplaints":
             MessageLookupByLibrary.simpleMessage("View Complaints"),
         "visits": MessageLookupByLibrary.simpleMessage("Visits"),
+        "waitDeltingBranch": MessageLookupByLibrary.simpleMessage(
+            "Please wait while deleting branch"),
+        "waitSavingBranch": MessageLookupByLibrary.simpleMessage(
+            "Please wait while saving branch information"),
         "wait_while_loading": MessageLookupByLibrary.simpleMessage(
             "Pleae wait while loading data ..."),
         "weak_password": MessageLookupByLibrary.simpleMessage(
@@ -365,6 +385,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "welcome_message": MessageLookupByLibrary.simpleMessage(
             "Welcome to the Fire Alarm System. Please login or sign up."),
         "wrong_password": MessageLookupByLibrary.simpleMessage(
-            "The password you entered is incorrect. Please try again.")
+            "The password you entered is incorrect. Please try again."),
+        "yesDeleteBranch":
+            MessageLookupByLibrary.simpleMessage("Yes, delete branch"),
+        "yesSaveChanges":
+            MessageLookupByLibrary.simpleMessage("Yes, save changes")
       };
 }
