@@ -1,12 +1,10 @@
-import 'package:fire_alarm_system/models/branch.dart';
-import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/screens/branches/view/branches_add.dart';
 import 'package:fire_alarm_system/screens/branches/view/branches_details.dart';
 import 'package:fire_alarm_system/screens/branches/view/branches_edit.dart';
 import 'package:fire_alarm_system/screens/branches/view/branches_screen.dart';
+import 'package:fire_alarm_system/screens/branches/view/companies_details.dart';
 import 'package:fire_alarm_system/screens/branches/view/companies_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/home_screen.dart';
-import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/screens/complaints/view/view.dart';
 import 'package:fire_alarm_system/screens/profile/view/view.dart';
@@ -78,7 +76,7 @@ class TabNavigator extends StatelessWidget {
               page = const BranchesScreen();
               break;
             case '/branches/details':
-              page = BranchDetails(branchId: routeSettings.arguments as String);
+              page = BranchDetailsScreen(branchId: routeSettings.arguments as String);
               break;
             case '/branches/edit':
               page = EditBranchScreen(branchId: routeSettings.arguments as String);
@@ -88,6 +86,9 @@ class TabNavigator extends StatelessWidget {
               break;
             case '/companies':
               page = const CompaniesScreen();
+              break;
+            case '/companies/details':
+              page = CompanyDetailsScreen(companyId: routeSettings.arguments as String);
               break;
             default:
               page = Scaffold(

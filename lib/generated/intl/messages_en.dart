@@ -101,6 +101,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "The company has been deleted successfully."),
         "companyInformation":
             MessageLookupByLibrary.simpleMessage("Company Information"),
+        "companyLogo": MessageLookupByLibrary.simpleMessage("Company Logo"),
         "companyModified": MessageLookupByLibrary.simpleMessage(
             "The company details have been updated successfully."),
         "companyModifyWarning": MessageLookupByLibrary.simpleMessage(
@@ -227,6 +228,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Log in with Facebook"),
         "login_with_google":
             MessageLookupByLibrary.simpleMessage("Log in with Google"),
+        "logo": MessageLookupByLibrary.simpleMessage("Logo"),
         "logout": MessageLookupByLibrary.simpleMessage("Logout"),
         "maintenanceContracts":
             MessageLookupByLibrary.simpleMessage("Maintenance Contracts"),

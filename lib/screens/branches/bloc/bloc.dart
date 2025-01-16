@@ -74,10 +74,8 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<BranchAddRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
-        print("Adding");
         createdId = await branchRepository.addBranch(event.branch);
         add(AuthChanged(message: BranchesMessage.branchAdded));
-        print("Done");
       } catch (e) {
         add(AuthChanged(error: e.toString()));
       }

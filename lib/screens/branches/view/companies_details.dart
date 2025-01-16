@@ -1,5 +1,6 @@
 import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/branch.dart';
+import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -14,24 +15,24 @@ import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
 
-class BranchDetailsScreen extends StatefulWidget {
-  final String branchId;
-  const BranchDetailsScreen({super.key, required this.branchId});
+class CompanyDetailsScreen extends StatefulWidget {
+  final String companyId;
+  const CompanyDetailsScreen({super.key, required this.companyId});
 
   @override
-  BranchDetailsScreenState createState() => BranchDetailsScreenState();
+  CompanyDetailsScreenState createState() => CompanyDetailsScreenState();
 }
 
-class BranchDetailsScreenState extends State<BranchDetailsScreen> {
-  Branch? _branch;
-  bool _canEditBranches = false;
-  bool _canViewCompanies = false;
+class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
+  Company? _company;
+  List<Branch> _branches = [];
+  bool _canEditCompanies = false;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BranchesBloc, BranchesState>(
       builder: (context, state) {
-        if (state is BranchesAuthenticated && state.canViewBranches) {
+        if (state is BranchesAuthenticated && state.canViewCompanies) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (state.error != null) {
               CustomAlert.showError(
@@ -41,10 +42,12 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
               state.error = null;
             }
           });
-          _canEditBranches = state.canEditBranches;
-          _canViewCompanies = state.canViewCompanies;
-          _branch = state.branches
-              .firstWhere((branch) => branch.id == widget.branchId);
+          _canEditCompanies = state.canEditCompanies;
+          _company = state.companies
+              .firstWhere((company) => company.id == widget.companyId);
+          _branches = List.from(
+            state.branches.where((branch) => branch.company.id == _company!.id),
+          );
           return _buildDetails(context);
         } else if (state is BranchesNotAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -58,14 +61,14 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
 
   Widget _buildDetails(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: _branch!.name),
-      floatingActionButton: !_canEditBranches
+      appBar: CustomAppBar(title: _company!.name),
+      floatingActionButton: !_canEditCompanies
           ? null
           : FloatingActionButton.extended(
               backgroundColor: CustomStyle.redDark,
               onPressed: () async {
                 TabNavigator.settings.currentState
-                    ?.pushNamed('/branches/edit', arguments: widget.branchId);
+                    ?.pushNamed('/companies/edit', arguments: widget.companyId);
               },
               icon: const Icon(
                 Icons.edit,
@@ -84,43 +87,31 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomInfoCard(
-                title: S.of(context).branchInformation,
-                icon: Icons.info_outline,
+                title: S.of(context).companyLogo,
+                icon: Icons.image,
                 children: [
-                  CustomInfoItem(
-                    title: S.of(context).name,
-                    value: _branch!.name,
-                  ),
-                  CustomInfoItem(
-                    title: S.of(context).code,
-                    value: _branch!.code.toString(),
-                  ),
-                  CustomInfoItem(
-                    title: S.of(context).createdAt,
-                    value: _branch!.createdAt!.toDate().toString(),
-                  ),
+                  Center(
+                      child: Image.network(
+                    _company!.logoURL,
+                    width: 200,
+                  )),
                 ],
               ),
               CustomInfoCard(
                 title: S.of(context).companyInformation,
-                icon: Icons.business_outlined,
-                onTap: !_canViewCompanies
-                    ? null
-                    : () {
-                        TabNavigator.settings.currentState?.pushNamed(
-                            '/companies/details',
-                            arguments: _branch!.company.id);
-                      },
+                icon: Icons.info_outline,
                 children: [
-                  ListTile(
-                    title: Text(_branch!.company.name,
-                        style: CustomStyle.smallTextB),
-                    subtitle: Text(_branch!.company.comment,
-                        style: CustomStyle.smallText),
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(_branch!.company.logoURL),
-                      radius: 25.0,
-                    ),
+                  CustomInfoItem(
+                    title: S.of(context).name,
+                    value: _company!.name,
+                  ),
+                  CustomInfoItem(
+                    title: S.of(context).code,
+                    value: _company!.code.toString(),
+                  ),
+                  CustomInfoItem(
+                    title: S.of(context).createdAt,
+                    value: _company!.createdAt.toDate().toString(),
                   ),
                 ],
               ),
@@ -130,11 +121,11 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
                 children: [
                   CustomInfoItem(
                     title: S.of(context).phone,
-                    value: _branch!.phoneNumber,
+                    value: _company!.phoneNumber,
                   ),
                   CustomInfoItem(
                     title: S.of(context).email,
-                    value: _branch!.email,
+                    value: _company!.email,
                   ),
                 ],
               ),
@@ -143,18 +134,49 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
                 icon: Icons.location_on_outlined,
                 children: [
                   CustomInfoItem(
-                    value: _branch!.address,
+                    value: _company!.address,
                   ),
                 ],
               ),
-              if (_branch!.comment.isNotEmpty)
+              if (_company!.comment.isNotEmpty)
                 CustomInfoCard(
                   title: S.of(context).comment,
                   icon: Icons.comment_outlined,
                   children: [
                     CustomInfoItem(
-                      value: _branch!.comment,
+                      value: _company!.comment,
                     ),
+                  ],
+                ),
+              if (_branches.isNotEmpty)
+                CustomInfoCard(
+                  title: S.of(context).branches,
+                  icon: Icons.business_outlined,
+                  children: [
+                    ...List.generate(_branches.length, (index) {
+                      return ListTile(
+                        leading: Text(
+                          (index + 1).toString(),
+                          style: CustomStyle.mediumTextBRed,
+                        ),
+                        title: Text(
+                          _branches[index].name,
+                          style: CustomStyle.mediumTextB,
+                        ),
+                        subtitle: _branches[index].comment.isEmpty
+                            ? null
+                            : Text(
+                                _branches[index].comment,
+                                style: CustomStyle.smallText,
+                              ),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                        onTap: () {
+                          TabNavigator.settings.currentState?.pushNamed(
+                              '/branches/details',
+                              arguments: _branches[index].id);
+                        },
+                      );
+                    }),
                   ],
                 ),
             ],
@@ -164,10 +186,10 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
     );
   }
 
-    Widget _buildLoading(BuildContext context) {
+  Widget _buildLoading(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).branchInformation),
+      appBar: CustomAppBar(title: S.of(context).companyInformation),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

@@ -93,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("تم حذف الشركة بنجاح."),
         "companyInformation":
             MessageLookupByLibrary.simpleMessage("بيانات الشركة"),
+        "companyLogo": MessageLookupByLibrary.simpleMessage("شعار الشركة"),
         "companyModified": MessageLookupByLibrary.simpleMessage(
             "تم تعديل بيانات الشركة بنجاح."),
         "companyModifyWarning": MessageLookupByLibrary.simpleMessage(
@@ -217,6 +218,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "تسجيل الدخول باستخدام فيسبوك"),
         "login_with_google":
             MessageLookupByLibrary.simpleMessage("تسجيل الدخول باستخدام جوجل"),
+        "logo": MessageLookupByLibrary.simpleMessage("الشعار"),
         "logout": MessageLookupByLibrary.simpleMessage("تسجيل الخروج"),
         "maintenanceContracts":
             MessageLookupByLibrary.simpleMessage("عقود الصيانة"),

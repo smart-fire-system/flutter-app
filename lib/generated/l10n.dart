@@ -1550,6 +1550,26 @@ class S {
     );
   }
 
+  /// `Logo`
+  String get logo {
+    return Intl.message(
+      'Logo',
+      name: 'logo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Company Logo`
+  String get companyLogo {
+    return Intl.message(
+      'Company Logo',
+      name: 'companyLogo',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `To continue using the application, please complete the following steps:`
   String get stepsToComplete {
     return Intl.message(
