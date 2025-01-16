@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
@@ -12,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/event.dart';
@@ -29,6 +32,7 @@ class EditCompanyScreen extends StatefulWidget {
 }
 
 class EditCompanyScreenState extends State<EditCompanyScreen> {
+  final ImagePicker _picker = ImagePicker();
   late TextEditingController _nameController;
   late TextEditingController _addressController;
   late TextEditingController _phoneController;
@@ -37,6 +41,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
   bool _canDeleteCompanies = false;
   bool _isFirstCall = true;
   Company? _company;
+  File? _newLogoFile;
 
   @override
   void initState() {
@@ -89,7 +94,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
               Navigator.of(context).pop();
             });
           } else {
-            _canDeleteCompanies = state.canDeleteBranches;
+            _canDeleteCompanies = state.canDeleteCompanies;
             _company = state.companies
                 .firstWhere((company) => company.id == widget.companyId);
             if (_isFirstCall) {
@@ -161,7 +166,51 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
                 controller: _commentController,
                 maxLines: 3,
               ),
-              
+              Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 16.0),
+                    child: Container(
+                      width: double.infinity,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: GestureDetector(
+                          onTap: _pickNewLogo,
+                          child: _newLogoFile != null
+                              ? Image.file(
+                                  _newLogoFile!,
+                                  width: 150,
+                                )
+                              : Image.network(
+                                  _company!.logoURL,
+                                  width: 150,
+                                ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 14,
+                    top: -3,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      color: Colors.white,
+                      child: Text(
+                        S.of(context).companyLogo,
+                        style: CustomStyle.smallTextBRed,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               if (_canDeleteCompanies)
                 CustomNormalButton(
                   label: S.of(context).deleteCompany,
@@ -178,29 +227,47 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
     );
   }
 
+  Future<void> _pickNewLogo() async {
+    try {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _newLogoFile = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        CustomAlert.showError(
+          context: context,
+          title: S.of(context).errorPickingImage,
+        );
+      }
+    }
+  }
+
   void _saveChanges(BuildContext context) async {
     if (_nameController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterBranchName,
+        title: S.of(context).enterCompanyName,
       );
       return;
     } else if (_addressController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterBranchAddress,
+        title: S.of(context).enterCompanyAddress,
       );
       return;
     } else if (_phoneController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterBranchPhone,
+        title: S.of(context).enterCompanyPhone,
       );
       return;
     } else if (_emailController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterBranchEmail,
+        title: S.of(context).enterCompanyEmail,
       );
       return;
     }
@@ -232,14 +299,15 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
         type: 'edit',
       );
       context.read<BranchesBloc>().add(CompanyModifyRequested(
+            logoFile: _newLogoFile,
             company: Company(
-              name: _nameController.text,
-              address: _addressController.text,
-              phoneNumber: _phoneController.text,
-              email: _emailController.text,
-              comment: _commentController.text,
-              logoURL: ""
-            ),
+                id: _company!.id,
+                name: _nameController.text,
+                address: _addressController.text,
+                phoneNumber: _phoneController.text,
+                email: _emailController.text,
+                comment: _commentController.text,
+                logoURL: _company!.logoURL),
           ));
     }
   }
@@ -268,7 +336,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
       AppLoading().show(
         context: context,
         screen: AppScreen.editCompanies,
-        title: S.of(context).waitDeltingBranch,
+        title: S.of(context).waitDeltingCompany,
         type: 'delete',
       );
       context.read<BranchesBloc>().add(
@@ -282,7 +350,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
   Widget _buildLoading(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).editBranch),
+      appBar: CustomAppBar(title: S.of(context).editCompany),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

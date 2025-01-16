@@ -173,6 +173,7 @@
     "enterCompanyEmail":"Please enter the company email address",
     "logo":"Logo",
     "companyLogo":"Company Logo",
+    "errorPickingImage":"An error occured while choosing the image",
 
 
 

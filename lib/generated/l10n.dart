@@ -1570,6 +1570,16 @@ class S {
     );
   }
 
+  /// `An error occured while choosing the image`
+  String get errorPickingImage {
+    return Intl.message(
+      'An error occured while choosing the image',
+      name: 'errorPickingImage',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `To continue using the application, please complete the following steps:`
   String get stepsToComplete {
     return Intl.message(

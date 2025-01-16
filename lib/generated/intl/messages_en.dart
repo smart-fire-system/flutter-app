@@ -178,6 +178,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "enter_phone_number": MessageLookupByLibrary.simpleMessage(
             "Please enter your phone number"),
         "error": MessageLookupByLibrary.simpleMessage("Error"),
+        "errorPickingImage": MessageLookupByLibrary.simpleMessage(
+            "An error occured while choosing the image"),
         "expired_action_code": MessageLookupByLibrary.simpleMessage(
             "This action code has expired. Request a new one to proceed."),
         "failed_precondition": MessageLookupByLibrary.simpleMessage(

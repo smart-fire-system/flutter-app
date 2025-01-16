@@ -170,6 +170,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "enter_phone_number":
             MessageLookupByLibrary.simpleMessage("يرجى إدخال رقم هاتفك"),
         "error": MessageLookupByLibrary.simpleMessage("خطأ"),
+        "errorPickingImage": MessageLookupByLibrary.simpleMessage(
+            "حدث خطأ ما أثناء اختيار الصورة"),
         "expired_action_code": MessageLookupByLibrary.simpleMessage(
             "رمز التفعيل انتهت صلاحيته. يرجى طلب رمز جديد."),
         "failed_precondition": MessageLookupByLibrary.simpleMessage(

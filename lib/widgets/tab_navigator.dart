@@ -3,6 +3,7 @@ import 'package:fire_alarm_system/screens/branches/view/branches_details.dart';
 import 'package:fire_alarm_system/screens/branches/view/branches_edit.dart';
 import 'package:fire_alarm_system/screens/branches/view/branches_screen.dart';
 import 'package:fire_alarm_system/screens/branches/view/companies_details.dart';
+import 'package:fire_alarm_system/screens/branches/view/companies_edit.dart';
 import 'package:fire_alarm_system/screens/branches/view/companies_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -89,6 +90,9 @@ class TabNavigator extends StatelessWidget {
               break;
             case '/companies/details':
               page = CompanyDetailsScreen(companyId: routeSettings.arguments as String);
+              break;
+            case '/companies/edit':
+              page = EditCompanyScreen(companyId: routeSettings.arguments as String);
               break;
             default:
               page = Scaffold(

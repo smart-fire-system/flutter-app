@@ -1,10 +1,17 @@
+import 'dart:io';
+import 'package:fire_alarm_system/utils/image_compress.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 
 class BranchRepository {
   final FirebaseFirestore _firestore;
-  BranchRepository() : _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage;
+  BranchRepository()
+      : _firestore = FirebaseFirestore.instance,
+        _storage = FirebaseStorage.instance;
 
   Future<Map<String, List<dynamic>>> getBranchesList() async {
     try {
@@ -66,8 +73,22 @@ class BranchRepository {
     }
   }
 
-  Future<void> modifyCompany(Company company) async {
+  Future<void> modifyCompany(Company company, File? logoFile) async {
     try {
+      if (logoFile != null) {
+        Uint8List resizedImageData =
+            await AppImage.compressAndResizeImage(logoFile);
+        String fileName = '${company.id!}.jpg';
+        final imageRef = _storage
+            .refFromURL('gs://smart-fire-system-app.firebasestorage.app')
+            .child('companies')
+            .child(fileName);
+        await imageRef.putData(
+          resizedImageData,
+          SettableMetadata(contentType: 'image/jpeg'),
+        );
+        company.logoURL = await imageRef.getDownloadURL();
+      }
       await _firestore
           .collection('companies')
           .doc(company.id)

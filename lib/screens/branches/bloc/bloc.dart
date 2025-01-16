@@ -90,5 +90,15 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
         add(AuthChanged(error: e.toString()));
       }
     });
+
+    on<CompanyModifyRequested>((event, emit) async {
+      emit(BranchesLoading());
+      try {
+        await branchRepository.modifyCompany(event.company, event.logoFile);
+        add(AuthChanged(message: BranchesMessage.companyModified));
+      } catch (e) {
+        add(AuthChanged(error: e.toString()));
+      }
+    });
   }
 }

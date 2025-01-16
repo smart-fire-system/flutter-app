@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
@@ -27,12 +29,15 @@ class BranchDeleteRequested extends BranchesEvent {
 
 class CompanyModifyRequested extends BranchesEvent {
   Company company;
-  CompanyModifyRequested({required this.company});
+  File? logoFile;
+  CompanyModifyRequested({required this.company, this.logoFile});
 }
 
 class CompanyAddRequested extends BranchesEvent {
   Company company;
-  CompanyAddRequested({required this.company});
+  File? logoFile;
+
+  CompanyAddRequested({required this.company, this.logoFile});
 }
 
 class CompanyDeleteRequested extends BranchesEvent {
