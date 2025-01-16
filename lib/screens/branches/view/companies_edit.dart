@@ -1,12 +1,10 @@
 import 'package:card_loading/card_loading.dart';
-import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/button.dart';
-import 'package:fire_alarm_system/widgets/dropdown.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/widgets/text_field.dart';
 import 'package:flutter/material.dart';
@@ -19,27 +17,26 @@ import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/event.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
 
-class EditBranchScreen extends StatefulWidget {
-  final String branchId;
-  const EditBranchScreen({
+class EditCompanyScreen extends StatefulWidget {
+  final String companyId;
+  const EditCompanyScreen({
     super.key,
-    required this.branchId,
+    required this.companyId,
   });
 
   @override
-  EditBranchScreenState createState() => EditBranchScreenState();
+  EditCompanyScreenState createState() => EditCompanyScreenState();
 }
 
-class EditBranchScreenState extends State<EditBranchScreen> {
+class EditCompanyScreenState extends State<EditCompanyScreen> {
   late TextEditingController _nameController;
   late TextEditingController _addressController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
   late TextEditingController _commentController;
-  bool _canDeleteBranches = false;
+  bool _canDeleteCompanies = false;
   bool _isFirstCall = true;
-  Branch? _branch;
-  List<Company> _companies = [];
+  Company? _company;
 
   @override
   void initState() {
@@ -62,9 +59,9 @@ class EditBranchScreenState extends State<EditBranchScreen> {
       builder: (context, state) {
         AppLoading().dismiss(
           context: context,
-          screen: AppScreen.editBranches,
+          screen: AppScreen.editCompanies,
         );
-        if (state is BranchesAuthenticated && state.canEditBranches) {
+        if (state is BranchesAuthenticated && state.canEditCompanies) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (state.error != null) {
               CustomAlert.showError(
@@ -73,11 +70,11 @@ class EditBranchScreenState extends State<EditBranchScreen> {
               );
               state.error = null;
             } else if (state.message != null &&
-                BranchesMessage.branchModified == state.message) {
+                BranchesMessage.companyModified == state.message) {
               state.message = null;
               CustomAlert.showSuccess(
                 context: context,
-                title: S.of(context).branchModified,
+                title: S.of(context).companyModified,
               ).then((_) {
                 if (context.mounted) {
                   Navigator.of(context).pop();
@@ -85,27 +82,26 @@ class EditBranchScreenState extends State<EditBranchScreen> {
               });
             }
           });
-          if (BranchesMessage.branchDeleted == state.message) {
+          if (BranchesMessage.companyDeleted == state.message) {
             state.message = null;
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             });
           } else {
-            _canDeleteBranches = state.canDeleteBranches;
-            _branch = state.branches
-                .firstWhere((branch) => branch.id == widget.branchId);
-            _companies = state.companies;
+            _canDeleteCompanies = state.canDeleteBranches;
+            _company = state.companies
+                .firstWhere((company) => company.id == widget.companyId);
             if (_isFirstCall) {
               _isFirstCall = false;
-              _nameController = TextEditingController(text: _branch!.name);
+              _nameController = TextEditingController(text: _company!.name);
               _addressController =
-                  TextEditingController(text: _branch!.address);
+                  TextEditingController(text: _company!.address);
               _phoneController =
-                  TextEditingController(text: _branch!.phoneNumber);
-              _emailController = TextEditingController(text: _branch!.email);
+                  TextEditingController(text: _company!.phoneNumber);
+              _emailController = TextEditingController(text: _company!.email);
               _commentController =
-                  TextEditingController(text: _branch!.comment);
+                  TextEditingController(text: _company!.comment);
             }
             return _buildEditor(context);
           }
@@ -120,9 +116,9 @@ class EditBranchScreenState extends State<EditBranchScreen> {
   }
 
   Widget _buildEditor(BuildContext context) {
-    AppLoading().dismiss(context: context, screen: AppScreen.editBranches);
+    AppLoading().dismiss(context: context, screen: AppScreen.editCompanies);
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).editBranch),
+      appBar: CustomAppBar(title: S.of(context).editCompany),
       floatingActionButton: FloatingActionButton.extended(
         label: Text(S.of(context).save_changes,
             style: CustomStyle.mediumTextWhite),
@@ -143,7 +139,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
           child: Column(
             children: [
               CustomTextField(
-                label: S.of(context).branchName,
+                label: S.of(context).companyName,
                 controller: _nameController,
               ),
               CustomTextField(
@@ -160,36 +156,19 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                 controller: _emailController,
                 inputType: TextInputType.emailAddress,
               ),
-              CustomDropdownSingle(
-                title: S.of(context).company,
-                subtitle: S.of(context).changeCompany,
-                initialItem: CustomDropdownItem(
-                  title: _branch!.company.name,
-                  value: _branch!.company.id!,
-                ),
-                items: _companies.map((company) {
-                  return CustomDropdownItem(
-                    title: company.name,
-                    value: company.id!,
-                  );
-                }).toList(),
-                onChanged: (newCompany) {
-                  _branch!.company = _companies
-                      .firstWhere((company) => company.id == newCompany.value);
-                },
-              ),
               CustomTextField(
                 label: S.of(context).comment,
                 controller: _commentController,
                 maxLines: 3,
               ),
-              if (_canDeleteBranches)
+              
+              if (_canDeleteCompanies)
                 CustomNormalButton(
-                  label: S.of(context).deleteBranch,
+                  label: S.of(context).deleteCompany,
                   backgroundColor: CustomStyle.redDark,
                   fullWidth: true,
                   onPressed: () {
-                    _deleteBranch(context);
+                    _deleteCompany(context);
                   },
                 )
             ],
@@ -228,8 +207,8 @@ class EditBranchScreenState extends State<EditBranchScreen> {
 
     int? confirm = await CustomAlert.showConfirmation(
       context: context,
-      title: S.of(context).editBranch,
-      subtitle: S.of(context).branchModifyWarning,
+      title: S.of(context).editCompany,
+      subtitle: S.of(context).companyModifyWarning,
       buttons: [
         CustomAlertConfirmationButton(
           title: S.of(context).yesSaveChanges,
@@ -248,31 +227,31 @@ class EditBranchScreenState extends State<EditBranchScreen> {
     if (confirm == 0 && context.mounted) {
       AppLoading().show(
         context: context,
-        screen: AppScreen.editBranches,
-        title: S.of(context).waitSavingBranch,
+        screen: AppScreen.editCompanies,
+        title: S.of(context).waitSavingCompany,
         type: 'edit',
       );
-      context.read<BranchesBloc>().add(BranchModifyRequested(
-            branch: Branch(
+      context.read<BranchesBloc>().add(CompanyModifyRequested(
+            company: Company(
               name: _nameController.text,
               address: _addressController.text,
               phoneNumber: _phoneController.text,
               email: _emailController.text,
               comment: _commentController.text,
-              company: _branch!.company,
+              logoURL: ""
             ),
           ));
     }
   }
 
-  void _deleteBranch(BuildContext context) async {
+  void _deleteCompany(BuildContext context) async {
     int? confirm = await CustomAlert.showConfirmation(
       context: context,
-      title: S.of(context).deleteBranch,
-      subtitle: S.of(context).branchDeleteWarning,
+      title: S.of(context).deleteCompany,
+      subtitle: S.of(context).companyDeleteWarning,
       buttons: [
         CustomAlertConfirmationButton(
-          title: S.of(context).yesDeleteBranch,
+          title: S.of(context).yesDeleteCompany,
           value: 0,
           backgroundColor: CustomStyle.redDark,
           textColor: Colors.white,
@@ -288,13 +267,13 @@ class EditBranchScreenState extends State<EditBranchScreen> {
     if (confirm == 0 && context.mounted) {
       AppLoading().show(
         context: context,
-        screen: AppScreen.editBranches,
+        screen: AppScreen.editCompanies,
         title: S.of(context).waitDeltingBranch,
         type: 'delete',
       );
       context.read<BranchesBloc>().add(
-            BranchDeleteRequested(
-              id: _branch!.id!,
+            CompanyDeleteRequested(
+              id: _company!.id!,
             ),
           );
     }

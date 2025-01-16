@@ -111,7 +111,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                   ),
                   CustomInfoItem(
                     title: S.of(context).createdAt,
-                    value: _company!.createdAt.toDate().toString(),
+                    value: _company!.createdAt!.toDate().toString(),
                   ),
                 ],
               ),

@@ -138,7 +138,7 @@ class BranchesScreenState extends State<BranchesScreen> {
                 noSelectedText: S.of(context).noCompaniesSelected,
                 items: _companies.map((company) {
                   return CustomDropdownItem(
-                      title: company.name, value: company.id);
+                      title: company.name, value: company.id!);
                 }).toList(),
                 icon: Icons.filter_alt,
                 onChanged: (filteredItems) {

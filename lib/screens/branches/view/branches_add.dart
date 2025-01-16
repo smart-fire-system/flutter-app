@@ -143,7 +143,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
                 items: _companies.map((company) {
                   return CustomDropdownItem(
                     title: company.name,
-                    value: company.id,
+                    value: company.id!,
                   );
                 }).toList(),
                 onChanged: (newCompany) {

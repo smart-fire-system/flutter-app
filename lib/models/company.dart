@@ -1,38 +1,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Company {
-  String id;
-  int code;
+  String? id;
+  int? code;
+  Timestamp? createdAt;
   String name;
   String address;
   String phoneNumber;
   String email;
   String logoURL;
   String comment;
-  Timestamp createdAt;
 
   Company({
-    required this.id,
-    required this.code,
+    this.id,
+    this.code,
+    this.createdAt,
     required this.name,
     required this.address,
     required this.phoneNumber,
     required this.email,
     required this.logoURL,
     required this.comment,
-    required this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'code': code,
       'name': name,
       'address': address,
       'phoneNumber': phoneNumber,
       'email': email,
       'logoURL': logoURL,
       'comment': comment,
-      'createdAt': createdAt,
     };
   }
 

@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/models/branch.dart';
+import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
 
 abstract class BranchesEvent {}
@@ -22,4 +23,19 @@ class BranchAddRequested extends BranchesEvent {
 class BranchDeleteRequested extends BranchesEvent {
   String id;
   BranchDeleteRequested({required this.id});
+}
+
+class CompanyModifyRequested extends BranchesEvent {
+  Company company;
+  CompanyModifyRequested({required this.company});
+}
+
+class CompanyAddRequested extends BranchesEvent {
+  Company company;
+  CompanyAddRequested({required this.company});
+}
+
+class CompanyDeleteRequested extends BranchesEvent {
+  String id;
+  CompanyDeleteRequested({required this.id});
 }
