@@ -74,19 +74,6 @@
     "companiesAndBranches": "الشركات والفروع",
     "companiesAndBranchesDescription": "إدارة الشركات والفروع. أضف أو احذف الشركات والفروع، واطلع على تفاصيلها.",
 
-    "addBranch": "إضافة فرع جديد",
-    "branchModified": "تم تحديث تفاصيل الفرع بنجاح.",
-    "branchAdded": "تم إضافة الفرع بنجاح.",
-    "branchDeleted": "تم حذف الفرع بنجاح.",
-    "branchAddWarning": "تأكد من ملء جميع الحقول المطلوبة للفرع بشكل صحيح قبل الإضافة. هل أنت متأكد أنك تريد المتابعة؟",
-
-    "addBuilding": "إضافة مبنى جديد",
-    "buildingModified": "تم تحديث تفاصيل المبنى بنجاح.",
-    "buildingAdded": "تم إضافة المبنى بنجاح.",
-    "buildingDeleted": "تم حذف المبنى بنجاح.",
-    "buildingModifyWarning": "يرجى التحقق من صحة تفاصيل المبنى المحدثة قبل الحفظ. هل أنت متأكد أنك تريد المتابعة؟",
-    "buildingAddWarning": "تأكد من ملء جميع الحقول المطلوبة للمبنى بشكل صحيح قبل الإضافة. هل أنت متأكد أنك تريد المتابعة؟",
-    "buildingDeleteWarning": "حذف هذا المبنى لا يمكن التراجع عنه. هل أنت متأكد أنك تريد المتابعة؟",
 
     "addNewAdmin": "إضافة مسئول جديد",
     "add": "إضافة",
@@ -132,6 +119,7 @@
     "allCompanies": "كل الشركات",
     "noCompaniesSelected": "لم يتم اختيار أي شركات",
     "noBranchesToView": "لا يوجد فروع لعرضها",
+    "noCompaniesToView": "لا يوجد شركات لعرضها",
 
     "branchInformation": "بيانات الفرع",
     "companyInformation": "بيانات الشركة",
@@ -160,7 +148,22 @@
     "enterBranchCompany":"برجاء إختيار شركة للفرع",
 
 
-
+    "addCompany": "إضافة شركة جديدة",
+    "companyModified": "تم تعديل بيانات الشركة بنجاح.",
+    "companyAdded": "تم إضافة الشركة بنجاح.",
+    "companyDeleted": "تم حذف الشركة بنجاح.",
+    "companyName": "اسم الشركة",
+    "editCompany": "تعديل الشركة",
+    "deleteCompany": "حذف الشركة",
+    "companyModifyWarning": "يرجى التحقق من صحة تفاصيل الشركة المحدثة قبل الحفظ. هل أنت متأكد أنك تريد المتابعة؟",
+    "companyDeleteWarning": "حذف هذه الشركة لا يمكن التراجع عنه. هل أنت متأكد أنك تريد المتابعة؟",
+    "yesDeleteCompany": "نعم، حذف الشركة",
+    "waitDeltingCompany": "برجاء الانتظار، جاري حذف الشركة",
+    "waitSavingCompany": "برجاء الانتظار، جاري حفظ بيانات الشركة",
+    "enterCompanyName":"برجاء إدخال اسم الشركة",
+    "enterCompanyAddress":"برجاء إدخال عنوان الشركة",
+    "enterCompanyPhone":"برجاء إدخال رقم هاتف للشركة",
+    "enterCompanyEmail":"برجاء إدخال البريد الالكتروني للشركة",
 
 
 

@@ -680,126 +680,6 @@ class S {
     );
   }
 
-  /// `Add New Branch`
-  String get addBranch {
-    return Intl.message(
-      'Add New Branch',
-      name: 'addBranch',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The branch details have been updated successfully.`
-  String get branchModified {
-    return Intl.message(
-      'The branch details have been updated successfully.',
-      name: 'branchModified',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The branch has been added successfully.`
-  String get branchAdded {
-    return Intl.message(
-      'The branch has been added successfully.',
-      name: 'branchAdded',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The branch has been deleted successfully.`
-  String get branchDeleted {
-    return Intl.message(
-      'The branch has been deleted successfully.',
-      name: 'branchDeleted',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ensure all required branch fields are filled correctly before adding. Are you sure you want to proceed?`
-  String get branchAddWarning {
-    return Intl.message(
-      'Ensure all required branch fields are filled correctly before adding. Are you sure you want to proceed?',
-      name: 'branchAddWarning',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Add New Building`
-  String get addBuilding {
-    return Intl.message(
-      'Add New Building',
-      name: 'addBuilding',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The building details have been updated successfully.`
-  String get buildingModified {
-    return Intl.message(
-      'The building details have been updated successfully.',
-      name: 'buildingModified',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The building has been added successfully.`
-  String get buildingAdded {
-    return Intl.message(
-      'The building has been added successfully.',
-      name: 'buildingAdded',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The building has been deleted successfully.`
-  String get buildingDeleted {
-    return Intl.message(
-      'The building has been deleted successfully.',
-      name: 'buildingDeleted',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Please double-check the updated building details before saving. Are you sure you want to proceed?`
-  String get buildingModifyWarning {
-    return Intl.message(
-      'Please double-check the updated building details before saving. Are you sure you want to proceed?',
-      name: 'buildingModifyWarning',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Ensure all required building fields are filled correctly before adding. Are you sure you want to proceed?`
-  String get buildingAddWarning {
-    return Intl.message(
-      'Ensure all required building fields are filled correctly before adding. Are you sure you want to proceed?',
-      name: 'buildingAddWarning',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Deleting this building is irreversible. Are you sure you want to proceed?`
-  String get buildingDeleteWarning {
-    return Intl.message(
-      'Deleting this building is irreversible. Are you sure you want to proceed?',
-      name: 'buildingDeleteWarning',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Add`
   String get add {
     return Intl.message(
@@ -1220,6 +1100,16 @@ class S {
     );
   }
 
+  /// `No branches to view`
+  String get noCompaniesToView {
+    return Intl.message(
+      'No branches to view',
+      name: 'noCompaniesToView',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Branch Information`
   String get branchInformation {
     return Intl.message(
@@ -1285,6 +1175,46 @@ class S {
     return Intl.message(
       'Comment',
       name: 'comment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add New Branch`
+  String get addBranch {
+    return Intl.message(
+      'Add New Branch',
+      name: 'addBranch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The branch details have been updated successfully.`
+  String get branchModified {
+    return Intl.message(
+      'The branch details have been updated successfully.',
+      name: 'branchModified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The branch has been added successfully.`
+  String get branchAdded {
+    return Intl.message(
+      'The branch has been added successfully.',
+      name: 'branchAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The branch has been deleted successfully.`
+  String get branchDeleted {
+    return Intl.message(
+      'The branch has been deleted successfully.',
+      name: 'branchDeleted',
       desc: '',
       args: [],
     );
@@ -1455,6 +1385,166 @@ class S {
     return Intl.message(
       'Please choose a company for this branch',
       name: 'enterBranchCompany',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add New Company`
+  String get addCompany {
+    return Intl.message(
+      'Add New Company',
+      name: 'addCompany',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The company details have been updated successfully.`
+  String get companyModified {
+    return Intl.message(
+      'The company details have been updated successfully.',
+      name: 'companyModified',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The company has been added successfully.`
+  String get companyAdded {
+    return Intl.message(
+      'The company has been added successfully.',
+      name: 'companyAdded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The company has been deleted successfully.`
+  String get companyDeleted {
+    return Intl.message(
+      'The company has been deleted successfully.',
+      name: 'companyDeleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Company Name`
+  String get companyName {
+    return Intl.message(
+      'Company Name',
+      name: 'companyName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Company`
+  String get editCompany {
+    return Intl.message(
+      'Edit Company',
+      name: 'editCompany',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete Company`
+  String get deleteCompany {
+    return Intl.message(
+      'Delete Company',
+      name: 'deleteCompany',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please double-check the updated company details before saving. Are you sure you want to proceed?`
+  String get companyModifyWarning {
+    return Intl.message(
+      'Please double-check the updated company details before saving. Are you sure you want to proceed?',
+      name: 'companyModifyWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Deleting this company is irreversible. Are you sure you want to proceed?`
+  String get companyDeleteWarning {
+    return Intl.message(
+      'Deleting this company is irreversible. Are you sure you want to proceed?',
+      name: 'companyDeleteWarning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes, delete company`
+  String get yesDeleteCompany {
+    return Intl.message(
+      'Yes, delete company',
+      name: 'yesDeleteCompany',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please wait while deleting company`
+  String get waitDeltingCompany {
+    return Intl.message(
+      'Please wait while deleting company',
+      name: 'waitDeltingCompany',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please wait while saving company information`
+  String get waitSavingCompany {
+    return Intl.message(
+      'Please wait while saving company information',
+      name: 'waitSavingCompany',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the company name`
+  String get enterCompanyName {
+    return Intl.message(
+      'Please enter the company name',
+      name: 'enterCompanyName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the company address`
+  String get enterCompanyAddress {
+    return Intl.message(
+      'Please enter the company address',
+      name: 'enterCompanyAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the company phone number`
+  String get enterCompanyPhone {
+    return Intl.message(
+      'Please enter the company phone number',
+      name: 'enterCompanyPhone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the company email address`
+  String get enterCompanyEmail {
+    return Intl.message(
+      'Please enter the company email address',
+      name: 'enterCompanyEmail',
       desc: '',
       args: [],
     );

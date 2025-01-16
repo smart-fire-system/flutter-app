@@ -1,9 +1,7 @@
-
-
 enum AuthStatus {
   notAuthenticated,
   authenticated,
-  authenticatedNotVerified
+  authenticatedNotVerified,
 }
 
 enum UserRole {
@@ -16,10 +14,13 @@ enum UserRole {
   noRole
 }
 
-
 enum AppScreen {
   viewBranches,
   viewBranchDetails,
   editBranches,
   addBranhes,
+  viewCompanies,
+  viewCompanyDetails,
+  editCompanies,
+  addCompanies,
 }

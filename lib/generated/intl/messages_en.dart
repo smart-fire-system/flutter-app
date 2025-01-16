@@ -40,7 +40,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Account Not Verified"),
         "add": MessageLookupByLibrary.simpleMessage("Add"),
         "addBranch": MessageLookupByLibrary.simpleMessage("Add New Branch"),
-        "addBuilding": MessageLookupByLibrary.simpleMessage("Add New Building"),
+        "addCompany": MessageLookupByLibrary.simpleMessage("Add New Company"),
         "addNewAdmin": MessageLookupByLibrary.simpleMessage("Add New Admin"),
         "address": MessageLookupByLibrary.simpleMessage("Address"),
         "admin": MessageLookupByLibrary.simpleMessage("Admin"),
@@ -54,8 +54,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "app_name": MessageLookupByLibrary.simpleMessage("Fire Alarm System"),
         "app_not_authorized": MessageLookupByLibrary.simpleMessage(
             "This app is not authorized to access the Firebase project. Contact the administrator."),
-        "branchAddWarning": MessageLookupByLibrary.simpleMessage(
-            "Ensure all required branch fields are filled correctly before adding. Are you sure you want to proceed?"),
         "branchAdded": MessageLookupByLibrary.simpleMessage(
             "The branch has been added successfully."),
         "branchDeleteWarning": MessageLookupByLibrary.simpleMessage(
@@ -75,18 +73,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "branches": MessageLookupByLibrary.simpleMessage("Branches"),
         "branchesDescription":
             MessageLookupByLibrary.simpleMessage("Add or remove branches"),
-        "buildingAddWarning": MessageLookupByLibrary.simpleMessage(
-            "Ensure all required building fields are filled correctly before adding. Are you sure you want to proceed?"),
-        "buildingAdded": MessageLookupByLibrary.simpleMessage(
-            "The building has been added successfully."),
-        "buildingDeleteWarning": MessageLookupByLibrary.simpleMessage(
-            "Deleting this building is irreversible. Are you sure you want to proceed?"),
-        "buildingDeleted": MessageLookupByLibrary.simpleMessage(
-            "The building has been deleted successfully."),
-        "buildingModified": MessageLookupByLibrary.simpleMessage(
-            "The building details have been updated successfully."),
-        "buildingModifyWarning": MessageLookupByLibrary.simpleMessage(
-            "Please double-check the updated building details before saving. Are you sure you want to proceed?"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "cancelled": MessageLookupByLibrary.simpleMessage(
             "The operation was cancelled. Please try again."),
@@ -107,8 +93,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "companiesAndBranchesDescription": MessageLookupByLibrary.simpleMessage(
             "Manage companies and their branches. Add or remove companies and branches, and view detailed information about them."),
         "company": MessageLookupByLibrary.simpleMessage("Company"),
+        "companyAdded": MessageLookupByLibrary.simpleMessage(
+            "The company has been added successfully."),
+        "companyDeleteWarning": MessageLookupByLibrary.simpleMessage(
+            "Deleting this company is irreversible. Are you sure you want to proceed?"),
+        "companyDeleted": MessageLookupByLibrary.simpleMessage(
+            "The company has been deleted successfully."),
         "companyInformation":
             MessageLookupByLibrary.simpleMessage("Company Information"),
+        "companyModified": MessageLookupByLibrary.simpleMessage(
+            "The company details have been updated successfully."),
+        "companyModifyWarning": MessageLookupByLibrary.simpleMessage(
+            "Please double-check the updated company details before saving. Are you sure you want to proceed?"),
+        "companyName": MessageLookupByLibrary.simpleMessage("Company Name"),
         "complaints": MessageLookupByLibrary.simpleMessage("Complaints"),
         "complaintsDescription": MessageLookupByLibrary.simpleMessage(
             "Show open compaints or submit new one."),
@@ -132,10 +129,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "deadline_exceeded": MessageLookupByLibrary.simpleMessage(
             "The operation took too long to complete. Please try again later."),
         "deleteBranch": MessageLookupByLibrary.simpleMessage("Delete Branch"),
+        "deleteCompany": MessageLookupByLibrary.simpleMessage("Delete Company"),
         "deleteUser": MessageLookupByLibrary.simpleMessage("Remove User"),
         "don_t_have_an_account": MessageLookupByLibrary.simpleMessage(
             "Don\'t have an account? Sign Up"),
         "editBranch": MessageLookupByLibrary.simpleMessage("Edit Branch"),
+        "editCompany": MessageLookupByLibrary.simpleMessage("Edit Company"),
         "edit_information":
             MessageLookupByLibrary.simpleMessage("Edit Inforamation"),
         "email": MessageLookupByLibrary.simpleMessage("Email Address"),
@@ -159,6 +158,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please enter the branch name"),
         "enterBranchPhone": MessageLookupByLibrary.simpleMessage(
             "Please enter the branch phone number"),
+        "enterCompanyAddress": MessageLookupByLibrary.simpleMessage(
+            "Please enter the company address"),
+        "enterCompanyEmail": MessageLookupByLibrary.simpleMessage(
+            "Please enter the company email address"),
+        "enterCompanyName": MessageLookupByLibrary.simpleMessage(
+            "Please enter the company name"),
+        "enterCompanyPhone": MessageLookupByLibrary.simpleMessage(
+            "Please enter the company phone number"),
         "enter_email": MessageLookupByLibrary.simpleMessage(
             "Please enter your email address"),
         "enter_email_to_reset": MessageLookupByLibrary.simpleMessage(
@@ -250,6 +257,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "noCancel": MessageLookupByLibrary.simpleMessage("No, cancel"),
         "noCompaniesSelected":
             MessageLookupByLibrary.simpleMessage("No companies selected"),
+        "noCompaniesToView":
+            MessageLookupByLibrary.simpleMessage("No branches to view"),
         "noRole": MessageLookupByLibrary.simpleMessage("No Role"),
         "no_signed_in_user": MessageLookupByLibrary.simpleMessage(
             "No user is signed in. Please log in to continue."),
@@ -385,8 +394,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "visits": MessageLookupByLibrary.simpleMessage("Visits"),
         "waitDeltingBranch": MessageLookupByLibrary.simpleMessage(
             "Please wait while deleting branch"),
+        "waitDeltingCompany": MessageLookupByLibrary.simpleMessage(
+            "Please wait while deleting company"),
         "waitSavingBranch": MessageLookupByLibrary.simpleMessage(
             "Please wait while saving branch information"),
+        "waitSavingCompany": MessageLookupByLibrary.simpleMessage(
+            "Please wait while saving company information"),
         "wait_while_loading": MessageLookupByLibrary.simpleMessage(
             "Pleae wait while loading data ..."),
         "weak_password": MessageLookupByLibrary.simpleMessage(
@@ -398,6 +411,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "The password you entered is incorrect. Please try again."),
         "yesDeleteBranch":
             MessageLookupByLibrary.simpleMessage("Yes, delete branch"),
+        "yesDeleteCompany":
+            MessageLookupByLibrary.simpleMessage("Yes, delete company"),
         "yesSaveChanges":
             MessageLookupByLibrary.simpleMessage("Yes, save changes")
       };

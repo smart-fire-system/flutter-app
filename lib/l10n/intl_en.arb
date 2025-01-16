@@ -75,19 +75,6 @@
     "companiesAndBranchesDescription": "Manage companies and their branches. Add or remove companies and branches, and view detailed information about them.",
 
 
-    "addBranch": "Add New Branch",
-    "branchModified": "The branch details have been updated successfully.",
-    "branchAdded": "The branch has been added successfully.",
-    "branchDeleted": "The branch has been deleted successfully.",
-    "branchAddWarning": "Ensure all required branch fields are filled correctly before adding. Are you sure you want to proceed?",
-    
-    "addBuilding": "Add New Building",
-    "buildingModified": "The building details have been updated successfully.",
-    "buildingAdded": "The building has been added successfully.",
-    "buildingDeleted": "The building has been deleted successfully.",
-    "buildingModifyWarning": "Please double-check the updated building details before saving. Are you sure you want to proceed?",
-    "buildingAddWarning": "Ensure all required building fields are filled correctly before adding. Are you sure you want to proceed?",
-    "buildingDeleteWarning": "Deleting this building is irreversible. Are you sure you want to proceed?",
 
     "add": "Add",
     "addNewAdmin": "Add New Admin",
@@ -136,6 +123,7 @@
     "allCompanies": "All companies",
     "noCompaniesSelected": "No companies selected",
     "noBranchesToView": "No branches to view",
+    "noCompaniesToView": "No branches to view",
 
     "branchInformation": "Branch Information",
     "companyInformation": "Company Information",
@@ -145,6 +133,10 @@
     "createdAt": "Created At",
     "comment": "Comment",
 
+    "addBranch": "Add New Branch",
+    "branchModified": "The branch details have been updated successfully.",
+    "branchAdded": "The branch has been added successfully.",
+    "branchDeleted": "The branch has been deleted successfully.",
     "branchName": "Branch Name",
     "editBranch": "Edit Branch",
     "company": "Company",
@@ -163,6 +155,22 @@
     "enterBranchEmail":"Please enter the branch email address",
     "enterBranchCompany":"Please choose a company for this branch",
 
+    "addCompany": "Add New Company",
+    "companyModified": "The company details have been updated successfully.",
+    "companyAdded": "The company has been added successfully.",
+    "companyDeleted": "The company has been deleted successfully.",
+    "companyName": "Company Name",
+    "editCompany": "Edit Company",
+    "deleteCompany": "Delete Company",
+    "companyModifyWarning": "Please double-check the updated company details before saving. Are you sure you want to proceed?",
+    "companyDeleteWarning": "Deleting this company is irreversible. Are you sure you want to proceed?",
+    "yesDeleteCompany": "Yes, delete company",
+    "waitDeltingCompany": "Please wait while deleting company",
+    "waitSavingCompany": "Please wait while saving company information",
+    "enterCompanyName":"Please enter the company name",
+    "enterCompanyAddress":"Please enter the company address",
+    "enterCompanyPhone":"Please enter the company phone number",
+    "enterCompanyEmail":"Please enter the company email address",
 
 
 

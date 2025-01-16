@@ -40,8 +40,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "account_not_verified_title":
             MessageLookupByLibrary.simpleMessage("الحساب غير مُفعّل"),
         "add": MessageLookupByLibrary.simpleMessage("إضافة"),
-        "addBranch": MessageLookupByLibrary.simpleMessage("إضافة فرع جديد"),
-        "addBuilding": MessageLookupByLibrary.simpleMessage("إضافة مبنى جديد"),
+        "addCompany": MessageLookupByLibrary.simpleMessage("إضافة شركة جديدة"),
         "addNewAdmin": MessageLookupByLibrary.simpleMessage("إضافة مسئول جديد"),
         "address": MessageLookupByLibrary.simpleMessage("العنوان"),
         "admin": MessageLookupByLibrary.simpleMessage("مسئول"),
@@ -55,38 +54,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "app_name": MessageLookupByLibrary.simpleMessage("نظام إنذار الحريق"),
         "app_not_authorized": MessageLookupByLibrary.simpleMessage(
             "هذا التطبيق غير مصرح له. تواصل مع المسؤول."),
-        "branchAddWarning": MessageLookupByLibrary.simpleMessage(
-            "تأكد من ملء جميع الحقول المطلوبة للفرع بشكل صحيح قبل الإضافة. هل أنت متأكد أنك تريد المتابعة؟"),
-        "branchAdded":
-            MessageLookupByLibrary.simpleMessage("تم إضافة الفرع بنجاح."),
         "branchDeleteWarning": MessageLookupByLibrary.simpleMessage(
             "حذف هذا الفرع لا يمكن التراجع عنه. هل أنت متأكد أنك تريد المتابعة؟"),
-        "branchDeleted":
-            MessageLookupByLibrary.simpleMessage("تم حذف الفرع بنجاح."),
         "branchInformation":
             MessageLookupByLibrary.simpleMessage("بيانات الفرع"),
         "branchManager": MessageLookupByLibrary.simpleMessage("مدير فرع"),
         "branchManagers": MessageLookupByLibrary.simpleMessage("مديرو الفروع"),
-        "branchModified": MessageLookupByLibrary.simpleMessage(
-            "تم تحديث تفاصيل الفرع بنجاح."),
         "branchModifyWarning": MessageLookupByLibrary.simpleMessage(
             "يرجى التحقق من صحة تفاصيل الفرع المحدثة قبل الحفظ. هل أنت متأكد أنك تريد المتابعة؟"),
         "branchName": MessageLookupByLibrary.simpleMessage("إسم الفرع"),
         "branches": MessageLookupByLibrary.simpleMessage("الفروع"),
         "branchesDescription":
             MessageLookupByLibrary.simpleMessage("إضافة أو حذف الفروع"),
-        "buildingAddWarning": MessageLookupByLibrary.simpleMessage(
-            "تأكد من ملء جميع الحقول المطلوبة للمبنى بشكل صحيح قبل الإضافة. هل أنت متأكد أنك تريد المتابعة؟"),
-        "buildingAdded":
-            MessageLookupByLibrary.simpleMessage("تم إضافة المبنى بنجاح."),
-        "buildingDeleteWarning": MessageLookupByLibrary.simpleMessage(
-            "حذف هذا المبنى لا يمكن التراجع عنه. هل أنت متأكد أنك تريد المتابعة؟"),
-        "buildingDeleted":
-            MessageLookupByLibrary.simpleMessage("تم حذف المبنى بنجاح."),
-        "buildingModified": MessageLookupByLibrary.simpleMessage(
-            "تم تحديث تفاصيل المبنى بنجاح."),
-        "buildingModifyWarning": MessageLookupByLibrary.simpleMessage(
-            "يرجى التحقق من صحة تفاصيل المبنى المحدثة قبل الحفظ. هل أنت متأكد أنك تريد المتابعة؟"),
         "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
         "cancelled": MessageLookupByLibrary.simpleMessage(
             "تم إلغاء العملية. حاول مجددًا."),
@@ -106,8 +85,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "companiesAndBranchesDescription": MessageLookupByLibrary.simpleMessage(
             "إدارة الشركات والفروع. أضف أو احذف الشركات والفروع، واطلع على تفاصيلها."),
         "company": MessageLookupByLibrary.simpleMessage("الشركة"),
+        "companyAdded":
+            MessageLookupByLibrary.simpleMessage("تم إضافة الشركة بنجاح."),
+        "companyDeleteWarning": MessageLookupByLibrary.simpleMessage(
+            "حذف هذه الشركة لا يمكن التراجع عنه. هل أنت متأكد أنك تريد المتابعة؟"),
+        "companyDeleted":
+            MessageLookupByLibrary.simpleMessage("تم حذف الشركة بنجاح."),
         "companyInformation":
             MessageLookupByLibrary.simpleMessage("بيانات الشركة"),
+        "companyModified": MessageLookupByLibrary.simpleMessage(
+            "تم تعديل بيانات الشركة بنجاح."),
+        "companyModifyWarning": MessageLookupByLibrary.simpleMessage(
+            "يرجى التحقق من صحة تفاصيل الشركة المحدثة قبل الحفظ. هل أنت متأكد أنك تريد المتابعة؟"),
+        "companyName": MessageLookupByLibrary.simpleMessage("اسم الشركة"),
         "complaints": MessageLookupByLibrary.simpleMessage("الشكاوى"),
         "complaintsDescription": MessageLookupByLibrary.simpleMessage(
             "عرض الشكاوى المفتوحة أو تقديم شكوى جديدة."),
@@ -131,10 +121,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "deadline_exceeded": MessageLookupByLibrary.simpleMessage(
             "استغرقت العملية وقتاً طويلاً لإكمالها. يرجى المحاولة مرة أخرى لاحقاً."),
         "deleteBranch": MessageLookupByLibrary.simpleMessage("حذف الفرع"),
+        "deleteCompany": MessageLookupByLibrary.simpleMessage("حذف الشركة"),
         "deleteUser": MessageLookupByLibrary.simpleMessage("حذف المستخدم"),
         "don_t_have_an_account":
             MessageLookupByLibrary.simpleMessage("ليس لديك حساب؟ إنشاء حساب"),
         "editBranch": MessageLookupByLibrary.simpleMessage("تعديل الفرع"),
+        "editCompany": MessageLookupByLibrary.simpleMessage("تعديل الشركة"),
         "edit_information":
             MessageLookupByLibrary.simpleMessage("تعديل البيانات"),
         "email":
@@ -159,6 +151,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("برجاء إدخال اسم الفرع"),
         "enterBranchPhone": MessageLookupByLibrary.simpleMessage(
             "برجاء إدخال رقم الهاتف للفرع"),
+        "enterCompanyAddress":
+            MessageLookupByLibrary.simpleMessage("برجاء إدخال عنوان الشركة"),
+        "enterCompanyEmail": MessageLookupByLibrary.simpleMessage(
+            "برجاء إدخال البريد الالكتروني للشركة"),
+        "enterCompanyName":
+            MessageLookupByLibrary.simpleMessage("برجاء إدخال اسم الشركة"),
+        "enterCompanyPhone":
+            MessageLookupByLibrary.simpleMessage("برجاء إدخال رقم هاتف للشركة"),
         "enter_email": MessageLookupByLibrary.simpleMessage(
             "يرجى إدخال عنوان بريدك الإلكتروني"),
         "enter_email_to_reset": MessageLookupByLibrary.simpleMessage(
@@ -245,6 +245,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "noCancel": MessageLookupByLibrary.simpleMessage("لا، إلغاء"),
         "noCompaniesSelected":
             MessageLookupByLibrary.simpleMessage("لم يتم اختيار أي شركات"),
+        "noCompaniesToView":
+            MessageLookupByLibrary.simpleMessage("لا يوجد شركات لعرضها"),
         "noRole": MessageLookupByLibrary.simpleMessage("بدون صلاحية وصول"),
         "no_signed_in_user": MessageLookupByLibrary.simpleMessage(
             "لا يوجد مستخدم مسجل الدخول. يرجى تسجيل الدخول."),
@@ -377,8 +379,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "visits": MessageLookupByLibrary.simpleMessage("الزيارات"),
         "waitDeltingBranch": MessageLookupByLibrary.simpleMessage(
             "برجاء الانتظار، جاري حذف الفرع"),
+        "waitDeltingCompany": MessageLookupByLibrary.simpleMessage(
+            "برجاء الانتظار، جاري حذف الشركة"),
         "waitSavingBranch": MessageLookupByLibrary.simpleMessage(
             "برجاء الانتظار، جاري حفظ بيانات الفرع"),
+        "waitSavingCompany": MessageLookupByLibrary.simpleMessage(
+            "برجاء الانتظار، جاري حفظ بيانات الشركة"),
         "wait_while_loading": MessageLookupByLibrary.simpleMessage(
             "يرجى الانتظار أثناء تحميل البيانات ..."),
         "weak_password": MessageLookupByLibrary.simpleMessage(
@@ -390,6 +396,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "كلمة المرور غير صحيحة. يرجى المحاولة مجددًا."),
         "yesDeleteBranch":
             MessageLookupByLibrary.simpleMessage("نعم، حذف الفرع"),
+        "yesDeleteCompany":
+            MessageLookupByLibrary.simpleMessage("نعم، حذف الشركة"),
         "yesSaveChanges":
             MessageLookupByLibrary.simpleMessage("نعم، حفظ التغييرات")
       };

@@ -1,10 +1,8 @@
 import 'package:card_loading/card_loading.dart';
-import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
-import 'package:fire_alarm_system/widgets/dropdown.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
@@ -18,26 +16,24 @@ import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/event.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
 
-class BranchesScreen extends StatefulWidget {
-  const BranchesScreen({super.key});
+class CompaniesScreen extends StatefulWidget {
+  const CompaniesScreen({super.key});
 
   @override
-  BranchesScreenState createState() => BranchesScreenState();
+  CompaniesScreenState createState() => CompaniesScreenState();
 }
 
-class BranchesScreenState extends State<BranchesScreen> {
+class CompaniesScreenState extends State<CompaniesScreen> {
   bool _filterRequested = false;
-  List<Branch> _branches = [];
   List<Company> _companies = [];
-  List<Branch> _filteredBranches = [];
   List<Company> _filteredCompanies = [];
-  bool _canAddBranches = false;
+  bool _canAddCompanies = false;
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_filterBranches);
+    _searchController.addListener(_filterCompanies);
   }
 
   @override
@@ -46,15 +42,14 @@ class BranchesScreenState extends State<BranchesScreen> {
     super.dispose();
   }
 
-  void _filterBranches() {
+  void _filterCompanies() {
     String query = _searchController.text.toLowerCase();
     setState(() {
       _filterRequested = true;
-      _filteredBranches = _branches
-          .where((branch) =>
-              _filteredCompanies.contains(branch.company) &&
-              (branch.name.toLowerCase().contains(query.toLowerCase()) ||
-                  branch.code.toString() == query))
+      _filteredCompanies = _companies
+          .where((company) =>
+              (company.name.toLowerCase().contains(query.toLowerCase()) ||
+                  company.code.toString() == query))
           .toList();
     });
   }
@@ -73,19 +68,17 @@ class BranchesScreenState extends State<BranchesScreen> {
               state.error = null;
             }
           });
-          _branches = List.from(state.branches);
           _companies = List.from(state.companies);
-          _canAddBranches = state.canAddBranches;
+          _canAddCompanies = state.canAddCompanies;
           if (_filterRequested) {
             _filterRequested = false;
           } else {
-            _filteredBranches = List.from(_branches);
             _filteredCompanies = List.from(_companies);
-            _searchController.removeListener(_filterBranches);
+            _searchController.removeListener(_filterCompanies);
             _searchController.clear();
-            _searchController.addListener(_filterBranches);
+            _searchController.addListener(_filterCompanies);
           }
-          return _buildBranches(context);
+          return _buildCompanies(context);
         } else if (state is BranchesNotAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushNamedAndRemoveUntil(
@@ -100,29 +93,29 @@ class BranchesScreenState extends State<BranchesScreen> {
     );
   }
 
-  Widget _buildBranches(BuildContext context) {
-    AppLoading().dismiss(context: context, screen: AppScreen.viewBranches);
+  Widget _buildCompanies(BuildContext context) {
+    AppLoading().dismiss(context: context, screen: AppScreen.viewCompanies);
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).branches),
-      floatingActionButton: !_canAddBranches
+      appBar: CustomAppBar(title: S.of(context).companies),
+      floatingActionButton: !_canAddCompanies
           ? null
           : FloatingActionButton.extended(
               backgroundColor: Colors.green,
               onPressed: () {
-                TabNavigator.settings.currentState?.pushNamed(
-                    '/branches/add');
+                TabNavigator.settings.currentState
+                    ?.pushNamed('/companies/add');
               },
               icon: const Icon(
                 Icons.add,
                 size: 30,
                 color: Colors.white,
               ),
-              label: Text(S.of(context).addBranch,
+              label: Text(S.of(context).addCompany,
                   style: CustomStyle.mediumTextWhite),
             ),
       floatingActionButtonLocation:
-          !_canAddBranches ? null : FloatingActionButtonLocation.endFloat,
+          !_canAddCompanies ? null : FloatingActionButtonLocation.endFloat,
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<BranchesBloc>().add(AuthChanged());
@@ -131,29 +124,8 @@ class BranchesScreenState extends State<BranchesScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              CustomDropdownMulti(
-                title: S.of(context).companies,
-                subtitle: S.of(context).selectCompanies,
-                allSelectedText: S.of(context).allCompanies,
-                noSelectedText: S.of(context).noCompaniesSelected,
-                items: _companies.map((company) {
-                  return CustomDropdownItem(
-                      title: company.name, value: company.id);
-                }).toList(),
-                icon: Icons.filter_alt,
-                onChanged: (filteredItems) {
-                  setState(() {
-                    final filteredIds =
-                        filteredItems.map((item) => item.value).toSet();
-                    _filteredCompanies = _companies
-                        .where((company) => filteredIds.contains(company.id))
-                        .toList();
-                    _filterBranches();
-                  });
-                },
-              ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
@@ -171,36 +143,37 @@ class BranchesScreenState extends State<BranchesScreen> {
                   ),
                 ),
               ),
-              _filteredBranches.isEmpty
+              _filteredCompanies.isEmpty
                   ? Text(
-                      S.of(context).noBranchesToView,
+                      S.of(context).noCompaniesToView,
                       style: CustomStyle.mediumTextB,
                     )
                   : Flexible(
                       child: ListView(
                         children:
-                            _filteredBranches.asMap().entries.map((entry) {
-                          var branch = entry.value;
+                            _filteredCompanies.asMap().entries.map((entry) {
+                          var company = entry.value;
 
                           return ListTile(
                             leading: CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(branch.company.logoURL),
+                              backgroundImage: NetworkImage(company.logoURL),
                               radius: 25.0,
                             ),
                             title: Text(
-                              branch.name,
+                              company.name,
                               style: CustomStyle.mediumTextB,
                             ),
-                            subtitle: Text(
-                              branch.company.name,
-                              style: CustomStyle.smallText,
-                            ),
+                            subtitle: company.comment.isEmpty
+                                ? null
+                                : Text(
+                                    company.comment,
+                                    style: CustomStyle.smallText,
+                                  ),
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: () {
                               TabNavigator.settings.currentState?.pushNamed(
-                                  '/branches/details',
-                                  arguments: branch.id);
+                                  '/companies/details',
+                                  arguments: company.id);
                             },
                           );
                         }).toList(),
@@ -215,12 +188,12 @@ class BranchesScreenState extends State<BranchesScreen> {
 
   Widget _buildLoading(BuildContext context) {
     if (ModalRoute.of(context)?.isCurrent ?? false) {
-      AppLoading().show(context: context, screen: AppScreen.viewBranches);
+      AppLoading().show(context: context, screen: AppScreen.viewCompanies);
     }
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).branches),
-      floatingActionButton: !_canAddBranches
+      appBar: CustomAppBar(title: S.of(context).companies),
+      floatingActionButton: !_canAddCompanies
           ? null
           : FloatingActionButton.extended(
               backgroundColor: Colors.green,
@@ -230,26 +203,17 @@ class BranchesScreenState extends State<BranchesScreen> {
                 size: 30,
                 color: Colors.white,
               ),
-              label: Text(S.of(context).addBranch,
+              label: Text(S.of(context).addCompany,
                   style: CustomStyle.mediumTextWhite),
             ),
       floatingActionButtonLocation:
-          !_canAddBranches ? null : FloatingActionButtonLocation.endFloat,
+          !_canAddCompanies ? null : FloatingActionButtonLocation.endFloat,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            CustomDropdownMulti(
-              title: S.of(context).companies,
-              subtitle: S.of(context).selectCompanies,
-              allSelectedText: S.of(context).allCompanies,
-              noSelectedText: S.of(context).noCompaniesSelected,
-              items: const [],
-              icon: Icons.filter_alt,
-              onChanged: (_) {},
-            ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+              padding: const EdgeInsets.all(16.0),
               child: TextField(
                 decoration: InputDecoration(
                   labelText: S.of(context).searchByNameCode,
@@ -262,7 +226,7 @@ class BranchesScreenState extends State<BranchesScreen> {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: 5, // Simulate loading for 5 items
+                itemCount: 5,
                 itemBuilder: (context, index) => const CardLoading(
                   height: 80,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
