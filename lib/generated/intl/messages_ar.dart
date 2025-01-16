@@ -156,6 +156,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("برجاء إدخال عنوان الشركة"),
         "enterCompanyEmail": MessageLookupByLibrary.simpleMessage(
             "برجاء إدخال البريد الالكتروني للشركة"),
+        "enterCompanyLogo":
+            MessageLookupByLibrary.simpleMessage("برحاء إضافة شعار للشركة"),
         "enterCompanyName":
             MessageLookupByLibrary.simpleMessage("برجاء إدخال اسم الشركة"),
         "enterCompanyPhone":
@@ -342,6 +344,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("مراقبة النظام والتحكم"),
         "system_monitoring_description": MessageLookupByLibrary.simpleMessage(
             "مراقبة الحالة الحالية لكل حساس والتحكم في الوحدات الفرعية. يمكنك أيضًا تنفيذ إجراءات مثل تشغيل أو إيقاف الأجهزة مباشرةً من هذه الواجهة."),
+        "tabToAddLogo":
+            MessageLookupByLibrary.simpleMessage("إضغط لاضافة شعار للشركة"),
         "technican": MessageLookupByLibrary.simpleMessage("فني"),
         "technicans": MessageLookupByLibrary.simpleMessage("الفنيون"),
         "tenant_id_mismatch":

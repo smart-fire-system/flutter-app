@@ -163,6 +163,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please enter the company address"),
         "enterCompanyEmail": MessageLookupByLibrary.simpleMessage(
             "Please enter the company email address"),
+        "enterCompanyLogo": MessageLookupByLibrary.simpleMessage(
+            "Please add a logo for the company"),
         "enterCompanyName": MessageLookupByLibrary.simpleMessage(
             "Please enter the company name"),
         "enterCompanyPhone": MessageLookupByLibrary.simpleMessage(
@@ -356,6 +358,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "System Monitoring and Control"),
         "system_monitoring_description": MessageLookupByLibrary.simpleMessage(
             "Monitor the current state of each sensor and control sub-units. You can also perform actions like turning devices on or off directly from this interface."),
+        "tabToAddLogo":
+            MessageLookupByLibrary.simpleMessage("Tab to add company logo"),
         "technican": MessageLookupByLibrary.simpleMessage("Technician"),
         "technicans": MessageLookupByLibrary.simpleMessage("Technicians"),
         "tenant_id_mismatch": MessageLookupByLibrary.simpleMessage(

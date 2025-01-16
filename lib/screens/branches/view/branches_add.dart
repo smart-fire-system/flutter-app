@@ -61,7 +61,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
         context: context,
         screen: AppScreen.addBranhes,
       );
-      if (state is BranchesAuthenticated && state.canEditBranches) {
+      if (state is BranchesAuthenticated && state.canAddBranches) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           if (state.error != null) {
             CustomAlert.showError(
@@ -198,7 +198,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
 
     int? confirm = await CustomAlert.showConfirmation(
       context: context,
-      title: S.of(context).editBranch,
+      title: S.of(context).addBranch,
       subtitle: S.of(context).branchModifyWarning,
       buttons: [
         CustomAlertConfirmationButton(

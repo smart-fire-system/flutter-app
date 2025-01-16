@@ -76,18 +76,7 @@ class BranchRepository {
   Future<void> modifyCompany(Company company, File? logoFile) async {
     try {
       if (logoFile != null) {
-        Uint8List resizedImageData =
-            await AppImage.compressAndResizeImage(logoFile);
-        String fileName = '${company.id!}.jpg';
-        final imageRef = _storage
-            .refFromURL('gs://smart-fire-system-app.firebasestorage.app')
-            .child('companies')
-            .child(fileName);
-        await imageRef.putData(
-          resizedImageData,
-          SettableMetadata(contentType: 'image/jpeg'),
-        );
-        company.logoURL = await imageRef.getDownloadURL();
+        company.logoURL = await _updloadCompanyLogo(logoFile, company.id!);
       }
       await _firestore
           .collection('companies')
@@ -110,14 +99,41 @@ class BranchRepository {
           .collection('info')
           .doc('maxBranchCode')
           .update({'value': FieldValue.increment(1)});
-      DocumentReference branchRef = await _firestore.collection('branches').add(
-        {
-          'code': docSnapshot.data()?['value'] + 1,
-          'createdAt': FieldValue.serverTimestamp(),
-          ...branch.toMap(),
-        },
-      );
+      final branchRef = await _firestore.collection('branches').add({
+        'code': docSnapshot.data()?['value'] + 1,
+        'createdAt': FieldValue.serverTimestamp(),
+        ...branch.toMap(),
+      });
       return branchRef.id;
+    } catch (e) {
+      if (e is FirebaseException) {
+        throw Exception(e.code);
+      } else {
+        throw Exception(e.toString());
+      }
+    }
+  }
+
+  Future<String> addCompany(Company company, File logoFile) async {
+    try {
+      final docSnapshot =
+          await _firestore.collection('info').doc('maxCompanyCode').get();
+      await _firestore
+          .collection('info')
+          .doc('maxCompanyCode')
+          .update({'value': FieldValue.increment(1)});
+      final branchRef = await _firestore.collection('companies').add({
+        'code': docSnapshot.data()?['value'] + 1,
+        'createdAt': FieldValue.serverTimestamp(),
+        ...company.toMap(),
+      });
+      company.id = branchRef.id;
+      company.logoURL = await _updloadCompanyLogo(logoFile, company.id!);
+      await _firestore
+          .collection('companies')
+          .doc(company.id!)
+          .update({'logoURL': company.logoURL});
+      return company.id!;
     } catch (e) {
       if (e is FirebaseException) {
         throw Exception(e.code);
@@ -137,5 +153,19 @@ class BranchRepository {
         throw Exception(e.toString());
       }
     }
+  }
+
+  Future<String> _updloadCompanyLogo(File logoFile, String companyId) async {
+    Uint8List resizedImageData =
+        await AppImage.compressAndResizeImage(logoFile);
+    final imageRef = _storage
+        .refFromURL('gs://smart-fire-system-app.firebasestorage.app')
+        .child('companies')
+        .child('$companyId.jpg');
+    await imageRef.putData(
+      resizedImageData,
+      SettableMetadata(contentType: 'image/jpeg'),
+    );
+    return await imageRef.getDownloadURL();
   }
 }

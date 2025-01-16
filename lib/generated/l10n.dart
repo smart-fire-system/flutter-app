@@ -1550,6 +1550,26 @@ class S {
     );
   }
 
+  /// `Please add a logo for the company`
+  String get enterCompanyLogo {
+    return Intl.message(
+      'Please add a logo for the company',
+      name: 'enterCompanyLogo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tab to add company logo`
+  String get tabToAddLogo {
+    return Intl.message(
+      'Tab to add company logo',
+      name: 'tabToAddLogo',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Logo`
   String get logo {
     return Intl.message(

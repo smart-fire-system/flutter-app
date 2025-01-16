@@ -254,6 +254,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
       );
       context.read<BranchesBloc>().add(BranchModifyRequested(
             branch: Branch(
+              id: _branch!.id,
               name: _nameController.text,
               address: _addressController.text,
               phoneNumber: _phoneController.text,

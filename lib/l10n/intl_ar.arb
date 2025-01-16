@@ -164,6 +164,8 @@
     "enterCompanyAddress":"برجاء إدخال عنوان الشركة",
     "enterCompanyPhone":"برجاء إدخال رقم هاتف للشركة",
     "enterCompanyEmail":"برجاء إدخال البريد الالكتروني للشركة",
+    "enterCompanyLogo":"برحاء إضافة شعار للشركة",
+    "tabToAddLogo":"إضغط لاضافة شعار للشركة",
     "logo":"الشعار",
     "companyLogo":"شعار الشركة",
     "errorPickingImage":"حدث خطأ ما أثناء اختيار الصورة",

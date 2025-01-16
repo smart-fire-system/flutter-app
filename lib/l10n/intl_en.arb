@@ -171,6 +171,8 @@
     "enterCompanyAddress":"Please enter the company address",
     "enterCompanyPhone":"Please enter the company phone number",
     "enterCompanyEmail":"Please enter the company email address",
+    "enterCompanyLogo":"Please add a logo for the company",
+    "tabToAddLogo":"Tab to add company logo",
     "logo":"Logo",
     "companyLogo":"Company Logo",
     "errorPickingImage":"An error occured while choosing the image",

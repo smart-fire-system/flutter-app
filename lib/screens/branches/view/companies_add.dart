@@ -7,8 +7,8 @@ import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/utils/image_compress.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
-import 'package:fire_alarm_system/widgets/button.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
+import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:fire_alarm_system/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,31 +20,28 @@ import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/event.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
 
-class EditCompanyScreen extends StatefulWidget {
-  final String companyId;
-  const EditCompanyScreen({
-    super.key,
-    required this.companyId,
-  });
-
+class AddCompanyScreen extends StatefulWidget {
+  const AddCompanyScreen({super.key});
   @override
-  EditCompanyScreenState createState() => EditCompanyScreenState();
+  AddCompanyScreenState createState() => AddCompanyScreenState();
 }
 
-class EditCompanyScreenState extends State<EditCompanyScreen> {
+class AddCompanyScreenState extends State<AddCompanyScreen> {
   late TextEditingController _nameController;
   late TextEditingController _addressController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
   late TextEditingController _commentController;
-  bool _canDeleteCompanies = false;
-  bool _isFirstCall = true;
-  Company? _company;
   File? _newLogoFile;
 
   @override
   void initState() {
     super.initState();
+    _nameController = TextEditingController();
+    _addressController = TextEditingController();
+    _phoneController = TextEditingController();
+    _emailController = TextEditingController();
+    _commentController = TextEditingController();
   }
 
   @override
@@ -59,70 +56,49 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BranchesBloc, BranchesState>(
-      builder: (context, state) {
-        AppLoading().dismiss(
-          context: context,
-          screen: AppScreen.editCompanies,
-        );
-        if (state is BranchesAuthenticated && state.canEditCompanies) {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            if (state.error != null) {
-              CustomAlert.showError(
-                context: context,
-                title: Errors.getFirebaseErrorMessage(context, state.error!),
-              );
-              state.error = null;
-            } else if (state.message != null &&
-                BranchesMessage.companyModified == state.message) {
-              state.message = null;
-              CustomAlert.showSuccess(
-                context: context,
-                title: S.of(context).companyModified,
-              ).then((_) {
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                }
-              });
-            }
-          });
-          if (BranchesMessage.companyDeleted == state.message) {
+    return BlocBuilder<BranchesBloc, BranchesState>(builder: (context, state) {
+      AppLoading().dismiss(
+        context: context,
+        screen: AppScreen.addCompanies,
+      );
+      if (state is BranchesAuthenticated && state.canAddCompanies) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          if (state.error != null) {
+            CustomAlert.showError(
+              context: context,
+              title: Errors.getFirebaseErrorMessage(context, state.error!),
+            );
+            state.error = null;
+          } else if (state.message != null &&
+              BranchesMessage.companyAdded == state.message) {
             state.message = null;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
+            CustomAlert.showSuccess(
+              context: context,
+              title: S.of(context).companyAdded,
+            ).then((_) {
+              if (context.mounted) {
+                TabNavigator.settings.currentState?.popAndPushNamed(
+                    '/companies/details',
+                    arguments: state.createdId as String);
+                state.createdId = null;
+              }
             });
-          } else {
-            _canDeleteCompanies = state.canDeleteCompanies;
-            _company = state.companies
-                .firstWhere((company) => company.id == widget.companyId);
-            if (_isFirstCall) {
-              _isFirstCall = false;
-              _nameController = TextEditingController(text: _company!.name);
-              _addressController =
-                  TextEditingController(text: _company!.address);
-              _phoneController =
-                  TextEditingController(text: _company!.phoneNumber);
-              _emailController = TextEditingController(text: _company!.email);
-              _commentController =
-                  TextEditingController(text: _company!.comment);
-            }
-            return _buildEditor(context);
           }
-        } else if (state is BranchesNotAuthenticated) {
-          WidgetsBinding.instance.addPostFrameCallback((_) async {
-            Navigator.pushNamed(context, '/signIn');
-          });
-        }
-        return _buildLoading(context);
-      },
-    );
+        });
+        return _buildEditor(context);
+      } else if (state is BranchesNotAuthenticated) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          Navigator.pushNamed(context, '/signIn');
+        });
+      }
+      return _buildLoading(context);
+    });
   }
 
   Widget _buildEditor(BuildContext context) {
-    AppLoading().dismiss(context: context, screen: AppScreen.editCompanies);
+    AppLoading().dismiss(context: context, screen: AppScreen.addCompanies);
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).editCompany),
+      appBar: CustomAppBar(title: S.of(context).addCompany),
       floatingActionButton: FloatingActionButton.extended(
         label: Text(S.of(context).save_changes,
             style: CustomStyle.mediumTextWhite),
@@ -183,16 +159,22 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
                         padding: const EdgeInsets.all(16.0),
                         child: GestureDetector(
                           onTap: () async {
-                            _newLogoFile = await AppImage.pickImage();
+                            File? file = await AppImage.pickImage();
+                            setState(() {
+                              _newLogoFile = file;
+                            });
                           },
                           child: _newLogoFile != null
                               ? Image.file(
                                   _newLogoFile!,
                                   width: 150,
                                 )
-                              : Image.network(
-                                  _company!.logoURL,
-                                  width: 150,
+                              : Center(
+                                  child: Text(
+                                    S.of(context).tabToAddLogo,
+                                    style: CustomStyle.mediumTextB,
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                         ),
                       ),
@@ -212,15 +194,6 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
                   ),
                 ],
               ),
-              if (_canDeleteCompanies)
-                CustomNormalButton(
-                  label: S.of(context).deleteCompany,
-                  backgroundColor: CustomStyle.redDark,
-                  fullWidth: true,
-                  onPressed: () {
-                    _deleteCompany(context);
-                  },
-                )
             ],
           ),
         ),
@@ -253,11 +226,17 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
         title: S.of(context).enterCompanyEmail,
       );
       return;
+    } else if (_newLogoFile == null) {
+      CustomAlert.showError(
+        context: context,
+        title: S.of(context).enterCompanyLogo,
+      );
+      return;
     }
 
     int? confirm = await CustomAlert.showConfirmation(
       context: context,
-      title: S.of(context).editCompany,
+      title: S.of(context).addCompany,
       subtitle: S.of(context).companyModifyWarning,
       buttons: [
         CustomAlertConfirmationButton(
@@ -277,63 +256,28 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
     if (confirm == 0 && context.mounted) {
       AppLoading().show(
         context: context,
-        screen: AppScreen.editCompanies,
+        screen: AppScreen.addCompanies,
         title: S.of(context).waitSavingCompany,
-        type: 'edit',
+        type: 'add',
       );
-      context.read<BranchesBloc>().add(CompanyModifyRequested(
+      context.read<BranchesBloc>().add(CompanyAddRequested(
             logoFile: _newLogoFile,
             company: Company(
-                id: _company!.id,
-                name: _nameController.text,
-                address: _addressController.text,
-                phoneNumber: _phoneController.text,
-                email: _emailController.text,
-                comment: _commentController.text,
-                logoURL: _company!.logoURL),
-          ));
-    }
-  }
-
-  void _deleteCompany(BuildContext context) async {
-    int? confirm = await CustomAlert.showConfirmation(
-      context: context,
-      title: S.of(context).deleteCompany,
-      subtitle: S.of(context).companyDeleteWarning,
-      buttons: [
-        CustomAlertConfirmationButton(
-          title: S.of(context).yesDeleteCompany,
-          value: 0,
-          backgroundColor: CustomStyle.redDark,
-          textColor: Colors.white,
-        ),
-        CustomAlertConfirmationButton(
-          title: S.of(context).noCancel,
-          value: 1,
-          backgroundColor: CustomStyle.greyDark,
-          textColor: Colors.white,
-        ),
-      ],
-    );
-    if (confirm == 0 && context.mounted) {
-      AppLoading().show(
-        context: context,
-        screen: AppScreen.editCompanies,
-        title: S.of(context).waitDeltingCompany,
-        type: 'delete',
-      );
-      context.read<BranchesBloc>().add(
-            CompanyDeleteRequested(
-              id: _company!.id!,
+              name: _nameController.text,
+              address: _addressController.text,
+              phoneNumber: _phoneController.text,
+              email: _emailController.text,
+              comment: _commentController.text,
+              logoURL: "",
             ),
-          );
+          ));
     }
   }
 
   Widget _buildLoading(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).editCompany),
+      appBar: CustomAppBar(title: S.of(context).addCompany),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

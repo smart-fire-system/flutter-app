@@ -2,6 +2,7 @@ import 'package:fire_alarm_system/screens/branches/view/branches_add.dart';
 import 'package:fire_alarm_system/screens/branches/view/branches_details.dart';
 import 'package:fire_alarm_system/screens/branches/view/branches_edit.dart';
 import 'package:fire_alarm_system/screens/branches/view/branches_screen.dart';
+import 'package:fire_alarm_system/screens/branches/view/companies_add.dart';
 import 'package:fire_alarm_system/screens/branches/view/companies_details.dart';
 import 'package:fire_alarm_system/screens/branches/view/companies_edit.dart';
 import 'package:fire_alarm_system/screens/branches/view/companies_screen.dart';
@@ -18,7 +19,7 @@ enum AppTab {
   reports,
   profile,
   complaints,
-  settigns, 
+  settigns,
 }
 
 class TabNavigator extends StatelessWidget {
@@ -55,8 +56,7 @@ class TabNavigator extends StatelessWidget {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (popInvocation, x) async {
-        if (screen == homeScreenKey.currentState!.getCurrentTab())
-        {
+        if (screen == homeScreenKey.currentState!.getCurrentTab()) {
           final didPopNested =
               await navigatorKey.currentState?.maybePop() ?? false;
           if (!didPopNested) {
@@ -77,10 +77,12 @@ class TabNavigator extends StatelessWidget {
               page = const BranchesScreen();
               break;
             case '/branches/details':
-              page = BranchDetailsScreen(branchId: routeSettings.arguments as String);
+              page = BranchDetailsScreen(
+                  branchId: routeSettings.arguments as String);
               break;
             case '/branches/edit':
-              page = EditBranchScreen(branchId: routeSettings.arguments as String);
+              page =
+                  EditBranchScreen(branchId: routeSettings.arguments as String);
               break;
             case '/branches/add':
               page = const AddBranchScreen();
@@ -89,11 +91,17 @@ class TabNavigator extends StatelessWidget {
               page = const CompaniesScreen();
               break;
             case '/companies/details':
-              page = CompanyDetailsScreen(companyId: routeSettings.arguments as String);
+              page = CompanyDetailsScreen(
+                  companyId: routeSettings.arguments as String);
               break;
             case '/companies/edit':
-              page = EditCompanyScreen(companyId: routeSettings.arguments as String);
+              page = EditCompanyScreen(
+                  companyId: routeSettings.arguments as String);
               break;
+            case '/companies/add':
+              page = const AddCompanyScreen();
+              break;
+
             default:
               page = Scaffold(
                 body:
