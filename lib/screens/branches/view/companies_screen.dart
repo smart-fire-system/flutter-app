@@ -104,7 +104,7 @@ class CompaniesScreenState extends State<CompaniesScreen> {
               backgroundColor: Colors.green,
               onPressed: () {
                 TabNavigator.settings.currentState
-                    ?.pushNamed('/companies/add');
+                    ?.pushNamed('/company/add');
               },
               icon: const Icon(
                 Icons.add,
@@ -172,7 +172,7 @@ class CompaniesScreenState extends State<CompaniesScreen> {
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: () {
                               TabNavigator.settings.currentState?.pushNamed(
-                                  '/companies/details',
+                                  '/company/details',
                                   arguments: company.id);
                             },
                           );

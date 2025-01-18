@@ -75,7 +75,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
               backgroundColor: CustomStyle.redDark,
               onPressed: () async {
                 TabNavigator.settings.currentState
-                    ?.pushNamed('/companies/edit', arguments: widget.companyId);
+                    ?.pushNamed('/company/edit', arguments: widget.companyId);
               },
               icon: const Icon(
                 Icons.edit,
@@ -179,7 +179,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                         trailing: const Icon(Icons.arrow_forward_ios),
                         onTap: () {
                           TabNavigator.settings.currentState?.pushNamed(
-                              '/branches/details',
+                              '/branch/details',
                               arguments: _branches[index].id);
                         },
                       );

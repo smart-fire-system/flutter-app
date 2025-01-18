@@ -69,29 +69,29 @@ class TabNavigator extends StatelessWidget {
             case '/branches':
               page = const BranchesScreen();
               break;
-            case '/branches/details':
+            case '/branch/details':
               page = BranchDetailsScreen(
                   branchId: routeSettings.arguments as String);
               break;
-            case '/branches/edit':
+            case '/branch/edit':
               page =
                   EditBranchScreen(branchId: routeSettings.arguments as String);
               break;
-            case '/branches/add':
+            case '/branch/add':
               page = const AddBranchScreen();
               break;
             case '/companies':
               page = const CompaniesScreen();
               break;
-            case '/companies/details':
+            case '/company/details':
               page = CompanyDetailsScreen(
                   companyId: routeSettings.arguments as String);
               break;
-            case '/companies/edit':
+            case '/company/edit':
               page = EditCompanyScreen(
                   companyId: routeSettings.arguments as String);
               break;
-            case '/companies/add':
+            case '/company/add':
               page = const AddCompanyScreen();
               break;
 

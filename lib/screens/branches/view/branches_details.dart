@@ -71,7 +71,7 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
               backgroundColor: CustomStyle.redDark,
               onPressed: () async {
                 TabNavigator.settings.currentState
-                    ?.pushNamed('/branches/edit', arguments: widget.branchId);
+                    ?.pushNamed('/branch/edit', arguments: widget.branchId);
               },
               icon: const Icon(
                 Icons.edit,
@@ -114,7 +114,7 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
                     ? null
                     : () {
                         TabNavigator.settings.currentState?.pushNamed(
-                            '/companies/details',
+                            '/company/details',
                             arguments: _branch!.company.id);
                       },
                 children: [

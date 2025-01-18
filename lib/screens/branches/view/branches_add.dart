@@ -78,7 +78,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
             ).then((_) {
               if (context.mounted) {
                 TabNavigator.settings.currentState?.popAndPushNamed(
-                    '/branches/details',
+                    '/branch/details',
                     arguments: state.createdId as String);
                 state.createdId = null;
               }
