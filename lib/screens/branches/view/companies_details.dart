@@ -42,13 +42,20 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
               state.error = null;
             }
           });
-          _canEditCompanies = state.canEditCompanies;
-          _company = state.companies
-              .firstWhere((company) => company.id == widget.companyId);
-          _branches = List.from(
-            state.branches.where((branch) => branch.company.id == _company!.id),
-          );
-          return _buildDetails(context);
+          try {
+            _company = state.companies
+                .firstWhere((company) => company.id == widget.companyId);
+            _branches = List.from(
+              state.branches
+                  .where((branch) => branch.company.id == _company!.id),
+            );
+            _canEditCompanies = state.canEditCompanies;
+            return _buildDetails(context);
+          } catch (e) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context).pop();
+            });
+          }
         } else if (state is BranchesNotAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             Navigator.pushNamed(context, '/signIn');

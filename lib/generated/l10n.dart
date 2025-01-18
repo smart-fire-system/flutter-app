@@ -1100,11 +1100,21 @@ class S {
     );
   }
 
-  /// `No branches to view`
+  /// `No companies to view`
   String get noCompaniesToView {
     return Intl.message(
-      'No branches to view',
+      'No companies to view',
       name: 'noCompaniesToView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There are no companies to add branches to. Please add a company first`
+  String get noCompaniesToAddBranch {
+    return Intl.message(
+      'There are no companies to add branches to. Please add a company first',
+      name: 'noCompaniesToAddBranch',
       desc: '',
       args: [],
     );

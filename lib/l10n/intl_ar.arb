@@ -120,6 +120,7 @@
     "noCompaniesSelected": "لم يتم اختيار أي شركات",
     "noBranchesToView": "لا يوجد فروع لعرضها",
     "noCompaniesToView": "لا يوجد شركات لعرضها",
+    "noCompaniesToAddBranch": "لا يوجد شركات لإضافة فروع لها، برجاء إضافة شركة أولاً.",
 
     "branchInformation": "بيانات الفرع",
     "companyInformation": "بيانات الشركة",

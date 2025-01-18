@@ -123,7 +123,8 @@
     "allCompanies": "All companies",
     "noCompaniesSelected": "No companies selected",
     "noBranchesToView": "No branches to view",
-    "noCompaniesToView": "No branches to view",
+    "noCompaniesToView": "No companies to view",
+    "noCompaniesToAddBranch": "There are no companies to add branches to. Please add a company first",
 
     "branchInformation": "Branch Information",
     "companyInformation": "Company Information",

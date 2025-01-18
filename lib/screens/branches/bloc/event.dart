@@ -35,12 +35,13 @@ class CompanyModifyRequested extends BranchesEvent {
 
 class CompanyAddRequested extends BranchesEvent {
   Company company;
-  File? logoFile;
+  File logoFile;
 
-  CompanyAddRequested({required this.company, this.logoFile});
+  CompanyAddRequested({required this.company, required this.logoFile});
 }
 
 class CompanyDeleteRequested extends BranchesEvent {
   String id;
-  CompanyDeleteRequested({required this.id});
+  List<Branch> branches;
+  CompanyDeleteRequested({required this.id, required this.branches});
 }

@@ -155,6 +155,27 @@ class BranchRepository {
     }
   }
 
+  Future<void> deleteCompany(String companyId, List<Branch> branches) async {
+    try {
+      final batch = _firestore.batch();
+      for (Branch branch in branches) {
+        if (branch.company.id! == companyId) {
+          final branchRef = _firestore.collection('branches').doc(branch.id!);
+          batch.delete(branchRef);
+        }
+      }
+      final companyRef = _firestore.collection('companies').doc(companyId);
+      batch.delete(companyRef);
+      await batch.commit();
+    } catch (e) {
+      if (e is FirebaseException) {
+        throw Exception(e.code);
+      } else {
+        throw Exception(e.toString());
+      }
+    }
+  }
+
   Future<String> _updloadCompanyLogo(File logoFile, String companyId) async {
     Uint8List resizedImageData =
         await AppImage.compressAndResizeImage(logoFile);

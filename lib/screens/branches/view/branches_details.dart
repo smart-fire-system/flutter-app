@@ -41,11 +41,17 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
               state.error = null;
             }
           });
-          _canEditBranches = state.canEditBranches;
-          _canViewCompanies = state.canViewCompanies;
-          _branch = state.branches
-              .firstWhere((branch) => branch.id == widget.branchId);
-          return _buildDetails(context);
+          try {
+            _canEditBranches = state.canEditBranches;
+            _canViewCompanies = state.canViewCompanies;
+            _branch = state.branches
+                .firstWhere((branch) => branch.id == widget.branchId);
+            return _buildDetails(context);
+          } catch (e) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context).pop();
+            });
+          }
         } else if (state is BranchesNotAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             Navigator.pushNamed(context, '/signIn');
@@ -164,7 +170,7 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
     );
   }
 
-    Widget _buildLoading(BuildContext context) {
+  Widget _buildLoading(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: S.of(context).branchInformation),

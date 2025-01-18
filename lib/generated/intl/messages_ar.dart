@@ -251,6 +251,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "noCancel": MessageLookupByLibrary.simpleMessage("لا، إلغاء"),
         "noCompaniesSelected":
             MessageLookupByLibrary.simpleMessage("لم يتم اختيار أي شركات"),
+        "noCompaniesToAddBranch": MessageLookupByLibrary.simpleMessage(
+            "لا يوجد شركات لإضافة فروع لها، برجاء إضافة شركة أولاً."),
         "noCompaniesToView":
             MessageLookupByLibrary.simpleMessage("لا يوجد شركات لعرضها"),
         "noRole": MessageLookupByLibrary.simpleMessage("بدون صلاحية وصول"),

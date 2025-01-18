@@ -263,8 +263,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "noCancel": MessageLookupByLibrary.simpleMessage("No, cancel"),
         "noCompaniesSelected":
             MessageLookupByLibrary.simpleMessage("No companies selected"),
+        "noCompaniesToAddBranch": MessageLookupByLibrary.simpleMessage(
+            "There are no companies to add branches to. Please add a company first"),
         "noCompaniesToView":
-            MessageLookupByLibrary.simpleMessage("No branches to view"),
+            MessageLookupByLibrary.simpleMessage("No companies to view"),
         "noRole": MessageLookupByLibrary.simpleMessage("No Role"),
         "no_signed_in_user": MessageLookupByLibrary.simpleMessage(
             "No user is signed in. Please log in to continue."),

@@ -261,7 +261,7 @@ class AddCompanyScreenState extends State<AddCompanyScreen> {
         type: 'add',
       );
       context.read<BranchesBloc>().add(CompanyAddRequested(
-            logoFile: _newLogoFile,
+            logoFile: _newLogoFile!,
             company: Company(
               name: _nameController.text,
               address: _addressController.text,

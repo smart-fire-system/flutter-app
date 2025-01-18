@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:card_loading/card_loading.dart';
+import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
@@ -37,6 +38,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
   late TextEditingController _commentController;
+  List<Branch> _branches = [];
   bool _canDeleteCompanies = false;
   bool _isFirstCall = true;
   Company? _company;
@@ -90,12 +92,12 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
             state.message = null;
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.of(context).pop();
-              Navigator.of(context).pop();
             });
           } else {
-            _canDeleteCompanies = state.canDeleteCompanies;
             _company = state.companies
                 .firstWhere((company) => company.id == widget.companyId);
+            _branches = List.from(state.branches);
+            _canDeleteCompanies = state.canDeleteCompanies;
             if (_isFirstCall) {
               _isFirstCall = false;
               _nameController = TextEditingController(text: _company!.name);
@@ -325,6 +327,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
       context.read<BranchesBloc>().add(
             CompanyDeleteRequested(
               id: _company!.id!,
+              branches: _branches,
             ),
           );
     }

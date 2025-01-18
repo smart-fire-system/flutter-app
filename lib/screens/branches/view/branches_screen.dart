@@ -110,6 +110,13 @@ class BranchesScreenState extends State<BranchesScreen> {
           : FloatingActionButton.extended(
               backgroundColor: Colors.green,
               onPressed: () {
+                if (_companies.isEmpty) {
+                  CustomAlert.showError(
+                    context: context,
+                    title: S.of(context).noCompaniesToAddBranch,
+                  );
+                  return;
+                }
                 TabNavigator.settings.currentState?.pushNamed(
                     '/branches/add');
               },

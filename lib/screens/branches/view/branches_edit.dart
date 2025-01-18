@@ -89,13 +89,12 @@ class EditBranchScreenState extends State<EditBranchScreen> {
             state.message = null;
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.of(context).pop();
-              Navigator.of(context).pop();
             });
           } else {
-            _canDeleteBranches = state.canDeleteBranches;
             _branch = state.branches
                 .firstWhere((branch) => branch.id == widget.branchId);
             _companies = state.companies;
+            _canDeleteBranches = state.canDeleteBranches;
             if (_isFirstCall) {
               _isFirstCall = false;
               _nameController = TextEditingController(text: _branch!.name);

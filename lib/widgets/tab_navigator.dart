@@ -1,13 +1,6 @@
-import 'package:fire_alarm_system/screens/branches/view/branches_add.dart';
-import 'package:fire_alarm_system/screens/branches/view/branches_details.dart';
-import 'package:fire_alarm_system/screens/branches/view/branches_edit.dart';
-import 'package:fire_alarm_system/screens/branches/view/branches_screen.dart';
-import 'package:fire_alarm_system/screens/branches/view/companies_add.dart';
-import 'package:fire_alarm_system/screens/branches/view/companies_details.dart';
-import 'package:fire_alarm_system/screens/branches/view/companies_edit.dart';
-import 'package:fire_alarm_system/screens/branches/view/companies_screen.dart';
-import 'package:fire_alarm_system/screens/home/view/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:fire_alarm_system/screens/home/view/view.dart';
+import 'package:fire_alarm_system/screens/branches/view/view.dart';
 import 'package:fire_alarm_system/screens/complaints/view/view.dart';
 import 'package:fire_alarm_system/screens/profile/view/view.dart';
 import 'package:fire_alarm_system/screens/reports/view/view.dart';

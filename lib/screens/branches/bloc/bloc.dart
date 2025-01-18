@@ -106,9 +106,19 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
       try {
         createdId = await branchRepository.addCompany(
           event.company,
-          event.logoFile!,
+          event.logoFile,
         );
         add(AuthChanged(message: BranchesMessage.companyAdded));
+      } catch (e) {
+        add(AuthChanged(error: e.toString()));
+      }
+    });
+
+    on<CompanyDeleteRequested>((event, emit) async {
+      emit(BranchesLoading());
+      try {
+        await branchRepository.deleteCompany(event.id, event.branches);
+        add(AuthChanged(message: BranchesMessage.companyDeleted));
       } catch (e) {
         add(AuthChanged(error: e.toString()));
       }
