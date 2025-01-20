@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fire_alarm_system/models/branch.dart';
 
 class Company {
   String? id;
@@ -22,6 +23,24 @@ class Company {
     required this.logoURL,
     required this.comment,
   });
+
+  static Company? getCompany(String id, List<Company> companies) {
+    try {
+      return companies.firstWhere((element) => element.id == id);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static List<Branch> getBranches(String companyId, List<Branch> branches) {
+    try {
+      return branches
+          .where((branch) => branch.company.id == companyId)
+          .toList();
+    } catch (e) {
+      return [];
+    }
+  }
 
   Map<String, dynamic> toMap() {
     return {

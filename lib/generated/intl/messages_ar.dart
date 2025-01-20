@@ -290,8 +290,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("هذا الحساب مرتبط بمزود آخر."),
         "quota_exceeded": MessageLookupByLibrary.simpleMessage(
             "تم تجاوز الحد الأقصى. حاول مرة أخرى لاحقًا."),
-        "regionalManager": MessageLookupByLibrary.simpleMessage("مدير إقليمي"),
-        "regionalManagers":
+        "companyManager": MessageLookupByLibrary.simpleMessage("مدير إقليمي"),
+        "companyManagers":
             MessageLookupByLibrary.simpleMessage("المديرون الإقليميون"),
         "reports": MessageLookupByLibrary.simpleMessage("التقارير"),
         "reportsDescription": MessageLookupByLibrary.simpleMessage(

@@ -19,7 +19,7 @@ enum CustomSideMenuItem {
   contracts,
   systemStatus,
   admins,
-  regionalManagers,
+  companyManagers,
   branchManagers,
   employees,
   technicans,
@@ -137,8 +137,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                   LocalizationUtil.showEditLanguageDialog(context);
                 },
               ),
-              (widget.user.role == UserRole.admin ||
-                      widget.user.role == UserRole.technican)
+              (widget.user.role == UserRole.admin)
                   ? ExpansionTile(
                       title: Text(
                         S.of(context).system,
@@ -368,11 +367,11 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                   if (widget.user.role == UserRole.admin)
                     ListTile(
                       title: Text(
-                        S.of(context).regionalManagers,
+                        S.of(context).companyManagers,
                         style: CustomStyle.smallText,
                       ),
                       selected: (widget.highlightedItem ==
-                          CustomSideMenuItem.regionalManagers),
+                          CustomSideMenuItem.companyManagers),
                       leading: const Icon(
                         Icons.group,
                         color: Colors.black54,
@@ -380,16 +379,16 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       onTap: () async {
                         if (widget.onItemClick != null) {
                           await widget.onItemClick!(
-                              CustomSideMenuItem.regionalManagers);
+                              CustomSideMenuItem.companyManagers);
                         }
                         if (!widget.noActionItems!
-                            .contains(CustomSideMenuItem.regionalManagers)) {
+                            .contains(CustomSideMenuItem.companyManagers)) {
                           _defaultOnRegionalManagersClick();
                         }
                       },
                     ),
                   if (widget.user.role == UserRole.admin ||
-                      widget.user.role == UserRole.regionalManager)
+                      widget.user.role == UserRole.companyManager)
                     ListTile(
                       title: Text(
                         S.of(context).branchManagers,
@@ -413,7 +412,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       },
                     ),
                   if (widget.user.role == UserRole.admin ||
-                      widget.user.role == UserRole.regionalManager ||
+                      widget.user.role == UserRole.companyManager ||
                       widget.user.role == UserRole.branchManager)
                     ListTile(
                       title: Text(
@@ -438,7 +437,7 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       },
                     ),
                   if (widget.user.role == UserRole.admin ||
-                      widget.user.role == UserRole.regionalManager ||
+                      widget.user.role == UserRole.companyManager ||
                       widget.user.role == UserRole.branchManager)
                     ListTile(
                       title: Text(
@@ -463,10 +462,9 @@ class CustomSideMenuState extends State<CustomSideMenu> {
                       },
                     ),
                   if (widget.user.role == UserRole.admin ||
-                      widget.user.role == UserRole.regionalManager ||
+                      widget.user.role == UserRole.companyManager ||
                       widget.user.role == UserRole.branchManager ||
-                      widget.user.role == UserRole.employee ||
-                      widget.user.role == UserRole.technican)
+                      widget.user.role == UserRole.employee)
                     ListTile(
                       title: Text(
                         S.of(context).clients,

@@ -1,15 +1,15 @@
-import 'package:fire_alarm_system/screens/users/bloc/admins/state.dart';
+import 'package:fire_alarm_system/screens/users/bloc/state.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 
-abstract class AdminsEvent {}
+abstract class UsersEvent {}
 
-class AuthChanged extends AdminsEvent {
-  final AdminMessage? message;
+class AuthChanged extends UsersEvent {
+  final UsersMessage? message;
   final String? error;
   AuthChanged({this.message, this.error});
 }
 
-class ModifyRequested extends AdminsEvent {
+class ModifyRequested extends UsersEvent {
   final String id;
   final UserRole oldRole;
   final UserRole newRole;

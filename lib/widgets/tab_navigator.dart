@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/screens/users/view/admins_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/screens/home/view/view.dart';
 import 'package:fire_alarm_system/screens/branches/view/view.dart';
@@ -94,7 +95,9 @@ class TabNavigator extends StatelessWidget {
             case '/company/add':
               page = const AddCompanyScreen();
               break;
-
+            case '/admins':
+              page = const UsersScreen(view: UsersScreenView.admins);
+              break;
             default:
               page = Scaffold(
                 body:

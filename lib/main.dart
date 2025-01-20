@@ -13,11 +13,10 @@ import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/screens/home/view/view.dart';
 import 'package:fire_alarm_system/screens/signin/view/view.dart';
-import 'package:fire_alarm_system/screens/users/view/view.dart';
 import 'package:fire_alarm_system/screens/profile/view/view.dart';
 import 'package:fire_alarm_system/screens/home/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/signin/bloc/bloc.dart';
-import 'package:fire_alarm_system/screens/users/bloc/admins/bloc.dart';
+import 'package:fire_alarm_system/screens/users/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -72,7 +71,7 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
           BlocProvider(
               create: (_) => HomeBloc(authRepository: _authRepository)),
           BlocProvider(
-              create: (_) => AdminsBloc(authRepository: _authRepository)),
+              create: (_) => UsersBloc(authRepository: _authRepository)),
           BlocProvider(
               create: (_) => ProfileBloc(authRepository: _authRepository)),
           BlocProvider(
@@ -122,7 +121,6 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
             '/complaints': (context) => const ComplaintsScreen(),
             '/settings': (context) => const SettingsScreen(),
             '/signIn': (context) => const SignInScreen(),
-            '/admins': (context) => const AdminsScreen(),
             '/branches': (context) => const BranchesScreen(),
           },
           initialRoute: '/',

@@ -302,9 +302,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "This account is already linked to another authentication provider."),
         "quota_exceeded": MessageLookupByLibrary.simpleMessage(
             "The quota for this operation has been exceeded. Try again later."),
-        "regionalManager":
+        "companyManager":
             MessageLookupByLibrary.simpleMessage("Regional Manager"),
-        "regionalManagers":
+        "companyManagers":
             MessageLookupByLibrary.simpleMessage("Regional Managers"),
         "reports": MessageLookupByLibrary.simpleMessage("Reports"),
         "reportsDescription": MessageLookupByLibrary.simpleMessage(

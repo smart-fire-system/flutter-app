@@ -1,5 +1,3 @@
-import 'package:fire_alarm_system/models/admin.dart';
-import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
@@ -7,13 +5,13 @@ import 'package:fire_alarm_system/repositories/user_repository.dart';
 import 'event.dart';
 import 'state.dart';
 
-class AdminsBloc extends Bloc<AdminsEvent, AdminsState> {
+class UsersBloc extends Bloc<UsersEvent, UsersState> {
   final AuthRepository authRepository;
   final UserRepository userRepository;
 
-  AdminsBloc({required this.authRepository})
+  UsersBloc({required this.authRepository})
       : userRepository = UserRepository(authRepository: authRepository),
-        super(AdminsInitial()) {
+        super(UsersInitial()) {
     authRepository.authStateChanges.listen((data) {
       add(AuthChanged(error: data == "" ? null : data));
     }, onError: (error) {
@@ -22,41 +20,44 @@ class AdminsBloc extends Bloc<AdminsEvent, AdminsState> {
 
     on<AuthChanged>((event, emit) async {
       if (event.error == null) {
-        emit(AdminsLoading());
+        emit(UsersLoading());
         if (authRepository.userAuth.authStatus != AuthStatus.authenticated ||
-            authRepository.userAuth.user!.phoneNumber.isEmpty ||
-            authRepository.userAuth.user!.role != UserRole.admin) {
-          emit(AdminsNotAuthenticated());
+            authRepository.userAuth.user!.phoneNumber.isEmpty) {
+          emit(UsersNotAuthenticated());
         } else {
           try {
-            List<Admin> admins = await userRepository.getAdminsList();
-            List<User> users = await userRepository.getNoRoleList();
-            emit(AdminsAuthenticated(
+            UsersAndBranches usersAndBranches =
+                await userRepository.getUsersAndBranches();
+            emit(UsersAuthenticated(
               user: authRepository.userAuth.user!,
-              admins: admins,
-              users: users,
+              companies: usersAndBranches.companies,
+              branches: usersAndBranches.branches,
+              admins: usersAndBranches.admins,
+              companyManagers: usersAndBranches.companyManagers,
+              branchManagers: usersAndBranches.branchManagers,
+              employees: usersAndBranches.employees,
+              clients: usersAndBranches.clients,
+              noRoleUsers: usersAndBranches.noRoleUsers,
               message: event.message,
             ));
           } catch (e) {
-            emit(AdminsAuthenticated(
+            emit(UsersAuthenticated(
               user: authRepository.userAuth.user!,
-              admins: [],
-              users: [],
               error: e.toString(),
             ));
           }
         }
       } else {
-        emit(AdminsNotAuthenticated(error: event.error));
+        emit(UsersNotAuthenticated(error: event.error));
       }
     });
 
     on<ModifyRequested>((event, emit) async {
-      emit(AdminsLoading());
+      emit(UsersLoading());
       try {
         await userRepository.changeAccessRole(
             event.id, event.oldRole, event.newRole);
-        add(AuthChanged(message: AdminMessage.userModified));
+        add(AuthChanged(message: UsersMessage.userModified));
       } catch (e) {
         add(AuthChanged(error: e.toString()));
       }

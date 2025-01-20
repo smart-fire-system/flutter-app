@@ -234,7 +234,7 @@ class AuthRepository {
       _userAuth.user!.phoneNumber = documentSnapshot.get('phoneNumber');
       switch (documentSnapshot.get('role')) {
         case 'admin':
-        case 'regionalManager':
+        case 'companyManager':
         case 'branchManager':
         case 'employee':
         case 'technican':

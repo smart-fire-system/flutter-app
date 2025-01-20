@@ -24,6 +24,14 @@ class Branch {
     required this.comment,
   });
 
+  static Branch? getBranch(String id, List<Branch> branches) {
+    try {
+      return branches.firstWhere((element) => element.id == id);
+    } catch (e) {
+      return null;
+    }
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'company': company.id,

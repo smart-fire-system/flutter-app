@@ -6,10 +6,9 @@ enum AuthStatus {
 
 enum UserRole {
   admin,
-  regionalManager,
+  companyManager,
   branchManager,
   employee,
-  technican,
   client,
   noRole
 }

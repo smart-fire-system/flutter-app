@@ -401,10 +401,10 @@ class S {
   }
 
   /// `Regional Managers`
-  String get regionalManagers {
+  String get companyManagers {
     return Intl.message(
       'Regional Managers',
-      name: 'regionalManagers',
+      name: 'companyManagers',
       desc: '',
       args: [],
     );
@@ -461,10 +461,10 @@ class S {
   }
 
   /// `Regional Manager`
-  String get regionalManager {
+  String get companyManager {
     return Intl.message(
       'Regional Manager',
-      name: 'regionalManager',
+      name: 'companyManager',
       desc: '',
       args: [],
     );

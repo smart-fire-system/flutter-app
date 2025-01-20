@@ -124,7 +124,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Icons.chevron_right,
                   color: CustomStyle.redDark,
                 ),
-                onTap: () {},
+                onTap: () {TabNavigator.settings.currentState?.pushNamed('/admins');},
               ),
             ),
             Padding(
@@ -132,7 +132,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
               child: ListTile(
                 title: Text(
-                  S.of(context).regionalManagers,
+                  S.of(context).companyManagers,
                   style: CustomStyle.largeTextB,
                 ),
                 leading: const Icon(
