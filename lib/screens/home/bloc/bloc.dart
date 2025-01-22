@@ -1,3 +1,5 @@
+import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/utils/message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
@@ -8,18 +10,28 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final AuthRepository authRepository;
 
   HomeBloc({required this.authRepository}) : super(HomeInitial()) {
-    HomeState getHomeState({String? message, String? error}) {
-      if (authRepository.userAuth.authStatus == AuthStatus.notAuthenticated) {
+    HomeState getHomeState({AppMessage? message, String? error}) {
+      if (authRepository.authStatus == AuthStatus.notAuthenticated) {
         return HomeNotAuthenticated(message: message, error: error);
       } else {
-        return HomeAuthenticated(
-            user: authRepository.userAuth.user!,
+        UserInfo userInfo = authRepository.userInfo;
+        if (authRepository.authStatus == AuthStatus.authenticatedNotVerified ||
+            userInfo.phoneNumber.isEmpty ||
+            authRepository.userRole is NoRoleUser) {
+          return HomeNotAuthorized(
+            user: authRepository.userRole,
             isEmailVerified:
-                authRepository.userAuth.authStatus == AuthStatus.authenticated,
-            isPhoneAdded: authRepository.userAuth.user!.phoneNumber.isNotEmpty,
-            hasUserRole: authRepository.userAuth.user!.role != UserRole.noRole,
+                authRepository.authStatus == AuthStatus.authenticated,
             message: message,
-            error: error);
+            error: error,
+          );
+        } else {
+          return HomeAuthenticated(
+            user: authRepository.userRole,
+            message: message,
+            error: error,
+          );
+        }
       }
     }
 
@@ -50,7 +62,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeLoading());
       try {
         await authRepository.resendActivationEmail();
-        emit(getHomeState(message: "Email Sent"));
+        emit(getHomeState(message: AppMessage.emailConfirmationSent));
       } catch (error) {
         emit(getHomeState(error: error.toString()));
       }
@@ -70,6 +82,35 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeLoading());
       try {
         await authRepository.signOut();
+      } catch (error) {
+        emit(getHomeState(error: error.toString()));
+      }
+    });
+
+    on<ResetPasswordRequested>((event, emit) async {
+      emit(HomeLoading());
+      try {
+        await authRepository.sendPasswordResetEmail();
+        emit(getHomeState(message: AppMessage.resetPasswordEmailSent));
+      } catch (error) {
+        emit(getHomeState(error: error.toString()));
+      }
+    });
+
+    on<LoginRequested>((event, emit) async {
+      emit(HomeLoading());
+      try {
+        await authRepository.signIn(event.email, event.password);
+      } catch (error) {
+        emit(getHomeState(error: error.toString()));
+      }
+    });
+
+    on<SignUpRequested>((event, emit) async {
+      emit(HomeLoading());
+      try {
+        await authRepository.signUpWithEmailAndPassword(
+            event.email, event.password, event.name);
       } catch (error) {
         emit(getHomeState(error: error.toString()));
       }

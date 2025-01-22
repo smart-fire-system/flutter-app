@@ -1,9 +1,8 @@
-import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 
 class UserAuth {
   AuthStatus authStatus;
-  User? user;
+  dynamic userRole;
 
   UserAuth({required this.authStatus});
 }

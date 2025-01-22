@@ -180,6 +180,16 @@ class S {
     );
   }
 
+  /// `A confirmation email has been sent. Please check your inbox.`
+  String get confirmEmailSent {
+    return Intl.message(
+      'A confirmation email has been sent. Please check your inbox.',
+      name: 'confirmEmailSent',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Search by name, email or phone number ...`
   String get searchBy {
     return Intl.message(
@@ -400,10 +410,10 @@ class S {
     );
   }
 
-  /// `Regional Managers`
+  /// `Company Managers`
   String get companyManagers {
     return Intl.message(
-      'Regional Managers',
+      'Company Managers',
       name: 'companyManagers',
       desc: '',
       args: [],
@@ -430,16 +440,6 @@ class S {
     );
   }
 
-  /// `Technicians`
-  String get technicans {
-    return Intl.message(
-      'Technicians',
-      name: 'technicans',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Clients`
   String get clients {
     return Intl.message(
@@ -460,10 +460,10 @@ class S {
     );
   }
 
-  /// `Regional Manager`
+  /// `Company Manager`
   String get companyManager {
     return Intl.message(
-      'Regional Manager',
+      'Company Manager',
       name: 'companyManager',
       desc: '',
       args: [],
@@ -485,16 +485,6 @@ class S {
     return Intl.message(
       'Employee',
       name: 'employee',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Technician`
-  String get technican {
-    return Intl.message(
-      'Technician',
-      name: 'technican',
       desc: '',
       args: [],
     );

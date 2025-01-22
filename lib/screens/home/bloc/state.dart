@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/utils/message.dart';
 
 abstract class HomeState {}
 
@@ -6,27 +6,34 @@ class HomeInitial extends HomeState {}
 
 class HomeLoading extends HomeState {}
 
+
 class HomeAuthenticated extends HomeState {
-  final User user;
-  final bool isEmailVerified;
-  final bool isPhoneAdded;
-  final bool hasUserRole;
-  final String? message;
-  final String? error;
+  final dynamic user;
+  AppMessage? message;
+  String? error;
   HomeAuthenticated({
     required this.user,
-    required this.isEmailVerified,
-    required this.isPhoneAdded,
-    required this.hasUserRole,
     this.message,
     this.error,
   });
 }
 
+class HomeNotAuthorized extends HomeState {
+  final dynamic user;
+  final bool isEmailVerified;
+  AppMessage? message;
+  String? error;
+  HomeNotAuthorized({
+    required this.user,
+    required this.isEmailVerified,
+    this.message,
+    this.error,
+  });
+}
+
+
 class HomeNotAuthenticated extends HomeState {
-  String? message;
+  AppMessage? message;
   String? error;
   HomeNotAuthenticated({this.message, this.error});
 }
-
-class HomeNoInternet extends HomeState {}

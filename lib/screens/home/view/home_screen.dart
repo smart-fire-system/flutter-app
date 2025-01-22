@@ -1,5 +1,9 @@
+import 'package:fire_alarm_system/screens/home/view/login_screen.dart';
+import 'package:fire_alarm_system/screens/home/view/not_authorized_screen.dart';
+import 'package:fire_alarm_system/screens/home/view/signup_screen.dart';
+import 'package:fire_alarm_system/screens/home/view/welcome_screen.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
-import 'package:fire_alarm_system/widgets/app_bar.dart';
+import 'package:fire_alarm_system/utils/message.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +16,6 @@ import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/screens/home/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/home/bloc/event.dart';
 import 'package:fire_alarm_system/screens/home/bloc/state.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 final GlobalKey<HomeScreenState> homeScreenKey = GlobalKey<HomeScreenState>();
 
@@ -24,10 +27,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  User? _user;
+  dynamic _user;
+  UserInfo _userInfo = UserInfo();
   AppTab _currentTab = AppTab.system;
   final List<AppTab> _activeTabs = [AppTab.system];
   bool _canPop = true;
+  bool? _viewLoginScreen;
 
   @override
   void initState() {
@@ -69,50 +74,39 @@ class HomeScreenState extends State<HomeScreen> {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state is HomeNotAuthenticated) {
-          if (state.error != null) {
-            WidgetsBinding.instance.addPostFrameCallback((_) async {
-              CustomAlert.showError(
-                context: context,
-                title: Errors.getFirebaseErrorMessage(context, state.error!),
-              );
-            });
-          } else if (state.error != null) {
-            WidgetsBinding.instance.addPostFrameCallback((_) async {
-              CustomAlert.showSuccess(context: context, title: state.message!);
-            });
-          }
-          return _buildWelcome(context);
-        } else if (state is HomeAuthenticated) {
+          _showAlert(
+            context: context,
+            message: state.message,
+            error: state.error,
+          );
+          state.error = null;
+          state.message = null;
+          return _buildNotAuthenticated(context);
+        } else if (state is HomeNotAuthorized) {
+          _showAlert(
+            context: context,
+            message: state.message,
+            error: state.error,
+          );
+          state.error = null;
+          state.message = null;
           _user = state.user;
-          if (state.error != null) {
-            WidgetsBinding.instance.addPostFrameCallback((_) async {
-              CustomAlert.showError(
-                context: context,
-                title: Errors.getFirebaseErrorMessage(context, state.error!),
-              );
-            });
-          } else if (state.message != null && state.message == 'Email Sent') {
-            WidgetsBinding.instance.addPostFrameCallback((_) async {
-              CustomAlert.showSuccess(
-                context: context,
-                title: S.of(context).reset_email_sent,
-              );
-            });
-          }
-          if (state.isEmailVerified &&
-              state.isPhoneAdded &&
-              state.hasUserRole) {
-            //WidgetsBinding.instance.addPostFrameCallback((_) async {
-            //  context.go('/system');
-            //});
-            return _buildHome(context);
-          } else {
-            return _buildNotAuthorized(
-                context: context,
-                isEmailVerified: state.isEmailVerified,
-                isPhoneAdded: state.isPhoneAdded,
-                hasUserRole: state.hasUserRole);
-          }
+          _userInfo = _user.info as UserInfo;
+          return _buildNotAuthorized(
+            context,
+            state.isEmailVerified,
+          );
+        } else if (state is HomeAuthenticated) {
+          _showAlert(
+            context: context,
+            message: state.message,
+            error: state.error,
+          );
+          state.error = null;
+          state.message = null;
+          _user = state.user;
+          _userInfo = _user.info as UserInfo;
+          return _buildHome(context);
         }
         return const CustomLoading();
       },
@@ -189,264 +183,117 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildWelcome(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).app_name),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 600,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20.0, right: 20.0, bottom: 50.0),
-                    child: Image.asset(
-                      'assets/images/logo/2.jpg',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/signIn',
-                            arguments: {'login': true});
-                      },
-                      style: CustomStyle.normalButton,
-                      child: Text(
-                        S.of(context).login,
-                        style: CustomStyle.normalButtonText,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/signIn',
-                            arguments: {'signup': true});
-                      },
-                      style: CustomStyle.normalButton,
-                      child: Text(
-                        S.of(context).signup,
-                        style: CustomStyle.normalButtonText,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16.0, right: 16.0, top: 30.0, bottom: 30.0),
-                    child: Row(
-                      children: <Widget>[
-                        const Expanded(child: Divider()),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text(
-                            S.of(context).or,
-                            style: CustomStyle.smallText,
-                          ),
-                        ),
-                        const Expanded(child: Divider()),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        context.read<HomeBloc>().add(GoogleLoginRequested());
-                      },
-                      icon: const Icon(FontAwesomeIcons.google,
-                          color: Colors.white),
-                      label: Text(
-                        S.of(context).continue_with_google,
-                        style: CustomStyle.normalButtonTextSmallWhite,
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        minimumSize: const Size(double.infinity, 50),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+  Widget _buildNotAuthenticated(BuildContext context) {
+    if (_viewLoginScreen == null) {
+      return WelcomeScreen(
+        onLoginClick: () {
+          setState(() {
+            _viewLoginScreen = true;
+          });
+        },
+        onSignUpClick: () {
+          setState(() {
+            _viewLoginScreen = false;
+          });
+        },
+        onGoogleLoginClick: () {
+          context.read<HomeBloc>().add(GoogleLoginRequested());
+        },
+      );
+    } else if (_viewLoginScreen == true) {
+      return LoginScreen(
+        onLoginClick: (String email, String password) {
+          context.read<HomeBloc>().add(LoginRequested(
+                email: email,
+                password: password,
+              ));
+        },
+        onGoogleLoginClick: () {
+          context.read<HomeBloc>().add(
+                GoogleLoginRequested(),
+              );
+        },
+        onSignUpClick: () {
+          setState(() {
+            _viewLoginScreen = false;
+          });
+        },
+        onResetPasswordClick: () {
+          context.read<HomeBloc>().add(ResetPasswordRequested());
+        },
+      );
+    } else {
+      return SignUpScreen(
+        onSignUpClick: (String name, String email, String password) {
+          context.read<HomeBloc>().add(SignUpRequested(
+                name: name,
+                email: email,
+                password: password,
+              ));
+        },
+        onGoogleLoginClick: () {
+          context.read<HomeBloc>().add(
+                GoogleLoginRequested(),
+              );
+        },
+        onLoginClick: () {
+          setState(() {
+            _viewLoginScreen = true;
+          });
+        },
+      );
+    }
+  }
+
+  Widget _buildNotAuthorized(BuildContext context, bool isEmailVerified) {
+    return NotAuthorizedScreen(
+      email: _userInfo.email,
+      name: _userInfo.name,
+      role: UserInfo.getRoleName(context, _user.premissions.role),
+      isEmailVerified: isEmailVerified,
+      isPhoneAdded: _userInfo.phoneNumber.isNotEmpty,
+      onRefresh: () {
+        context.read<HomeBloc>().add(RefreshRequested());
+      },
+      onConfirmEmailClick: () {
+        context.read<HomeBloc>().add(ResendEmailRequested());
+      },
+      onAddPhoneNumberClick: () {
+        Navigator.pushNamed(context, '/profile');
+      },
+      onLogoutClick: () {
+        context.read<HomeBloc>().add(LogoutRequested());
+      },
     );
   }
 
-  Widget _buildNotAuthorized(
-      {required BuildContext context,
-      required bool isEmailVerified,
-      required bool isPhoneAdded,
-      required bool hasUserRole}) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).app_name),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          context.read<HomeBloc>().add(RefreshRequested());
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: ListView(
-            children: <Widget>[
-              ListTile(
-                title: Text(
-                  S.of(context).stepsToComplete,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(Icons.refresh, size: 40),
-                onTap: () {
-                  context.read<HomeBloc>().add(RefreshRequested());
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 16, left: 16, top: 16),
-                child: ListTile(
-                  title: Text(
-                    _user!.name,
-                    style: CustomStyle.largeTextB,
-                  ),
-                  subtitle: Text(_user!.email, style: CustomStyle.mediumText),
-                  leading: const Icon(Icons.person, size: 40),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.lightBlue, width: 1.0),
-                      borderRadius: BorderRadius.circular(8.0)),
-                  child: ListTile(
-                    leading: isEmailVerified
-                        ? const Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                            size: 30,
-                          )
-                        : const Icon(
-                            Icons.cancel,
-                            color: Colors.red,
-                            size: 30,
-                          ),
-                    title: Text(
-                      S.of(context).emailVerificationTitle,
-                      style: CustomStyle.largeTextB,
-                    ),
-                    subtitle: Text(
-                      isEmailVerified
-                          ? S.of(context).emailVerified
-                          : S.of(context).emailNotVerified,
-                      style: CustomStyle.mediumText,
-                    ),
-                    onTap: isEmailVerified
-                        ? null
-                        : () {
-                            context
-                                .read<HomeBloc>()
-                                .add(ResendEmailRequested());
-                          },
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.lightBlue, width: 1.0),
-                      borderRadius: BorderRadius.circular(8.0)),
-                  child: ListTile(
-                    leading: isPhoneAdded
-                        ? const Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                            size: 30,
-                          )
-                        : const Icon(
-                            Icons.cancel,
-                            color: Colors.red,
-                            size: 30,
-                          ),
-                    title: Text(
-                      S.of(context).phoneNumberTitle,
-                      style: CustomStyle.largeTextB,
-                    ),
-                    subtitle: Text(
-                      isPhoneAdded
-                          ? S.of(context).phoneNumberAdded
-                          : S.of(context).phoneNumberNotAdded,
-                      style: CustomStyle.mediumText,
-                    ),
-                    onTap: isPhoneAdded
-                        ? null
-                        : () {
-                            Navigator.pushNamed(context, '/profile');
-                          },
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.lightBlue, width: 1.0),
-                      borderRadius: BorderRadius.circular(8.0)),
-                  child: ListTile(
-                    leading: hasUserRole
-                        ? const Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                            size: 30,
-                          )
-                        : const Icon(
-                            Icons.cancel,
-                            color: Colors.red,
-                            size: 30,
-                          ),
-                    title: Text(
-                      S.of(context).accessRoleTitle,
-                      style: CustomStyle.largeTextB,
-                    ),
-                    subtitle: Text(
-                      hasUserRole
-                          ? '${S.of(context).roleAssigned} [${User.getRoleName(context, _user!.role)}]'
-                          : S.of(context).roleNotAssigned,
-                      style: CustomStyle.mediumText,
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    context.read<HomeBloc>().add(LogoutRequested());
-                  },
-                  icon: const Icon(Icons.logout, color: Colors.white),
-                  label: Text(
-                    S.of(context).logout,
-                    style: CustomStyle.normalButtonTextSmallWhite,
-                  ),
-                  style: CustomStyle.normalButtonRed,
-                ),
-              ),
-            ],
+  void _showAlert({
+    required BuildContext context,
+    AppMessage? message,
+    String? error,
+  }) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (message != null) {
+        if (message == AppMessage.emailConfirmationSent) {
+          CustomAlert.showSuccess(
+            context: context,
+            title: S.of(context).confirmEmailSent,
+          );
+        } else if (message == AppMessage.resetPasswordEmailSent) {
+          CustomAlert.showSuccess(
+            context: context,
+            title: S.of(context).reset_email_sent,
+          );
+        }
+      } else if (error != null) {
+        CustomAlert.showError(
+          context: context,
+          title: Errors.getFirebaseErrorMessage(
+            context,
+            error,
           ),
-        ),
-      ),
-    );
+        );
+      }
+    });
   }
 }

@@ -8,7 +8,7 @@ import 'package:fire_alarm_system/models/user.dart';
 enum AccessDeniedType { accountNeedsVerification, noRoleForUser }
 
 class CustomAccessDenied extends StatelessWidget {
-  final User user;
+  final UserInfo user;
   final AccessDeniedType type;
   final void Function()? onLogoutClick;
   final void Function()? onResendClick;

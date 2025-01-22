@@ -13,7 +13,7 @@ class UsersInitial extends UsersState {}
 class UsersLoading extends UsersState {}
 
 class UsersAuthenticated extends UsersState {
-  final User user;
+  final dynamic roleUser;
   final List<Company> companies;
   final List<Branch> branches;
   final List<Admin> admins;
@@ -25,7 +25,7 @@ class UsersAuthenticated extends UsersState {
   UsersMessage? message;
   String? error;
   UsersAuthenticated({
-    required this.user,
+    required this.roleUser,
     this.companies = const [],
     this.branches = const [],
     this.admins = const [],

@@ -94,6 +94,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "companyInformation":
             MessageLookupByLibrary.simpleMessage("بيانات الشركة"),
         "companyLogo": MessageLookupByLibrary.simpleMessage("شعار الشركة"),
+        "companyManager": MessageLookupByLibrary.simpleMessage("مدير شركة"),
+        "companyManagers":
+            MessageLookupByLibrary.simpleMessage("مديرو الشركات"),
         "companyModified": MessageLookupByLibrary.simpleMessage(
             "تم تعديل بيانات الشركة بنجاح."),
         "companyModifyWarning": MessageLookupByLibrary.simpleMessage(
@@ -106,6 +109,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "هل تريد المتابعة لتغيير صلاحيات وصول المستخدم؟"),
         "confirmDeleteUser": MessageLookupByLibrary.simpleMessage(
             "هل أنت متأكد من أنك تريد حذف هذا المستخدم نهائيًا من النظام؟"),
+        "confirmEmailSent": MessageLookupByLibrary.simpleMessage(
+            "تم إرسال بريد إلكتروني لتفعيل حسابك. يرجى التحقق من صندوق البريد."),
         "confirm_password":
             MessageLookupByLibrary.simpleMessage("يرجى تأكيد كلمة المرور"),
         "contactInformation":
@@ -290,9 +295,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("هذا الحساب مرتبط بمزود آخر."),
         "quota_exceeded": MessageLookupByLibrary.simpleMessage(
             "تم تجاوز الحد الأقصى. حاول مرة أخرى لاحقًا."),
-        "companyManager": MessageLookupByLibrary.simpleMessage("مدير إقليمي"),
-        "companyManagers":
-            MessageLookupByLibrary.simpleMessage("المديرون الإقليميون"),
         "reports": MessageLookupByLibrary.simpleMessage("التقارير"),
         "reportsDescription": MessageLookupByLibrary.simpleMessage(
             "عرض تقارير لعقود الصيانة، الزيارات وحالة النظام."),
@@ -348,8 +350,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "مراقبة الحالة الحالية لكل حساس والتحكم في الوحدات الفرعية. يمكنك أيضًا تنفيذ إجراءات مثل تشغيل أو إيقاف الأجهزة مباشرةً من هذه الواجهة."),
         "tabToAddLogo":
             MessageLookupByLibrary.simpleMessage("إضغط لاضافة شعار للشركة"),
-        "technican": MessageLookupByLibrary.simpleMessage("فني"),
-        "technicans": MessageLookupByLibrary.simpleMessage("الفنيون"),
         "tenant_id_mismatch":
             MessageLookupByLibrary.simpleMessage("معرف المستأجر غير متطابق."),
         "too_many_requests": MessageLookupByLibrary.simpleMessage(

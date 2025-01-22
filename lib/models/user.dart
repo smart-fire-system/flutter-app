@@ -1,80 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
+import 'package:fire_alarm_system/models/premissions.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:flutter/material.dart';
 
-class User {
+class UserInfo {
   String id;
   String name;
   String email;
   String phoneNumber;
   String countryCode;
-  UserRole role;
-  bool canViewBranches;
-  bool canEditBranches;
-  bool canAddBranches;
-  bool canDeleteBranches;
-  bool canViewCompanies;
-  bool canEditCompanies;
-  bool canAddCompanies;
-  bool canDeleteCompanies;
-  bool canviewAdmins;
-  bool canEditAdmins;
-  bool canAddAdmins;
-  bool canDeleteAdmins;
-  bool canviewCompanyManagers;
-  bool canEditCompanyManagers;
-  bool canAddCompanyManagers;
-  bool canDeleteCompanyManagers;
-  bool canviewBranchManagers;
-  bool canEditBranchManagers;
-  bool canAddBranchManagers;
-  bool canDeleteBranchManagers;
-  bool canviewEmployees;
-  bool canEditEmployees;
-  bool canAddEmployees;
-  bool canDeleteEmployees;
-  bool canviewClients;
-  bool canEditClients;
-  bool canAddClients;
-  bool canDeleteClients;
+  Timestamp? createdAt;
 
-  User({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.countryCode,
-    required this.phoneNumber,
-    required this.role,
-    this.canViewBranches = true,
-    this.canEditBranches = true,
-    this.canAddBranches = true,
-    this.canDeleteBranches = true,
-    this.canViewCompanies = true,
-    this.canEditCompanies = true,
-    this.canAddCompanies = true,
-    this.canDeleteCompanies = true,
-    this.canviewAdmins = true,
-    this.canEditAdmins = true,
-    this.canAddAdmins = true,
-    this.canDeleteAdmins = true,
-    this.canviewCompanyManagers = true,
-    this.canEditCompanyManagers = true,
-    this.canAddCompanyManagers = true,
-    this.canDeleteCompanyManagers = true,
-    this.canviewBranchManagers = true,
-    this.canEditBranchManagers = true,
-    this.canAddBranchManagers = true,
-    this.canDeleteBranchManagers = true,
-    this.canviewEmployees = true,
-    this.canEditEmployees = true,
-    this.canAddEmployees = true,
-    this.canDeleteEmployees = true,
-    this.canviewClients = true,
-    this.canEditClients = true,
-    this.canAddClients = true,
-    this.canDeleteClients = true,
+  UserInfo({
+    this.id = "",
+    this.name = "",
+    this.email = "",
+    this.countryCode = "",
+    this.phoneNumber = "",
+    this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -83,48 +29,24 @@ class User {
       'email': email,
       'countryCode': countryCode,
       'phoneNumber': phoneNumber,
-      'role': getRoleId(role),
-      'canViewBranches': canViewBranches,
-      'canEditBranches': canEditBranches,
-      'canAddBranches': canAddBranches,
-      'canDeleteBranches': canDeleteBranches,
-      'canViewCompanies': canViewCompanies,
-      'canEditCompanies': canEditCompanies,
-      'canAddCompanies': canAddCompanies,
-      'canDeleteCompanies': canDeleteCompanies,
-      'canviewAdmins': canviewAdmins,
-      'canEditAdmins': canEditAdmins,
-      'canAddAdmins': canAddAdmins,
-      'canDeleteAdmins': canDeleteAdmins,
     };
   }
 
-  factory User.fromMap(Map<String, dynamic> map, String id) {
-    return User(
+  factory UserInfo.fromMap(Map<String, dynamic> map, String id) {
+    return UserInfo(
       id: id,
       name: map['name'] as String,
       email: map['email'] as String,
       countryCode: map['countryCode'] as String,
       phoneNumber: map['phoneNumber'] as String,
-      role: getRole(map['role'] as String),
-      canViewBranches: map['canViewBranches'] as bool,
-      canEditBranches: map['canEditBranches'] as bool,
-      canAddBranches: map['canAddBranches'] as bool,
-      canDeleteBranches: map['canDeleteBranches'] as bool,
-      canViewCompanies: map['canViewCompanies'] as bool,
-      canEditCompanies: map['canEditCompanies'] as bool,
-      canAddCompanies: map['canAddCompanies'] as bool,
-      canDeleteCompanies: map['canDeleteCompanies'] as bool,
-      canviewAdmins: map['canviewAdmins'] as bool,
-      canEditAdmins: map['canEditAdmins'] as bool,
-      canAddAdmins: map['canAddAdmins'] as bool,
-      canDeleteAdmins: map['canDeleteAdmins'] as bool,
+      createdAt: map['createdAt'] as Timestamp,
     );
   }
 
-  static String getRoleName(BuildContext context, UserRole role) {
+  static String getRoleName(BuildContext context, UserRole? role) {
     switch (role) {
       case UserRole.admin:
+      case UserRole.masterAdmin:
         return S.of(context).admin;
       case UserRole.companyManager:
         return S.of(context).companyManager;
@@ -134,13 +56,15 @@ class User {
         return S.of(context).employee;
       case UserRole.client:
         return S.of(context).client;
-      default:
+      case null:
         return S.of(context).noRole;
     }
   }
 
   static String getRoleId(UserRole role) {
     switch (role) {
+      case UserRole.masterAdmin:
+        return 'masterAdmin';
       case UserRole.admin:
         return 'admin';
       case UserRole.companyManager:
@@ -151,13 +75,13 @@ class User {
         return 'employee';
       case UserRole.client:
         return 'client';
-      default:
-        return '';
     }
   }
 
-  static UserRole getRole(String roleId) {
+  static UserRole? getRole(String roleId) {
     switch (roleId) {
+      case 'masterAdmin':
+        return UserRole.masterAdmin;
       case 'admin':
         return UserRole.admin;
       case 'companyManager':
@@ -169,59 +93,76 @@ class User {
       case 'client':
         return UserRole.client;
       default:
-        return UserRole.noRole;
+        return null;
     }
   }
 }
 
 class NoRoleUser {
-  User info;
-  NoRoleUser({required this.info});
+  UserInfo info;
+  AppPremessions premissions;
+  NoRoleUser({required this.info}) : premissions = AppPremessions();
 }
 
 class Admin {
-  User info;
-  Admin({required this.info});
+  UserInfo info;
+  AppPremessions premissions;
+  Admin({required this.info, required this.premissions});
+}
+
+class MasterAdmin {
+  UserInfo info;
+  AppPremessions premissions;
+  MasterAdmin({required this.info})
+      : premissions = AppPremessions.masterAdmin();
 }
 
 class CompanyManager {
-  User info;
+  UserInfo info;
+  AppPremessions premissions;
   Company company;
   List<Branch> branches;
 
   CompanyManager({
     required this.info,
+    required this.premissions,
     required this.company,
     required this.branches,
   });
 }
 
 class BranchManager {
-  User info;
+  UserInfo info;
+  AppPremessions premissions;
   Branch branch;
 
   BranchManager({
     required this.info,
+    required this.premissions,
     required this.branch,
   });
 }
 
 class Employee {
-  User info;
+  UserInfo info;
+  AppPremessions premissions;
   Branch branch;
 
   Employee({
     required this.info,
+    required this.premissions,
     required this.branch,
   });
 }
 
 class Client {
-  User info;
+  UserInfo info;
+  AppPremessions premissions;
   Branch branch;
 
   Client({
     required this.info,
+    required this.premissions,
     required this.branch,
   });
 }

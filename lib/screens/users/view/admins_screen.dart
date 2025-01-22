@@ -40,7 +40,7 @@ class UsersScreen extends StatefulWidget {
 
 class UsersScreenState extends State<UsersScreen> {
   bool _filterRequested = false;
-  User? _user;
+  dynamic _roleUser;
   List<dynamic> _users = [];
   List<dynamic> _filteredUsers = [];
   List<Company> _companies = [];
@@ -88,7 +88,7 @@ class UsersScreenState extends State<UsersScreen> {
               state.error = null;
             }
           });
-          _user = state.user;
+          _roleUser = state.roleUser;
           _companies = state.companies;
           _branches = state.branches;
           if (widget.view == UsersScreenView.admins) {
@@ -132,19 +132,19 @@ class UsersScreenState extends State<UsersScreen> {
     bool canAdd = false;
     String role = 'noRoleUsers';
     if (widget.view == UsersScreenView.admins) {
-      canAdd = _user!.canAddAdmins;
+      canAdd = _roleUser.premissions.canAddAdmins;
       role = 'admin';
     } else if (widget.view == UsersScreenView.companyManagers) {
-      canAdd = _user!.canAddCompanyManagers;
+      canAdd = _roleUser.premissions.canAddCompanyManagers;
       role = 'companyManager';
     } else if (widget.view == UsersScreenView.branchManagers) {
-      canAdd = _user!.canAddBranchManagers;
+      canAdd = _roleUser.premissions.canAddBranchManagers;
       role = 'branchManager';
     } else if (widget.view == UsersScreenView.employees) {
-      canAdd = _user!.canAddEmployees;
+      canAdd = _roleUser.premissions.canAddEmployees;
       role = 'employee';
     } else if (widget.view == UsersScreenView.clients) {
-      canAdd = _user!.canAddClients;
+      canAdd = _roleUser.premissions.canAddClients;
       role = 'client';
     }
     return Scaffold(

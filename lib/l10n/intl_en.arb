@@ -18,6 +18,7 @@
     "forgot_password": "Forgot your password?",
     "enter_email_to_reset": "Please enter your email address to reset your password.",
     "reset_email_sent": "A password reset email has been sent. Please check your inbox.",
+    "confirmEmailSent": "A confirmation email has been sent. Please check your inbox.",
 
     "searchBy": "Search by name, email or phone number ...",
     "searchByNameCode": "Search by name or code ...",

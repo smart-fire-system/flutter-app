@@ -102,6 +102,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "companyInformation":
             MessageLookupByLibrary.simpleMessage("Company Information"),
         "companyLogo": MessageLookupByLibrary.simpleMessage("Company Logo"),
+        "companyManager":
+            MessageLookupByLibrary.simpleMessage("Company Manager"),
+        "companyManagers":
+            MessageLookupByLibrary.simpleMessage("Company Managers"),
         "companyModified": MessageLookupByLibrary.simpleMessage(
             "The company details have been updated successfully."),
         "companyModifyWarning": MessageLookupByLibrary.simpleMessage(
@@ -114,6 +118,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Do you want to proceed with changing the user\'s access permissions?"),
         "confirmDeleteUser": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to permanently delete this user from the system?"),
+        "confirmEmailSent": MessageLookupByLibrary.simpleMessage(
+            "A confirmation email has been sent. Please check your inbox."),
         "confirm_password": MessageLookupByLibrary.simpleMessage(
             "Please confirm your password"),
         "contactInformation":
@@ -302,10 +308,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "This account is already linked to another authentication provider."),
         "quota_exceeded": MessageLookupByLibrary.simpleMessage(
             "The quota for this operation has been exceeded. Try again later."),
-        "companyManager":
-            MessageLookupByLibrary.simpleMessage("Regional Manager"),
-        "companyManagers":
-            MessageLookupByLibrary.simpleMessage("Regional Managers"),
         "reports": MessageLookupByLibrary.simpleMessage("Reports"),
         "reportsDescription": MessageLookupByLibrary.simpleMessage(
             "Show reports for maintenance contracts, visits and system status."),
@@ -362,8 +364,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Monitor the current state of each sensor and control sub-units. You can also perform actions like turning devices on or off directly from this interface."),
         "tabToAddLogo":
             MessageLookupByLibrary.simpleMessage("Tab to add company logo"),
-        "technican": MessageLookupByLibrary.simpleMessage("Technician"),
-        "technicans": MessageLookupByLibrary.simpleMessage("Technicians"),
         "tenant_id_mismatch": MessageLookupByLibrary.simpleMessage(
             "The tenant ID does not match the expected value."),
         "too_many_requests": MessageLookupByLibrary.simpleMessage(

@@ -1,8 +1,5 @@
 import 'package:fire_alarm_system/firebase_options.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
-import 'package:fire_alarm_system/screens/branches/view/branches_screen.dart';
-import 'package:fire_alarm_system/screens/complaints/view/complaints_screen.dart';
-import 'package:fire_alarm_system/screens/settings/view/settings_screen.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -12,10 +9,7 @@ import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/screens/home/view/view.dart';
-import 'package:fire_alarm_system/screens/signin/view/view.dart';
-import 'package:fire_alarm_system/screens/profile/view/view.dart';
 import 'package:fire_alarm_system/screens/home/bloc/bloc.dart';
-import 'package:fire_alarm_system/screens/signin/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/users/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -67,8 +61,6 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (_) => SignInBloc(authRepository: _authRepository)),
-          BlocProvider(
               create: (_) => HomeBloc(authRepository: _authRepository)),
           BlocProvider(
               create: (_) => UsersBloc(authRepository: _authRepository)),
@@ -117,11 +109,6 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
             '/': (context) => HomeScreen(
                   key: homeScreenKey,
                 ),
-            '/profile': (context) => const ProfileScreen(),
-            '/complaints': (context) => const ComplaintsScreen(),
-            '/settings': (context) => const SettingsScreen(),
-            '/signIn': (context) => const SignInScreen(),
-            '/branches': (context) => const BranchesScreen(),
           },
           initialRoute: '/',
         ),

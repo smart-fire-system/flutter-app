@@ -18,7 +18,7 @@ class _SystemScreenState extends State<SystemScreen> {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            TestRespository().addCanFlags();
+            TestRespository().addMasterAdmin();
           },
           child: const Text('Go to System Reports Details'),
         ),

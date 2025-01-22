@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
+import 'package:fire_alarm_system/models/premissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/repositories/branch_repository.dart';
@@ -8,6 +9,7 @@ import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 
 class UsersAndBranches {
+  List<MasterAdmin> masterAdmins = [];
   List<Admin> admins = [];
   List<CompanyManager> companyManagers = [];
   List<BranchManager> branchManagers = [];
@@ -53,15 +55,15 @@ class UserRepository {
           if (!userSnapshot.exists) {
             throw Exception("User not found");
           }
-          transaction.update(userRef, {'role': User.getRoleId(newRole)});
-          if (oldRole != UserRole.noRole) {
+          transaction.update(userRef, {'role': UserInfo.getRoleId(newRole)});
+          if (oldRole != UserRole.admin) {
             DocumentReference oldRoleRef =
-                _firestore.collection('${User.getRoleId(oldRole)}s').doc(id);
+                _firestore.collection('${UserInfo.getRoleId(oldRole)}s').doc(id);
             transaction.delete(oldRoleRef);
           }
-          if (newRole != UserRole.noRole) {
+          if (newRole != UserRole.admin) {
             DocumentReference newRoleRef =
-                _firestore.collection('${User.getRoleId(newRole)}s').doc(id);
+                _firestore.collection('${UserInfo.getRoleId(newRole)}s').doc(id);
             transaction.set(newRoleRef, <String, dynamic>{});
           }
         } catch (e) {
@@ -88,11 +90,14 @@ class UserRepository {
   Future<UsersAndBranches> getUsersAndBranches() async {
     UsersAndBranches usersAndBranches = UsersAndBranches();
     try {
-      final branchesData = await branchRepository.getBranchesList();
+      final branchesData = await branchRepository.getAllBranchedAndCompanies();
       usersAndBranches.branches = branchesData['branches'] as List<Branch>;
       usersAndBranches.companies = branchesData['companies'] as List<Company>;
+
       final usersSnapshot =
           await _firestore.collection('users').orderBy('name').get();
+      final masterAdminsSnapshot =
+          await _firestore.collection('masterAdmins').get();
       final adminsSnapshot = await _firestore.collection('admins').get();
       final companyManagersSnapshot =
           await _firestore.collection('companyManagers').get();
@@ -100,106 +105,142 @@ class UserRepository {
           await _firestore.collection('branchManagers').get();
       final employeesSnapshot = await _firestore.collection('employees').get();
       final clientsSnapshot = await _firestore.collection('clients').get();
+
       for (var doc in usersSnapshot.docs) {
         Map<String, dynamic> userData = doc.data();
-        bool noRole = true;
-        if (userData['role'] == 'admin' &&
-            adminsSnapshot.docs.any((doc) => doc.id == doc.id)) {
-          noRole = false;
-          usersAndBranches.admins.add(
-            Admin(
-              info: User.fromMap(
+
+        if (isMasterAdmin(doc.id, masterAdminsSnapshot)) {
+          usersAndBranches.masterAdmins.add(
+            MasterAdmin(
+              info: UserInfo.fromMap(
                 userData,
                 doc.id,
               ),
             ),
           );
-        } else if (userData['role'] == 'companyManager' &&
-            companyManagersSnapshot.docs.any((doc) => doc.id == doc.id)) {
-          final managerDoc = companyManagersSnapshot.docs
-              .firstWhere((doc) => doc.id == doc.id);
+          continue;
+        }
+
+        final premissions = isAdmin(doc.id, adminsSnapshot);
+        if (premissions != null) {
+          usersAndBranches.admins.add(
+            Admin(
+              premissions: premissions,
+              info: UserInfo.fromMap(
+                userData,
+                doc.id,
+              ),
+            ),
+          );
+          continue;
+        }
+
+        final companyManager = isCompanyManager(
+          doc.id,
+          companyManagersSnapshot,
+        );
+        if (companyManager != null) {
           Company? company = Company.getCompany(
-              managerDoc.data()['company'], usersAndBranches.companies);
+            companyManager['id'],
+            usersAndBranches.companies,
+          );
           if (company != null) {
-            noRole = false;
             usersAndBranches.companyManagers.add(
               CompanyManager(
                 company: company,
                 branches:
                     Company.getBranches(company.id!, usersAndBranches.branches),
-                info: User.fromMap(
+                premissions: companyManager['premissions'],
+                info: UserInfo.fromMap(
                   userData,
                   doc.id,
                 ),
               ),
             );
+            continue;
           }
-        } else if (userData['role'] == 'branchManager' &&
-            branchManagersSnapshot.docs.any((doc) => doc.id == doc.id)) {
-          final managerDoc =
-              branchManagersSnapshot.docs.firstWhere((doc) => doc.id == doc.id);
+        }
+
+        final branchManager = isBranchManager(
+          doc.id,
+          branchManagersSnapshot,
+        );
+        if (branchManager != null) {
           Branch? branch = Branch.getBranch(
-              managerDoc.data()['branch'], usersAndBranches.branches);
+            branchManager['id'],
+            usersAndBranches.branches,
+          );
           if (branch != null) {
-            noRole = false;
             usersAndBranches.branchManagers.add(
               BranchManager(
                 branch: branch,
-                info: User.fromMap(
+                premissions: branchManager['premissions'],
+                info: UserInfo.fromMap(
                   userData,
                   doc.id,
                 ),
               ),
             );
+            continue;
           }
-        } else if (userData['role'] == 'employee' &&
-            employeesSnapshot.docs.any((doc) => doc.id == doc.id)) {
-          final employeeDoc =
-              employeesSnapshot.docs.firstWhere((doc) => doc.id == doc.id);
+        }
+
+        final employee = isEmployee(
+          doc.id,
+          employeesSnapshot,
+        );
+        if (employee != null) {
           Branch? branch = Branch.getBranch(
-              employeeDoc.data()['branch'], usersAndBranches.branches);
+            employee['id'],
+            usersAndBranches.branches,
+          );
           if (branch != null) {
-            noRole = false;
             usersAndBranches.employees.add(
               Employee(
                 branch: branch,
-                info: User.fromMap(
+                premissions: employee['premissions'],
+                info: UserInfo.fromMap(
                   userData,
                   doc.id,
                 ),
               ),
             );
+            continue;
           }
-        } else if (userData['role'] == 'client' &&
-            clientsSnapshot.docs.any((doc) => doc.id == doc.id)) {
-          final clientDoc =
-              clientsSnapshot.docs.firstWhere((doc) => doc.id == doc.id);
+        }
+
+        final client = isClient(
+          doc.id,
+          clientsSnapshot,
+        );
+        if (client != null) {
           Branch? branch = Branch.getBranch(
-              clientDoc.data()['branch'], usersAndBranches.branches);
+            client['id'],
+            usersAndBranches.branches,
+          );
           if (branch != null) {
-            noRole = false;
             usersAndBranches.clients.add(
               Client(
                 branch: branch,
-                info: User.fromMap(
+                premissions: client['premissions'],
+                info: UserInfo.fromMap(
                   userData,
                   doc.id,
                 ),
               ),
             );
+            continue;
           }
         }
-        if (noRole) {
-          userData['role'] = User.getRoleId(UserRole.noRole);
-          usersAndBranches.noRoleUsers.add(
-            NoRoleUser(
-              info: User.fromMap(
-                userData,
-                doc.id,
-              ),
+
+        usersAndBranches.noRoleUsers.add(
+          NoRoleUser(
+            info: UserInfo.fromMap(
+              userData,
+              doc.id,
             ),
-          );
-        }
+          ),
+        );
       }
       return usersAndBranches;
     } catch (e) {
@@ -208,6 +249,106 @@ class UserRepository {
       } else {
         throw Exception(e.toString());
       }
+    }
+  }
+
+  bool isMasterAdmin(String userId, QuerySnapshot snapshot) {
+    if (snapshot.docs.any((user) => user.id == userId)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  AppPremessions? isAdmin(String userId, QuerySnapshot snapshot) {
+    try {
+      final userDoc = snapshot.docs.firstWhere((user) => user.id == userId);
+      Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
+      if (userData != null) {
+        return AppPremessions.fromAdminMap(userData['premissions']);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Map<String, dynamic>? isCompanyManager(
+      String userId, QuerySnapshot snapshot) {
+    try {
+      final userDoc = snapshot.docs.firstWhere((user) => user.id == userId);
+      Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
+      if (userData != null) {
+        return {
+          'id': userData['company'],
+          'premissions': AppPremessions.fromCompanyManagerMap(
+            userData['premissions'],
+          ),
+        };
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Map<String, dynamic>? isBranchManager(
+      String userId, QuerySnapshot snapshot) {
+    try {
+      final userDoc = snapshot.docs.firstWhere((user) => user.id == userId);
+      Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
+      if (userData != null) {
+        return {
+          'id': userData['branch'],
+          'premissions': AppPremessions.fromBranchManagerMap(
+            userData['premissions'],
+          ),
+        };
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Map<String, dynamic>? isEmployee(String userId, QuerySnapshot snapshot) {
+    try {
+      final userDoc = snapshot.docs.firstWhere((user) => user.id == userId);
+      Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
+      if (userData != null) {
+        return {
+          'id': userData['branch'],
+          'premissions': AppPremessions.fromEmployeeMap(
+            userData['premissions'],
+          ),
+        };
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Map<String, dynamic>? isClient(String userId, QuerySnapshot snapshot) {
+    try {
+      final userDoc = snapshot.docs.firstWhere((user) => user.id == userId);
+      Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
+      if (userData != null) {
+        return {
+          'id': userData['branch'],
+          'premissions': AppPremessions.fromClientMap(
+            userData['premissions'],
+          ),
+        };
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
     }
   }
 }

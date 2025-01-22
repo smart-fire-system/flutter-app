@@ -5,12 +5,12 @@ enum AuthStatus {
 }
 
 enum UserRole {
+  masterAdmin,
   admin,
   companyManager,
   branchManager,
   employee,
-  client,
-  noRole
+  client
 }
 
 enum AppScreen {

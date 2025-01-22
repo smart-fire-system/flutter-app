@@ -1,9 +1,4 @@
-import 'package:fire_alarm_system/models/user.dart';
-
-enum ProfileMessage {
-  infoUpdated,
-  resetPasswordEmailSent
-}
+import 'package:fire_alarm_system/utils/message.dart';
 
 abstract class ProfileState {}
 
@@ -12,15 +7,21 @@ class ProfileInitial extends ProfileState {}
 class ProfileLoading extends ProfileState {}
 
 class ProfileAuthenticated extends ProfileState {
-  final User user;
-  final bool isAuthorized;
-  final ProfileMessage? message;
+  final dynamic user;
+  final AppMessage? message;
   final String? error;
-  ProfileAuthenticated({required this.user, required this.isAuthorized, this.message, this.error});
+  ProfileAuthenticated({
+    required this.user,
+    this.message,
+    this.error,
+  });
 }
 
 class ProfileNotAuthenticated extends ProfileState {
-  final ProfileMessage? message;
+  final AppMessage? message;
   final String? error;
-  ProfileNotAuthenticated({this.message, this.error});
+  ProfileNotAuthenticated({
+    this.message,
+    this.error,
+  });
 }

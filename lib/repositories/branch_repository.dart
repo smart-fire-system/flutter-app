@@ -13,7 +13,7 @@ class BranchRepository {
       : _firestore = FirebaseFirestore.instance,
         _storage = FirebaseStorage.instance;
 
-  Future<Map<String, List<dynamic>>> getBranchesList() async {
+  Future<Map<String, List<dynamic>>> getAllBranchedAndCompanies() async {
     try {
       List<Company> companies = [];
       List<Branch> branches = [];
@@ -27,9 +27,87 @@ class BranchRepository {
       }
       for (var doc in branchesSnapshot.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        branches.add(Branch.fromMap(data, doc.id, companies));
+        branches.add(
+          Branch.fromMap(
+            map: data,
+            branchId: doc.id,
+            companies: companies,
+          ),
+        );
       }
       return {'branches': branches, 'companies': companies};
+    } catch (e) {
+      if (e is FirebaseException) {
+        throw Exception(e.code);
+      } else {
+        throw Exception(e.toString());
+      }
+    }
+  }
+
+  Future<Map<String, dynamic>?> getCompanyAndBranches(String companyId) async {
+    try {
+      Company company;
+      List<Branch> branches = [];
+      DocumentSnapshot companySnapshot =
+          await _firestore.collection('companies').doc(companyId).get();
+      if (!companySnapshot.exists) {
+        return null;
+      }
+      company = Company.fromMap(
+        companySnapshot.data() as Map<String, dynamic>,
+        companySnapshot.id,
+      );
+      QuerySnapshot branchesSnapshot = await _firestore
+          .collection('branches')
+          .orderBy('name')
+          .where('company', isEqualTo: companyId)
+          .get();
+      for (var doc in branchesSnapshot.docs) {
+        branches.add(
+          Branch.fromMap(
+            map: doc.data() as Map<String, dynamic>,
+            branchId: doc.id,
+            company: company,
+          ),
+        );
+      }
+      return {'branches': branches, 'company': company};
+    } catch (e) {
+      if (e is FirebaseException) {
+        throw Exception(e.code);
+      } else {
+        throw Exception(e.toString());
+      }
+    }
+  }
+
+  Future<Branch?> getBranch(String branchId) async {
+    try {
+      DocumentSnapshot branchDocument =
+          await _firestore.collection('branches').doc(branchId).get();
+      if (!branchDocument.exists) {
+        return null;
+      }
+      Map<String, dynamic> branchData =
+          branchDocument.data() as Map<String, dynamic>;
+      DocumentSnapshot companyDocument = await _firestore
+          .collection('companies')
+          .doc(branchData['company'])
+          .get();
+      if (!companyDocument.exists) {
+        return null;
+      }
+      Map<String, dynamic> companyData =
+          companyDocument.data() as Map<String, dynamic>;
+      return Branch.fromMap(
+        map: branchData,
+        branchId: branchDocument.id,
+        company: Company.fromMap(
+          companyData,
+          companyDocument.id,
+        ),
+      );
     } catch (e) {
       if (e is FirebaseException) {
         throw Exception(e.code);

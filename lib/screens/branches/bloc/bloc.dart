@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
+import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
@@ -26,15 +27,16 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     });
 
     on<AuthChanged>((event, emit) async {
-      if (authRepository.userAuth.authStatus != AuthStatus.authenticated ||
-          authRepository.userAuth.user!.phoneNumber.isEmpty ||
-          authRepository.userAuth.user!.role != UserRole.admin) {
+      UserInfo userInfo = authRepository.userRole.info as UserInfo;
+      if (authRepository.authStatus != AuthStatus.authenticated ||
+          userInfo.phoneNumber.isEmpty ||
+          !authRepository.userRole is Admin) {
         emit(BranchesNotAuthenticated(error: event.error));
         return;
       }
       emit(BranchesLoading());
       try {
-        final data = await branchRepository.getBranchesList();
+        final data = await branchRepository.getAllBranchedAndCompanies();
         List<Branch> branches = data['branches'] as List<Branch>;
         List<Company> companies = data['companies'] as List<Company>;
         emit(BranchesAuthenticated(

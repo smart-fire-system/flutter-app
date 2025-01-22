@@ -1,4 +1,9 @@
+import 'package:fire_alarm_system/models/branch.dart';
+import 'package:fire_alarm_system/models/company.dart';
+import 'package:fire_alarm_system/models/premissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/repositories/branch_repository.dart';
+import 'package:fire_alarm_system/repositories/user_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/models/user_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,13 +17,17 @@ class AuthRepository {
   final firebase.FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
   final UserAuth _userAuth;
+  String? googleUserName;
+  String? googleUserEmail;
 
   AuthRepository()
       : _firebaseAuth = firebase.FirebaseAuth.instance,
         _firestore = FirebaseFirestore.instance,
         _userAuth = UserAuth(authStatus: AuthStatus.notAuthenticated);
 
-  UserAuth get userAuth => _userAuth;
+  AuthStatus get authStatus => _userAuth.authStatus;
+  UserInfo get userInfo => _userAuth.userRole.info as UserInfo;
+  dynamic get userRole => _userAuth.userRole;
 
   Stream<String> get authStateChanges {
     return _firebaseAuth.authStateChanges().asyncMap((firebaseUser) async {
@@ -34,7 +43,7 @@ class AuthRepository {
       }
 
       try {
-        await _validateUserRole();
+        await _checkUserExists();
         return "";
       } catch (e) {
         await signOut();
@@ -53,7 +62,7 @@ class AuthRepository {
     if (firebaseUser == null) {
       _setUserNotAuthenticated();
     } else {
-      await _validateUserRole();
+      await _checkUserExists();
     }
   }
 
@@ -111,14 +120,11 @@ class AuthRepository {
   }
 
   Future<void> signIn(String email, String password) async {
+    googleUserName = null;
+    googleUserEmail = null;
     try {
-      _userAuth.user = User(
-          id: "",
-          name: "name",
-          email: email,
-          countryCode: "",
-          phoneNumber: "",
-          role: UserRole.noRole);
+      _userAuth.authStatus = AuthStatus.notAuthenticated;
+      _userAuth.userRole = null;
       await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -135,14 +141,11 @@ class AuthRepository {
 
   Future<void> signUpWithEmailAndPassword(
       String email, String password, String name) async {
+    googleUserName = null;
+    googleUserEmail = null;
     try {
-      _userAuth.user = User(
-          id: "",
-          name: name,
-          email: email,
-          countryCode: "",
-          phoneNumber: "",
-          role: UserRole.noRole);
+      _userAuth.authStatus = AuthStatus.notAuthenticated;
+      _userAuth.userRole = null;
       await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -188,13 +191,8 @@ class AuthRepository {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      _userAuth.user = User(
-          id: "",
-          name: googleUser.displayName ?? "",
-          email: googleUser.email,
-          countryCode: "",
-          phoneNumber: "",
-          role: UserRole.noRole);
+      googleUserName = googleUser.displayName;
+      googleUserEmail = googleUser.email;
       await _firebaseAuth.signInWithCredential(credential);
     } catch (e) {
       _setUserNotAuthenticated();
@@ -210,81 +208,137 @@ class AuthRepository {
 
   void _setUserNotAuthenticated() {
     _userAuth.authStatus = AuthStatus.notAuthenticated;
-    _userAuth.user = null;
+    _userAuth.userRole = null;
+    googleUserName = null;
+    googleUserEmail = null;
   }
 
-  Future<void> _validateUserRole() async {
-    if (_userAuth.user != null) {
-      _userAuth.user!.id = _firebaseAuth.currentUser!.uid;
-    } else {
-      _userAuth.user = User(
-          id: _firebaseAuth.currentUser!.uid,
-          name: "",
-          email: "",
-          countryCode: "",
-          phoneNumber: "",
-          role: UserRole.noRole);
-    }
-    DocumentSnapshot documentSnapshot =
-        await _firestore.collection('users').doc(_userAuth.user!.id).get();
+  Future<void> _checkUserExists() async {
+    final user = _firebaseAuth.currentUser!;
+    UserInfo userInfo = UserInfo(
+      id: user.uid,
+    );
+    final documentSnapshot =
+        await _firestore.collection('users').doc(userInfo.id).get();
     if (documentSnapshot.exists) {
-      _userAuth.user!.name = documentSnapshot.get('name');
-      _userAuth.user!.email = documentSnapshot.get('email');
-      _userAuth.user!.countryCode = documentSnapshot.get('countryCode');
-      _userAuth.user!.phoneNumber = documentSnapshot.get('phoneNumber');
-      switch (documentSnapshot.get('role')) {
-        case 'admin':
-        case 'companyManager':
-        case 'branchManager':
-        case 'employee':
-        case 'technican':
-        case 'client':
-          try {
-            DocumentSnapshot userRoleDocumentSnapshot = await FirebaseFirestore
-                .instance
-                .collection(documentSnapshot.get('role') + 's')
-                .doc(_userAuth.user!.id)
-                .get();
-            if (userRoleDocumentSnapshot.exists) {
-              _userAuth.user!.role = User.getRole(documentSnapshot.get('role'));
-            } else {
-              _userAuth.user!.role = UserRole.noRole;
-              await _addUserToFirestore();
-            }
-          } catch (e) {
-            if (e is FirebaseException) {
-              if (e.code == 'permission-denied') {
-                _userAuth.user!.role = UserRole.noRole;
-                await _addUserToFirestore();
-              } else {
-                throw Exception(e.code);
-              }
-            } else {
-              throw Exception(e.toString());
-            }
-          }
-          break;
-        default:
-          _userAuth.user!.role = UserRole.noRole;
-          break;
-      }
+      userInfo.name = documentSnapshot.get('name');
+      userInfo.email = documentSnapshot.get('email');
+      userInfo.countryCode = documentSnapshot.get('countryCode');
+      userInfo.phoneNumber = documentSnapshot.get('phoneNumber');
+      userInfo.createdAt = documentSnapshot.get('createdAt');
     } else {
-      await _addUserToFirestore();
+      userInfo.name = googleUserName ?? user.displayName ?? "";
+      userInfo.email = googleUserEmail ?? user.email ?? "";
+      googleUserName = null;
+      googleUserEmail = null;
+      await _addUserToFirestore(userInfo);
     }
+    _userAuth.userRole = await _getRoleUser(userInfo);
     // TODO: Remove this in production
-    if (_userAuth.user!.email.endsWith("@test.com")) {
+    if (userInfo.email.endsWith("@test.com")) {
       _userAuth.authStatus = AuthStatus.authenticated;
     }
   }
 
-  Future<void> _addUserToFirestore() async {
-    firebase.User? firebaseUser = _firebaseAuth.currentUser;
+  Future<dynamic> _getRoleUser(UserInfo user) async {
+    UserRepository userRepository = UserRepository(authRepository: this);
+    QuerySnapshot querySnapshot;
+
+    querySnapshot = await _firestore.collection('masterAdmins').get();
+    if (userRepository.isMasterAdmin(user.id, querySnapshot)) {
+      return MasterAdmin(
+        info: user,
+      );
+    }
+
+    querySnapshot = await _firestore.collection('admins').get();
+    AppPremessions? adminData = userRepository.isAdmin(user.id, querySnapshot);
+    if (adminData != null) {
+      return Admin(
+        info: user,
+        premissions: adminData,
+      );
+    }
+
+    querySnapshot = await _firestore.collection('companyManagers').get();
+    Map<String, dynamic>? companyManagerData =
+        userRepository.isCompanyManager(user.id, querySnapshot);
+    if (companyManagerData != null) {
+      Map<String, dynamic>? companyData =
+          await BranchRepository().getCompanyAndBranches(
+        companyManagerData['id'],
+      );
+      if (companyData == null) {
+        return NoRoleUser(info: user);
+      }
+      Company company = companyData['company'];
+      List<Branch> branches = companyData['branches'];
+      return CompanyManager(
+        info: user,
+        company: company,
+        branches: branches,
+        premissions: companyManagerData['premissions'],
+      );
+    }
+
+    querySnapshot = await _firestore.collection('branchManagers').get();
+    Map<String, dynamic>? branchManagerData =
+        userRepository.isBranchManager(user.id, querySnapshot);
+    if (branchManagerData != null) {
+      Branch? branch = await BranchRepository().getBranch(
+        branchManagerData['id'],
+      );
+      if (branch == null) {
+        return NoRoleUser(info: user);
+      }
+      return BranchManager(
+        info: user,
+        branch: branch,
+        premissions: branchManagerData['premissions'],
+      );
+    }
+
+    querySnapshot = await _firestore.collection('employees').get();
+    Map<String, dynamic>? employeeData =
+        userRepository.isEmployee(user.id, querySnapshot);
+    if (employeeData != null) {
+      Branch? branch = await BranchRepository().getBranch(
+        employeeData['id'],
+      );
+      if (branch == null) {
+        return NoRoleUser(info: user);
+      }
+      return Employee(
+        info: user,
+        branch: branch,
+        premissions: employeeData['premissions'],
+      );
+    }
+
+    querySnapshot = await _firestore.collection('clients').get();
+    Map<String, dynamic>? clientData =
+        userRepository.isClient(user.id, querySnapshot);
+    if (clientData != null) {
+      Branch? branch = await BranchRepository().getBranch(
+        clientData['id'],
+      );
+      if (branch == null) {
+        return NoRoleUser(info: user);
+      }
+      return Client(
+        info: user,
+        branch: branch,
+        premissions: clientData['premissions'],
+      );
+    }
+
+    return NoRoleUser(info: user);
+  }
+
+  Future<void> _addUserToFirestore(UserInfo userInfo) async {
+    final firebaseUser = _firebaseAuth.currentUser;
     Map<String, dynamic> userData = {
-      'name': _userAuth.user!.name,
-      'email': _userAuth.user!.email,
-      'phoneNumber': _userAuth.user!.phoneNumber,
-      'countryCode': _userAuth.user!.countryCode,
-      'role': User.getRoleId(_userAuth.user!.role),
+      ...userInfo.toMap(),
       'createdAt': FieldValue.serverTimestamp(),
     };
     await _firestore.collection('users').doc(firebaseUser!.uid).set(userData);

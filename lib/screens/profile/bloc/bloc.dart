@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/repositories/user_repository.dart';
+import 'package:fire_alarm_system/utils/message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
@@ -17,15 +18,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     on<AuthChanged>((event, emit) {
       if (event.error == null) {
-        if (authRepository.userAuth.authStatus == AuthStatus.notAuthenticated) {
+        if (authRepository.authStatus == AuthStatus.notAuthenticated) {
           emit(ProfileNotAuthenticated());
         } else {
           emit(ProfileAuthenticated(
-              user: authRepository.userAuth.user!,
-              isAuthorized: authRepository.userAuth.authStatus ==
-                      AuthStatus.authenticated &&
-                  authRepository.userAuth.user!.role != UserRole.noRole &&
-                  authRepository.userAuth.user!.phoneNumber.isNotEmpty));
+            user: authRepository.userRole,
+          ));
         }
       } else {
         emit(ProfileNotAuthenticated(error: event.error!));
@@ -37,25 +35,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       try {
         final userRepository = UserRepository(authRepository: authRepository);
         await userRepository.updateInformation(
-            name: event.name,
-            countryCode: event.countryCode,
-            phoneNumber: event.phoneNumber);
+          name: event.name,
+          countryCode: event.countryCode,
+          phoneNumber: event.phoneNumber,
+        );
         await authRepository.refreshUserAuth();
         emit(ProfileAuthenticated(
-            user: authRepository.userAuth.user!,
-            isAuthorized: authRepository.userAuth.authStatus ==
-                    AuthStatus.authenticated &&
-                authRepository.userAuth.user!.role != UserRole.noRole &&
-                authRepository.userAuth.user!.phoneNumber.isNotEmpty,
-            message: ProfileMessage.infoUpdated));
+          user: authRepository.userRole,
+          message: AppMessage.profileInfoUpdated,
+        ));
       } catch (error) {
         emit(ProfileAuthenticated(
-            user: authRepository.userAuth.user!,
-            isAuthorized: authRepository.userAuth.authStatus ==
-                    AuthStatus.authenticated &&
-                authRepository.userAuth.user!.role != UserRole.noRole &&
-                authRepository.userAuth.user!.phoneNumber.isNotEmpty,
-            error: error.toString()));
+          user: authRepository.userRole,
+          error: error.toString(),
+        ));
       }
     });
 
@@ -73,20 +66,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       try {
         await authRepository.sendPasswordResetEmail();
         emit(ProfileAuthenticated(
-            user: authRepository.userAuth.user!,
-            isAuthorized: authRepository.userAuth.authStatus ==
-                    AuthStatus.authenticated &&
-                authRepository.userAuth.user!.role != UserRole.noRole &&
-                authRepository.userAuth.user!.phoneNumber.isNotEmpty,
-            message: ProfileMessage.resetPasswordEmailSent));
+          user: authRepository.userRole,
+          message: AppMessage.resetPasswordEmailSent,
+        ));
       } catch (error) {
         emit(ProfileAuthenticated(
-            user: authRepository.userAuth.user!,
-            isAuthorized: authRepository.userAuth.authStatus ==
-                    AuthStatus.authenticated &&
-                authRepository.userAuth.user!.role != UserRole.noRole &&
-                authRepository.userAuth.user!.phoneNumber.isNotEmpty,
-            error: error.toString()));
+            user: authRepository.userRole, error: error.toString()));
       }
     });
 
@@ -95,19 +80,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       try {
         await authRepository.refreshUserAuth();
         emit(ProfileAuthenticated(
-            user: authRepository.userAuth.user!,
-            isAuthorized: authRepository.userAuth.authStatus ==
-                    AuthStatus.authenticated &&
-                authRepository.userAuth.user!.role != UserRole.noRole &&
-                authRepository.userAuth.user!.phoneNumber.isNotEmpty));
+          user: authRepository.userRole,
+        ));
       } catch (error) {
         emit(ProfileAuthenticated(
-            user: authRepository.userAuth.user!,
-            isAuthorized: authRepository.userAuth.authStatus ==
-                    AuthStatus.authenticated &&
-                authRepository.userAuth.user!.role != UserRole.noRole &&
-                authRepository.userAuth.user!.phoneNumber.isNotEmpty,
-            error: error.toString()));
+            user: authRepository.userRole, error: error.toString()));
       }
     });
   }

@@ -21,15 +21,15 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     on<AuthChanged>((event, emit) async {
       if (event.error == null) {
         emit(UsersLoading());
-        if (authRepository.userAuth.authStatus != AuthStatus.authenticated ||
-            authRepository.userAuth.user!.phoneNumber.isEmpty) {
+        if (authRepository.authStatus != AuthStatus.authenticated ||
+            authRepository.userInfo.phoneNumber.isEmpty) {
           emit(UsersNotAuthenticated());
         } else {
           try {
             UsersAndBranches usersAndBranches =
                 await userRepository.getUsersAndBranches();
             emit(UsersAuthenticated(
-              user: authRepository.userAuth.user!,
+              roleUser: authRepository.userRole,
               companies: usersAndBranches.companies,
               branches: usersAndBranches.branches,
               admins: usersAndBranches.admins,
@@ -42,7 +42,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
             ));
           } catch (e) {
             emit(UsersAuthenticated(
-              user: authRepository.userAuth.user!,
+              roleUser: authRepository.userRole,
               error: e.toString(),
             ));
           }

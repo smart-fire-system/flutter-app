@@ -43,11 +43,25 @@ class Branch {
     };
   }
 
-  factory Branch.fromMap(
-      Map<String, dynamic> map, String documentId, List<Company> companies) {
+  factory Branch.fromMap({
+    required Map<String, dynamic> map,
+    required String branchId,
+    List<Company>? companies,
+    Company? company,
+  }) {
+    Company branchCompany;
+    assert(company != null || companies != null);
+    if (company != null) {
+      branchCompany = company;
+    } else if (companies != null) {
+      branchCompany =
+          companies.firstWhere((element) => element.id == map['company']);
+    } else {
+      throw Exception('Company not found');
+    }
     return Branch(
-      id: documentId,
-      company: companies.firstWhere((element) => element.id == map['company']),
+      id: branchId,
+      company: branchCompany,
       code: map['code'],
       name: map['name'],
       address: map['address'],

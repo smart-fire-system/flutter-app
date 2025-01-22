@@ -3,6 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 
 class DataValidator {
+  bool isValidEmail(String email) {
+    if (email.isEmpty) {
+      return false;
+    }
+    final RegExp emailRegExp = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    return emailRegExp.hasMatch(email);
+  }
+
+  bool isValidPassword(String password, String confirmPassword) {
+    return password == confirmPassword && password.length >= 6;
+  }
+
   static String? validateEmail(BuildContext context, String? value) {
     if (value == null || value.isEmpty) {
       return S.of(context).enter_email;
