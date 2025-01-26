@@ -1,6 +1,6 @@
 import 'package:fire_alarm_system/utils/enums.dart';
 
-class AppPremessions {
+class AppPermissions {
   UserRole? role;
 
   bool canViewAdmins;
@@ -38,7 +38,7 @@ class AppPremessions {
   bool canAddCompanies;
   bool canDeleteCompanies;
 
-  AppPremessions({
+  AppPermissions({
     this.role,
     this.canViewAdmins = false,
     this.canEditAdmins = false,
@@ -70,8 +70,8 @@ class AppPremessions {
     this.canDeleteCompanies = false,
   });
 
-  factory AppPremessions.masterAdmin() {
-    return AppPremessions(
+  factory AppPermissions.masterAdmin() {
+    return AppPermissions(
       role: UserRole.masterAdmin,
       canViewAdmins: true,
       canEditAdmins: true,
@@ -104,8 +104,8 @@ class AppPremessions {
     );
   }
 
-  factory AppPremessions.fromAdminMap(Map<String, dynamic> map) {
-    return AppPremessions(
+  factory AppPermissions.fromAdminMap(Map<String, dynamic> map) {
+    return AppPermissions(
       role: UserRole.admin,
       canViewAdmins: true,
       canEditAdmins: map['canEditAdmins'] ?? false,
@@ -138,8 +138,8 @@ class AppPremessions {
     );
   }
 
-  factory AppPremessions.fromCompanyManagerMap(Map<String, dynamic> map) {
-    return AppPremessions(
+  factory AppPermissions.fromCompanyManagerMap(Map<String, dynamic> map) {
+    return AppPermissions(
       role: UserRole.companyManager,
       canViewBranchManagers: true,
       canEditBranchManagers: map['canEditBranchManagers'] ?? false,
@@ -162,8 +162,8 @@ class AppPremessions {
     );
   }
 
-  factory AppPremessions.fromBranchManagerMap(Map<String, dynamic> map) {
-    return AppPremessions(
+  factory AppPermissions.fromBranchManagerMap(Map<String, dynamic> map) {
+    return AppPermissions(
       role: UserRole.branchManager,
       canViewEmployees: true,
       canEditEmployees: map['canEditEmployees'] ?? false,
@@ -178,8 +178,8 @@ class AppPremessions {
     );
   }
 
-  factory AppPremessions.fromEmployeeMap(Map<String, dynamic> map) {
-    return AppPremessions(
+  factory AppPermissions.fromEmployeeMap(Map<String, dynamic> map) {
+    return AppPermissions(
       role: UserRole.branchManager,
       canViewClients: true,
       canEditClients: map['canEditClients'] ?? false,
@@ -188,8 +188,8 @@ class AppPremessions {
     );
   }
 
-  factory AppPremessions.fromClientMap(Map<String, dynamic> map) {
-    return AppPremessions(
+  factory AppPermissions.fromClientMap(Map<String, dynamic> map) {
+    return AppPermissions(
       role: UserRole.branchManager,
     );
   }

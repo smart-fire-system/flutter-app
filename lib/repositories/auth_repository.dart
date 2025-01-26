@@ -1,6 +1,6 @@
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
-import 'package:fire_alarm_system/models/premissions.dart';
+import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/branch_repository.dart';
 import 'package:fire_alarm_system/repositories/user_repository.dart';
@@ -252,11 +252,11 @@ class AuthRepository {
     }
 
     querySnapshot = await _firestore.collection('admins').get();
-    AppPremessions? adminData = userRepository.isAdmin(user.id, querySnapshot);
+    AppPermissions? adminData = userRepository.isAdmin(user.id, querySnapshot);
     if (adminData != null) {
       return Admin(
         info: user,
-        premissions: adminData,
+        permissions: adminData,
       );
     }
 
@@ -277,7 +277,7 @@ class AuthRepository {
         info: user,
         company: company,
         branches: branches,
-        premissions: companyManagerData['premissions'],
+        permissions: companyManagerData['permissions'],
       );
     }
 
@@ -294,7 +294,7 @@ class AuthRepository {
       return BranchManager(
         info: user,
         branch: branch,
-        premissions: branchManagerData['premissions'],
+        permissions: branchManagerData['permissions'],
       );
     }
 
@@ -311,7 +311,7 @@ class AuthRepository {
       return Employee(
         info: user,
         branch: branch,
-        premissions: employeeData['premissions'],
+        permissions: employeeData['permissions'],
       );
     }
 
@@ -328,7 +328,7 @@ class AuthRepository {
       return Client(
         info: user,
         branch: branch,
-        premissions: clientData['premissions'],
+        permissions: clientData['permissions'],
       );
     }
 

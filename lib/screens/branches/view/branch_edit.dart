@@ -1,6 +1,7 @@
 import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
+import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
@@ -36,7 +37,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
   late TextEditingController _commentController;
-  bool _canDeleteBranches = false;
+  AppPermissions _permissions = AppPermissions();
   bool _isFirstCall = true;
   Branch? _branch;
   List<Company> _companies = [];
@@ -64,7 +65,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
           context: context,
           screen: AppScreen.editBranches,
         );
-        if (state is BranchesAuthenticated && state.canEditBranches) {
+        if (state is BranchesAuthenticated && state.user.permissions.canEditBranches) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (state.error != null) {
               CustomAlert.showError(
@@ -94,7 +95,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
             _branch = state.branches
                 .firstWhere((branch) => branch.id == widget.branchId);
             _companies = state.companies;
-            _canDeleteBranches = state.canDeleteBranches;
+            _permissions = state.user.permissions;
             if (_isFirstCall) {
               _isFirstCall = false;
               _nameController = TextEditingController(text: _branch!.name);
@@ -182,7 +183,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                 controller: _commentController,
                 maxLines: 3,
               ),
-              if (_canDeleteBranches)
+              if (_permissions.canDeleteBranches)
                 CustomNormalButton(
                   label: S.of(context).deleteBranch,
                   backgroundColor: CustomStyle.redDark,

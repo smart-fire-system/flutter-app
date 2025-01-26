@@ -107,7 +107,7 @@ class ProfileScreenState extends State<ProfileScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  UserInfo.getRoleName(context, _user.premissions.role),
+                  UserInfo.getRoleName(context, _user.permissions.role),
                   style: CustomStyle.mediumTextB,
                   textAlign: TextAlign.center,
                 ),

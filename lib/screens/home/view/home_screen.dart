@@ -249,7 +249,7 @@ class HomeScreenState extends State<HomeScreen> {
     return NotAuthorizedScreen(
       email: _userInfo.email,
       name: _userInfo.name,
-      role: UserInfo.getRoleName(context, _user.premissions.role),
+      role: UserInfo.getRoleName(context, _user.permissions.role),
       isEmailVerified: isEmailVerified,
       isPhoneAdded: _userInfo.phoneNumber.isNotEmpty,
       onRefresh: () {

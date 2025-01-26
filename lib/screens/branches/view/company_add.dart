@@ -61,7 +61,8 @@ class AddCompanyScreenState extends State<AddCompanyScreen> {
         context: context,
         screen: AppScreen.addCompanies,
       );
-      if (state is BranchesAuthenticated && state.canAddCompanies) {
+      if (state is BranchesAuthenticated &&
+          state.user.permissions.canAddCompanies) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           if (state.error != null) {
             CustomAlert.showError(

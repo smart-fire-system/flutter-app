@@ -30,34 +30,37 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
       UserInfo userInfo = authRepository.userRole.info as UserInfo;
       if (authRepository.authStatus != AuthStatus.authenticated ||
           userInfo.phoneNumber.isEmpty ||
-          !authRepository.userRole is Admin) {
+          authRepository.userRole is NoRoleUser) {
         emit(BranchesNotAuthenticated(error: event.error));
         return;
       }
       emit(BranchesLoading());
       try {
-        final data = await branchRepository.getAllBranchedAndCompanies();
-        List<Branch> branches = data['branches'] as List<Branch>;
-        List<Company> companies = data['companies'] as List<Company>;
+        dynamic user = authRepository.userRole;
+        List<Branch> branches = [];
+        List<Company> companies = [];
+        if (user is MasterAdmin || user is Admin) {
+          final data = await branchRepository.getAllBranchedAndCompanies();
+          branches = data['branches'] as List<Branch>;
+          companies = data['companies'] as List<Company>;
+        } else if (user is CompanyManager) {
+          branches = List.from(user.branches);
+          companies = [user.company];
+        } else {
+          branches = [user.branch];
+          companies = [user.company];
+        }
         emit(BranchesAuthenticated(
+          user: authRepository.userRole,
           branches: branches,
           companies: companies,
-          message: event.message,
           createdId: createdId,
-          canViewBranches: true,
-          canEditBranches: true,
-          canAddBranches: true,
-          canDeleteBranches: true,
-          canViewCompanies: true,
-          canEditCompanies: true,
-          canAddCompanies: true,
-          canDeleteCompanies: true,
+          message: event.message,
           error: event.error,
         ));
       } catch (e) {
         emit(BranchesAuthenticated(
-          branches: [],
-          companies: [],
+          user: authRepository.userRole,
           error: event.error ?? e.toString(),
         ));
       }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
+import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
@@ -39,7 +40,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
   late TextEditingController _emailController;
   late TextEditingController _commentController;
   List<Branch> _branches = [];
-  bool _canDeleteCompanies = false;
+  AppPermissions _permissions = AppPermissions();
   bool _isFirstCall = true;
   Company? _company;
   File? _newLogoFile;
@@ -67,7 +68,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
           context: context,
           screen: AppScreen.editCompanies,
         );
-        if (state is BranchesAuthenticated && state.canEditCompanies) {
+        if (state is BranchesAuthenticated && state.user.permissions.canEditCompanies) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (state.error != null) {
               CustomAlert.showError(
@@ -97,7 +98,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
             _company = state.companies
                 .firstWhere((company) => company.id == widget.companyId);
             _branches = List.from(state.branches);
-            _canDeleteCompanies = state.canDeleteCompanies;
+            _permissions = state.user.permissions;
             if (_isFirstCall) {
               _isFirstCall = false;
               _nameController = TextEditingController(text: _company!.name);
@@ -214,7 +215,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
                   ),
                 ],
               ),
-              if (_canDeleteCompanies)
+              if (_permissions.canDeleteCompanies)
                 CustomNormalButton(
                   label: S.of(context).deleteCompany,
                   backgroundColor: CustomStyle.redDark,

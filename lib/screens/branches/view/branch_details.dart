@@ -1,5 +1,7 @@
 import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/branch.dart';
+import 'package:fire_alarm_system/models/permissions.dart';
+import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -24,14 +26,13 @@ class BranchDetailsScreen extends StatefulWidget {
 
 class BranchDetailsScreenState extends State<BranchDetailsScreen> {
   Branch? _branch;
-  bool _canEditBranches = false;
-  bool _canViewCompanies = false;
+  AppPermissions _permissions = AppPermissions();
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BranchesBloc, BranchesState>(
       builder: (context, state) {
-        if (state is BranchesAuthenticated && state.canViewBranches) {
+        if (state is BranchesAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (state.error != null) {
               CustomAlert.showError(
@@ -42,10 +43,16 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
             }
           });
           try {
-            _canEditBranches = state.canEditBranches;
-            _canViewCompanies = state.canViewCompanies;
-            _branch = state.branches
-                .firstWhere((branch) => branch.id == widget.branchId);
+            if (state.user is MasterAdmin || state.user is Admin) {
+              _branch = state.branches
+                  .firstWhere((branch) => branch.id == widget.branchId);
+            } else if (state.user is CompanyManager) {
+              _branch = state.user.branches
+                  .firstWhere((branch) => branch.id == widget.branchId);
+            } else {
+              _branch = state.user.branch;
+            }
+            _permissions = state.user.permissions;
             return _buildDetails(context);
           } catch (e) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -65,7 +72,7 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
   Widget _buildDetails(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: _branch!.name),
-      floatingActionButton: !_canEditBranches
+      floatingActionButton: !_permissions.canEditBranches
           ? null
           : FloatingActionButton.extended(
               backgroundColor: CustomStyle.redDark,
@@ -110,13 +117,11 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
               CustomInfoCard(
                 title: S.of(context).companyInformation,
                 icon: Icons.business_outlined,
-                onTap: !_canViewCompanies
-                    ? null
-                    : () {
-                        TabNavigator.settings.currentState?.pushNamed(
-                            '/company/details',
-                            arguments: _branch!.company.id);
-                      },
+                onTap: () {
+                  TabNavigator.settings.currentState?.pushNamed(
+                      '/company/details',
+                      arguments: _branch!.company.id);
+                },
                 children: [
                   ListTile(
                     title: Text(_branch!.company.name,

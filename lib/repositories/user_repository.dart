@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
-import 'package:fire_alarm_system/models/premissions.dart';
+import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/repositories/branch_repository.dart';
@@ -121,11 +121,11 @@ class UserRepository {
           continue;
         }
 
-        final premissions = isAdmin(doc.id, adminsSnapshot);
-        if (premissions != null) {
+        final permissions = isAdmin(doc.id, adminsSnapshot);
+        if (permissions != null) {
           usersAndBranches.admins.add(
             Admin(
-              premissions: premissions,
+              permissions: permissions,
               info: UserInfo.fromMap(
                 userData,
                 doc.id,
@@ -150,7 +150,7 @@ class UserRepository {
                 company: company,
                 branches:
                     Company.getBranches(company.id!, usersAndBranches.branches),
-                premissions: companyManager['premissions'],
+                permissions: companyManager['permissions'],
                 info: UserInfo.fromMap(
                   userData,
                   doc.id,
@@ -174,7 +174,7 @@ class UserRepository {
             usersAndBranches.branchManagers.add(
               BranchManager(
                 branch: branch,
-                premissions: branchManager['premissions'],
+                permissions: branchManager['permissions'],
                 info: UserInfo.fromMap(
                   userData,
                   doc.id,
@@ -198,7 +198,7 @@ class UserRepository {
             usersAndBranches.employees.add(
               Employee(
                 branch: branch,
-                premissions: employee['premissions'],
+                permissions: employee['permissions'],
                 info: UserInfo.fromMap(
                   userData,
                   doc.id,
@@ -222,7 +222,7 @@ class UserRepository {
             usersAndBranches.clients.add(
               Client(
                 branch: branch,
-                premissions: client['premissions'],
+                permissions: client['permissions'],
                 info: UserInfo.fromMap(
                   userData,
                   doc.id,
@@ -260,12 +260,12 @@ class UserRepository {
     }
   }
 
-  AppPremessions? isAdmin(String userId, QuerySnapshot snapshot) {
+  AppPermissions? isAdmin(String userId, QuerySnapshot snapshot) {
     try {
       final userDoc = snapshot.docs.firstWhere((user) => user.id == userId);
       Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
       if (userData != null) {
-        return AppPremessions.fromAdminMap(userData['premissions']);
+        return AppPermissions.fromAdminMap(userData['permissions']);
       } else {
         return null;
       }
@@ -282,8 +282,8 @@ class UserRepository {
       if (userData != null) {
         return {
           'id': userData['company'],
-          'premissions': AppPremessions.fromCompanyManagerMap(
-            userData['premissions'],
+          'permissions': AppPermissions.fromCompanyManagerMap(
+            userData['permissions'],
           ),
         };
       } else {
@@ -302,8 +302,8 @@ class UserRepository {
       if (userData != null) {
         return {
           'id': userData['branch'],
-          'premissions': AppPremessions.fromBranchManagerMap(
-            userData['premissions'],
+          'permissions': AppPermissions.fromBranchManagerMap(
+            userData['permissions'],
           ),
         };
       } else {
@@ -321,8 +321,8 @@ class UserRepository {
       if (userData != null) {
         return {
           'id': userData['branch'],
-          'premissions': AppPremessions.fromEmployeeMap(
-            userData['premissions'],
+          'permissions': AppPermissions.fromEmployeeMap(
+            userData['permissions'],
           ),
         };
       } else {
@@ -340,8 +340,8 @@ class UserRepository {
       if (userData != null) {
         return {
           'id': userData['branch'],
-          'premissions': AppPremessions.fromClientMap(
-            userData['premissions'],
+          'permissions': AppPermissions.fromClientMap(
+            userData['permissions'],
           ),
         };
       } else {

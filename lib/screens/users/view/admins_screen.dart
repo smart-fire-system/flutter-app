@@ -132,19 +132,19 @@ class UsersScreenState extends State<UsersScreen> {
     bool canAdd = false;
     String role = 'noRoleUsers';
     if (widget.view == UsersScreenView.admins) {
-      canAdd = _roleUser.premissions.canAddAdmins;
+      canAdd = _roleUser.permissions.canAddAdmins;
       role = 'admin';
     } else if (widget.view == UsersScreenView.companyManagers) {
-      canAdd = _roleUser.premissions.canAddCompanyManagers;
+      canAdd = _roleUser.permissions.canAddCompanyManagers;
       role = 'companyManager';
     } else if (widget.view == UsersScreenView.branchManagers) {
-      canAdd = _roleUser.premissions.canAddBranchManagers;
+      canAdd = _roleUser.permissions.canAddBranchManagers;
       role = 'branchManager';
     } else if (widget.view == UsersScreenView.employees) {
-      canAdd = _roleUser.premissions.canAddEmployees;
+      canAdd = _roleUser.permissions.canAddEmployees;
       role = 'employee';
     } else if (widget.view == UsersScreenView.clients) {
-      canAdd = _roleUser.premissions.canAddClients;
+      canAdd = _roleUser.permissions.canAddClients;
       role = 'client';
     }
     return Scaffold(

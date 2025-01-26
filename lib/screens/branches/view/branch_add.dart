@@ -61,7 +61,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
         context: context,
         screen: AppScreen.addBranhes,
       );
-      if (state is BranchesAuthenticated && state.canAddBranches) {
+      if (state is BranchesAuthenticated && state.user.permissions.canAddBranches) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           if (state.error != null) {
             CustomAlert.showError(

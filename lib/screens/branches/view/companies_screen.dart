@@ -1,5 +1,7 @@
 import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/company.dart';
+import 'package:fire_alarm_system/models/permissions.dart';
+import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -27,7 +29,7 @@ class CompaniesScreenState extends State<CompaniesScreen> {
   bool _filterRequested = false;
   List<Company> _companies = [];
   List<Company> _filteredCompanies = [];
-  bool _canAddCompanies = false;
+  AppPermissions _permissions = AppPermissions();
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -68,17 +70,19 @@ class CompaniesScreenState extends State<CompaniesScreen> {
               state.error = null;
             }
           });
-          _companies = List.from(state.companies);
-          _canAddCompanies = state.canAddCompanies;
-          if (_filterRequested) {
-            _filterRequested = false;
-          } else {
-            _filteredCompanies = List.from(_companies);
-            _searchController.removeListener(_filterCompanies);
-            _searchController.clear();
-            _searchController.addListener(_filterCompanies);
+          if (state.user is MasterAdmin || state.user is Admin) {
+            _permissions = state.user.permissions as AppPermissions;
+            _companies = List.from(state.companies);
+            if (_filterRequested) {
+              _filterRequested = false;
+            } else {
+              _filteredCompanies = List.from(_companies);
+              _searchController.removeListener(_filterCompanies);
+              _searchController.clear();
+              _searchController.addListener(_filterCompanies);
+            }
+            return _buildCompanies(context);
           }
-          return _buildCompanies(context);
         } else if (state is BranchesNotAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushNamedAndRemoveUntil(
@@ -98,13 +102,12 @@ class CompaniesScreenState extends State<CompaniesScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: S.of(context).companies),
-      floatingActionButton: !_canAddCompanies
+      floatingActionButton: !_permissions.canAddCompanies
           ? null
           : FloatingActionButton.extended(
               backgroundColor: Colors.green,
               onPressed: () {
-                TabNavigator.settings.currentState
-                    ?.pushNamed('/company/add');
+                TabNavigator.settings.currentState?.pushNamed('/company/add');
               },
               icon: const Icon(
                 Icons.add,
@@ -114,8 +117,9 @@ class CompaniesScreenState extends State<CompaniesScreen> {
               label: Text(S.of(context).addCompany,
                   style: CustomStyle.mediumTextWhite),
             ),
-      floatingActionButtonLocation:
-          !_canAddCompanies ? null : FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: !_permissions.canAddCompanies
+          ? null
+          : FloatingActionButtonLocation.endFloat,
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<BranchesBloc>().add(AuthChanged());
@@ -193,21 +197,6 @@ class CompaniesScreenState extends State<CompaniesScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: S.of(context).companies),
-      floatingActionButton: !_canAddCompanies
-          ? null
-          : FloatingActionButton.extended(
-              backgroundColor: Colors.green,
-              onPressed: () {},
-              icon: const Icon(
-                Icons.add,
-                size: 30,
-                color: Colors.white,
-              ),
-              label: Text(S.of(context).addCompany,
-                  style: CustomStyle.mediumTextWhite),
-            ),
-      floatingActionButtonLocation:
-          !_canAddCompanies ? null : FloatingActionButtonLocation.endFloat,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

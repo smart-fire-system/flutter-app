@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
-import 'package:fire_alarm_system/models/premissions.dart';
+import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:flutter/material.dart';
 
@@ -100,32 +100,32 @@ class UserInfo {
 
 class NoRoleUser {
   UserInfo info;
-  AppPremessions premissions;
-  NoRoleUser({required this.info}) : premissions = AppPremessions();
+  AppPermissions permissions;
+  NoRoleUser({required this.info}) : permissions = AppPermissions();
 }
 
 class Admin {
   UserInfo info;
-  AppPremessions premissions;
-  Admin({required this.info, required this.premissions});
+  AppPermissions permissions;
+  Admin({required this.info, required this.permissions});
 }
 
 class MasterAdmin {
   UserInfo info;
-  AppPremessions premissions;
+  AppPermissions permissions;
   MasterAdmin({required this.info})
-      : premissions = AppPremessions.masterAdmin();
+      : permissions = AppPermissions.masterAdmin();
 }
 
 class CompanyManager {
   UserInfo info;
-  AppPremessions premissions;
+  AppPermissions permissions;
   Company company;
   List<Branch> branches;
 
   CompanyManager({
     required this.info,
-    required this.premissions,
+    required this.permissions,
     required this.company,
     required this.branches,
   });
@@ -133,36 +133,36 @@ class CompanyManager {
 
 class BranchManager {
   UserInfo info;
-  AppPremessions premissions;
+  AppPermissions permissions;
   Branch branch;
 
   BranchManager({
     required this.info,
-    required this.premissions,
+    required this.permissions,
     required this.branch,
   });
 }
 
 class Employee {
   UserInfo info;
-  AppPremessions premissions;
+  AppPermissions permissions;
   Branch branch;
 
   Employee({
     required this.info,
-    required this.premissions,
+    required this.permissions,
     required this.branch,
   });
 }
 
 class Client {
   UserInfo info;
-  AppPremessions premissions;
+  AppPermissions permissions;
   Branch branch;
 
   Client({
     required this.info,
-    required this.premissions,
+    required this.permissions,
     required this.branch,
   });
 }

@@ -1,6 +1,8 @@
 import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
+import 'package:fire_alarm_system/models/permissions.dart';
+import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -31,7 +33,7 @@ class BranchesScreenState extends State<BranchesScreen> {
   List<Company> _companies = [];
   List<Branch> _filteredBranches = [];
   List<Company> _filteredCompanies = [];
-  bool _canAddBranches = false;
+  AppPermissions _permissions = AppPermissions();
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -73,19 +75,23 @@ class BranchesScreenState extends State<BranchesScreen> {
               state.error = null;
             }
           });
-          _branches = List.from(state.branches);
-          _companies = List.from(state.companies);
-          _canAddBranches = state.canAddBranches;
-          if (_filterRequested) {
-            _filterRequested = false;
-          } else {
-            _filteredBranches = List.from(_branches);
-            _filteredCompanies = List.from(_companies);
-            _searchController.removeListener(_filterBranches);
-            _searchController.clear();
-            _searchController.addListener(_filterBranches);
+          if (state.user is MasterAdmin ||
+              state.user is Admin ||
+              state.user is CompanyManager) {
+            _branches = List.from(state.branches);
+            _companies = List.from(state.companies);
+            _permissions = state.user.permissions as AppPermissions;
+            if (_filterRequested) {
+              _filterRequested = false;
+            } else {
+              _filteredBranches = List.from(_branches);
+              _filteredCompanies = List.from(_companies);
+              _searchController.removeListener(_filterBranches);
+              _searchController.clear();
+              _searchController.addListener(_filterBranches);
+            }
+            return _buildBranches(context);
           }
-          return _buildBranches(context);
         } else if (state is BranchesNotAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushNamedAndRemoveUntil(
@@ -105,7 +111,7 @@ class BranchesScreenState extends State<BranchesScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: S.of(context).branches),
-      floatingActionButton: !_canAddBranches
+      floatingActionButton: !_permissions.canAddBranches
           ? null
           : FloatingActionButton.extended(
               backgroundColor: Colors.green,
@@ -117,8 +123,7 @@ class BranchesScreenState extends State<BranchesScreen> {
                   );
                   return;
                 }
-                TabNavigator.settings.currentState?.pushNamed(
-                    '/branch/add');
+                TabNavigator.settings.currentState?.pushNamed('/branch/add');
               },
               icon: const Icon(
                 Icons.add,
@@ -128,8 +133,9 @@ class BranchesScreenState extends State<BranchesScreen> {
               label: Text(S.of(context).addBranch,
                   style: CustomStyle.mediumTextWhite),
             ),
-      floatingActionButtonLocation:
-          !_canAddBranches ? null : FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: !_permissions.canAddBranches
+          ? null
+          : FloatingActionButtonLocation.endFloat,
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<BranchesBloc>().add(AuthChanged());
@@ -227,21 +233,6 @@ class BranchesScreenState extends State<BranchesScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: S.of(context).branches),
-      floatingActionButton: !_canAddBranches
-          ? null
-          : FloatingActionButton.extended(
-              backgroundColor: Colors.green,
-              onPressed: () {},
-              icon: const Icon(
-                Icons.add,
-                size: 30,
-                color: Colors.white,
-              ),
-              label: Text(S.of(context).addBranch,
-                  style: CustomStyle.mediumTextWhite),
-            ),
-      floatingActionButtonLocation:
-          !_canAddBranches ? null : FloatingActionButtonLocation.endFloat,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

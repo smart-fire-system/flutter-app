@@ -1,6 +1,7 @@
 import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
+import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -26,13 +27,13 @@ class CompanyDetailsScreen extends StatefulWidget {
 class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
   Company? _company;
   List<Branch> _branches = [];
-  bool _canEditCompanies = false;
+  AppPermissions _permissions = AppPermissions();
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BranchesBloc, BranchesState>(
       builder: (context, state) {
-        if (state is BranchesAuthenticated && state.canViewCompanies) {
+        if (state is BranchesAuthenticated && state.user.permissions.canViewCompanies) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (state.error != null) {
               CustomAlert.showError(
@@ -49,7 +50,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
               state.branches
                   .where((branch) => branch.company.id == _company!.id),
             );
-            _canEditCompanies = state.canEditCompanies;
+            _permissions = state.user.permissions;
             return _buildDetails(context);
           } catch (e) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -69,7 +70,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
   Widget _buildDetails(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: _company!.name),
-      floatingActionButton: !_canEditCompanies
+      floatingActionButton: !_permissions.canEditCompanies
           ? null
           : FloatingActionButton.extended(
               backgroundColor: CustomStyle.redDark,
