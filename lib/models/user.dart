@@ -166,3 +166,13 @@ class Client {
     required this.branch,
   });
 }
+
+class Users {
+  List<MasterAdmin> masterAdmins = [];
+  List<Admin> admins = [];
+  List<CompanyManager> companyManagers = [];
+  List<BranchManager> branchManagers = [];
+  List<Employee> employees = [];
+  List<Client> clients = [];
+  List<NoRoleUser> noRoleUsers = [];
+}

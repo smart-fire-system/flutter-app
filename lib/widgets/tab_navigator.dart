@@ -96,19 +96,19 @@ class TabNavigator extends StatelessWidget {
               page = const AddCompanyScreen();
               break;
             case '/admins':
-              page = const UsersScreen(view: UsersScreenView.admins);
+              page = const UsersScreen();
               break;
             case '/companyManagers':
-              page = const UsersScreen(view: UsersScreenView.companyManagers);
+              page = const UsersScreen();
               break;
             case '/branchManagers':
-              page = const UsersScreen(view: UsersScreenView.branchManagers);
+              page = const UsersScreen();
               break;
             case '/employees':
-              page = const UsersScreen(view: UsersScreenView.employees);
+              page = const UsersScreen();
               break;
             case '/clients':
-              page = const UsersScreen(view: UsersScreenView.clients);
+              page = const UsersScreen();
               break;
 
             default:

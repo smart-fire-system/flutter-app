@@ -8,16 +8,6 @@ import 'package:fire_alarm_system/repositories/branch_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 
-class Users {
-  List<MasterAdmin> masterAdmins = [];
-  List<Admin> admins = [];
-  List<CompanyManager> companyManagers = [];
-  List<BranchManager> branchManagers = [];
-  List<Employee> employees = [];
-  List<Client> clients = [];
-  List<NoRoleUser> noRoleUsers = [];
-}
-
 class UserRepository {
   final AuthRepository authRepository;
   final BranchRepository branchRepository;

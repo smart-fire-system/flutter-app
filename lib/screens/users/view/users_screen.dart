@@ -7,7 +7,9 @@ import 'package:fire_alarm_system/screens/users/bloc/state.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
+import 'package:fire_alarm_system/widgets/button.dart';
 import 'package:fire_alarm_system/widgets/dropdown.dart';
+import 'package:fire_alarm_system/widgets/expandable_fab.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
@@ -21,18 +23,8 @@ import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/event.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
 
-enum UsersScreenView {
-  admins,
-  companyManagers,
-  branchManagers,
-  employees,
-  clients,
-  noRoleUsers
-}
-
 class UsersScreen extends StatefulWidget {
-  final UsersScreenView view;
-  const UsersScreen({super.key, required this.view});
+  const UsersScreen({super.key});
 
   @override
   UsersScreenState createState() => UsersScreenState();
@@ -41,11 +33,17 @@ class UsersScreen extends StatefulWidget {
 class UsersScreenState extends State<UsersScreen> {
   bool _filterRequested = false;
   dynamic _roleUser;
-  List<dynamic> _users = [];
-  List<dynamic> _filteredUsers = [];
+  Users _users = Users();
+  Users _filteredUsers = Users();
   List<Company> _companies = [];
   List<Branch> _branches = [];
   final TextEditingController _searchController = TextEditingController();
+  bool _canAddMasterAdmins = false;
+  bool _canAddAdmins = false;
+  bool _canAddCompanyManagers = false;
+  bool _canAddBranchManagers = false;
+  bool _canAddEmployees = false;
+  bool _canAddClients = false;
 
   @override
   void initState() {
@@ -61,7 +59,7 @@ class UsersScreenState extends State<UsersScreen> {
 
   void _filterUsers() {
     String query = _searchController.text.toLowerCase();
-    setState(() {
+    /*setState(() {
       _filterRequested = true;
       _filteredUsers = _users
           .where((user) =>
@@ -71,7 +69,7 @@ class UsersScreenState extends State<UsersScreen> {
                   .contains(query.toLowerCase()) ||
               user.info.email.toLowerCase().contains(query.toLowerCase()))
           .toList();
-    });
+    });*/
   }
 
   @override
@@ -91,23 +89,32 @@ class UsersScreenState extends State<UsersScreen> {
           _roleUser = state.roleUser;
           _companies = state.companies;
           _branches = state.branches;
-          if (widget.view == UsersScreenView.admins) {
-            _users = List.from(state.admins);
-          } else if (widget.view == UsersScreenView.companyManagers) {
-            _users = List.from(state.companyManagers);
-          } else if (widget.view == UsersScreenView.branchManagers) {
-            _users = List.from(state.branchManagers);
-          } else if (widget.view == UsersScreenView.employees) {
-            _users = List.from(state.employees);
-          } else if (widget.view == UsersScreenView.clients) {
-            _users = List.from(state.clients);
-          } else if (widget.view == UsersScreenView.noRoleUsers) {
-            _users = List.from(state.noRoleUsers);
-          }
+          _users.masterAdmins = List.from(state.masterAdmins);
+          _users.admins = List.from(state.admins);
+          _users.companyManagers = List.from(state.companyManagers);
+          _users.branchManagers = List.from(state.branchManagers);
+          _users.employees = List.from(state.employees);
+          _users.clients = List.from(state.clients);
+          _users.noRoleUsers = List.from(state.noRoleUsers);
+          _canAddMasterAdmins = _roleUser is MasterAdmin;
+          print(_canAddMasterAdmins);
+          _canAddAdmins = _roleUser.permissions.canUpdateAdmins;
+          _canAddCompanyManagers =
+              _roleUser.permissions.canUpdateCompanyManagers;
+          _canAddBranchManagers = _roleUser.permissions.canUpdateBranchManagers;
+          _canAddEmployees = _roleUser.permissions.canUpdateEmployees;
+          _canAddClients = _roleUser.permissions.canUpdateClients;
+
           if (_filterRequested) {
             _filterRequested = false;
           } else {
-            _filteredUsers = List.from(_users);
+            _filteredUsers.masterAdmins = List.from(_users.masterAdmins);
+            _filteredUsers.admins = List.from(_users.admins);
+            _filteredUsers.companyManagers = List.from(_users.companyManagers);
+            _filteredUsers.branchManagers = List.from(_users.branchManagers);
+            _filteredUsers.employees = List.from(_users.employees);
+            _filteredUsers.clients = List.from(_users.clients);
+            _filteredUsers.noRoleUsers = List.from(_users.noRoleUsers);
             _searchController.removeListener(_filterUsers);
             _searchController.clear();
             _searchController.addListener(_filterUsers);
@@ -129,72 +136,47 @@ class UsersScreenState extends State<UsersScreen> {
 
   Widget _buildUsers(BuildContext context) {
     AppLoading().dismiss(context: context, screen: AppScreen.viewUsers);
-    String? addText;
-    String appbarTitle = '';
-    if (widget.view == UsersScreenView.admins &&
-        _roleUser.permissions.canUpdateAdmins) {
-      addText = S.of(context).addNewAdmin;
-      appbarTitle = S.of(context).admins;
-    } else if (widget.view == UsersScreenView.companyManagers &&
-        _roleUser.permissions.canUpdateCompanyManagers) {
-      addText = S.of(context).addNewCompanyManager;
-      appbarTitle = S.of(context).companyManagers;
-    } else if (widget.view == UsersScreenView.branchManagers &&
-        _roleUser.permissions.canUpdateBranchManagers) {
-      addText = S.of(context).addNewBranchManager;
-      appbarTitle = S.of(context).branchManagers;
-    } else if (widget.view == UsersScreenView.employees &&
-        _roleUser.permissions.canUpdateEmployees) {
-      addText = S.of(context).addNewEmployee;
-      appbarTitle = S.of(context).employees;
-    } else if (widget.view == UsersScreenView.clients &&
-        _roleUser.permissions.canUpdateClients) {
-      addText = S.of(context).addNewClient;
-      appbarTitle = S.of(context).clients;
-    }
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: appbarTitle),
-      floatingActionButton: (addText == null)
+      appBar: CustomAppBar(title: S.of(context).users),
+      floatingActionButton: !(_canAddMasterAdmins ||
+              _canAddAdmins ||
+              _canAddCompanyManagers ||
+              _canAddBranchManagers ||
+              _canAddEmployees ||
+              _canAddClients)
           ? null
-          : FloatingActionButton.extended(
-              backgroundColor: Colors.green,
-              onPressed: () {
-                String? errorMessage;
-                if (_branches.isEmpty) {
-                  if (widget.view == UsersScreenView.branchManagers) {
-                    errorMessage = S.of(context).noBranchesToAddBranchManager;
-                  } else if (widget.view == UsersScreenView.employees) {
-                    errorMessage = S.of(context).noBranchesToAddEmployee;
-                  } else if (widget.view == UsersScreenView.clients) {
-                    errorMessage = S.of(context).noBranchesToAddClient;
-                  } else if (widget.view == UsersScreenView.companyManagers) {
-                    errorMessage = _companies.isEmpty
-                        ? S.of(context).noCompaneiesToAddCompanyManager
-                        : null;
-                  }
-                }
-                if (errorMessage == null) {
-                  TabNavigator.settings.currentState?.pushNamed(
-                    '/user/add',
-                    arguments: widget.view,
-                  );
-                } else {
-                  CustomAlert.showError(
-                    context: context,
-                    title: errorMessage,
-                  );
-                }
-              },
+          : ExpandableFab(
+              title: S.of(context).add,
               icon: const Icon(
                 Icons.add,
                 size: 30,
                 color: Colors.white,
               ),
-              label: Text(addText, style: CustomStyle.mediumTextWhite),
+              backgroundColor: Colors.green,
+              distance: 45,
+              children: [
+                CustomNormalButton(
+                  label: 'Hello 1',
+                  onPressed: () {
+                    print("Hello 1");
+                  },
+                ),
+                CustomNormalButton(
+                  label: 'Hello 2',
+                  onPressed: () {
+                    print("Hello 2");
+                  },
+                ),
+                CustomNormalButton(
+                  label: 'Hello 3',
+                  onPressed: () {
+                    print("Hello 3");
+                  },
+                ),
+              ],
             ),
-      floatingActionButtonLocation:
-          (addText == null) ? null : FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<BranchesBloc>().add(AuthChanged());
@@ -222,12 +204,18 @@ class UsersScreenState extends State<UsersScreen> {
                   ),
                 ),
               ),
-              _filteredUsers.isEmpty
+              _filteredUsers.masterAdmins.isEmpty &&
+                      _filteredUsers.admins.isEmpty &&
+                      _filteredUsers.companyManagers.isEmpty &&
+                      _filteredUsers.branchManagers.isEmpty &&
+                      _filteredUsers.employees.isEmpty &&
+                      _filteredUsers.clients.isEmpty &&
+                      _filteredUsers.noRoleUsers.isEmpty
                   ? Text(
                       S.of(context).noUsersToView,
                       style: CustomStyle.mediumTextB,
                     )
-                  : Flexible(
+                  : Container(),/*Flexible(
                       child: ListView(
                         children: _filteredUsers.asMap().entries.map((entry) {
                           var user = entry.value;
@@ -266,7 +254,7 @@ class UsersScreenState extends State<UsersScreen> {
                           );
                         }).toList(),
                       ),
-                    ),
+                    ),*/
             ],
           ),
         ),
