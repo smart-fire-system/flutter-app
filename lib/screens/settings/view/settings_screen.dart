@@ -124,7 +124,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Icons.chevron_right,
                   color: CustomStyle.redDark,
                 ),
-                onTap: () {TabNavigator.settings.currentState?.pushNamed('/admins');},
+                onTap: () {
+                  TabNavigator.settings.currentState?.pushNamed('/admins');
+                },
               ),
             ),
             Padding(
@@ -143,7 +145,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Icons.chevron_right,
                   color: CustomStyle.redDark,
                 ),
-                onTap: () {},
+                onTap: () {
+                  TabNavigator.settings.currentState?.pushNamed('/companyManagers');
+                },
               ),
             ),
             Padding(
@@ -162,7 +166,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Icons.chevron_right,
                   color: CustomStyle.redDark,
                 ),
-                onTap: () {},
+                onTap: () {
+                  TabNavigator.settings.currentState?.pushNamed('/branchManagers');
+                },
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
+              child: ListTile(
+                title: Text(
+                  S.of(context).employees,
+                  style: CustomStyle.largeTextB,
+                ),
+                leading: const Icon(
+                  Icons.filter_4,
+                  color: CustomStyle.redDark,
+                ),
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: CustomStyle.redDark,
+                ),
+                onTap: () {
+                  TabNavigator.settings.currentState?.pushNamed('/employees');
+                },
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
+              child: ListTile(
+                title: Text(
+                  S.of(context).clients,
+                  style: CustomStyle.largeTextB,
+                ),
+                leading: const Icon(
+                  Icons.filter_5,
+                  color: CustomStyle.redDark,
+                ),
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: CustomStyle.redDark,
+                ),
+                onTap: () {
+                  TabNavigator.settings.currentState?.pushNamed('/clients');
+                },
               ),
             ),
           ],

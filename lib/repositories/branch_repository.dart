@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/image_compress.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:typed_data';
@@ -13,7 +15,51 @@ class BranchRepository {
       : _firestore = FirebaseFirestore.instance,
         _storage = FirebaseStorage.instance;
 
-  Future<Map<String, List<dynamic>>> getAllBranchedAndCompanies() async {
+  Future<Map<String, List<dynamic>>> getUserBranchesAndCompanies(
+      AuthRepository authRepository) async {
+    try {
+      List<Company> companies = [];
+      List<Branch> branches = [];
+      if (authRepository.userRole is MasterAdmin ||
+          authRepository.userRole is Admin) {
+        QuerySnapshot branchesSnapshot =
+            await _firestore.collection('branches').orderBy('name').get();
+        QuerySnapshot companiesSnapshot =
+            await _firestore.collection('companies').orderBy('name').get();
+        for (var doc in companiesSnapshot.docs) {
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          companies.add(Company.fromMap(data, doc.id));
+        }
+        for (var doc in branchesSnapshot.docs) {
+          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          branches.add(
+            Branch.fromMap(
+              map: data,
+              branchId: doc.id,
+              companies: companies,
+            ),
+          );
+        }
+      } else if (authRepository.userRole is CompanyManager) {
+        branches = List.from(authRepository.userRole.branches);
+        companies = [authRepository.userRole.company];
+      } else if (authRepository.userRole is BranchManager ||
+          authRepository.userRole is Employee ||
+          authRepository.userRole is Client) {
+        branches = [authRepository.userRole.branch];
+        companies = [authRepository.userRole.branch.company];
+      }
+      return {'branches': branches, 'companies': companies};
+    } catch (e) {
+      if (e is FirebaseException) {
+        throw Exception(e.code);
+      } else {
+        throw Exception(e.toString());
+      }
+    }
+  }
+
+  Future<Map<String, List<dynamic>>> getAllBranchesAndCompanies() async {
     try {
       List<Company> companies = [];
       List<Branch> branches = [];

@@ -42,6 +42,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "add": MessageLookupByLibrary.simpleMessage("إضافة"),
         "addCompany": MessageLookupByLibrary.simpleMessage("إضافة شركة جديدة"),
         "addNewAdmin": MessageLookupByLibrary.simpleMessage("إضافة مسئول جديد"),
+        "addNewBranchManager":
+            MessageLookupByLibrary.simpleMessage("إضافة مدير فرع جديد"),
+        "addNewClient": MessageLookupByLibrary.simpleMessage("إضافة عميل جديد"),
+        "addNewCompanyManager":
+            MessageLookupByLibrary.simpleMessage("إضافة مدير شركة جديد"),
+        "addNewEmployee":
+            MessageLookupByLibrary.simpleMessage("إضافة موظف جديد"),
         "address": MessageLookupByLibrary.simpleMessage("العنوان"),
         "admin": MessageLookupByLibrary.simpleMessage("مسئول"),
         "admins": MessageLookupByLibrary.simpleMessage("المسؤولون"),
@@ -251,9 +258,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
         "network_request_failed": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ في الشبكة أثناء تسجيل الدخول. يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى."),
+        "noBranchesToAddBranchManager": MessageLookupByLibrary.simpleMessage(
+            "لا توجد فروع لإضافة مديري فروع إليها. يرجى إضافة فرع أولاً."),
+        "noBranchesToAddClient": MessageLookupByLibrary.simpleMessage(
+            "لا توجد فروع لإضافة عملاء إليها. يرجى إضافة فرع أولاً."),
+        "noBranchesToAddEmployee": MessageLookupByLibrary.simpleMessage(
+            "لا توجد فروع لإضافة موظفين إليها. يرجى إضافة فرع أولاً."),
         "noBranchesToView":
             MessageLookupByLibrary.simpleMessage("لا يوجد فروع لعرضها"),
         "noCancel": MessageLookupByLibrary.simpleMessage("لا، إلغاء"),
+        "noCompaneiesToAddCompanyManager": MessageLookupByLibrary.simpleMessage(
+            "لا توجد شركات لإضافة مديري شركات إليها. يرجى إضافة شركة أولاً."),
         "noCompaniesSelected":
             MessageLookupByLibrary.simpleMessage("لم يتم اختيار أي شركات"),
         "noCompaniesToAddBranch": MessageLookupByLibrary.simpleMessage(
@@ -261,6 +276,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "noCompaniesToView":
             MessageLookupByLibrary.simpleMessage("لا يوجد شركات لعرضها"),
         "noRole": MessageLookupByLibrary.simpleMessage("بدون صلاحية وصول"),
+        "noUsersToView":
+            MessageLookupByLibrary.simpleMessage("لا يوجد مستخدمون للعرض."),
         "no_signed_in_user": MessageLookupByLibrary.simpleMessage(
             "لا يوجد مستخدم مسجل الدخول. يرجى تسجيل الدخول."),
         "no_such_provider": MessageLookupByLibrary.simpleMessage(

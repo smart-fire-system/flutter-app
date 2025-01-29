@@ -42,6 +42,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "addBranch": MessageLookupByLibrary.simpleMessage("Add New Branch"),
         "addCompany": MessageLookupByLibrary.simpleMessage("Add New Company"),
         "addNewAdmin": MessageLookupByLibrary.simpleMessage("Add New Admin"),
+        "addNewBranchManager":
+            MessageLookupByLibrary.simpleMessage("Add New Branch Manager"),
+        "addNewClient": MessageLookupByLibrary.simpleMessage("Add New Client"),
+        "addNewCompanyManager":
+            MessageLookupByLibrary.simpleMessage("Add New Company Manager"),
+        "addNewEmployee":
+            MessageLookupByLibrary.simpleMessage("Add New Employee"),
         "address": MessageLookupByLibrary.simpleMessage("Address"),
         "admin": MessageLookupByLibrary.simpleMessage("Admin"),
         "admins": MessageLookupByLibrary.simpleMessage("Admins"),
@@ -264,9 +271,17 @@ class MessageLookup extends MessageLookupByLibrary {
             "A network error occurred during sign-in. Please check your internet connection and try again."),
         "network_request_failed": MessageLookupByLibrary.simpleMessage(
             "A network error occurred. Please check your connection and try again."),
+        "noBranchesToAddBranchManager": MessageLookupByLibrary.simpleMessage(
+            "There are no branches to add branch managers to. Please add a branch first."),
+        "noBranchesToAddClient": MessageLookupByLibrary.simpleMessage(
+            "There are no branches to add clients to. Please add a branch first."),
+        "noBranchesToAddEmployee": MessageLookupByLibrary.simpleMessage(
+            "There are no branches to add employees to. Please add a branch first."),
         "noBranchesToView":
             MessageLookupByLibrary.simpleMessage("No branches to view"),
         "noCancel": MessageLookupByLibrary.simpleMessage("No, cancel"),
+        "noCompaneiesToAddCompanyManager": MessageLookupByLibrary.simpleMessage(
+            "There are no companies to add company managers to. Please add a company first."),
         "noCompaniesSelected":
             MessageLookupByLibrary.simpleMessage("No companies selected"),
         "noCompaniesToAddBranch": MessageLookupByLibrary.simpleMessage(
@@ -274,6 +289,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "noCompaniesToView":
             MessageLookupByLibrary.simpleMessage("No companies to view"),
         "noRole": MessageLookupByLibrary.simpleMessage("No Role"),
+        "noUsersToView":
+            MessageLookupByLibrary.simpleMessage("No users to view."),
         "no_signed_in_user": MessageLookupByLibrary.simpleMessage(
             "No user is signed in. Please log in to continue."),
         "no_such_provider": MessageLookupByLibrary.simpleMessage(

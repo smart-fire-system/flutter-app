@@ -1,6 +1,7 @@
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/utils/message.dart';
 
 enum UsersMessage {
   userModified,
@@ -22,7 +23,7 @@ class UsersAuthenticated extends UsersState {
   final List<Employee> employees;
   final List<Client> clients; 
   final List<NoRoleUser> noRoleUsers;
-  UsersMessage? message;
+  AppMessage? message;
   String? error;
   UsersAuthenticated({
     required this.roleUser,

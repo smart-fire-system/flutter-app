@@ -77,6 +77,18 @@
 
     "addNewAdmin": "إضافة مسئول جديد",
     "add": "إضافة",
+
+    "addNewCompanyManager": "إضافة مدير شركة جديد",
+    "addNewBranchManager": "إضافة مدير فرع جديد",
+    "addNewEmployee": "إضافة موظف جديد",
+    "addNewClient": "إضافة عميل جديد",
+    "noUsersToView": "لا يوجد مستخدمون للعرض.",
+    "noCompaneiesToAddCompanyManager": "لا توجد شركات لإضافة مديري شركات إليها. يرجى إضافة شركة أولاً.",
+    "noBranchesToAddBranchManager": "لا توجد فروع لإضافة مديري فروع إليها. يرجى إضافة فرع أولاً.",
+    "noBranchesToAddEmployee": "لا توجد فروع لإضافة موظفين إليها. يرجى إضافة فرع أولاً.",
+    "noBranchesToAddClient": "لا توجد فروع لإضافة عملاء إليها. يرجى إضافة فرع أولاً.",
+
+
     "welcome": "مرحبا",
     "welcome_message": "مرحبًا في نظام إنذار الحريق. يرجى تسجيل الدخول أو إنشاء حساب.",
     "login": "تسجيل الدخول",

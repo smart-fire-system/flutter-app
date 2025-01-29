@@ -4,29 +4,19 @@ class AppPermissions {
   UserRole? role;
 
   bool canViewAdmins;
-  bool canEditAdmins;
-  bool canAddAdmins;
-  bool canDeleteAdmins;
+  bool canUpdateAdmins;
 
   bool canViewCompanyManagers;
-  bool canEditCompanyManagers;
-  bool canAddCompanyManagers;
-  bool canDeleteCompanyManagers;
+  bool canUpdateCompanyManagers;
 
   bool canViewBranchManagers;
-  bool canEditBranchManagers;
-  bool canAddBranchManagers;
-  bool canDeleteBranchManagers;
+  bool canUpdateBranchManagers;
 
   bool canViewEmployees;
-  bool canEditEmployees;
-  bool canAddEmployees;
-  bool canDeleteEmployees;
+  bool canUpdateEmployees;
 
   bool canViewClients;
-  bool canEditClients;
-  bool canAddClients;
-  bool canDeleteClients;
+  bool canUpdateClients;
 
   bool canViewBranches;
   bool canEditBranches;
@@ -41,25 +31,15 @@ class AppPermissions {
   AppPermissions({
     this.role,
     this.canViewAdmins = false,
-    this.canEditAdmins = false,
-    this.canAddAdmins = false,
-    this.canDeleteAdmins = false,
+    this.canUpdateAdmins = false,
     this.canViewCompanyManagers = false,
-    this.canEditCompanyManagers = false,
-    this.canAddCompanyManagers = false,
-    this.canDeleteCompanyManagers = false,
+    this.canUpdateCompanyManagers = false,
     this.canViewBranchManagers = false,
-    this.canEditBranchManagers = false,
-    this.canAddBranchManagers = false,
-    this.canDeleteBranchManagers = false,
+    this.canUpdateBranchManagers = false,
     this.canViewEmployees = false,
-    this.canEditEmployees = false,
-    this.canAddEmployees = false,
-    this.canDeleteEmployees = false,
+    this.canUpdateEmployees = false,
     this.canViewClients = false,
-    this.canEditClients = false,
-    this.canAddClients = false,
-    this.canDeleteClients = false,
+    this.canUpdateClients = false,
     this.canViewBranches = false,
     this.canEditBranches = false,
     this.canAddBranches = false,
@@ -74,25 +54,15 @@ class AppPermissions {
     return AppPermissions(
       role: UserRole.masterAdmin,
       canViewAdmins: true,
-      canEditAdmins: true,
-      canAddAdmins: true,
-      canDeleteAdmins: true,
+      canUpdateAdmins: true,
       canViewCompanyManagers: true,
-      canEditCompanyManagers: true,
-      canAddCompanyManagers: true,
-      canDeleteCompanyManagers: true,
+      canUpdateCompanyManagers: true,
       canViewBranchManagers: true,
-      canEditBranchManagers: true,
-      canAddBranchManagers: true,
-      canDeleteBranchManagers: true,
+      canUpdateBranchManagers: true,
       canViewEmployees: true,
-      canEditEmployees: true,
-      canAddEmployees: true,
-      canDeleteEmployees: true,
+      canUpdateEmployees: true,
       canViewClients: true,
-      canEditClients: true,
-      canAddClients: true,
-      canDeleteClients: true,
+      canUpdateClients: true,
       canViewBranches: true,
       canEditBranches: true,
       canAddBranches: true,
@@ -108,25 +78,15 @@ class AppPermissions {
     return AppPermissions(
       role: UserRole.admin,
       canViewAdmins: true,
-      canEditAdmins: map['canEditAdmins'] ?? false,
-      canAddAdmins: map['canAddAdmins'] ?? false,
-      canDeleteAdmins: map['canDeleteAdmins'] ?? false,
+      canUpdateAdmins: map['canUpdateAdmins'] ?? false,
       canViewCompanyManagers: true,
-      canEditCompanyManagers: map['canEditCompanyManagers'] ?? false,
-      canAddCompanyManagers: map['canAddCompanyManagers'] ?? false,
-      canDeleteCompanyManagers: map['canDeleteCompanyManagers'] ?? false,
+      canUpdateCompanyManagers: map['canUpdateCompanyManagers'] ?? false,
       canViewBranchManagers: true,
-      canEditBranchManagers: map['canEditBranchManagers'] ?? false,
-      canAddBranchManagers: map['canAddBranchManagers'] ?? false,
-      canDeleteBranchManagers: map['canDeleteBranchManagers'] ?? false,
+      canUpdateBranchManagers: map['canUpdateBranchManagers'] ?? false,
       canViewEmployees: true,
-      canEditEmployees: map['canEditEmployees'] ?? false,
-      canAddEmployees: map['canAddEmployees'] ?? false,
-      canDeleteEmployees: map['canDeleteEmployees'] ?? false,
+      canUpdateEmployees: map['canUpdateEmployees'] ?? false,
       canViewClients: true,
-      canEditClients: map['canEditClients'] ?? false,
-      canAddClients: map['canAddClients'] ?? false,
-      canDeleteClients: map['canDeleteClients'] ?? false,
+      canUpdateClients: map['canUpdateClients'] ?? false,
       canViewBranches: true,
       canEditBranches: map['canEditBranches'] ?? false,
       canAddBranches: map['canAddBranches'] ?? false,
@@ -138,21 +98,33 @@ class AppPermissions {
     );
   }
 
+  Map<String, dynamic> toAdminMap(AppPermissions permissions) {
+    return {
+      'permissions': {
+        'canUpdateAdmins': permissions.canUpdateAdmins,
+        'canUpdateCompanyManagers': permissions.canUpdateCompanyManagers,
+        'canUpdateBranchManagers': permissions.canUpdateBranchManagers,
+        'canUpdateEmployees': permissions.canUpdateEmployees,
+        'canUpdateClients': permissions.canUpdateClients,
+        'canAddCompanies': permissions.canAddCompanies,
+        'canEditCompanies': permissions.canEditCompanies,
+        'canDeleteCompanies': permissions.canDeleteCompanies,
+        'canAddBranches': permissions.canAddBranches,
+        'canEditBranches': permissions.canEditBranches,
+        'canDeleteBranches': permissions.canDeleteBranches,
+      },
+    };
+  }
+
   factory AppPermissions.fromCompanyManagerMap(Map<String, dynamic> map) {
     return AppPermissions(
       role: UserRole.companyManager,
       canViewBranchManagers: true,
-      canEditBranchManagers: map['canEditBranchManagers'] ?? false,
-      canAddBranchManagers: map['canAddBranchManagers'] ?? false,
-      canDeleteBranchManagers: map['canDeleteBranchManagers'] ?? false,
+      canUpdateBranchManagers: map['canUpdateBranchManagers'] ?? false,
       canViewEmployees: true,
-      canEditEmployees: map['canEditEmployees'] ?? false,
-      canAddEmployees: map['canAddEmployees'] ?? false,
-      canDeleteEmployees: map['canDeleteEmployees'] ?? false,
+      canUpdateEmployees: map['canUpdateEmployees'] ?? false,
       canViewClients: true,
-      canEditClients: map['canEditClients'] ?? false,
-      canAddClients: map['canAddClients'] ?? false,
-      canDeleteClients: map['canDeleteClients'] ?? false,
+      canUpdateClients: map['canUpdateClients'] ?? false,
       canViewBranches: true,
       canEditBranches: map['canEditBranches'] ?? false,
       canAddBranches: map['canAddBranches'] ?? false,
@@ -162,35 +134,79 @@ class AppPermissions {
     );
   }
 
+  Map<String, dynamic> toCompanyManagerMap(
+      AppPermissions permissions, String companyId) {
+    return {
+      'company': companyId,
+      'permissions': {
+        'canUpdateBranchManagers': permissions.canUpdateBranchManagers,
+        'canUpdateEmployees': permissions.canUpdateEmployees,
+        'canUpdateClients': permissions.canUpdateClients,
+        'canAddBranches': permissions.canAddBranches,
+        'canEditBranches': permissions.canEditBranches,
+        'canDeleteBranches': permissions.canDeleteBranches,
+      },
+    };
+  }
+
   factory AppPermissions.fromBranchManagerMap(Map<String, dynamic> map) {
     return AppPermissions(
       role: UserRole.branchManager,
       canViewEmployees: true,
-      canEditEmployees: map['canEditEmployees'] ?? false,
-      canAddEmployees: map['canAddEmployees'] ?? false,
-      canDeleteEmployees: map['canDeleteEmployees'] ?? false,
+      canUpdateEmployees: map['canUpdateEmployees'] ?? false,
       canViewClients: true,
-      canEditClients: map['canEditClients'] ?? false,
-      canAddClients: map['canAddClients'] ?? false,
-      canDeleteClients: map['canDeleteClients'] ?? false,
+      canUpdateClients: map['canUpdateClients'] ?? false,
       canViewBranches: true,
       canEditBranches: map['canEditBranches'] ?? false,
+      canViewCompanies: true,
     );
+  }
+
+  Map<String, dynamic> toBranchManagerMap(
+      AppPermissions permissions, String branchId) {
+    return {
+      'branch': branchId,
+      'permissions': {
+        'canUpdateEmployees': permissions.canUpdateEmployees,
+        'canUpdateClients': permissions.canUpdateClients,
+        'canEditBranches': permissions.canEditBranches,
+      },
+    };
   }
 
   factory AppPermissions.fromEmployeeMap(Map<String, dynamic> map) {
     return AppPermissions(
       role: UserRole.branchManager,
       canViewClients: true,
-      canEditClients: map['canEditClients'] ?? false,
-      canAddClients: map['canAddClients'] ?? false,
-      canDeleteClients: map['canDeleteClients'] ?? false,
+      canUpdateClients: map['canUpdateClients'] ?? false,
+      canViewBranches: true,
+      canViewCompanies: true,
     );
+  }
+
+  Map<String, dynamic> toEmployeeMap(
+      AppPermissions permissions, String branchId) {
+    return {
+      'branch': branchId,
+      'permissions': {
+        'canUpdateClients': permissions.canUpdateClients,
+      },
+    };
   }
 
   factory AppPermissions.fromClientMap(Map<String, dynamic> map) {
     return AppPermissions(
       role: UserRole.branchManager,
+      canViewBranches: true,
+      canViewCompanies: true,
     );
+  }
+
+  Map<String, dynamic> toClientMap(
+      AppPermissions permissions, String branchId) {
+    return {
+      'branch': branchId,
+      'permissions': {},
+    };
   }
 }

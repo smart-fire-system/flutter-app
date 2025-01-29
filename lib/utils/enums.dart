@@ -22,4 +22,8 @@ enum AppScreen {
   viewCompanyDetails,
   editCompanies,
   addCompanies,
+  viewUsers,
+  viewUserDetails,
+  editUsers,
+  addUsers,
 }

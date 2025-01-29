@@ -77,6 +77,16 @@
 
     "add": "Add",
     "addNewAdmin": "Add New Admin",
+    "addNewCompanyManager": "Add New Company Manager",
+    "addNewBranchManager": "Add New Branch Manager",
+    "addNewEmployee": "Add New Employee",
+    "addNewClient": "Add New Client",
+    "noUsersToView": "No users to view.",
+    "noCompaneiesToAddCompanyManager": "There are no companies to add company managers to. Please add a company first.",
+    "noBranchesToAddBranchManager": "There are no branches to add branch managers to. Please add a branch first.",
+    "noBranchesToAddEmployee": "There are no branches to add employees to. Please add a branch first.",
+    "noBranchesToAddClient": "There are no branches to add clients to. Please add a branch first.",
+
 
     "not_authenticated" : "You are not logged in. To access this feature, please log in with your account.",
 

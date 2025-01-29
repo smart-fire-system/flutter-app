@@ -128,29 +128,34 @@ class UsersScreenState extends State<UsersScreen> {
   }
 
   Widget _buildUsers(BuildContext context) {
-    AppLoading().dismiss(context: context, screen: AppScreen.viewBranches);
-    bool canAdd = false;
-    String role = 'noRoleUsers';
-    if (widget.view == UsersScreenView.admins) {
-      canAdd = _roleUser.permissions.canAddAdmins;
-      role = 'admin';
-    } else if (widget.view == UsersScreenView.companyManagers) {
-      canAdd = _roleUser.permissions.canAddCompanyManagers;
-      role = 'companyManager';
-    } else if (widget.view == UsersScreenView.branchManagers) {
-      canAdd = _roleUser.permissions.canAddBranchManagers;
-      role = 'branchManager';
-    } else if (widget.view == UsersScreenView.employees) {
-      canAdd = _roleUser.permissions.canAddEmployees;
-      role = 'employee';
-    } else if (widget.view == UsersScreenView.clients) {
-      canAdd = _roleUser.permissions.canAddClients;
-      role = 'client';
+    AppLoading().dismiss(context: context, screen: AppScreen.viewUsers);
+    String? addText;
+    String appbarTitle = '';
+    if (widget.view == UsersScreenView.admins &&
+        _roleUser.permissions.canUpdateAdmins) {
+      addText = S.of(context).addNewAdmin;
+      appbarTitle = S.of(context).admins;
+    } else if (widget.view == UsersScreenView.companyManagers &&
+        _roleUser.permissions.canUpdateCompanyManagers) {
+      addText = S.of(context).addNewCompanyManager;
+      appbarTitle = S.of(context).companyManagers;
+    } else if (widget.view == UsersScreenView.branchManagers &&
+        _roleUser.permissions.canUpdateBranchManagers) {
+      addText = S.of(context).addNewBranchManager;
+      appbarTitle = S.of(context).branchManagers;
+    } else if (widget.view == UsersScreenView.employees &&
+        _roleUser.permissions.canUpdateEmployees) {
+      addText = S.of(context).addNewEmployee;
+      appbarTitle = S.of(context).employees;
+    } else if (widget.view == UsersScreenView.clients &&
+        _roleUser.permissions.canUpdateClients) {
+      addText = S.of(context).addNewClient;
+      appbarTitle = S.of(context).clients;
     }
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).branches),
-      floatingActionButton: !canAdd
+      appBar: CustomAppBar(title: appbarTitle),
+      floatingActionButton: (addText == null)
           ? null
           : FloatingActionButton.extended(
               backgroundColor: Colors.green,
@@ -158,19 +163,22 @@ class UsersScreenState extends State<UsersScreen> {
                 String? errorMessage;
                 if (_branches.isEmpty) {
                   if (widget.view == UsersScreenView.branchManagers) {
-                    errorMessage = 'No branches to add manager';
+                    errorMessage = S.of(context).noBranchesToAddBranchManager;
                   } else if (widget.view == UsersScreenView.employees) {
-                    errorMessage = 'No branches to add employee';
+                    errorMessage = S.of(context).noBranchesToAddEmployee;
                   } else if (widget.view == UsersScreenView.clients) {
-                    errorMessage = 'No branches to add client';
+                    errorMessage = S.of(context).noBranchesToAddClient;
                   } else if (widget.view == UsersScreenView.companyManagers) {
                     errorMessage = _companies.isEmpty
-                        ? 'No companies to add manager'
+                        ? S.of(context).noCompaneiesToAddCompanyManager
                         : null;
                   }
                 }
                 if (errorMessage == null) {
-                  TabNavigator.settings.currentState?.pushNamed('/$role/add');
+                  TabNavigator.settings.currentState?.pushNamed(
+                    '/user/add',
+                    arguments: widget.view,
+                  );
                 } else {
                   CustomAlert.showError(
                     context: context,
@@ -183,11 +191,10 @@ class UsersScreenState extends State<UsersScreen> {
                 size: 30,
                 color: Colors.white,
               ),
-              label: Text(S.of(context).addBranch,
-                  style: CustomStyle.mediumTextWhite),
+              label: Text(addText, style: CustomStyle.mediumTextWhite),
             ),
       floatingActionButtonLocation:
-          !canAdd ? null : FloatingActionButtonLocation.endFloat,
+          (addText == null) ? null : FloatingActionButtonLocation.endFloat,
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<BranchesBloc>().add(AuthChanged());
@@ -217,7 +224,7 @@ class UsersScreenState extends State<UsersScreen> {
               ),
               _filteredUsers.isEmpty
                   ? Text(
-                      S.of(context).noBranchesToView,
+                      S.of(context).noUsersToView,
                       style: CustomStyle.mediumTextB,
                     )
                   : Flexible(
@@ -252,8 +259,8 @@ class UsersScreenState extends State<UsersScreen> {
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: () {
                               TabNavigator.settings.currentState?.pushNamed(
-                                '/$role/details',
-                                arguments: user.info.id,
+                                '/user/details',
+                                arguments: user,
                               );
                             },
                           );
@@ -269,7 +276,7 @@ class UsersScreenState extends State<UsersScreen> {
 
   Widget _buildLoading(BuildContext context) {
     if (ModalRoute.of(context)?.isCurrent ?? false) {
-      AppLoading().show(context: context, screen: AppScreen.viewBranches);
+      AppLoading().show(context: context, screen: AppScreen.viewUsers);
     }
     return Scaffold(
       backgroundColor: Colors.white,

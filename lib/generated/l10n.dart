@@ -690,6 +690,96 @@ class S {
     );
   }
 
+  /// `Add New Company Manager`
+  String get addNewCompanyManager {
+    return Intl.message(
+      'Add New Company Manager',
+      name: 'addNewCompanyManager',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add New Branch Manager`
+  String get addNewBranchManager {
+    return Intl.message(
+      'Add New Branch Manager',
+      name: 'addNewBranchManager',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add New Employee`
+  String get addNewEmployee {
+    return Intl.message(
+      'Add New Employee',
+      name: 'addNewEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add New Client`
+  String get addNewClient {
+    return Intl.message(
+      'Add New Client',
+      name: 'addNewClient',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No users to view.`
+  String get noUsersToView {
+    return Intl.message(
+      'No users to view.',
+      name: 'noUsersToView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There are no companies to add company managers to. Please add a company first.`
+  String get noCompaneiesToAddCompanyManager {
+    return Intl.message(
+      'There are no companies to add company managers to. Please add a company first.',
+      name: 'noCompaneiesToAddCompanyManager',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There are no branches to add branch managers to. Please add a branch first.`
+  String get noBranchesToAddBranchManager {
+    return Intl.message(
+      'There are no branches to add branch managers to. Please add a branch first.',
+      name: 'noBranchesToAddBranchManager',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There are no branches to add employees to. Please add a branch first.`
+  String get noBranchesToAddEmployee {
+    return Intl.message(
+      'There are no branches to add employees to. Please add a branch first.',
+      name: 'noBranchesToAddEmployee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There are no branches to add clients to. Please add a branch first.`
+  String get noBranchesToAddClient {
+    return Intl.message(
+      'There are no branches to add clients to. Please add a branch first.',
+      name: 'noBranchesToAddClient',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `You are not logged in. To access this feature, please log in with your account.`
   String get not_authenticated {
     return Intl.message(

@@ -36,20 +36,12 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
       }
       emit(BranchesLoading());
       try {
-        dynamic user = authRepository.userRole;
         List<Branch> branches = [];
         List<Company> companies = [];
-        if (user is MasterAdmin || user is Admin) {
-          final data = await branchRepository.getAllBranchedAndCompanies();
-          branches = data['branches'] as List<Branch>;
-          companies = data['companies'] as List<Company>;
-        } else if (user is CompanyManager) {
-          branches = List.from(user.branches);
-          companies = [user.company];
-        } else {
-          branches = [user.branch];
-          companies = [user.company];
-        }
+        final data =
+            await branchRepository.getUserBranchesAndCompanies(authRepository);
+        branches = data['branches'] as List<Branch>;
+        companies = data['companies'] as List<Company>;
         emit(BranchesAuthenticated(
           user: authRepository.userRole,
           branches: branches,

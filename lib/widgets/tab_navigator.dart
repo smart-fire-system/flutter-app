@@ -98,6 +98,19 @@ class TabNavigator extends StatelessWidget {
             case '/admins':
               page = const UsersScreen(view: UsersScreenView.admins);
               break;
+            case '/companyManagers':
+              page = const UsersScreen(view: UsersScreenView.companyManagers);
+              break;
+            case '/branchManagers':
+              page = const UsersScreen(view: UsersScreenView.branchManagers);
+              break;
+            case '/employees':
+              page = const UsersScreen(view: UsersScreenView.employees);
+              break;
+            case '/clients':
+              page = const UsersScreen(view: UsersScreenView.clients);
+              break;
+
             default:
               page = Scaffold(
                 body:
