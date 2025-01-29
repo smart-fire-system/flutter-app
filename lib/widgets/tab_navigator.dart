@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/screens/users/view/admins_screen.dart';
+import 'package:fire_alarm_system/screens/users/view/users_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/screens/home/view/view.dart';
 import 'package:fire_alarm_system/screens/branches/view/view.dart';
