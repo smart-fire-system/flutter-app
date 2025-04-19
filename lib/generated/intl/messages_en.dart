@@ -49,10 +49,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Add New Company Manager"),
         "addNewEmployee":
             MessageLookupByLibrary.simpleMessage("Add New Employee"),
+        "addNewMasterAdmin":
+            MessageLookupByLibrary.simpleMessage("Add New Master Admin"),
         "address": MessageLookupByLibrary.simpleMessage("Address"),
         "admin": MessageLookupByLibrary.simpleMessage("Admin"),
         "admins": MessageLookupByLibrary.simpleMessage("Admins"),
         "allCompanies": MessageLookupByLibrary.simpleMessage("All companies"),
+        "allUsers": MessageLookupByLibrary.simpleMessage("All Users"),
         "already_exists": MessageLookupByLibrary.simpleMessage(
             "The resource already exists."),
         "already_have_an_account": MessageLookupByLibrary.simpleMessage(
@@ -61,6 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "app_name": MessageLookupByLibrary.simpleMessage("Fire Alarm System"),
         "app_not_authorized": MessageLookupByLibrary.simpleMessage(
             "This app is not authorized to access the Firebase project. Contact the administrator."),
+        "branch": MessageLookupByLibrary.simpleMessage("Branch"),
         "branchAdded": MessageLookupByLibrary.simpleMessage(
             "The branch has been added successfully."),
         "branchDeleteWarning": MessageLookupByLibrary.simpleMessage(
@@ -251,6 +255,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Maintenance Contracts"),
         "manageAndConfigureSystem":
             MessageLookupByLibrary.simpleMessage("Manage and Configure System"),
+        "masterAdmin": MessageLookupByLibrary.simpleMessage("Master Admin"),
+        "masterAdmins": MessageLookupByLibrary.simpleMessage("Master Admins"),
         "missing_app_credential": MessageLookupByLibrary.simpleMessage(
             "The app credential is missing. Please try again."),
         "missing_client_identifier": MessageLookupByLibrary.simpleMessage(
@@ -289,6 +295,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "noCompaniesToView":
             MessageLookupByLibrary.simpleMessage("No companies to view"),
         "noRole": MessageLookupByLibrary.simpleMessage("No Role"),
+        "noRoleUsers": MessageLookupByLibrary.simpleMessage("No Role Users"),
+        "noUsersSelected":
+            MessageLookupByLibrary.simpleMessage("No users selected"),
         "noUsersToView":
             MessageLookupByLibrary.simpleMessage("No users to view."),
         "no_signed_in_user": MessageLookupByLibrary.simpleMessage(
@@ -348,6 +357,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Search by name or code ..."),
         "selectCompanies":
             MessageLookupByLibrary.simpleMessage("Select companies to view"),
+        "selectUsers": MessageLookupByLibrary.simpleMessage("Seleect Users"),
         "select_language":
             MessageLookupByLibrary.simpleMessage("Please choose a language"),
         "session_expired": MessageLookupByLibrary.simpleMessage(

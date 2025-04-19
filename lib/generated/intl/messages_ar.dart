@@ -49,10 +49,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("إضافة مدير شركة جديد"),
         "addNewEmployee":
             MessageLookupByLibrary.simpleMessage("إضافة موظف جديد"),
+        "addNewMasterAdmin":
+            MessageLookupByLibrary.simpleMessage("إضافة مسئول رئيسي جديد"),
         "address": MessageLookupByLibrary.simpleMessage("العنوان"),
         "admin": MessageLookupByLibrary.simpleMessage("مسئول"),
         "admins": MessageLookupByLibrary.simpleMessage("المسؤولون"),
         "allCompanies": MessageLookupByLibrary.simpleMessage("كل الشركات"),
+        "allUsers": MessageLookupByLibrary.simpleMessage("جميع المستخدمين"),
         "already_exists":
             MessageLookupByLibrary.simpleMessage("المورد موجود بالفعل."),
         "already_have_an_account": MessageLookupByLibrary.simpleMessage(
@@ -61,6 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "app_name": MessageLookupByLibrary.simpleMessage("نظام إنذار الحريق"),
         "app_not_authorized": MessageLookupByLibrary.simpleMessage(
             "هذا التطبيق غير مصرح له. تواصل مع المسؤول."),
+        "branch": MessageLookupByLibrary.simpleMessage("الفرع"),
         "branchDeleteWarning": MessageLookupByLibrary.simpleMessage(
             "حذف هذا الفرع لا يمكن التراجع عنه. هل أنت متأكد أنك تريد المتابعة؟"),
         "branchInformation":
@@ -240,6 +244,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("عقود الصيانة"),
         "manageAndConfigureSystem":
             MessageLookupByLibrary.simpleMessage("إدارة وتعديل النظام"),
+        "masterAdmin": MessageLookupByLibrary.simpleMessage("مسئول رئيسي"),
+        "masterAdmins":
+            MessageLookupByLibrary.simpleMessage("المسئولون الرئيسيون"),
         "missing_app_credential": MessageLookupByLibrary.simpleMessage(
             "بيانات الاعتماد الخاصة بالتطبيق مفقودة. حاول مجددًا."),
         "missing_client_identifier":
@@ -276,6 +283,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "noCompaniesToView":
             MessageLookupByLibrary.simpleMessage("لا يوجد شركات لعرضها"),
         "noRole": MessageLookupByLibrary.simpleMessage("بدون صلاحية وصول"),
+        "noRoleUsers":
+            MessageLookupByLibrary.simpleMessage("مستخدمون بدون صلاحية وصول"),
+        "noUsersSelected":
+            MessageLookupByLibrary.simpleMessage("لا يوجد مستخدمين تم تحديدهم"),
         "noUsersToView":
             MessageLookupByLibrary.simpleMessage("لا يوجد مستخدمون للعرض."),
         "no_signed_in_user": MessageLookupByLibrary.simpleMessage(
@@ -335,6 +346,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("بحث بالإسم أو الكود ..."),
         "selectCompanies":
             MessageLookupByLibrary.simpleMessage("يرجى اختيار الشركات للعرض"),
+        "selectUsers":
+            MessageLookupByLibrary.simpleMessage("اختيار المستخدمين"),
         "select_language":
             MessageLookupByLibrary.simpleMessage("يرجى اختيار اللغة"),
         "session_expired": MessageLookupByLibrary.simpleMessage(

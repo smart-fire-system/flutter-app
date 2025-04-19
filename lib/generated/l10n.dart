@@ -390,11 +390,51 @@ class S {
     );
   }
 
+  /// `Seleect Users`
+  String get selectUsers {
+    return Intl.message(
+      'Seleect Users',
+      name: 'selectUsers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All Users`
+  String get allUsers {
+    return Intl.message(
+      'All Users',
+      name: 'allUsers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No users selected`
+  String get noUsersSelected {
+    return Intl.message(
+      'No users selected',
+      name: 'noUsersSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Users`
   String get users {
     return Intl.message(
       'Users',
       name: 'users',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Master Admins`
+  String get masterAdmins {
+    return Intl.message(
+      'Master Admins',
+      name: 'masterAdmins',
       desc: '',
       args: [],
     );
@@ -445,6 +485,26 @@ class S {
     return Intl.message(
       'Clients',
       name: 'clients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Role Users`
+  String get noRoleUsers {
+    return Intl.message(
+      'No Role Users',
+      name: 'noRoleUsers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Master Admin`
+  String get masterAdmin {
+    return Intl.message(
+      'Master Admin',
+      name: 'masterAdmin',
       desc: '',
       args: [],
     );
@@ -675,6 +735,16 @@ class S {
     return Intl.message(
       'Add',
       name: 'add',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add New Master Admin`
+  String get addNewMasterAdmin {
+    return Intl.message(
+      'Add New Master Admin',
+      name: 'addNewMasterAdmin',
       desc: '',
       args: [],
     );
@@ -1335,6 +1405,16 @@ class S {
     return Intl.message(
       'Company',
       name: 'company',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Branch`
+  String get branch {
+    return Intl.message(
+      'Branch',
+      name: 'branch',
       desc: '',
       args: [],
     );
