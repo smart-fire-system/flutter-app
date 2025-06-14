@@ -20,14 +20,18 @@ class AddUserScreen extends StatefulWidget {
 }
 
 class _AddUserScreenState extends State<AddUserScreen> {
-  UserRole? _selectedRole = UserRole.admin;
+  UserRole? _selectedRole;
   NoRoleUser? _selectedUser;
   bool _isSubmitting = false;
   AppPermissions _permissions = AppPermissions(role: UserRole.admin);
+  String? _selectedCompanyId;
+  String? _selectedBranchId;
 
   void _onRoleChanged(UserRole? role) {
     setState(() {
       _selectedRole = role;
+      _selectedCompanyId = null;
+      _selectedBranchId = null;
       // Reset permissions for the new role
       switch (role) {
         case UserRole.admin:
@@ -56,13 +60,12 @@ class _AddUserScreenState extends State<AddUserScreen> {
     setState(() {
       _isSubmitting = true;
     });
-    // Create the correct instance (for preview/debugging)
-    // You can use this instance as needed
-    // For now, just dispatch the event with permissions
     context.read<UsersBloc>().add(
           AddRequested(
             userId: _selectedUser!.info.id,
             permissions: _permissions,
+            companyId: _selectedCompanyId ?? '',
+            branchId: _selectedBranchId ?? '',
           ),
         );
   }
@@ -255,6 +258,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
             setState(() {
               _isSubmitting = false;
               _selectedUser = null;
+              _selectedCompanyId = null;
+              _selectedBranchId = null;
             });
             CustomAlert.showSuccess(
               context: context,
@@ -273,10 +278,33 @@ class _AddUserScreenState extends State<AddUserScreen> {
           }
         },
         builder: (context, state) {
+          List companies = [];
+          List branches = [];
+          if (state is UsersAuthenticated) {
+            companies = state.companies;
+            branches = state.branches;
+          }
+          final companyItems = companies
+              .where((company) => company != null)
+              .map((company) => CustomDropdownItem(
+                    title: company.name ?? '',
+                    value: company.id ?? '',
+                  ))
+              .toList();
+          final branchItems = branches
+              .where((branch) =>
+                  branch != null &&
+                  branch.company != null &&
+                  branch.company.id == _selectedCompanyId)
+              .map((branch) => CustomDropdownItem(
+                    title: branch.name ?? '',
+                    value: branch.id ?? '',
+                  ))
+              .toList();
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 0),
+                padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 8.0),
                 child: GestureDetector(
                   onTap: () async {
                     final user = await Navigator.push<NoRoleUser>(
@@ -335,13 +363,19 @@ class _AddUserScreenState extends State<AddUserScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
                 child: CustomDropdownSingle(
                   title: S.of(context).role,
                   subtitle: S.of(context).chooseRole,
                   items: roleItems,
-                  initialItem: roleItems.firstWhere((item) =>
-                      item.value == _selectedRole.toString().split('.').last),
+                  initialItem: _selectedRole != null
+                      ? roleItems.firstWhere(
+                          (item) =>
+                              item.value ==
+                              _selectedRole.toString().split('.').last,
+                          orElse: () =>
+                              CustomDropdownItem(title: '', value: ''))
+                      : null,
                   onChanged: (item) {
                     final role = UserRole.values.firstWhere(
                         (r) => r.toString().split('.').last == item.value);
@@ -349,10 +383,64 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   },
                 ),
               ),
-              if (_selectedUser != null)
+              if (_selectedRole == UserRole.companyManager ||
+                  _selectedRole == UserRole.branchManager)
+                Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                  child: CustomDropdownSingle(
+                    title: S.of(context).company,
+                    subtitle: 'Choose a company',
+                    items: companyItems,
+                    initialItem: _selectedCompanyId != null
+                        ? companyItems.firstWhere(
+                            (item) => item.value == _selectedCompanyId,
+                            orElse: () =>
+                                CustomDropdownItem(title: '', value: ''))
+                        : null,
+                    onChanged: (item) {
+                      setState(() {
+                        _selectedCompanyId = item.value;
+                        _selectedBranchId = null;
+                      });
+                    },
+                  ),
+                ),
+              if (_selectedRole == UserRole.branchManager &&
+                  _selectedCompanyId != null &&
+                  branchItems.isNotEmpty)
+                Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                  child: CustomDropdownSingle(
+                    title: S.of(context).branch,
+                    subtitle: 'Choose a branch',
+                    items: branchItems,
+                    initialItem: _selectedBranchId != null
+                        ? branchItems.firstWhere(
+                            (item) => item.value == _selectedBranchId,
+                            orElse: () =>
+                                CustomDropdownItem(title: '', value: ''))
+                        : null,
+                    onChanged: (item) {
+                      setState(() {
+                        _selectedBranchId = item.value;
+                      });
+                    },
+                  ),
+                ),
+              if (_selectedUser != null &&
+                  _selectedRole != null &&
+                  (_selectedRole == UserRole.admin ||
+                      (_selectedRole == UserRole.companyManager &&
+                          _selectedCompanyId != null &&
+                          _selectedCompanyId!.isNotEmpty) ||
+                      (_selectedRole == UserRole.branchManager &&
+                          _selectedCompanyId != null &&
+                          _selectedCompanyId!.isNotEmpty &&
+                          _selectedBranchId != null &&
+                          _selectedBranchId!.isNotEmpty)))
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
                     child: ListView(
                       children: [
                         const SizedBox(height: 8),
