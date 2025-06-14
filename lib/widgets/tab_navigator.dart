@@ -7,6 +7,7 @@ import 'package:fire_alarm_system/screens/profile/view/view.dart';
 import 'package:fire_alarm_system/screens/reports/view/view.dart';
 import 'package:fire_alarm_system/screens/settings/view/view.dart';
 import 'package:fire_alarm_system/screens/system/view/view.dart';
+import 'package:fire_alarm_system/screens/users/view/add_user.dart';
 
 enum AppTab {
   system,
@@ -109,6 +110,9 @@ class TabNavigator extends StatelessWidget {
               break;
             case '/clients':
               page = const UsersScreen();
+              break;
+            case '/admin/add':
+              page = const AddUserScreen();
               break;
 
             default:

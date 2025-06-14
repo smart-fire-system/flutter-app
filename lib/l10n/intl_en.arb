@@ -45,6 +45,7 @@
     "allUsers": "All Users",
     "noUsersSelected": "No users selected",
     "users": "Users",
+    "user": "User",
     "masterAdmins": "Master Admins",
     "admins": "Admins",
     "companyManagers": "Company Managers",
@@ -59,6 +60,7 @@
     "employee": "Employee",
     "client": "Client",
     "role": "Role",
+    "chooseRole": "Choose access role",
     "noRole": "No Role",
     "logout": "Logout",
 
@@ -209,6 +211,21 @@
     "accessRoleTitle": "Access Role",
     "roleAssigned": "You have been assigned an access role.",
     "roleNotAssigned": "You don't have an access role yet. Please wait for an administrator to grant you access.",
+
+
+    "tapToSelectUser": "Tap to select a user",
+    "adminPermissions": "Admin Permissions",
+    "canUpdateAdmins": "Can update admins",
+    "canUpdateCompanyManagers": "Can update company managers",
+    "canUpdateBranchManagers": "Can update branch managers",
+    "canUpdateEmployees": "Can update employees",
+    "canUpdateClients": "Can update clients",
+    "canAddCompanies": "Can add companies",
+    "canEditCompanies": "Can edit companies",
+    "canDeleteCompanies": "Can delete companies",
+    "canAddBranches": "Can add branches",
+    "canEditBranches": "Can edit branches",
+    "canDeleteBranches": "Can delete branches",
 
     "invalid_custom_token": "The custom authentication token you provided is invalid. Please check and try again.",
     "custom_token_mismatch": "The custom token provided does not match the expected format. Ensure it is correct.",

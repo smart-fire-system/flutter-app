@@ -53,6 +53,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Add New Master Admin"),
         "address": MessageLookupByLibrary.simpleMessage("Address"),
         "admin": MessageLookupByLibrary.simpleMessage("Admin"),
+        "adminPermissions":
+            MessageLookupByLibrary.simpleMessage("Admin Permissions"),
         "admins": MessageLookupByLibrary.simpleMessage("Admins"),
         "allCompanies": MessageLookupByLibrary.simpleMessage("All companies"),
         "allUsers": MessageLookupByLibrary.simpleMessage("All Users"),
@@ -84,6 +86,28 @@ class MessageLookup extends MessageLookupByLibrary {
         "branches": MessageLookupByLibrary.simpleMessage("Branches"),
         "branchesDescription":
             MessageLookupByLibrary.simpleMessage("Add or remove branches"),
+        "canAddBranches":
+            MessageLookupByLibrary.simpleMessage("Can add branches"),
+        "canAddCompanies":
+            MessageLookupByLibrary.simpleMessage("Can add companies"),
+        "canDeleteBranches":
+            MessageLookupByLibrary.simpleMessage("Can delete branches"),
+        "canDeleteCompanies":
+            MessageLookupByLibrary.simpleMessage("Can delete companies"),
+        "canEditBranches":
+            MessageLookupByLibrary.simpleMessage("Can edit branches"),
+        "canEditCompanies":
+            MessageLookupByLibrary.simpleMessage("Can edit companies"),
+        "canUpdateAdmins":
+            MessageLookupByLibrary.simpleMessage("Can update admins"),
+        "canUpdateBranchManagers":
+            MessageLookupByLibrary.simpleMessage("Can update branch managers"),
+        "canUpdateClients":
+            MessageLookupByLibrary.simpleMessage("Can update clients"),
+        "canUpdateCompanyManagers":
+            MessageLookupByLibrary.simpleMessage("Can update company managers"),
+        "canUpdateEmployees":
+            MessageLookupByLibrary.simpleMessage("Can update employees"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "cancelled": MessageLookupByLibrary.simpleMessage(
             "The operation was cancelled. Please try again."),
@@ -94,6 +118,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Change Language"),
         "change_password":
             MessageLookupByLibrary.simpleMessage("Change Password"),
+        "chooseRole":
+            MessageLookupByLibrary.simpleMessage("Choose access role"),
         "client": MessageLookupByLibrary.simpleMessage("Client"),
         "clients": MessageLookupByLibrary.simpleMessage("Clients"),
         "code": MessageLookupByLibrary.simpleMessage("Code"),
@@ -391,6 +417,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Monitor the current state of each sensor and control sub-units. You can also perform actions like turning devices on or off directly from this interface."),
         "tabToAddLogo":
             MessageLookupByLibrary.simpleMessage("Tab to add company logo"),
+        "tapToSelectUser":
+            MessageLookupByLibrary.simpleMessage("Tap to select a user"),
         "tenant_id_mismatch": MessageLookupByLibrary.simpleMessage(
             "The tenant ID does not match the expected value."),
         "too_many_requests": MessageLookupByLibrary.simpleMessage(
@@ -407,6 +435,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "An unknown error occurred. Please try again later."),
         "unsupported_tenant_operation": MessageLookupByLibrary.simpleMessage(
             "This operation is not supported for this tenant."),
+        "user": MessageLookupByLibrary.simpleMessage("User"),
         "userDeletedSuccessMessage": MessageLookupByLibrary.simpleMessage(
             "User has been successfully deleted from the system."),
         "user_disabled": MessageLookupByLibrary.simpleMessage(

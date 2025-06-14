@@ -45,6 +45,7 @@
     "allUsers": "جميع المستخدمين",
     "noUsersSelected": "لا يوجد مستخدمين تم تحديدهم",
     "users": "المستخدمون",
+    "user": "المستخدم",
     "masterAdmins": "المسئولون الرئيسيون",
     "admins": "المسؤولون",
     "companyManagers": "مديرو الشركات",
@@ -59,6 +60,8 @@
     "employee": "موظف",
     "client": "عميل",
     "role": "صلاحية الوصول",
+    "chooseRole": "اختيار صلاحية الوصول",
+
     "noRole": "بدون صلاحية وصول",
 
     "logout": "تسجيل الخروج",
@@ -211,6 +214,19 @@
 
     "not_authenticated" : "أنت غير مسجل الدخول. للوصول إلى هذه الميزة، يرجى تسجيل الدخول باستخدام حسابك.",
 
+    "tapToSelectUser": "اضغط لاختيار مستخدم",
+    "adminPermissions": "صلاحيات المسؤول",
+    "canUpdateAdmins": "يمكنه تعديل المسؤولين",
+    "canUpdateCompanyManagers": "يمكنه تعديل مديري الشركات",
+    "canUpdateBranchManagers": "يمكنه تعديل مديري الفروع",
+    "canUpdateEmployees": "يمكنه تعديل الموظفين",
+    "canUpdateClients": "يمكنه تعديل العملاء",
+    "canAddCompanies": "يمكنه إضافة شركات",
+    "canEditCompanies": "يمكنه تعديل الشركات",
+    "canDeleteCompanies": "يمكنه حذف الشركات",
+    "canAddBranches": "يمكنه إضافة فروع",
+    "canEditBranches": "يمكنه تعديل الفروع",
+    "canDeleteBranches": "يمكنه حذف الفروع",
 
     "invalid_custom_token": "رمز المصادقة المخصص غير صالح. يرجى التحقق والمحاولة مجددًا.",
     "custom_token_mismatch": "الرمز المخصص غير متطابق. تأكد من صحته.",

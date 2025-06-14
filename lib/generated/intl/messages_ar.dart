@@ -53,6 +53,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("إضافة مسئول رئيسي جديد"),
         "address": MessageLookupByLibrary.simpleMessage("العنوان"),
         "admin": MessageLookupByLibrary.simpleMessage("مسئول"),
+        "adminPermissions":
+            MessageLookupByLibrary.simpleMessage("صلاحيات المسؤول"),
         "admins": MessageLookupByLibrary.simpleMessage("المسؤولون"),
         "allCompanies": MessageLookupByLibrary.simpleMessage("كل الشركات"),
         "allUsers": MessageLookupByLibrary.simpleMessage("جميع المستخدمين"),
@@ -77,6 +79,28 @@ class MessageLookup extends MessageLookupByLibrary {
         "branches": MessageLookupByLibrary.simpleMessage("الفروع"),
         "branchesDescription":
             MessageLookupByLibrary.simpleMessage("إضافة أو حذف الفروع"),
+        "canAddBranches":
+            MessageLookupByLibrary.simpleMessage("يمكنه إضافة فروع"),
+        "canAddCompanies":
+            MessageLookupByLibrary.simpleMessage("يمكنه إضافة شركات"),
+        "canDeleteBranches":
+            MessageLookupByLibrary.simpleMessage("يمكنه حذف الفروع"),
+        "canDeleteCompanies":
+            MessageLookupByLibrary.simpleMessage("يمكنه حذف الشركات"),
+        "canEditBranches":
+            MessageLookupByLibrary.simpleMessage("يمكنه تعديل الفروع"),
+        "canEditCompanies":
+            MessageLookupByLibrary.simpleMessage("يمكنه تعديل الشركات"),
+        "canUpdateAdmins":
+            MessageLookupByLibrary.simpleMessage("يمكنه تعديل المسؤولين"),
+        "canUpdateBranchManagers":
+            MessageLookupByLibrary.simpleMessage("يمكنه تعديل مديري الفروع"),
+        "canUpdateClients":
+            MessageLookupByLibrary.simpleMessage("يمكنه تعديل العملاء"),
+        "canUpdateCompanyManagers":
+            MessageLookupByLibrary.simpleMessage("يمكنه تعديل مديري الشركات"),
+        "canUpdateEmployees":
+            MessageLookupByLibrary.simpleMessage("يمكنه تعديل الموظفين"),
         "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
         "cancelled": MessageLookupByLibrary.simpleMessage(
             "تم إلغاء العملية. حاول مجددًا."),
@@ -86,6 +110,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "changeLanguage": MessageLookupByLibrary.simpleMessage("تغيير اللغة"),
         "change_password":
             MessageLookupByLibrary.simpleMessage("تغيير كلمة المرور"),
+        "chooseRole":
+            MessageLookupByLibrary.simpleMessage("اختيار صلاحية الوصول"),
         "client": MessageLookupByLibrary.simpleMessage("عميل"),
         "clients": MessageLookupByLibrary.simpleMessage("العملاء"),
         "code": MessageLookupByLibrary.simpleMessage("الكود"),
@@ -380,6 +406,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "مراقبة الحالة الحالية لكل حساس والتحكم في الوحدات الفرعية. يمكنك أيضًا تنفيذ إجراءات مثل تشغيل أو إيقاف الأجهزة مباشرةً من هذه الواجهة."),
         "tabToAddLogo":
             MessageLookupByLibrary.simpleMessage("إضغط لاضافة شعار للشركة"),
+        "tapToSelectUser":
+            MessageLookupByLibrary.simpleMessage("اضغط لاختيار مستخدم"),
         "tenant_id_mismatch":
             MessageLookupByLibrary.simpleMessage("معرف المستأجر غير متطابق."),
         "too_many_requests": MessageLookupByLibrary.simpleMessage(
@@ -396,6 +424,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "حدث خطأ غير معروف. حاول مرة أخرى لاحقًا."),
         "unsupported_tenant_operation": MessageLookupByLibrary.simpleMessage(
             "هذه العملية غير مدعومة لهذا المستأجر."),
+        "user": MessageLookupByLibrary.simpleMessage("المستخدم"),
         "userDeletedSuccessMessage": MessageLookupByLibrary.simpleMessage(
             "تم حذف المستخدم بنجاح من النظام."),
         "user_disabled": MessageLookupByLibrary.simpleMessage(
