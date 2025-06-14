@@ -131,7 +131,9 @@ class TabNavigator extends StatelessWidget {
   Widget _buildMainScreen(AppTab screen) {
     switch (screen) {
       case AppTab.system:
-        return const SystemScreen();
+        return const SystemScreen(
+          branchCode: 1,
+        );
       case AppTab.reports:
         return const ReportsScreen();
       case AppTab.profile:

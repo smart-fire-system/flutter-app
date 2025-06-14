@@ -12,6 +12,7 @@ import 'package:fire_alarm_system/screens/home/view/view.dart';
 import 'package:fire_alarm_system/screens/home/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/users/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/bloc.dart';
+import 'package:fire_alarm_system/screens/system/bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -68,6 +69,8 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
               create: (_) => ProfileBloc(authRepository: _authRepository)),
           BlocProvider(
               create: (_) => BranchesBloc(authRepository: _authRepository)),
+          BlocProvider(
+              create: (_) => SystemBloc(authRepository: _authRepository)),
         ],
         child: MaterialApp(
           title: 'Fire Alarm System',
