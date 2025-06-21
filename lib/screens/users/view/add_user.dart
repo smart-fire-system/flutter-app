@@ -13,7 +13,7 @@ import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/widgets/dropdown.dart';
 
 class AddUserScreen extends StatefulWidget {
-  const AddUserScreen({Key? key}) : super(key: key);
+  const AddUserScreen({super.key});
 
   @override
   State<AddUserScreen> createState() => _AddUserScreenState();
@@ -26,6 +26,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
   AppPermissions _permissions = AppPermissions(role: UserRole.admin);
   String? _selectedCompanyId;
   String? _selectedBranchId;
+  String? _selectedCompanyName;
+  String? _selectedBranchName;
 
   void _onRoleChanged(UserRole? role) {
     setState(() {
@@ -251,7 +253,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
             ))
         .toList();
     return Scaffold(
-      appBar: CustomAppBar(title: 'Add User'),
+      appBar: const CustomAppBar(title: 'Add User'),
       body: BlocConsumer<UsersBloc, UsersState>(
         listener: (context, state) {
           if (state is UsersAuthenticated && _isSubmitting) {
@@ -278,19 +280,10 @@ class _AddUserScreenState extends State<AddUserScreen> {
           }
         },
         builder: (context, state) {
-          List companies = [];
           List branches = [];
           if (state is UsersAuthenticated) {
-            companies = state.companies;
             branches = state.branches;
           }
-          final companyItems = companies
-              .where((company) => company != null)
-              .map((company) => CustomDropdownItem(
-                    title: company.name ?? '',
-                    value: company.id ?? '',
-                  ))
-              .toList();
           final branchItems = branches
               .where((branch) =>
                   branch != null &&
@@ -304,19 +297,50 @@ class _AddUserScreenState extends State<AddUserScreen> {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 8.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                child: CustomDropdownSingle(
+                  title: S.of(context).role,
+                  subtitle: S.of(context).chooseRole,
+                  items: roleItems,
+                  initialItem: _selectedRole != null
+                      ? roleItems.firstWhere(
+                          (item) =>
+                              item.value ==
+                              _selectedRole.toString().split('.').last,
+                          orElse: () =>
+                              CustomDropdownItem(title: '', value: ''))
+                      : null,
+                  onChanged: (item) {
+                    final role = UserRole.values.firstWhere(
+                        (r) => r.toString().split('.').last == item.value);
+                    _onRoleChanged(role);
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
                 child: GestureDetector(
                   onTap: () async {
-                    final user = await Navigator.push<NoRoleUser>(
+                    final usersBlocState = context.read<UsersBloc>().state;
+                    final result = await Navigator.push<_UserSelectionResult>(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => NoRoleUserSelectionScreen(
-                            selectedUser: _selectedUser),
+                        builder: (context) => UserSelectionScreen(
+                          selectedUserId: _selectedUser?.info.id,
+                        ),
                       ),
                     );
-                    if (user != null) {
+                    if (!mounted) return;
+                    if (result != null &&
+                        usersBlocState is UsersAuthenticated) {
+                      final selected = usersBlocState.noRoleUsers
+                              .where((u) => u.info.id == result.id)
+                              .isNotEmpty
+                          ? usersBlocState.noRoleUsers
+                              .firstWhere((u) => u.info.id == result.id)
+                          : null;
                       setState(() {
-                        _selectedUser = user;
+                        _selectedUser = selected;
                       });
                     }
                   },
@@ -326,14 +350,12 @@ class _AddUserScreenState extends State<AddUserScreen> {
                       controller: TextEditingController(
                         text: _selectedUser == null
                             ? S.of(context).tapToSelectUser
-                            : '${_selectedUser!.info.name} (${_selectedUser!.info.email})',
+                            : _selectedUser!.info.name,
                       ),
                       decoration: InputDecoration(
                         labelText: S.of(context).user,
-                        prefixIcon: const Icon(
-                          Icons.person_search,
-                          color: CustomStyle.redDark,
-                        ),
+                        prefixIcon: const Icon(Icons.person,
+                            color: CustomStyle.redDark),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                           borderSide: const BorderSide(
@@ -362,69 +384,136 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                child: CustomDropdownSingle(
-                  title: S.of(context).role,
-                  subtitle: S.of(context).chooseRole,
-                  items: roleItems,
-                  initialItem: _selectedRole != null
-                      ? roleItems.firstWhere(
-                          (item) =>
-                              item.value ==
-                              _selectedRole.toString().split('.').last,
-                          orElse: () =>
-                              CustomDropdownItem(title: '', value: ''))
-                      : null,
-                  onChanged: (item) {
-                    final role = UserRole.values.firstWhere(
-                        (r) => r.toString().split('.').last == item.value);
-                    _onRoleChanged(role);
-                  },
-                ),
-              ),
               if (_selectedRole == UserRole.companyManager ||
-                  _selectedRole == UserRole.branchManager)
+                  _selectedRole == UserRole.branchManager ||
+                  _selectedRole == UserRole.employee ||
+                  _selectedRole == UserRole.client)
                 Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                  child: CustomDropdownSingle(
-                    title: S.of(context).company,
-                    subtitle: 'Choose a company',
-                    items: companyItems,
-                    initialItem: _selectedCompanyId != null
-                        ? companyItems.firstWhere(
-                            (item) => item.value == _selectedCompanyId,
-                            orElse: () =>
-                                CustomDropdownItem(title: '', value: ''))
-                        : null,
-                    onChanged: (item) {
-                      setState(() {
-                        _selectedCompanyId = item.value;
-                        _selectedBranchId = null;
-                      });
+                  padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+                  child: GestureDetector(
+                    onTap: () async {
+                      final company =
+                          await Navigator.push<_CompanySelectionResult>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CompanySelectionScreen(
+                            selectedCompanyId: _selectedCompanyId,
+                          ),
+                        ),
+                      );
+                      if (company != null) {
+                        setState(() {
+                          _selectedCompanyId = company.id;
+                          _selectedCompanyName = company.name;
+                          _selectedBranchId = null;
+                          _selectedBranchName = null;
+                        });
+                      }
                     },
+                    child: AbsorbPointer(
+                      child: TextField(
+                        readOnly: true,
+                        controller: TextEditingController(
+                          text: _selectedCompanyId == null
+                              ? S.of(context).tapToSelectUser
+                              : _selectedCompanyName ?? '',
+                        ),
+                        decoration: InputDecoration(
+                          labelText: S.of(context).company,
+                          prefixIcon: const Icon(Icons.business,
+                              color: CustomStyle.redDark),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                              color: CustomStyle.greyLight,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                              color: CustomStyle.greyLight,
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                              color: CustomStyle.redDark,
+                              width: 2.0,
+                            ),
+                          ),
+                          suffixIcon: const Icon(Icons.edit),
+                          labelStyle: CustomStyle.mediumTextBRed,
+                        ),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
                   ),
                 ),
-              if (_selectedRole == UserRole.branchManager &&
+              if ((_selectedRole == UserRole.branchManager ||
+                      _selectedRole == UserRole.employee ||
+                      _selectedRole == UserRole.client) &&
                   _selectedCompanyId != null &&
                   branchItems.isNotEmpty)
                 Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                  child: CustomDropdownSingle(
-                    title: S.of(context).branch,
-                    subtitle: 'Choose a branch',
-                    items: branchItems,
-                    initialItem: _selectedBranchId != null
-                        ? branchItems.firstWhere(
-                            (item) => item.value == _selectedBranchId,
-                            orElse: () =>
-                                CustomDropdownItem(title: '', value: ''))
-                        : null,
-                    onChanged: (item) {
-                      setState(() {
-                        _selectedBranchId = item.value;
-                      });
+                  padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+                  child: GestureDetector(
+                    onTap: () async {
+                      final branch =
+                          await Navigator.push<_BranchSelectionResult>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BranchSelectionScreen(
+                            companyId: _selectedCompanyId!,
+                            selectedBranchId: _selectedBranchId,
+                          ),
+                        ),
+                      );
+                      if (branch != null) {
+                        setState(() {
+                          _selectedBranchId = branch.id;
+                          _selectedBranchName = branch.name;
+                        });
+                      }
                     },
+                    child: AbsorbPointer(
+                      child: TextField(
+                        readOnly: true,
+                        controller: TextEditingController(
+                          text: _selectedBranchId == null
+                              ? S.of(context).tapToSelectUser
+                              : _selectedBranchName ?? '',
+                        ),
+                        decoration: InputDecoration(
+                          labelText: S.of(context).branch,
+                          prefixIcon: const Icon(Icons.account_tree,
+                              color: CustomStyle.redDark),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                              color: CustomStyle.greyLight,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                              color: CustomStyle.greyLight,
+                              width: 1.0,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                              color: CustomStyle.redDark,
+                              width: 2.0,
+                            ),
+                          ),
+                          suffixIcon: const Icon(Icons.edit),
+                          labelStyle: CustomStyle.mediumTextBRed,
+                        ),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
                   ),
                 ),
               if (_selectedUser != null &&
@@ -440,7 +529,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                           _selectedBranchId!.isNotEmpty)))
                 Expanded(
                   child: Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
                     child: ListView(
                       children: [
                         const SizedBox(height: 8),
@@ -455,7 +544,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton.icon(
                   icon: const Icon(Icons.admin_panel_settings),
-                  label: Text('Add User'),
+                  label: const Text('Add User'),
                   onPressed: _selectedUser == null || _isSubmitting
                       ? null
                       : () => _onAddUser(context),
@@ -472,79 +561,218 @@ class _AddUserScreenState extends State<AddUserScreen> {
   }
 }
 
-class NoRoleUserSelectionScreen extends StatefulWidget {
-  final NoRoleUser? selectedUser;
-  const NoRoleUserSelectionScreen({super.key, this.selectedUser});
-
-  @override
-  State<NoRoleUserSelectionScreen> createState() =>
-      _NoRoleUserSelectionScreenState();
+class _UserSelectionResult {
+  final String id;
+  final String name;
+  _UserSelectionResult({required this.id, required this.name});
 }
 
-class _NoRoleUserSelectionScreenState extends State<NoRoleUserSelectionScreen> {
-  String _search = '';
-
+class UserSelectionScreen extends StatelessWidget {
+  final String? selectedUserId;
+  const UserSelectionScreen({super.key, this.selectedUserId});
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<UsersBloc, UsersState>(
+      builder: (context, state) {
+        if (state is! UsersAuthenticated) {
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
+        }
+        final users = state.noRoleUsers;
+        return _SelectionScreen<_UserSelectionResult>(
+          title: S.of(context).user,
+          items: users
+              .map((user) => _SelectionItem(
+                    id: user.info.id,
+                    name: user.info.name,
+                    code: user.info.code.toString(),
+                    email: user.info.email,
+                  ))
+              .toList(),
+          selectedId: selectedUserId,
+          onSelect: (item) {
+            Navigator.pop(
+                context, _UserSelectionResult(id: item.id, name: item.name));
+          },
+        );
+      },
+    );
+  }
+}
+
+class _CompanySelectionResult {
+  final String id;
+  final String name;
+  _CompanySelectionResult({required this.id, required this.name});
+}
+
+class CompanySelectionScreen extends StatelessWidget {
+  final String? selectedCompanyId;
+  const CompanySelectionScreen({super.key, this.selectedCompanyId});
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UsersBloc, UsersState>(
+      builder: (context, state) {
+        if (state is! UsersAuthenticated) {
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
+        }
+        final companies = state.companies;
+        return _SelectionScreen<_CompanySelectionResult>(
+          title: S.of(context).company,
+          items: companies
+              .map((c) => _SelectionItem(
+                    id: c.id ?? '',
+                    name: c.name,
+                    code: c.code?.toString() ?? '',
+                    email: c.email,
+                  ))
+              .toList(),
+          selectedId: selectedCompanyId,
+          onSelect: (item) {
+            Navigator.pop(
+                context, _CompanySelectionResult(id: item.id, name: item.name));
+          },
+        );
+      },
+    );
+  }
+}
+
+class _BranchSelectionResult {
+  final String id;
+  final String name;
+  _BranchSelectionResult({required this.id, required this.name});
+}
+
+class BranchSelectionScreen extends StatelessWidget {
+  final String companyId;
+  final String? selectedBranchId;
+  const BranchSelectionScreen(
+      {super.key, required this.companyId, this.selectedBranchId});
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UsersBloc, UsersState>(
+      builder: (context, state) {
+        if (state is! UsersAuthenticated) {
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
+        }
+        final branches =
+            state.branches.where((b) => b.company.id == companyId).toList();
+        return _SelectionScreen<_BranchSelectionResult>(
+          title: S.of(context).branch,
+          items: branches
+              .map((b) => _SelectionItem(
+                    id: b.id ?? '',
+                    name: b.name,
+                    code: b.code?.toString() ?? '',
+                    email: b.email,
+                  ))
+              .toList(),
+          selectedId: selectedBranchId,
+          onSelect: (item) {
+            Navigator.pop(
+                context, _BranchSelectionResult(id: item.id, name: item.name));
+          },
+        );
+      },
+    );
+  }
+}
+
+class _SelectionItem {
+  final String id;
+  final String name;
+  final String code;
+  final String email;
+  _SelectionItem(
+      {required this.id,
+      required this.name,
+      required this.code,
+      required this.email});
+}
+
+class _SelectionScreen<T> extends StatefulWidget {
+  final String title;
+  final List<_SelectionItem> items;
+  final void Function(_SelectionItem) onSelect;
+  final String? selectedId;
+  const _SelectionScreen(
+      {required this.title,
+      required this.items,
+      required this.onSelect,
+      this.selectedId});
+  @override
+  State<_SelectionScreen<T>> createState() => _SelectionScreenState<T>();
+}
+
+class _SelectionScreenState<T> extends State<_SelectionScreen<T>> {
+  String _search = '';
+  @override
+  Widget build(BuildContext context) {
+    var filtered = widget.items.where((item) {
+      final q = _search.toLowerCase();
+      return item.name.toLowerCase().contains(q) ||
+          item.code.toLowerCase().contains(q) ||
+          item.email.toLowerCase().contains(q);
+    }).toList();
+    // Move selected item to the top if present
+    if (widget.selectedId != null) {
+      final idx = filtered.indexWhere((item) => item.id == widget.selectedId);
+      if (idx > 0) {
+        final selectedItem = filtered.removeAt(idx);
+        filtered.insert(0, selectedItem);
+      }
+    }
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).selectUsers),
-      body: BlocBuilder<UsersBloc, UsersState>(
-        builder: (context, state) {
-          if (state is! UsersAuthenticated) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final users = state.noRoleUsers.where((user) {
-            final q = _search.toLowerCase();
-            return user.info.name.toLowerCase().contains(q) ||
-                user.info.email.toLowerCase().contains(q) ||
-                user.info.code.toString().contains(q) ||
-                user.info.phoneNumber.toLowerCase().contains(q);
-          }).toList();
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: S.of(context).searchBy,
-                    prefixIcon: const Icon(Icons.search),
-                    border: const OutlineInputBorder(),
+      appBar: CustomAppBar(title: widget.title),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: S.of(context).searchBy,
+                prefixIcon: const Icon(Icons.search),
+                border: const OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _search = value;
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: filtered.isEmpty
+                ? Center(child: Text(S.of(context).noUsersToView))
+                : ListView.builder(
+                    itemCount: filtered.length,
+                    itemBuilder: (context, index) {
+                      final item = filtered[index];
+                      final isSelected = widget.selectedId == item.id;
+                      return Card(
+                        child: ListTile(
+                          leading: Text(
+                            item.code.toString(),
+                            style: CustomStyle.mediumTextBRed,
+                          ),
+                          title: Text(
+                            item.name,
+                            style: CustomStyle.mediumTextBRed,
+                          ),
+                          subtitle: Text(item.email),
+                          trailing: isSelected
+                              ? const Icon(Icons.check, color: Colors.green)
+                              : null,
+                          onTap: () => widget.onSelect(item),
+                        ),
+                      );
+                    },
                   ),
-                  onChanged: (value) {
-                    setState(() {
-                      _search = value;
-                    });
-                  },
-                ),
-              ),
-              Expanded(
-                child: users.isEmpty
-                    ? Center(child: Text(S.of(context).noUsersToView))
-                    : ListView.builder(
-                        itemCount: users.length,
-                        itemBuilder: (context, index) {
-                          final user = users[index];
-                          final isSelected = widget.selectedUser != null &&
-                              widget.selectedUser!.info.id == user.info.id;
-                          return Card(
-                            child: ListTile(
-                              leading: const Icon(Icons.person),
-                              title: Text(user.info.name),
-                              subtitle: Text(user.info.email),
-                              trailing: isSelected
-                                  ? const Icon(Icons.check, color: Colors.green)
-                                  : null,
-                              onTap: () {
-                                Navigator.pop(context, user);
-                              },
-                            ),
-                          );
-                        },
-                      ),
-              ),
-            ],
-          );
-        },
+          ),
+        ],
       ),
     );
   }
