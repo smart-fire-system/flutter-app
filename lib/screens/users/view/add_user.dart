@@ -4,6 +4,7 @@ import 'package:fire_alarm_system/screens/users/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/users/bloc/state.dart';
 import 'package:fire_alarm_system/screens/users/bloc/event.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
+import 'package:fire_alarm_system/utils/message.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
@@ -245,7 +246,33 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UsersBloc, UsersState>(
+    return BlocConsumer<UsersBloc, UsersState>(
+      listener: (context, state) {
+        if (state is UsersAuthenticated) {
+          if (state.message != null) {
+            String message = '';
+            if (state.message == AppMessage.adminAdded) {
+              message = 'Admin Added';
+            } else if (state.message == AppMessage.companyManagerAdded) {
+              message = 'Company Manager Added';
+            } else if (state.message == AppMessage.branchManagerAdded) {
+              message = 'Branch Manager Added';
+            } else if (state.message == AppMessage.employeeAdded) {
+              message = 'Employee Added';
+            } else if (state.message == AppMessage.clientAdded) {
+              message = 'Client Added';
+            }
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              await CustomAlert.showSuccess(
+                context: context,
+                title: message,
+              );
+              state.message = null;
+              if (context.mounted) Navigator.pop(context);
+            });
+          }
+        }
+      },
       builder: (context, state) {
         if (state is! UsersAuthenticated) {
           return const Scaffold(
@@ -273,13 +300,21 @@ class _AddUserScreenState extends State<AddUserScreen> {
         }
         // Only show roles the user can set
         final List<UserRole> allowedRoles = [];
-        if (permissions.canUpdateAdmins) allowedRoles.add(UserRole.admin);
-        if (permissions.canUpdateCompanyManagers)
+        if (permissions.canUpdateAdmins) {
+          allowedRoles.add(UserRole.admin);
+        }
+        if (permissions.canUpdateCompanyManagers) {
           allowedRoles.add(UserRole.companyManager);
-        if (permissions.canUpdateBranchManagers)
+        }
+        if (permissions.canUpdateBranchManagers) {
           allowedRoles.add(UserRole.branchManager);
-        if (permissions.canUpdateEmployees) allowedRoles.add(UserRole.employee);
-        if (permissions.canUpdateClients) allowedRoles.add(UserRole.client);
+        }
+        if (permissions.canUpdateEmployees) {
+          allowedRoles.add(UserRole.employee);
+        }
+        if (permissions.canUpdateClients) {
+          allowedRoles.add(UserRole.client);
+        }
         final roleItems = allowedRoles
             .map((role) => CustomDropdownItem(
                   title: UserInfo.getRoleName(context, role),
