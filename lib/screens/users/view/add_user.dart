@@ -245,318 +245,356 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final roleItems = UserRole.values
-        .where((role) => role != UserRole.masterAdmin)
-        .map((role) => CustomDropdownItem(
-              title: UserInfo.getRoleName(context, role),
-              value: role.toString().split('.').last,
-            ))
-        .toList();
-    return Scaffold(
-      appBar: const CustomAppBar(title: 'Add User'),
-      body: BlocConsumer<UsersBloc, UsersState>(
-        listener: (context, state) {
-          if (state is UsersAuthenticated && _isSubmitting) {
-            setState(() {
-              _isSubmitting = false;
-              _selectedUser = null;
-              _selectedCompanyId = null;
-              _selectedBranchId = null;
-            });
-            CustomAlert.showSuccess(
-              context: context,
-              title: 'Add User',
-            );
-          } else if (state is UsersLoading) {
-            // Optionally show loading
-          } else if (state is UsersAuthenticated && state.error != null) {
-            setState(() {
-              _isSubmitting = false;
-            });
-            CustomAlert.showError(
-              context: context,
-              title: 'Add User',
-            );
-          }
-        },
-        builder: (context, state) {
-          List branches = [];
-          if (state is UsersAuthenticated) {
-            branches = state.branches;
-          }
-          final branchItems = branches
-              .where((branch) =>
-                  branch != null &&
-                  branch.company != null &&
-                  branch.company.id == _selectedCompanyId)
-              .map((branch) => CustomDropdownItem(
-                    title: branch.name ?? '',
-                    value: branch.id ?? '',
-                  ))
-              .toList();
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
-                child: CustomDropdownSingle(
-                  title: S.of(context).role,
-                  subtitle: S.of(context).chooseRole,
-                  items: roleItems,
-                  initialItem: _selectedRole != null
-                      ? roleItems.firstWhere(
-                          (item) =>
-                              item.value ==
-                              _selectedRole.toString().split('.').last,
-                          orElse: () =>
-                              CustomDropdownItem(title: '', value: ''))
-                      : null,
-                  onChanged: (item) {
-                    final role = UserRole.values.firstWhere(
-                        (r) => r.toString().split('.').last == item.value);
-                    _onRoleChanged(role);
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-                child: GestureDetector(
-                  onTap: () async {
-                    final usersBlocState = context.read<UsersBloc>().state;
-                    final result = await Navigator.push<_UserSelectionResult>(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UserSelectionScreen(
-                          selectedUserId: _selectedUser?.info.id,
-                        ),
-                      ),
-                    );
-                    if (!mounted) return;
-                    if (result != null &&
-                        usersBlocState is UsersAuthenticated) {
-                      final selected = usersBlocState.noRoleUsers
-                              .where((u) => u.info.id == result.id)
-                              .isNotEmpty
-                          ? usersBlocState.noRoleUsers
-                              .firstWhere((u) => u.info.id == result.id)
-                          : null;
-                      setState(() {
-                        _selectedUser = selected;
-                      });
-                    }
-                  },
-                  child: AbsorbPointer(
-                    child: TextField(
-                      readOnly: true,
-                      controller: TextEditingController(
-                        text: _selectedUser == null
-                            ? S.of(context).tapToSelectUser
-                            : _selectedUser!.info.name,
-                      ),
-                      decoration: InputDecoration(
-                        labelText: S.of(context).user,
-                        prefixIcon: const Icon(Icons.person,
-                            color: CustomStyle.redDark),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: const BorderSide(
-                            color: CustomStyle.greyLight,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: const BorderSide(
-                            color: CustomStyle.greyLight,
-                            width: 1.0,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: const BorderSide(
-                            color: CustomStyle.redDark,
-                            width: 2.0,
-                          ),
-                        ),
-                        suffixIcon: const Icon(Icons.edit),
-                        labelStyle: CustomStyle.mediumTextBRed,
-                      ),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
-                ),
-              ),
-              if (_selectedRole == UserRole.companyManager ||
-                  _selectedRole == UserRole.branchManager ||
-                  _selectedRole == UserRole.employee ||
-                  _selectedRole == UserRole.client)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-                  child: GestureDetector(
-                    onTap: () async {
-                      final company =
-                          await Navigator.push<_CompanySelectionResult>(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CompanySelectionScreen(
-                            selectedCompanyId: _selectedCompanyId,
-                          ),
-                        ),
-                      );
-                      if (company != null) {
-                        setState(() {
-                          _selectedCompanyId = company.id;
-                          _selectedCompanyName = company.name;
-                          _selectedBranchId = null;
-                          _selectedBranchName = null;
-                        });
-                      }
-                    },
-                    child: AbsorbPointer(
-                      child: TextField(
-                        readOnly: true,
-                        controller: TextEditingController(
-                          text: _selectedCompanyId == null
-                              ? S.of(context).tapToSelectUser
-                              : _selectedCompanyName ?? '',
-                        ),
-                        decoration: InputDecoration(
-                          labelText: S.of(context).company,
-                          prefixIcon: const Icon(Icons.business,
-                              color: CustomStyle.redDark),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            borderSide: const BorderSide(
-                              color: CustomStyle.greyLight,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            borderSide: const BorderSide(
-                              color: CustomStyle.greyLight,
-                              width: 1.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            borderSide: const BorderSide(
-                              color: CustomStyle.redDark,
-                              width: 2.0,
-                            ),
-                          ),
-                          suffixIcon: const Icon(Icons.edit),
-                          labelStyle: CustomStyle.mediumTextBRed,
-                        ),
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
-                  ),
-                ),
-              if ((_selectedRole == UserRole.branchManager ||
-                      _selectedRole == UserRole.employee ||
-                      _selectedRole == UserRole.client) &&
-                  _selectedCompanyId != null &&
-                  branchItems.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-                  child: GestureDetector(
-                    onTap: () async {
-                      final branch =
-                          await Navigator.push<_BranchSelectionResult>(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BranchSelectionScreen(
-                            companyId: _selectedCompanyId!,
-                            selectedBranchId: _selectedBranchId,
-                          ),
-                        ),
-                      );
-                      if (branch != null) {
-                        setState(() {
-                          _selectedBranchId = branch.id;
-                          _selectedBranchName = branch.name;
-                        });
-                      }
-                    },
-                    child: AbsorbPointer(
-                      child: TextField(
-                        readOnly: true,
-                        controller: TextEditingController(
-                          text: _selectedBranchId == null
-                              ? S.of(context).tapToSelectUser
-                              : _selectedBranchName ?? '',
-                        ),
-                        decoration: InputDecoration(
-                          labelText: S.of(context).branch,
-                          prefixIcon: const Icon(Icons.account_tree,
-                              color: CustomStyle.redDark),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            borderSide: const BorderSide(
-                              color: CustomStyle.greyLight,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            borderSide: const BorderSide(
-                              color: CustomStyle.greyLight,
-                              width: 1.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            borderSide: const BorderSide(
-                              color: CustomStyle.redDark,
-                              width: 2.0,
-                            ),
-                          ),
-                          suffixIcon: const Icon(Icons.edit),
-                          labelStyle: CustomStyle.mediumTextBRed,
-                        ),
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
-                  ),
-                ),
-              if (_selectedUser != null &&
-                  _selectedRole != null &&
-                  (_selectedRole == UserRole.admin ||
-                      (_selectedRole == UserRole.companyManager &&
-                          _selectedCompanyId != null &&
-                          _selectedCompanyId!.isNotEmpty) ||
-                      (_selectedRole == UserRole.branchManager &&
-                          _selectedCompanyId != null &&
-                          _selectedCompanyId!.isNotEmpty &&
-                          _selectedBranchId != null &&
-                          _selectedBranchId!.isNotEmpty)))
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
-                    child: ListView(
-                      children: [
-                        const SizedBox(height: 8),
-                        Text('Permissions',
-                            style: Theme.of(context).textTheme.titleMedium),
-                        ..._buildPermissionCheckboxes(),
-                      ],
-                    ),
-                  ),
-                ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.admin_panel_settings),
-                  label: const Text('Add User'),
-                  onPressed: _selectedUser == null || _isSubmitting
-                      ? null
-                      : () => _onAddUser(context),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(48),
-                  ),
-                ),
-              ),
-            ],
+    return BlocBuilder<UsersBloc, UsersState>(
+      builder: (context, state) {
+        if (state is! UsersAuthenticated) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
           );
-        },
-      ),
+        }
+        final permissions = state.roleUser.permissions as AppPermissions;
+        final canUpdate = [
+          permissions.canUpdateAdmins,
+          permissions.canUpdateCompanyManagers,
+          permissions.canUpdateBranchManagers,
+          permissions.canUpdateEmployees,
+          permissions.canUpdateClients,
+        ];
+        if (!canUpdate.any((p) => p)) {
+          return Scaffold(
+            appBar: const CustomAppBar(title: 'Add User'),
+            body: Center(
+              child: Text(
+                'You do not have permission to add users.',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+          );
+        }
+        // Only show roles the user can set
+        final List<UserRole> allowedRoles = [];
+        if (permissions.canUpdateAdmins) allowedRoles.add(UserRole.admin);
+        if (permissions.canUpdateCompanyManagers)
+          allowedRoles.add(UserRole.companyManager);
+        if (permissions.canUpdateBranchManagers)
+          allowedRoles.add(UserRole.branchManager);
+        if (permissions.canUpdateEmployees) allowedRoles.add(UserRole.employee);
+        if (permissions.canUpdateClients) allowedRoles.add(UserRole.client);
+        final roleItems = allowedRoles
+            .map((role) => CustomDropdownItem(
+                  title: UserInfo.getRoleName(context, role),
+                  value: role.toString().split('.').last,
+                ))
+            .toList();
+        return Scaffold(
+          appBar: const CustomAppBar(title: 'Add User'),
+          body: BlocConsumer<UsersBloc, UsersState>(
+            listener: (context, state) {
+              if (state is UsersAuthenticated && _isSubmitting) {
+                setState(() {
+                  _isSubmitting = false;
+                  _selectedUser = null;
+                  _selectedCompanyId = null;
+                  _selectedBranchId = null;
+                });
+                CustomAlert.showSuccess(
+                  context: context,
+                  title: 'Add User',
+                );
+              } else if (state is UsersLoading) {
+                // Optionally show loading
+              } else if (state is UsersAuthenticated && state.error != null) {
+                setState(() {
+                  _isSubmitting = false;
+                });
+                CustomAlert.showError(
+                  context: context,
+                  title: 'Add User',
+                );
+              }
+            },
+            builder: (context, state) {
+              List branches = [];
+              if (state is UsersAuthenticated) {
+                branches = state.branches;
+              }
+              final branchItems = branches
+                  .where((branch) =>
+                      branch != null &&
+                      branch.company != null &&
+                      branch.company.id == _selectedCompanyId)
+                  .map((branch) => CustomDropdownItem(
+                        title: branch.name ?? '',
+                        value: branch.id ?? '',
+                      ))
+                  .toList();
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                    child: CustomDropdownSingle(
+                      title: S.of(context).role,
+                      subtitle: S.of(context).chooseRole,
+                      items: roleItems,
+                      initialItem: _selectedRole != null
+                          ? roleItems.firstWhere(
+                              (item) =>
+                                  item.value ==
+                                  _selectedRole.toString().split('.').last,
+                              orElse: () =>
+                                  CustomDropdownItem(title: '', value: ''))
+                          : null,
+                      onChanged: (item) {
+                        final role = UserRole.values.firstWhere(
+                            (r) => r.toString().split('.').last == item.value);
+                        _onRoleChanged(role);
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+                    child: GestureDetector(
+                      onTap: () async {
+                        final usersBlocState = context.read<UsersBloc>().state;
+                        final result =
+                            await Navigator.push<_UserSelectionResult>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserSelectionScreen(
+                              selectedUserId: _selectedUser?.info.id,
+                            ),
+                          ),
+                        );
+                        if (!mounted) return;
+                        if (result != null &&
+                            usersBlocState is UsersAuthenticated) {
+                          final selected = usersBlocState.noRoleUsers
+                                  .where((u) => u.info.id == result.id)
+                                  .isNotEmpty
+                              ? usersBlocState.noRoleUsers
+                                  .firstWhere((u) => u.info.id == result.id)
+                              : null;
+                          setState(() {
+                            _selectedUser = selected;
+                          });
+                        }
+                      },
+                      child: AbsorbPointer(
+                        child: TextField(
+                          readOnly: true,
+                          controller: TextEditingController(
+                            text: _selectedUser == null
+                                ? S.of(context).tapToSelectUser
+                                : _selectedUser!.info.name,
+                          ),
+                          decoration: InputDecoration(
+                            labelText: S.of(context).user,
+                            prefixIcon: const Icon(Icons.person,
+                                color: CustomStyle.redDark),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              borderSide: const BorderSide(
+                                color: CustomStyle.greyLight,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              borderSide: const BorderSide(
+                                color: CustomStyle.greyLight,
+                                width: 1.0,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                              borderSide: const BorderSide(
+                                color: CustomStyle.redDark,
+                                width: 2.0,
+                              ),
+                            ),
+                            suffixIcon: const Icon(Icons.edit),
+                            labelStyle: CustomStyle.mediumTextBRed,
+                          ),
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (_selectedRole == UserRole.companyManager ||
+                      _selectedRole == UserRole.branchManager ||
+                      _selectedRole == UserRole.employee ||
+                      _selectedRole == UserRole.client)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+                      child: GestureDetector(
+                        onTap: () async {
+                          final company =
+                              await Navigator.push<_CompanySelectionResult>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CompanySelectionScreen(
+                                selectedCompanyId: _selectedCompanyId,
+                              ),
+                            ),
+                          );
+                          if (company != null) {
+                            setState(() {
+                              _selectedCompanyId = company.id;
+                              _selectedCompanyName = company.name;
+                              _selectedBranchId = null;
+                              _selectedBranchName = null;
+                            });
+                          }
+                        },
+                        child: AbsorbPointer(
+                          child: TextField(
+                            readOnly: true,
+                            controller: TextEditingController(
+                              text: _selectedCompanyId == null
+                                  ? S.of(context).tapToSelectUser
+                                  : _selectedCompanyName ?? '',
+                            ),
+                            decoration: InputDecoration(
+                              labelText: S.of(context).company,
+                              prefixIcon: const Icon(Icons.business,
+                                  color: CustomStyle.redDark),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: const BorderSide(
+                                  color: CustomStyle.greyLight,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: const BorderSide(
+                                  color: CustomStyle.greyLight,
+                                  width: 1.0,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: const BorderSide(
+                                  color: CustomStyle.redDark,
+                                  width: 2.0,
+                                ),
+                              ),
+                              suffixIcon: const Icon(Icons.edit),
+                              labelStyle: CustomStyle.mediumTextBRed,
+                            ),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ),
+                    ),
+                  if ((_selectedRole == UserRole.branchManager ||
+                          _selectedRole == UserRole.employee ||
+                          _selectedRole == UserRole.client) &&
+                      _selectedCompanyId != null &&
+                      branchItems.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+                      child: GestureDetector(
+                        onTap: () async {
+                          final branch =
+                              await Navigator.push<_BranchSelectionResult>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BranchSelectionScreen(
+                                companyId: _selectedCompanyId!,
+                                selectedBranchId: _selectedBranchId,
+                              ),
+                            ),
+                          );
+                          if (branch != null) {
+                            setState(() {
+                              _selectedBranchId = branch.id;
+                              _selectedBranchName = branch.name;
+                            });
+                          }
+                        },
+                        child: AbsorbPointer(
+                          child: TextField(
+                            readOnly: true,
+                            controller: TextEditingController(
+                              text: _selectedBranchId == null
+                                  ? S.of(context).tapToSelectUser
+                                  : _selectedBranchName ?? '',
+                            ),
+                            decoration: InputDecoration(
+                              labelText: S.of(context).branch,
+                              prefixIcon: const Icon(Icons.account_tree,
+                                  color: CustomStyle.redDark),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: const BorderSide(
+                                  color: CustomStyle.greyLight,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: const BorderSide(
+                                  color: CustomStyle.greyLight,
+                                  width: 1.0,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                                borderSide: const BorderSide(
+                                  color: CustomStyle.redDark,
+                                  width: 2.0,
+                                ),
+                              ),
+                              suffixIcon: const Icon(Icons.edit),
+                              labelStyle: CustomStyle.mediumTextBRed,
+                            ),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (_selectedUser != null &&
+                      _selectedRole != null &&
+                      (_selectedRole == UserRole.admin ||
+                          (_selectedRole == UserRole.companyManager &&
+                              _selectedCompanyId != null &&
+                              _selectedCompanyId!.isNotEmpty) ||
+                          (_selectedRole == UserRole.branchManager &&
+                              _selectedCompanyId != null &&
+                              _selectedCompanyId!.isNotEmpty &&
+                              _selectedBranchId != null &&
+                              _selectedBranchId!.isNotEmpty)))
+                    Expanded(
+                      child: Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                        child: ListView(
+                          children: [
+                            const SizedBox(height: 8),
+                            Text('Permissions',
+                                style: Theme.of(context).textTheme.titleMedium),
+                            ..._buildPermissionCheckboxes(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.admin_panel_settings),
+                      label: const Text('Add User'),
+                      onPressed: _selectedUser == null || _isSubmitting
+                          ? null
+                          : () => _onAddUser(context),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(48),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
