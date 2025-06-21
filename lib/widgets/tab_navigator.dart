@@ -96,22 +96,10 @@ class TabNavigator extends StatelessWidget {
             case '/company/add':
               page = const AddCompanyScreen();
               break;
-            case '/admins':
+            case '/users':
               page = const UsersScreen();
               break;
-            case '/companyManagers':
-              page = const UsersScreen();
-              break;
-            case '/branchManagers':
-              page = const UsersScreen();
-              break;
-            case '/employees':
-              page = const UsersScreen();
-              break;
-            case '/clients':
-              page = const UsersScreen();
-              break;
-            case '/admin/add':
+            case '/user/add':
               page = const AddUserScreen();
               break;
 

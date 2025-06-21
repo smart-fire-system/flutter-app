@@ -170,107 +170,16 @@ class UsersScreenState extends State<UsersScreen> {
               _permissions.canUpdateEmployees ||
               _permissions.canUpdateClients)
           ? null
-          : ExpandableFab(
-              type: ExpandableFabType.up,
-              childrenAnimation: ExpandableFabAnimation.none,
-              distance: 70,
-              overlayStyle: ExpandableFabOverlayStyle(
-                color: Colors.white.withValues(alpha: 0.6),
-              ),
-              closeButtonBuilder: DefaultFloatingActionButtonBuilder(
-                child: const Icon(Icons.close),
-                fabSize: ExpandableFabSize.small,
-                foregroundColor: Colors.white,
-                backgroundColor: CustomStyle.redDark,
-                shape: const CircleBorder(),
-              ),
-              openButtonBuilder: RotateFloatingActionButtonBuilder(
-                child: const Icon(Icons.add),
-                fabSize: ExpandableFabSize.regular,
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.green,
-                shape: const CircleBorder(),
-              ),
-              children: [
-                if (_roleUser is MasterAdmin)
-                  CustomBasicButton(
-                    label: S.of(context).addNewMasterAdmin,
-                    onPressed: () {
-                      TabNavigator.settings.currentState
-                          ?.pushNamed('/masterAdmin/add');
-                    },
-                  ),
-                if (_permissions.canUpdateAdmins)
-                  CustomBasicButton(
-                    label: S.of(context).addNewAdmin,
-                    onPressed: () {
-                      TabNavigator.settings.currentState
-                          ?.pushNamed('/admin/add');
-                    },
-                  ),
-                if (_permissions.canUpdateCompanyManagers)
-                  CustomBasicButton(
-                    label: S.of(context).addNewCompanyManager,
-                    onPressed: () {
-                      if (_companies.isEmpty) {
-                        CustomAlert.showError(
-                          context: context,
-                          title: S.of(context).noCompaneiesToAddCompanyManager,
-                        );
-                      } else {
-                        TabNavigator.settings.currentState
-                            ?.pushNamed('/companyManager/add');
-                      }
-                    },
-                  ),
-                if (_permissions.canUpdateBranchManagers)
-                  CustomBasicButton(
-                    label: S.of(context).addNewBranchManager,
-                    onPressed: () {
-                      if (_branches.isEmpty) {
-                        CustomAlert.showError(
-                          context: context,
-                          title: S.of(context).noBranchesToAddBranchManager,
-                        );
-                      } else {
-                        TabNavigator.settings.currentState
-                            ?.pushNamed('/branchManager/add');
-                      }
-                    },
-                  ),
-                if (_permissions.canUpdateEmployees)
-                  CustomBasicButton(
-                    label: S.of(context).addNewEmployee,
-                    onPressed: () {
-                      if (_branches.isEmpty) {
-                        CustomAlert.showError(
-                          context: context,
-                          title: S.of(context).noBranchesToAddEmployee,
-                        );
-                      } else {
-                        TabNavigator.settings.currentState
-                            ?.pushNamed('/employee/add');
-                      }
-                    },
-                  ),
-                if (_permissions.canUpdateClients)
-                  CustomBasicButton(
-                    label: S.of(context).addNewClient,
-                    onPressed: () {
-                      if (_branches.isEmpty) {
-                        CustomAlert.showError(
-                          context: context,
-                          title: S.of(context).noBranchesToAddClient,
-                        );
-                      } else {
-                        TabNavigator.settings.currentState
-                            ?.pushNamed('/client/add');
-                      }
-                    },
-                  ),
-              ],
+          : FloatingActionButton.extended(
+              icon: const Icon(Icons.add),
+              label: const Text('Add Permission'),
+              backgroundColor: CustomStyle.redDark,
+              onPressed: () {
+                TabNavigator.settings.currentState?.pushNamed(
+                  '/user/add',
+                );
+              },
             ),
-      floatingActionButtonLocation: ExpandableFab.location,
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<BranchesBloc>().add(AuthChanged());

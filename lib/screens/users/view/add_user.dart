@@ -23,7 +23,6 @@ class AddUserScreen extends StatefulWidget {
 class _AddUserScreenState extends State<AddUserScreen> {
   UserRole? _selectedRole;
   NoRoleUser? _selectedUser;
-  bool _isSubmitting = false;
   AppPermissions _permissions = AppPermissions(role: UserRole.admin);
   String? _selectedCompanyId;
   String? _selectedBranchId;
@@ -60,9 +59,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
   void _onAddUser(BuildContext context) {
     if (_selectedUser == null || _selectedRole == null) return;
-    setState(() {
-      _isSubmitting = true;
-    });
     context.read<UsersBloc>().add(
           AddRequested(
             userId: _selectedUser!.info.id,
@@ -325,9 +321,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
           appBar: const CustomAppBar(title: 'Add User'),
           body: BlocConsumer<UsersBloc, UsersState>(
             listener: (context, state) {
-              if (state is UsersAuthenticated && _isSubmitting) {
+              if (state is UsersAuthenticated) {
                 setState(() {
-                  _isSubmitting = false;
                   _selectedUser = null;
                   _selectedCompanyId = null;
                   _selectedBranchId = null;
@@ -339,9 +334,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
               } else if (state is UsersLoading) {
                 // Optionally show loading
               } else if (state is UsersAuthenticated && state.error != null) {
-                setState(() {
-                  _isSubmitting = false;
-                });
                 CustomAlert.showError(
                   context: context,
                   title: 'Add User',
@@ -611,26 +603,55 @@ class _AddUserScreenState extends State<AddUserScreen> {
                         ),
                       ),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.admin_panel_settings),
-                      label: const Text('Add User'),
-                      onPressed: _selectedUser == null || _isSubmitting
-                          ? null
-                          : () => _onAddUser(context),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(48),
-                      ),
-                    ),
-                  ),
                 ],
               );
             },
           ),
+          floatingActionButton: FloatingActionButton.extended(
+            icon: const Icon(Icons.save),
+            label: const Text('Save'),
+            backgroundColor: _isSaveEnabled() == null
+                ? Colors.green
+                : CustomStyle.greyMedium,
+            onPressed: _isSaveEnabled() == null
+                ? () => _onAddUser(context)
+                : () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(_isSaveEnabled()!),
+                        backgroundColor: Colors.orange,
+                        duration: const Duration(seconds: 2),
+                        showCloseIcon: true,
+                      ),
+                    );
+                  },
+          ),
         );
       },
     );
+  }
+
+  String? _isSaveEnabled() {
+    if (_selectedUser == null) {
+      return "Please select a user";
+    }
+    if (_selectedRole == null) {
+      return "Please select a role";
+    }
+    if (_selectedCompanyId == null &&
+        (_selectedRole == UserRole.companyManager ||
+            _selectedRole == UserRole.branchManager ||
+            _selectedRole == UserRole.employee ||
+            _selectedRole == UserRole.client)) {
+      return "Please select a company";
+    }
+    if (_selectedBranchId == null &&
+        (_selectedRole == UserRole.branchManager ||
+            _selectedRole == UserRole.employee ||
+            _selectedRole == UserRole.client)) {
+      return "Please select a branch";
+    }
+    return null;
   }
 }
 
