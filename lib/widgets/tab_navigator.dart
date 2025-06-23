@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/screens/users/view/users_screen.dart';
+import 'package:fire_alarm_system/screens/users/view/view_user.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/screens/home/view/view.dart';
 import 'package:fire_alarm_system/screens/branches/view/view.dart';
@@ -101,6 +102,9 @@ class TabNavigator extends StatelessWidget {
               break;
             case '/user/add':
               page = const AddUserScreen();
+              break;
+            case '/user/view':
+              page = UserInfoScreen(userId: routeSettings.arguments as String);
               break;
 
             default:

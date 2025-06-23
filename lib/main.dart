@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/firebase_options.dart';
+import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
-import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/screens/home/view/view.dart';
 import 'package:fire_alarm_system/screens/home/bloc/bloc.dart';
@@ -30,7 +30,7 @@ class FireAlarmApp extends StatefulWidget {
 
 class _FireAlarmAppState extends State<FireAlarmApp> {
   Locale? _locale;
-  final _authRepository = AuthRepository();
+  final _appRepository = AppRepository();
 
   @override
   void initState() {
@@ -56,18 +56,22 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<AuthRepository>(create: (_) => _authRepository),
+        RepositoryProvider<AppRepository>(create: (_) => _appRepository),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (_) => HomeBloc(authRepository: _authRepository)),
+            create: (_) => HomeBloc(appRepository: _appRepository),
+          ),
           BlocProvider(
-              create: (_) => UsersBloc(authRepository: _authRepository)),
+            create: (_) => UsersBloc(appRepository: _appRepository),
+          ),
           BlocProvider(
-              create: (_) => ProfileBloc(authRepository: _authRepository)),
+            create: (_) => ProfileBloc(appRepository: _appRepository),
+          ),
           BlocProvider(
-              create: (_) => BranchesBloc(authRepository: _authRepository)),
+            create: (_) => BranchesBloc(appRepository: _appRepository),
+          ),
         ],
         child: MaterialApp(
           title: 'Fire Alarm System',

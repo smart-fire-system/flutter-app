@@ -1,36 +1,36 @@
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/repositories/user_repository.dart';
 import 'package:fire_alarm_system/repositories/branch_repository.dart';
 import 'event.dart';
 import 'state.dart';
 
 class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
-  final AuthRepository authRepository;
+  final AppRepository appRepository;
   final UserRepository userRepository;
   final BranchRepository branchRepository;
   String? createdId;
 
-  BranchesBloc({required this.authRepository})
-      : userRepository = UserRepository(authRepository: authRepository),
+  BranchesBloc({required this.appRepository})
+      : userRepository = UserRepository(),
         branchRepository = BranchRepository(),
         createdId = null,
         super(BranchesInitial()) {
-    authRepository.authStateChanges.listen((data) {
-      add(AuthChanged(error: data == "" ? null : data));
+    appRepository.authStateStream.listen((data) {
+      add(AuthChanged(error: data));
     }, onError: (error) {
       add(AuthChanged(error: error.toString()));
     });
 
     on<AuthChanged>((event, emit) async {
-      UserInfo userInfo = authRepository.userRole.info as UserInfo;
-      if (authRepository.authStatus != AuthStatus.authenticated ||
+      UserInfo userInfo = appRepository.userRole.info as UserInfo;
+      if (appRepository.authStatus != AuthStatus.authenticated ||
           userInfo.phoneNumber.isEmpty ||
-          authRepository.userRole is NoRoleUser) {
+          appRepository.userRole is NoRoleUser) {
         emit(BranchesNotAuthenticated(error: event.error));
         return;
       }
@@ -38,12 +38,10 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
       try {
         List<Branch> branches = [];
         List<Company> companies = [];
-        final data =
-            await branchRepository.getUserBranchesAndCompanies(authRepository);
-        branches = data['branches'] as List<Branch>;
-        companies = data['companies'] as List<Company>;
+        branches = appRepository.branches;
+        companies = appRepository.companies;
         emit(BranchesAuthenticated(
-          user: authRepository.userRole,
+          user: appRepository.userRole,
           branches: branches,
           companies: companies,
           createdId: createdId,
@@ -52,7 +50,7 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
         ));
       } catch (e) {
         emit(BranchesAuthenticated(
-          user: authRepository.userRole,
+          user: appRepository.userRole,
           error: event.error ?? e.toString(),
         ));
       }

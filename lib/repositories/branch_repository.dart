@@ -8,9 +8,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 
+class BranchesAndCompanies {
+  List<Branch> branches;
+  List<Company> companies;
+  BranchesAndCompanies({required this.branches, required this.companies});
+}
+
 class BranchRepository {
   final FirebaseFirestore _firestore;
   final FirebaseStorage _storage;
+  QuerySnapshot? branchesSnapshot;
+  QuerySnapshot? companiesSnapshot;
   BranchRepository()
       : _firestore = FirebaseFirestore.instance,
         _storage = FirebaseStorage.instance;
@@ -56,6 +64,33 @@ class BranchRepository {
       } else {
         throw Exception(e.toString());
       }
+    }
+  }
+
+  BranchesAndCompanies getBranchesAndCompanies() {
+    try {
+      if (companiesSnapshot == null || branchesSnapshot == null) {
+        return BranchesAndCompanies(branches: [], companies: []);
+      }
+      List<Company> companies = [];
+      List<Branch> branches = [];
+      for (var doc in companiesSnapshot!.docs) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        companies.add(Company.fromMap(data, doc.id));
+      }
+      for (var doc in branchesSnapshot!.docs) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        branches.add(
+          Branch.fromMap(
+            map: data,
+            branchId: doc.id,
+            companies: companies,
+          ),
+        );
+      }
+      return BranchesAndCompanies(branches: branches, companies: companies);
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 
