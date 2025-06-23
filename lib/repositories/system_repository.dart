@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:fire_alarm_system/models/pin.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class MasterConfig {
@@ -15,14 +13,9 @@ class MasterConfig {
 }
 
 class SystemRepository {
-  final FirebaseFirestore _firestore;
-  final FirebaseStorage _storage;
   final FirebaseDatabase _db;
 
-  SystemRepository()
-      : _firestore = FirebaseFirestore.instance,
-        _storage = FirebaseStorage.instance,
-        _db = FirebaseDatabase.instance;
+  SystemRepository() : _db = FirebaseDatabase.instance;
 
   Future<List<Master>> getMasters(int branchCode) async {
     final statusRef = _db.ref("branches/branch_$branchCode/status");

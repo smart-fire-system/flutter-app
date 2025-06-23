@@ -1,19 +1,19 @@
 import 'package:fire_alarm_system/models/pin.dart';
+import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/repositories/system_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'event.dart';
 import 'state.dart';
 
 class SystemBloc extends Bloc<SystemEvent, SystemState> {
-  final AuthRepository authRepository;
+  final AppRepository appRepository;
   int? branchCode;
   List<Master> masters = [];
   SystemRepository systemRepository = SystemRepository();
 
-  SystemBloc({required this.authRepository}) : super(SystemInitial()) {
-    authRepository.authStateChanges.listen((data) {
+  SystemBloc({required this.appRepository}) : super(SystemInitial()) {
+    appRepository.authStateStream.listen((data) {
       add(AuthChanged(error: data == "" ? null : data));
     }, onError: (error) {
       add(AuthChanged(error: error.toString()));
@@ -25,7 +25,7 @@ class SystemBloc extends Bloc<SystemEvent, SystemState> {
 
     on<AuthChanged>((event, emit) async {
       if (event.error == null) {
-        if (authRepository.authStatus == AuthStatus.notAuthenticated) {
+        if (appRepository.authStatus == AuthStatus.notAuthenticated) {
           emit(SystemNotAuthenticated());
         } else {
           if (branchCode == null) {

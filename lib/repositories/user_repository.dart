@@ -3,16 +3,14 @@ import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
-import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/repositories/branch_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 
 class UserRepository {
-  final AuthRepository authRepository;
   final BranchRepository branchRepository;
   final FirebaseFirestore _firestore;
-  UserRepository({required this.authRepository})
+  UserRepository()
       : _firestore = FirebaseFirestore.instance,
         branchRepository = BranchRepository();
 
@@ -133,7 +131,7 @@ class UserRepository {
     }
   }
 
-  Future<Users> getAllUsers(
+  Future<Users> getAllUsers(dynamic userRole,
       List<Branch> branches, List<Company> companies) async {
     Users users = Users();
     try {
@@ -153,7 +151,7 @@ class UserRepository {
         Map<String, dynamic> userData = doc.data();
 
         if (isMasterAdmin(doc.id, masterAdminsSnapshot)) {
-          if (authRepository.userRole is MasterAdmin) {
+          if (userRole is MasterAdmin) {
             users.masterAdmins.add(
               MasterAdmin(
                 info: UserInfo.fromMap(
@@ -168,7 +166,7 @@ class UserRepository {
 
         final permissions = isAdmin(doc.id, adminsSnapshot);
         if (permissions != null) {
-          if (authRepository.userRole.permissions.canViewAdmins) {
+          if (userRole.permissions.canViewAdmins) {
             users.admins.add(
               Admin(
                 permissions: permissions,
@@ -192,7 +190,7 @@ class UserRepository {
             companies,
           );
           if (company != null) {
-            if (authRepository.userRole.permissions.canViewCompanyManagers) {
+            if (userRole.permissions.canViewCompanyManagers) {
               users.companyManagers.add(
                 CompanyManager(
                   company: company,
@@ -219,11 +217,11 @@ class UserRepository {
             branches,
           );
           if (branch != null) {
-            if (authRepository.userRole.permissions.canViewBranchManagers &&
-                (authRepository.userRole is MasterAdmin ||
-                    authRepository.userRole is Admin ||
-                    (authRepository.userRole is CompanyManager &&
-                        authRepository.userRole.company.id ==
+            if (userRole.permissions.canViewBranchManagers &&
+                (userRole is MasterAdmin ||
+                    userRole is Admin ||
+                    (userRole is CompanyManager &&
+                        userRole.company.id ==
                             branch.company.id))) {
               users.branchManagers.add(
                 BranchManager(
@@ -250,14 +248,14 @@ class UserRepository {
             branches,
           );
           if (branch != null) {
-            if (authRepository.userRole.permissions.canViewEmployees &&
-                (authRepository.userRole is MasterAdmin ||
-                    authRepository.userRole is Admin ||
-                    (authRepository.userRole is CompanyManager &&
-                        authRepository.userRole.company.id ==
+            if (userRole.permissions.canViewEmployees &&
+                (userRole is MasterAdmin ||
+                    userRole is Admin ||
+                    (userRole is CompanyManager &&
+                        userRole.company.id ==
                             branch.company.id) ||
-                    (authRepository.userRole is BranchManager &&
-                        authRepository.userRole.branch.id == branch.id))) {
+                    (userRole is BranchManager &&
+                        userRole.branch.id == branch.id))) {
               users.employees.add(
                 Employee(
                   branch: branch,
@@ -283,14 +281,14 @@ class UserRepository {
             branches,
           );
           if (branch != null) {
-            if (authRepository.userRole.permissions.canViewClients &&
-                (authRepository.userRole is MasterAdmin ||
-                    authRepository.userRole is Admin ||
-                    (authRepository.userRole is CompanyManager &&
-                        authRepository.userRole.company.id ==
+            if (userRole.permissions.canViewClients &&
+                (userRole is MasterAdmin ||
+                    userRole is Admin ||
+                    (userRole is CompanyManager &&
+                        userRole.company.id ==
                             branch.company.id) ||
-                    (authRepository.userRole is BranchManager &&
-                        authRepository.userRole.branch.id == branch.id))) {
+                    (userRole is BranchManager &&
+                        userRole.branch.id == branch.id))) {
               users.clients.add(
                 Client(
                   branch: branch,

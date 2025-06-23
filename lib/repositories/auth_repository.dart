@@ -17,6 +17,7 @@ class AuthRepository {
   final firebase.FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
   final UserAuth _userAuth;
+
   String? googleUserName;
   String? googleUserEmail;
 
@@ -29,11 +30,11 @@ class AuthRepository {
   UserInfo get userInfo => _userAuth.userRole.info as UserInfo;
   dynamic get userRole => _userAuth.userRole;
 
-  Stream<String> get authStateChanges {
+  Stream<String?> get authStateChanges {
     return _firebaseAuth.authStateChanges().asyncMap((firebaseUser) async {
       if (firebaseUser == null) {
         _setUserNotAuthenticated();
-        return "";
+        return null;
       }
 
       if (firebaseUser.emailVerified) {
@@ -44,7 +45,7 @@ class AuthRepository {
 
       try {
         await _checkUserExists();
-        return "";
+        return null;
       } catch (e) {
         await signOut();
         if (e is FirebaseException) {
@@ -241,7 +242,7 @@ class AuthRepository {
   }
 
   Future<dynamic> _getRoleUser(UserInfo user) async {
-    UserRepository userRepository = UserRepository(authRepository: this);
+    UserRepository userRepository = UserRepository();
     QuerySnapshot querySnapshot;
 
     querySnapshot = await _firestore.collection('masterAdmins').get();

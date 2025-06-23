@@ -1,6 +1,4 @@
 import 'package:card_loading/card_loading.dart';
-import 'package:fire_alarm_system/models/branch.dart';
-import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/users/bloc/bloc.dart';
@@ -8,7 +6,6 @@ import 'package:fire_alarm_system/screens/users/bloc/state.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
-import 'package:fire_alarm_system/widgets/button.dart';
 import 'package:fire_alarm_system/widgets/dropdown.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
@@ -23,7 +20,6 @@ import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/event.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({super.key});
@@ -35,8 +31,6 @@ class UsersScreen extends StatefulWidget {
 class UsersScreenState extends State<UsersScreen> {
   bool _isFirstFilterCall = true;
   dynamic _roleUser;
-  List<Company> _companies = [];
-  List<Branch> _branches = [];
   List<CustomDropdownItem> _userTypesDropdown = [];
   List<CustomDropdownItem> _filteredUserTypesDropdown = [];
   AppPermissions _permissions = AppPermissions();
@@ -73,8 +67,6 @@ class UsersScreenState extends State<UsersScreen> {
             }
           });
           _roleUser = state.roleUser;
-          _companies = state.companies;
-          _branches = state.branches;
           _permissions = state.roleUser.permissions as AppPermissions;
           _users.masterAdmins = List.from(state.masterAdmins);
           _users.admins = List.from(state.admins);
@@ -245,8 +237,8 @@ class UsersScreenState extends State<UsersScreen> {
                           role: S.of(context).masterAdmin,
                           onTap: () {
                             TabNavigator.settings.currentState?.pushNamed(
-                              '/user/details',
-                              arguments: user,
+                              '/user/view',
+                              arguments: user.info.id,
                             );
                           },
                         );
@@ -264,8 +256,8 @@ class UsersScreenState extends State<UsersScreen> {
                           role: S.of(context).admin,
                           onTap: () {
                             TabNavigator.settings.currentState?.pushNamed(
-                              '/user/details',
-                              arguments: user,
+                              '/user/view',
+                              arguments: user.info.id,
                             );
                           },
                         );
@@ -285,8 +277,8 @@ class UsersScreenState extends State<UsersScreen> {
                           companyName: user.company.name,
                           onTap: () {
                             TabNavigator.settings.currentState?.pushNamed(
-                              '/user/details',
-                              arguments: user,
+                              '/user/view',
+                              arguments: user.info.id,
                             );
                           },
                         );
@@ -308,8 +300,8 @@ class UsersScreenState extends State<UsersScreen> {
                           branchName: user.branch.name,
                           onTap: () {
                             TabNavigator.settings.currentState?.pushNamed(
-                              '/user/details',
-                              arguments: user,
+                              '/user/view',
+                              arguments: user.info.id,
                             );
                           },
                         );
@@ -332,8 +324,8 @@ class UsersScreenState extends State<UsersScreen> {
                           branchName: user.branch.name,
                           onTap: () {
                             TabNavigator.settings.currentState?.pushNamed(
-                              '/user/details',
-                              arguments: user,
+                              '/user/view',
+                              arguments: user.info.id,
                             );
                           },
                         );
@@ -381,8 +373,8 @@ class UsersScreenState extends State<UsersScreen> {
                           role: S.of(context).noRole,
                           onTap: () {
                             TabNavigator.settings.currentState?.pushNamed(
-                              '/user/details',
-                              arguments: user,
+                              '/user/view',
+                              arguments: user.info.id,
                             );
                           },
                         );

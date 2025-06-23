@@ -1,24 +1,17 @@
-import 'package:fire_alarm_system/models/branch.dart';
-import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/user.dart';
-import 'package:fire_alarm_system/repositories/branch_repository.dart';
+import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fire_alarm_system/repositories/auth_repository.dart';
-import 'package:fire_alarm_system/repositories/user_repository.dart';
 import 'event.dart';
 import 'state.dart';
 
 class UsersBloc extends Bloc<UsersEvent, UsersState> {
-  final AuthRepository authRepository;
-  final UserRepository userRepository;
+  final AppRepository appRepository;
 
-  UsersBloc({required this.authRepository})
-      : userRepository = UserRepository(authRepository: authRepository),
-        super(UsersInitial()) {
-    authRepository.authStateChanges.listen((data) {
-      add(AuthChanged(error: data == "" ? null : data));
+  UsersBloc({required this.appRepository}) : super(UsersInitial()) {
+    appRepository.authStateStream.listen((data) {
+      add(AuthChanged(error: data));
     }, onError: (error) {
       add(AuthChanged(error: error.toString()));
     });
@@ -26,22 +19,16 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     on<AuthChanged>((event, emit) async {
       if (event.error == null) {
         emit(UsersLoading());
-        if (authRepository.authStatus != AuthStatus.authenticated ||
-            authRepository.userInfo.phoneNumber.isEmpty) {
+        if (appRepository.authStatus != AuthStatus.authenticated ||
+            appRepository.userInfo.phoneNumber.isEmpty) {
           emit(UsersNotAuthenticated());
         } else {
           try {
-            final branchesData =
-                await BranchRepository().getAllBranchesAndCompanies();
-            List<Branch> branches = branchesData['branches'] as List<Branch>;
-            List<Company> companies =
-                branchesData['companies'] as List<Company>;
-            Users users =
-                await userRepository.getAllUsers(branches, companies);
+            Users users = appRepository.users;
             emit(UsersAuthenticated(
-              roleUser: authRepository.userRole,
-              companies: companies,
-              branches: branches,
+              roleUser: appRepository.userRole,
+              companies: appRepository.companies,
+              branches: appRepository.branches,
               masterAdmins: users.masterAdmins,
               admins: users.admins,
               companyManagers: users.companyManagers,
@@ -53,7 +40,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
             ));
           } catch (e) {
             emit(UsersAuthenticated(
-              roleUser: authRepository.userRole,
+              roleUser: appRepository.userRole,
               error: e.toString(),
             ));
           }
@@ -66,7 +53,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     on<AddRequested>((event, emit) async {
       emit(UsersLoading());
       try {
-        await userRepository.addUserPermissions(
+        await appRepository.userRepository.addUserPermissions(
           userId: event.userId,
           permissions: event.permissions,
           companyId: event.companyId,
@@ -93,7 +80,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     on<ModifyRequested>((event, emit) async {
       emit(UsersLoading());
       try {
-        await userRepository.modifyUserPermissions(
+        await appRepository.userRepository.modifyUserPermissions(
           userId: event.userId,
           permissions: event.permissions,
           companyId: event.companyId,
@@ -120,7 +107,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
     on<DeleteRequested>((event, emit) async {
       emit(UsersLoading());
       try {
-        await userRepository.deleteUserPermissions(
+        await appRepository.userRepository.deleteUserPermissions(
           userId: event.userId,
           userRole: event.userRole,
         );
