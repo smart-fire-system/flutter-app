@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 class UserInfo {
   String id;
+  int code;
   String name;
   String email;
   String phoneNumber;
@@ -16,6 +17,7 @@ class UserInfo {
 
   UserInfo({
     this.id = "",
+    this.code = 0,
     this.name = "",
     this.email = "",
     this.countryCode = "",
@@ -45,8 +47,9 @@ class UserInfo {
 
   static String getRoleName(BuildContext context, UserRole? role) {
     switch (role) {
-      case UserRole.admin:
       case UserRole.masterAdmin:
+        return S.of(context).masterAdmin;
+      case UserRole.admin:
         return S.of(context).admin;
       case UserRole.companyManager:
         return S.of(context).companyManager;
@@ -165,4 +168,14 @@ class Client {
     required this.permissions,
     required this.branch,
   });
+}
+
+class Users {
+  List<MasterAdmin> masterAdmins = [];
+  List<Admin> admins = [];
+  List<CompanyManager> companyManagers = [];
+  List<BranchManager> branchManagers = [];
+  List<Employee> employees = [];
+  List<Client> clients = [];
+  List<NoRoleUser> noRoleUsers = [];
 }

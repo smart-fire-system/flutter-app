@@ -113,7 +113,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
               child: ListTile(
                 title: Text(
-                  S.of(context).admins,
+                  S.of(context).users,
                   style: CustomStyle.largeTextB,
                 ),
                 leading: const Icon(
@@ -125,91 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: CustomStyle.redDark,
                 ),
                 onTap: () {
-                  TabNavigator.settings.currentState?.pushNamed('/admins');
-                },
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
-              child: ListTile(
-                title: Text(
-                  S.of(context).companyManagers,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.filter_2,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {
-                  TabNavigator.settings.currentState?.pushNamed('/companyManagers');
-                },
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
-              child: ListTile(
-                title: Text(
-                  S.of(context).branchManagers,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.filter_3,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {
-                  TabNavigator.settings.currentState?.pushNamed('/branchManagers');
-                },
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
-              child: ListTile(
-                title: Text(
-                  S.of(context).employees,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.filter_4,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {
-                  TabNavigator.settings.currentState?.pushNamed('/employees');
-                },
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
-              child: ListTile(
-                title: Text(
-                  S.of(context).clients,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.filter_5,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {
-                  TabNavigator.settings.currentState?.pushNamed('/clients');
+                  TabNavigator.settings.currentState?.pushNamed('/users');
                 },
               ),
             ),

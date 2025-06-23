@@ -238,6 +238,8 @@ class CustomDropdownSingleState extends State<CustomDropdownSingle> {
     if (widget.initialItem != null) {
       _selectedItem = widget.initialItem!.value;
       _controller.text = widget.initialItem!.title;
+    } else {
+      _controller.text = "";
     }
   }
 
@@ -249,6 +251,9 @@ class CustomDropdownSingleState extends State<CustomDropdownSingle> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.initialItem == null) {
+      _controller.text = "";
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Center(
@@ -340,6 +345,7 @@ class CustomDropdownSingleState extends State<CustomDropdownSingle> {
                                       CustomDropdownItem(
                                           value: item.value, title: item.title),
                                     );
+                                    Navigator.pop(context);
                                   });
                                 },
                               );

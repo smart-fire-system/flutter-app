@@ -17,6 +17,7 @@ class UsersAuthenticated extends UsersState {
   final dynamic roleUser;
   final List<Company> companies;
   final List<Branch> branches;
+  final List<MasterAdmin> masterAdmins;
   final List<Admin> admins;
   final List<CompanyManager> companyManagers;
   final List<BranchManager> branchManagers;
@@ -29,6 +30,7 @@ class UsersAuthenticated extends UsersState {
     required this.roleUser,
     this.companies = const [],
     this.branches = const [],
+    this.masterAdmins = const [],
     this.admins = const [],
     this.companyManagers = const [],
     this.branchManagers = const [],

@@ -390,11 +390,61 @@ class S {
     );
   }
 
+  /// `Seleect Users`
+  String get selectUsers {
+    return Intl.message(
+      'Seleect Users',
+      name: 'selectUsers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All Users`
+  String get allUsers {
+    return Intl.message(
+      'All Users',
+      name: 'allUsers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No users selected`
+  String get noUsersSelected {
+    return Intl.message(
+      'No users selected',
+      name: 'noUsersSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Users`
   String get users {
     return Intl.message(
       'Users',
       name: 'users',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User`
+  String get user {
+    return Intl.message(
+      'User',
+      name: 'user',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Master Admins`
+  String get masterAdmins {
+    return Intl.message(
+      'Master Admins',
+      name: 'masterAdmins',
       desc: '',
       args: [],
     );
@@ -445,6 +495,26 @@ class S {
     return Intl.message(
       'Clients',
       name: 'clients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Role Users`
+  String get noRoleUsers {
+    return Intl.message(
+      'No Role Users',
+      name: 'noRoleUsers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Master Admin`
+  String get masterAdmin {
+    return Intl.message(
+      'Master Admin',
+      name: 'masterAdmin',
       desc: '',
       args: [],
     );
@@ -505,6 +575,16 @@ class S {
     return Intl.message(
       'Role',
       name: 'role',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose access role`
+  String get chooseRole {
+    return Intl.message(
+      'Choose access role',
+      name: 'chooseRole',
       desc: '',
       args: [],
     );
@@ -675,6 +755,16 @@ class S {
     return Intl.message(
       'Add',
       name: 'add',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add New Master Admin`
+  String get addNewMasterAdmin {
+    return Intl.message(
+      'Add New Master Admin',
+      name: 'addNewMasterAdmin',
       desc: '',
       args: [],
     );
@@ -1340,6 +1430,16 @@ class S {
     );
   }
 
+  /// `Branch`
+  String get branch {
+    return Intl.message(
+      'Branch',
+      name: 'branch',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Change Company`
   String get changeCompany {
     return Intl.message(
@@ -1785,6 +1885,136 @@ class S {
     return Intl.message(
       'You don\'t have an access role yet. Please wait for an administrator to grant you access.',
       name: 'roleNotAssigned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap to select a user`
+  String get tapToSelectUser {
+    return Intl.message(
+      'Tap to select a user',
+      name: 'tapToSelectUser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Admin Permissions`
+  String get adminPermissions {
+    return Intl.message(
+      'Admin Permissions',
+      name: 'adminPermissions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can update admins`
+  String get canUpdateAdmins {
+    return Intl.message(
+      'Can update admins',
+      name: 'canUpdateAdmins',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can update company managers`
+  String get canUpdateCompanyManagers {
+    return Intl.message(
+      'Can update company managers',
+      name: 'canUpdateCompanyManagers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can update branch managers`
+  String get canUpdateBranchManagers {
+    return Intl.message(
+      'Can update branch managers',
+      name: 'canUpdateBranchManagers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can update employees`
+  String get canUpdateEmployees {
+    return Intl.message(
+      'Can update employees',
+      name: 'canUpdateEmployees',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can update clients`
+  String get canUpdateClients {
+    return Intl.message(
+      'Can update clients',
+      name: 'canUpdateClients',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can add companies`
+  String get canAddCompanies {
+    return Intl.message(
+      'Can add companies',
+      name: 'canAddCompanies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can edit companies`
+  String get canEditCompanies {
+    return Intl.message(
+      'Can edit companies',
+      name: 'canEditCompanies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can delete companies`
+  String get canDeleteCompanies {
+    return Intl.message(
+      'Can delete companies',
+      name: 'canDeleteCompanies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can add branches`
+  String get canAddBranches {
+    return Intl.message(
+      'Can add branches',
+      name: 'canAddBranches',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can edit branches`
+  String get canEditBranches {
+    return Intl.message(
+      'Can edit branches',
+      name: 'canEditBranches',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Can delete branches`
+  String get canDeleteBranches {
+    return Intl.message(
+      'Can delete branches',
+      name: 'canDeleteBranches',
       desc: '',
       args: [],
     );

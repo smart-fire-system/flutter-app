@@ -1,15 +1,18 @@
 import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
+import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/users/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/users/bloc/state.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
+import 'package:fire_alarm_system/widgets/button.dart';
 import 'package:fire_alarm_system/widgets/dropdown.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
+import 'package:fire_alarm_system/widgets/user_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,58 +23,39 @@ import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/event.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
-
-enum UsersScreenView {
-  admins,
-  companyManagers,
-  branchManagers,
-  employees,
-  clients,
-  noRoleUsers
-}
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 
 class UsersScreen extends StatefulWidget {
-  final UsersScreenView view;
-  const UsersScreen({super.key, required this.view});
+  const UsersScreen({super.key});
 
   @override
   UsersScreenState createState() => UsersScreenState();
 }
 
 class UsersScreenState extends State<UsersScreen> {
-  bool _filterRequested = false;
+  bool _isFirstFilterCall = true;
   dynamic _roleUser;
-  List<dynamic> _users = [];
-  List<dynamic> _filteredUsers = [];
   List<Company> _companies = [];
   List<Branch> _branches = [];
+  List<CustomDropdownItem> _userTypesDropdown = [];
+  List<CustomDropdownItem> _filteredUserTypesDropdown = [];
+  AppPermissions _permissions = AppPermissions();
+  final Users _users = Users();
+  final Users _filteredUsers = Users();
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(_filterUsers);
+    _searchController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
-  }
-
-  void _filterUsers() {
-    String query = _searchController.text.toLowerCase();
-    setState(() {
-      _filterRequested = true;
-      _filteredUsers = _users
-          .where((user) =>
-              user.info.name.toLowerCase().contains(query.toLowerCase()) ||
-              user.info.phoneNumber
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
-              user.info.email.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    });
   }
 
   @override
@@ -91,26 +75,72 @@ class UsersScreenState extends State<UsersScreen> {
           _roleUser = state.roleUser;
           _companies = state.companies;
           _branches = state.branches;
-          if (widget.view == UsersScreenView.admins) {
-            _users = List.from(state.admins);
-          } else if (widget.view == UsersScreenView.companyManagers) {
-            _users = List.from(state.companyManagers);
-          } else if (widget.view == UsersScreenView.branchManagers) {
-            _users = List.from(state.branchManagers);
-          } else if (widget.view == UsersScreenView.employees) {
-            _users = List.from(state.employees);
-          } else if (widget.view == UsersScreenView.clients) {
-            _users = List.from(state.clients);
-          } else if (widget.view == UsersScreenView.noRoleUsers) {
-            _users = List.from(state.noRoleUsers);
+          _permissions = state.roleUser.permissions as AppPermissions;
+          _users.masterAdmins = List.from(state.masterAdmins);
+          _users.admins = List.from(state.admins);
+          _users.companyManagers = List.from(state.companyManagers);
+          _users.branchManagers = List.from(state.branchManagers);
+          _users.employees = List.from(state.employees);
+          _users.clients = List.from(state.clients);
+          _users.noRoleUsers = List.from(state.noRoleUsers);
+          _userTypesDropdown = [];
+          if (_roleUser is MasterAdmin) {
+            _userTypesDropdown.add(
+              CustomDropdownItem(
+                title: S.of(context).masterAdmins,
+                value: 'masterAdmins',
+              ),
+            );
           }
-          if (_filterRequested) {
-            _filterRequested = false;
-          } else {
-            _filteredUsers = List.from(_users);
-            _searchController.removeListener(_filterUsers);
-            _searchController.clear();
-            _searchController.addListener(_filterUsers);
+          if (_permissions.canViewAdmins) {
+            _userTypesDropdown.add(
+              CustomDropdownItem(
+                title: S.of(context).admins,
+                value: 'admins',
+              ),
+            );
+          }
+          if (_permissions.canViewCompanyManagers) {
+            _userTypesDropdown.add(
+              CustomDropdownItem(
+                title: S.of(context).companyManagers,
+                value: 'companyManagers',
+              ),
+            );
+          }
+          if (_permissions.canViewBranchManagers) {
+            _userTypesDropdown.add(
+              CustomDropdownItem(
+                title: S.of(context).branchManagers,
+                value: 'branchManagers',
+              ),
+            );
+          }
+          if (_permissions.canViewEmployees) {
+            _userTypesDropdown.add(
+              CustomDropdownItem(
+                title: S.of(context).employees,
+                value: 'employees',
+              ),
+            );
+          }
+          if (_permissions.canViewClients) {
+            _userTypesDropdown.add(
+              CustomDropdownItem(
+                title: S.of(context).clients,
+                value: 'clients',
+              ),
+            );
+          }
+          if (_permissions.canUpdateAdmins ||
+              _permissions.canUpdateCompanyManagers ||
+              _permissions.canUpdateBranchManagers ||
+              _permissions.canUpdateEmployees ||
+              _permissions.canUpdateClients) {
+            _userTypesDropdown.add(
+              CustomDropdownItem(
+                  title: S.of(context).noRoleUsers, value: 'noRoleUsers'),
+            );
           }
           return _buildUsers(context);
         } else if (state is BranchesNotAuthenticated) {
@@ -129,72 +159,27 @@ class UsersScreenState extends State<UsersScreen> {
 
   Widget _buildUsers(BuildContext context) {
     AppLoading().dismiss(context: context, screen: AppScreen.viewUsers);
-    String? addText;
-    String appbarTitle = '';
-    if (widget.view == UsersScreenView.admins &&
-        _roleUser.permissions.canUpdateAdmins) {
-      addText = S.of(context).addNewAdmin;
-      appbarTitle = S.of(context).admins;
-    } else if (widget.view == UsersScreenView.companyManagers &&
-        _roleUser.permissions.canUpdateCompanyManagers) {
-      addText = S.of(context).addNewCompanyManager;
-      appbarTitle = S.of(context).companyManagers;
-    } else if (widget.view == UsersScreenView.branchManagers &&
-        _roleUser.permissions.canUpdateBranchManagers) {
-      addText = S.of(context).addNewBranchManager;
-      appbarTitle = S.of(context).branchManagers;
-    } else if (widget.view == UsersScreenView.employees &&
-        _roleUser.permissions.canUpdateEmployees) {
-      addText = S.of(context).addNewEmployee;
-      appbarTitle = S.of(context).employees;
-    } else if (widget.view == UsersScreenView.clients &&
-        _roleUser.permissions.canUpdateClients) {
-      addText = S.of(context).addNewClient;
-      appbarTitle = S.of(context).clients;
-    }
+    _filterUsers();
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: appbarTitle),
-      floatingActionButton: (addText == null)
+      appBar: CustomAppBar(title: S.of(context).users),
+      floatingActionButton: !(_roleUser is MasterAdmin ||
+              _permissions.canUpdateAdmins ||
+              _permissions.canUpdateCompanyManagers ||
+              _permissions.canUpdateBranchManagers ||
+              _permissions.canUpdateEmployees ||
+              _permissions.canUpdateClients)
           ? null
           : FloatingActionButton.extended(
-              backgroundColor: Colors.green,
+              icon: const Icon(Icons.add),
+              label: const Text('Add Permission'),
+              backgroundColor: CustomStyle.redDark,
               onPressed: () {
-                String? errorMessage;
-                if (_branches.isEmpty) {
-                  if (widget.view == UsersScreenView.branchManagers) {
-                    errorMessage = S.of(context).noBranchesToAddBranchManager;
-                  } else if (widget.view == UsersScreenView.employees) {
-                    errorMessage = S.of(context).noBranchesToAddEmployee;
-                  } else if (widget.view == UsersScreenView.clients) {
-                    errorMessage = S.of(context).noBranchesToAddClient;
-                  } else if (widget.view == UsersScreenView.companyManagers) {
-                    errorMessage = _companies.isEmpty
-                        ? S.of(context).noCompaneiesToAddCompanyManager
-                        : null;
-                  }
-                }
-                if (errorMessage == null) {
-                  TabNavigator.settings.currentState?.pushNamed(
-                    '/user/add',
-                    arguments: widget.view,
-                  );
-                } else {
-                  CustomAlert.showError(
-                    context: context,
-                    title: errorMessage,
-                  );
-                }
+                TabNavigator.settings.currentState?.pushNamed(
+                  '/user/add',
+                );
               },
-              icon: const Icon(
-                Icons.add,
-                size: 30,
-                color: Colors.white,
-              ),
-              label: Text(addText, style: CustomStyle.mediumTextWhite),
             ),
-      floatingActionButtonLocation:
-          (addText == null) ? null : FloatingActionButtonLocation.endFloat,
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<BranchesBloc>().add(AuthChanged());
@@ -203,6 +188,19 @@ class UsersScreenState extends State<UsersScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
+              CustomDropdownMulti(
+                title: S.of(context).users,
+                subtitle: S.of(context).selectUsers,
+                allSelectedText: S.of(context).allUsers,
+                noSelectedText: S.of(context).noUsersSelected,
+                items: _userTypesDropdown,
+                icon: Icons.filter_alt,
+                onChanged: (filteredItems) {
+                  setState(() {
+                    _filteredUserTypesDropdown = List.from(filteredItems);
+                  });
+                },
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
                 child: TextField(
@@ -222,51 +220,177 @@ class UsersScreenState extends State<UsersScreen> {
                   ),
                 ),
               ),
-              _filteredUsers.isEmpty
+              _filteredUsers.masterAdmins.isEmpty &&
+                      _filteredUsers.admins.isEmpty &&
+                      _filteredUsers.companyManagers.isEmpty &&
+                      _filteredUsers.branchManagers.isEmpty &&
+                      _filteredUsers.employees.isEmpty &&
+                      _filteredUsers.clients.isEmpty &&
+                      _filteredUsers.noRoleUsers.isEmpty
                   ? Text(
                       S.of(context).noUsersToView,
                       style: CustomStyle.mediumTextB,
                     )
-                  : Flexible(
-                      child: ListView(
-                        children: _filteredUsers.asMap().entries.map((entry) {
-                          var user = entry.value;
-                          String subtitle = '';
-                          if (user is CompanyManager) {
-                            subtitle = user.company.name;
-                          } else if (user is BranchManager) {
-                            subtitle = user.branch.name;
-                          } else if (user is Employee) {
-                            subtitle = user.branch.name;
-                          } else if (user is Client) {
-                            subtitle = user.branch.name;
-                          } else {
-                            subtitle = user.info.email;
-                          }
-                          return ListTile(
-                            leading: Text(
-                              (entry.key + 1).toString(),
-                              style: CustomStyle.mediumTextBRed,
-                            ),
-                            title: Text(
-                              user.info.name,
-                              style: CustomStyle.mediumTextB,
-                            ),
-                            subtitle: Text(
-                              subtitle,
-                              style: CustomStyle.smallText,
-                            ),
-                            trailing: const Icon(Icons.arrow_forward_ios),
-                            onTap: () {
-                              TabNavigator.settings.currentState?.pushNamed(
-                                '/user/details',
-                                arguments: user,
-                              );
-                            },
-                          );
-                        }).toList(),
-                      ),
+                  : Container(),
+              Flexible(
+                child: ListView(
+                  children: [
+                    ..._filteredUsers.masterAdmins.asMap().entries.map(
+                      (entry) {
+                        var user = entry.value;
+                        return CustomUserCard(
+                          index: entry.key + 1,
+                          code: user.info.code,
+                          name: user.info.name,
+                          role: S.of(context).masterAdmin,
+                          onTap: () {
+                            TabNavigator.settings.currentState?.pushNamed(
+                              '/user/details',
+                              arguments: user,
+                            );
+                          },
+                        );
+                      },
                     ),
+                    ..._filteredUsers.admins.asMap().entries.map(
+                      (entry) {
+                        var user = entry.value;
+                        return CustomUserCard(
+                          index: entry.key +
+                              1 +
+                              _filteredUsers.masterAdmins.length,
+                          code: user.info.code,
+                          name: user.info.name,
+                          role: S.of(context).admin,
+                          onTap: () {
+                            TabNavigator.settings.currentState?.pushNamed(
+                              '/user/details',
+                              arguments: user,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    ..._filteredUsers.companyManagers.asMap().entries.map(
+                      (entry) {
+                        var user = entry.value;
+                        return CustomUserCard(
+                          index: entry.key +
+                              1 +
+                              _filteredUsers.masterAdmins.length +
+                              _filteredUsers.admins.length,
+                          code: user.info.code,
+                          name: user.info.name,
+                          role: S.of(context).companyManager,
+                          companyName: user.company.name,
+                          onTap: () {
+                            TabNavigator.settings.currentState?.pushNamed(
+                              '/user/details',
+                              arguments: user,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    ..._filteredUsers.branchManagers.asMap().entries.map(
+                      (entry) {
+                        var user = entry.value;
+                        return CustomUserCard(
+                          index: entry.key +
+                              1 +
+                              _filteredUsers.masterAdmins.length +
+                              _filteredUsers.admins.length +
+                              _filteredUsers.companyManagers.length,
+                          code: user.info.code,
+                          name: user.info.name,
+                          role: S.of(context).branchManager,
+                          companyName: user.branch.company.name,
+                          branchName: user.branch.name,
+                          onTap: () {
+                            TabNavigator.settings.currentState?.pushNamed(
+                              '/user/details',
+                              arguments: user,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    ..._filteredUsers.employees.asMap().entries.map(
+                      (entry) {
+                        var user = entry.value;
+                        return CustomUserCard(
+                          index: entry.key +
+                              1 +
+                              _filteredUsers.masterAdmins.length +
+                              _filteredUsers.admins.length +
+                              _filteredUsers.companyManagers.length +
+                              _filteredUsers.branchManagers.length,
+                          code: user.info.code,
+                          name: user.info.name,
+                          role: S.of(context).employee,
+                          companyName: user.branch.company.name,
+                          branchName: user.branch.name,
+                          onTap: () {
+                            TabNavigator.settings.currentState?.pushNamed(
+                              '/user/details',
+                              arguments: user,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    ..._filteredUsers.clients.asMap().entries.map(
+                      (entry) {
+                        var user = entry.value;
+                        return CustomUserCard(
+                          index: entry.key +
+                              1 +
+                              _filteredUsers.masterAdmins.length +
+                              _filteredUsers.admins.length +
+                              _filteredUsers.companyManagers.length +
+                              _filteredUsers.branchManagers.length +
+                              _filteredUsers.employees.length,
+                          code: user.info.code,
+                          name: user.info.name,
+                          role: S.of(context).client,
+                          companyName: user.branch.company.name,
+                          branchName: user.branch.name,
+                          onTap: () {
+                            TabNavigator.settings.currentState?.pushNamed(
+                              '/user/details',
+                              arguments: user,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    ..._filteredUsers.noRoleUsers.asMap().entries.map(
+                      (entry) {
+                        var user = entry.value;
+                        return CustomUserCard(
+                          index: entry.key +
+                              1 +
+                              _filteredUsers.masterAdmins.length +
+                              _filteredUsers.admins.length +
+                              _filteredUsers.companyManagers.length +
+                              _filteredUsers.branchManagers.length +
+                              _filteredUsers.employees.length +
+                              _filteredUsers.clients.length,
+                          code: user.info.code,
+                          name: user.info.name,
+                          role: S.of(context).noRole,
+                          onTap: () {
+                            TabNavigator.settings.currentState?.pushNamed(
+                              '/user/details',
+                              arguments: user,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -320,5 +444,100 @@ class UsersScreenState extends State<UsersScreen> {
         ),
       ),
     );
+  }
+
+  void _filterUsers() {
+    String query = _searchController.text.toLowerCase();
+    if (_isFirstFilterCall) {
+      _isFirstFilterCall = false;
+      _filteredUserTypesDropdown = List.from(_userTypesDropdown);
+    }
+    if (_filteredUserTypesDropdown
+        .any((item) => item.value == 'masterAdmins')) {
+      _filteredUsers.masterAdmins = _users.masterAdmins
+          .where((user) =>
+              user.info.name.toLowerCase().contains(query.toLowerCase()) ||
+              user.info.phoneNumber
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              user.info.email.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    } else {
+      _filteredUsers.masterAdmins = [];
+    }
+    if (_filteredUserTypesDropdown.any((item) => item.value == 'admins')) {
+      _filteredUsers.admins = _users.admins
+          .where((user) =>
+              user.info.name.toLowerCase().contains(query.toLowerCase()) ||
+              user.info.phoneNumber
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              user.info.email.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    } else {
+      _filteredUsers.admins = [];
+    }
+    if (_filteredUserTypesDropdown
+        .any((item) => item.value == 'companyManagers')) {
+      _filteredUsers.companyManagers = _users.companyManagers
+          .where((user) =>
+              user.info.name.toLowerCase().contains(query.toLowerCase()) ||
+              user.info.phoneNumber
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              user.info.email.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    } else {
+      _filteredUsers.companyManagers = [];
+    }
+    if (_filteredUserTypesDropdown
+        .any((item) => item.value == 'branchManagers')) {
+      _filteredUsers.branchManagers = _users.branchManagers
+          .where((user) =>
+              user.info.name.toLowerCase().contains(query.toLowerCase()) ||
+              user.info.phoneNumber
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              user.info.email.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    } else {
+      _filteredUsers.branchManagers = [];
+    }
+    if (_filteredUserTypesDropdown.any((item) => item.value == 'employees')) {
+      _filteredUsers.employees = _users.employees
+          .where((user) =>
+              user.info.name.toLowerCase().contains(query.toLowerCase()) ||
+              user.info.phoneNumber
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              user.info.email.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    } else {
+      _filteredUsers.employees = [];
+    }
+    if (_filteredUserTypesDropdown.any((item) => item.value == 'clients')) {
+      _filteredUsers.clients = _users.clients
+          .where((user) =>
+              user.info.name.toLowerCase().contains(query.toLowerCase()) ||
+              user.info.phoneNumber
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              user.info.email.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    } else {
+      _filteredUsers.clients = [];
+    }
+    if (_filteredUserTypesDropdown.any((item) => item.value == 'noRoleUsers')) {
+      _filteredUsers.noRoleUsers = _users.noRoleUsers
+          .where((user) =>
+              user.info.name.toLowerCase().contains(query.toLowerCase()) ||
+              user.info.phoneNumber
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              user.info.email.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    } else {
+      _filteredUsers.noRoleUsers = [];
+    }
   }
 }

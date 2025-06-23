@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
+import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/branch_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/message.dart';
@@ -35,18 +36,19 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
             List<Branch> branches = branchesData['branches'] as List<Branch>;
             List<Company> companies =
                 branchesData['companies'] as List<Company>;
-            Users usersAndBranches =
+            Users users =
                 await userRepository.getAllUsers(branches, companies);
             emit(UsersAuthenticated(
               roleUser: authRepository.userRole,
               companies: companies,
               branches: branches,
-              admins: usersAndBranches.admins,
-              companyManagers: usersAndBranches.companyManagers,
-              branchManagers: usersAndBranches.branchManagers,
-              employees: usersAndBranches.employees,
-              clients: usersAndBranches.clients,
-              noRoleUsers: usersAndBranches.noRoleUsers,
+              masterAdmins: users.masterAdmins,
+              admins: users.admins,
+              companyManagers: users.companyManagers,
+              branchManagers: users.branchManagers,
+              employees: users.employees,
+              clients: users.clients,
+              noRoleUsers: users.noRoleUsers,
               message: event.message,
             ));
           } catch (e) {
