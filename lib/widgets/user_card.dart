@@ -10,6 +10,7 @@ class CustomUserCard extends StatelessWidget {
   final String? companyName;
   final String? branchName;
   final void Function()? onTap;
+  final String? searchQuery;
 
   const CustomUserCard({
     super.key,
@@ -20,19 +21,18 @@ class CustomUserCard extends StatelessWidget {
     this.companyName,
     this.branchName,
     this.onTap,
+    this.searchQuery,
   });
 
   @override
   Widget build(BuildContext context) {
+    final query = (searchQuery ?? '').toLowerCase();
     return ListTile(
       leading: Text(
         index.toString(),
         style: CustomStyle.mediumTextBRed,
       ),
-      title: Text(
-        name,
-        style: CustomStyle.mediumTextBRed,
-      ),
+      title: _highlightText(name, query, CustomStyle.mediumTextBRed),
       subtitle: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,12 +44,8 @@ class CustomUserCard extends StatelessWidget {
                 style: CustomStyle.smallTextB,
               ),
               Expanded(
-                child: Text(
-                  code.toString(),
-                  style: CustomStyle.smallText,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
+                child: _highlightText(
+                    code.toString(), query, CustomStyle.smallText),
               ),
             ],
           ),
@@ -107,6 +103,30 @@ class CustomUserCard extends StatelessWidget {
       ),
       trailing: const Icon(Icons.arrow_forward_ios),
       onTap: onTap,
+    );
+  }
+
+  Widget _highlightText(String text, String query, TextStyle style) {
+    if (query.isEmpty) return Text(text, style: style);
+    final lower = text.toLowerCase();
+    final start = lower.indexOf(query);
+    if (start == -1) return Text(text, style: style);
+    final end = start + query.length;
+    return RichText(
+      text: TextSpan(
+        children: [
+          if (start > 0) TextSpan(text: text.substring(0, start), style: style),
+          TextSpan(
+            text: text.substring(start, end),
+            style: style.copyWith(
+                backgroundColor: Colors.yellow, color: Colors.black),
+          ),
+          if (end < text.length)
+            TextSpan(text: text.substring(end), style: style),
+        ],
+      ),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

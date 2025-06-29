@@ -241,6 +241,7 @@ class UsersScreenState extends State<UsersScreen> {
                               arguments: user.info.id,
                             );
                           },
+                          searchQuery: _searchController.text,
                         );
                       },
                     ),
@@ -260,6 +261,7 @@ class UsersScreenState extends State<UsersScreen> {
                               arguments: user.info.id,
                             );
                           },
+                          searchQuery: _searchController.text,
                         );
                       },
                     ),
@@ -281,6 +283,7 @@ class UsersScreenState extends State<UsersScreen> {
                               arguments: user.info.id,
                             );
                           },
+                          searchQuery: _searchController.text,
                         );
                       },
                     ),
@@ -304,6 +307,7 @@ class UsersScreenState extends State<UsersScreen> {
                               arguments: user.info.id,
                             );
                           },
+                          searchQuery: _searchController.text,
                         );
                       },
                     ),
@@ -328,6 +332,7 @@ class UsersScreenState extends State<UsersScreen> {
                               arguments: user.info.id,
                             );
                           },
+                          searchQuery: _searchController.text,
                         );
                       },
                     ),
@@ -353,6 +358,7 @@ class UsersScreenState extends State<UsersScreen> {
                               arguments: user,
                             );
                           },
+                          searchQuery: _searchController.text,
                         );
                       },
                     ),
@@ -377,6 +383,7 @@ class UsersScreenState extends State<UsersScreen> {
                               arguments: user.info.id,
                             );
                           },
+                          searchQuery: _searchController.text,
                         );
                       },
                     ),
