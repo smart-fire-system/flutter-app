@@ -63,6 +63,15 @@ class AppRepository {
         //print(e);
       }
     });
+    _firestore.collection('admins').snapshots().listen((snapshot) {
+      _userRepository.adminsSnapshot = snapshot;
+      try {
+        _users = _userRepository.getAllUsers();
+        _usersController.add(null);
+      } catch (e) {
+        //print(e);
+      }
+    });
     _firestore.collection('companyManagers').snapshots().listen((snapshot) {
       _userRepository.companyManagersSnapshot = snapshot;
       try {

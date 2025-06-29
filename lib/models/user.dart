@@ -31,6 +31,7 @@ class UserInfo {
       'email': email,
       'countryCode': countryCode,
       'phoneNumber': phoneNumber,
+      'code': code,
     };
   }
 
@@ -42,6 +43,7 @@ class UserInfo {
       countryCode: map['countryCode'] as String,
       phoneNumber: map['phoneNumber'] as String,
       createdAt: map['createdAt'] as Timestamp,
+      code: map['code'] as int,
     );
   }
 

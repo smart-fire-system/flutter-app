@@ -22,6 +22,7 @@ class UserInfoScreen extends StatelessWidget {
           }
           // Find the user by ID in all user lists
           final user = [
+            ...state.masterAdmins,
             ...state.admins,
             ...state.companyManagers,
             ...state.branchManagers,
@@ -36,17 +37,19 @@ class UserInfoScreen extends StatelessWidget {
             return const Center(child: Text('User not found.'));
           }
           final info = user.info;
-          final role = user is Admin
-              ? 'Admin'
-              : user is CompanyManager
-                  ? 'Company Manager'
-                  : user is BranchManager
-                      ? 'Branch Manager'
-                      : user is Employee
-                          ? 'Employee'
-                          : user is Client
-                              ? 'Client'
-                              : 'No Role';
+          final role = user is MasterAdmin
+              ? 'Master Admin'
+              : user is Admin
+                  ? 'Admin'
+                  : user is CompanyManager
+                      ? 'Company Manager'
+                      : user is BranchManager
+                          ? 'Branch Manager'
+                          : user is Employee
+                              ? 'Employee'
+                              : user is Client
+                                  ? 'Client'
+                                  : 'No Role';
 
           // Get company for all user types
           dynamic company;

@@ -38,6 +38,31 @@ class TestRespository {
     await batch.commit();
   }
 
+  Future<void> filterUsers() async {
+    final collectionRef = _firestore.collection('users');
+    final snapshot = await collectionRef.get();
+    final batch = _firestore.batch();
+    var code = 1;
+    for (var doc in snapshot.docs) {
+      var actualCode;
+      if (doc.data()['email'] == "ahmadmhasann@gmail.com") {
+        actualCode = 1;
+      } else {
+        code++;
+        actualCode = code;
+      }
+      batch.set(doc.reference, {
+        'name': doc.data()['name'],
+        'email': doc.data()['email'],
+        'createdAt': doc.data()['createdAt'],
+        'countryCode': doc.data()['countryCode'],
+        'phoneNumber': doc.data()['phoneNumber'],
+        'code': actualCode,
+      });
+    }
+    await batch.commit();
+  }
+
   Future<void> addMasterAdmin() async {
     /*
     try {

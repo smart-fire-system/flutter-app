@@ -339,6 +339,13 @@ class AuthRepository {
 
   Future<void> _addUserToFirestore(UserInfo userInfo) async {
     final firebaseUser = _firebaseAuth.currentUser;
+    final infoDoc =
+        await _firestore.collection('info').doc('maxUserCode').get();
+    userInfo.code = (infoDoc['value'] as int) + 1;
+    await _firestore
+        .collection('info')
+        .doc('maxUserCode')
+        .set({'value': userInfo.code});
     Map<String, dynamic> userData = {
       ...userInfo.toMap(),
       'createdAt': FieldValue.serverTimestamp(),

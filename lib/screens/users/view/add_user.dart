@@ -36,6 +36,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
       _selectedBranchId = null;
       // Reset permissions for the new role
       switch (role) {
+        case UserRole.masterAdmin:
+          _permissions = AppPermissions.masterAdmin();
+          break;
         case UserRole.admin:
           _permissions = AppPermissions(role: UserRole.admin);
           break;
@@ -296,6 +299,10 @@ class _AddUserScreenState extends State<AddUserScreen> {
         }
         // Only show roles the user can set
         final List<UserRole> allowedRoles = [];
+        // Allow masterAdmin only if current user is masterAdmin
+        if (state.roleUser is MasterAdmin) {
+          allowedRoles.add(UserRole.masterAdmin);
+        }
         if (permissions.canUpdateAdmins) {
           allowedRoles.add(UserRole.admin);
         }
@@ -580,7 +587,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
                     ),
                   if (_selectedUser != null &&
                       _selectedRole != null &&
-                      (_selectedRole == UserRole.admin ||
+                      (_selectedRole == UserRole.masterAdmin ||
+                          _selectedRole == UserRole.admin ||
                           (_selectedRole == UserRole.companyManager &&
                               _selectedCompanyId != null &&
                               _selectedCompanyId!.isNotEmpty) ||
@@ -598,7 +606,16 @@ class _AddUserScreenState extends State<AddUserScreen> {
                             const SizedBox(height: 8),
                             Text('Permissions',
                                 style: Theme.of(context).textTheme.titleMedium),
-                            ..._buildPermissionCheckboxes(),
+                            if (_selectedRole == UserRole.masterAdmin)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Master Admin has all permissions.',
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              )
+                            else
+                              ..._buildPermissionCheckboxes(),
                           ],
                         ),
                       ),
