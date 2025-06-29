@@ -449,9 +449,10 @@ class UsersScreenState extends State<UsersScreen> {
       _filteredUsers.masterAdmins = _users.masterAdmins
           .where((user) =>
               user.info.name.toLowerCase().contains(query.toLowerCase()) ||
-              user.info.phoneNumber
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
+              user.info.code.toString() == query.toLowerCase() ||
+              user.info.countryCode.toLowerCase() +
+                      user.info.phoneNumber.toLowerCase() ==
+                  query.toLowerCase() ||
               user.info.email.toLowerCase().contains(query.toLowerCase()))
           .toList();
     } else {
@@ -461,9 +462,10 @@ class UsersScreenState extends State<UsersScreen> {
       _filteredUsers.admins = _users.admins
           .where((user) =>
               user.info.name.toLowerCase().contains(query.toLowerCase()) ||
-              user.info.phoneNumber
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
+              user.info.code.toString() == query.toLowerCase() ||
+              user.info.countryCode.toLowerCase() +
+                      user.info.phoneNumber.toLowerCase() ==
+                  query.toLowerCase() ||
               user.info.email.toLowerCase().contains(query.toLowerCase()))
           .toList();
     } else {
@@ -474,9 +476,10 @@ class UsersScreenState extends State<UsersScreen> {
       _filteredUsers.companyManagers = _users.companyManagers
           .where((user) =>
               user.info.name.toLowerCase().contains(query.toLowerCase()) ||
-              user.info.phoneNumber
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
+              user.info.code.toString() == query.toLowerCase() ||
+              user.info.countryCode.toLowerCase() +
+                      user.info.phoneNumber.toLowerCase() ==
+                  query.toLowerCase() ||
               user.info.email.toLowerCase().contains(query.toLowerCase()))
           .toList();
     } else {
@@ -487,9 +490,10 @@ class UsersScreenState extends State<UsersScreen> {
       _filteredUsers.branchManagers = _users.branchManagers
           .where((user) =>
               user.info.name.toLowerCase().contains(query.toLowerCase()) ||
-              user.info.phoneNumber
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
+              user.info.code.toString() == query.toLowerCase() ||
+              user.info.countryCode.toLowerCase() +
+                      user.info.phoneNumber.toLowerCase() ==
+                  query.toLowerCase() ||
               user.info.email.toLowerCase().contains(query.toLowerCase()))
           .toList();
     } else {
@@ -499,9 +503,10 @@ class UsersScreenState extends State<UsersScreen> {
       _filteredUsers.employees = _users.employees
           .where((user) =>
               user.info.name.toLowerCase().contains(query.toLowerCase()) ||
-              user.info.phoneNumber
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
+              user.info.code.toString() == query.toLowerCase() ||
+              user.info.countryCode.toLowerCase() +
+                      user.info.phoneNumber.toLowerCase() ==
+                  query.toLowerCase() ||
               user.info.email.toLowerCase().contains(query.toLowerCase()))
           .toList();
     } else {
@@ -511,9 +516,10 @@ class UsersScreenState extends State<UsersScreen> {
       _filteredUsers.clients = _users.clients
           .where((user) =>
               user.info.name.toLowerCase().contains(query.toLowerCase()) ||
-              user.info.phoneNumber
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
+              user.info.code.toString() == query.toLowerCase() ||
+              user.info.countryCode.toLowerCase() +
+                      user.info.phoneNumber.toLowerCase() ==
+                  query.toLowerCase() ||
               user.info.email.toLowerCase().contains(query.toLowerCase()))
           .toList();
     } else {
@@ -523,9 +529,10 @@ class UsersScreenState extends State<UsersScreen> {
       _filteredUsers.noRoleUsers = _users.noRoleUsers
           .where((user) =>
               user.info.name.toLowerCase().contains(query.toLowerCase()) ||
-              user.info.phoneNumber
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
+              user.info.code.toString() == query.toLowerCase() ||
+              user.info.countryCode.toLowerCase() +
+                      user.info.phoneNumber.toLowerCase() ==
+                  query.toLowerCase() ||
               user.info.email.toLowerCase().contains(query.toLowerCase()))
           .toList();
     } else {

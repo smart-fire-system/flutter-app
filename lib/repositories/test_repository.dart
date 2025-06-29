@@ -44,7 +44,7 @@ class TestRespository {
     final batch = _firestore.batch();
     var code = 1;
     for (var doc in snapshot.docs) {
-      var actualCode;
+      var actualCode = 0;
       if (doc.data()['email'] == "ahmadmhasann@gmail.com") {
         actualCode = 1;
       } else {

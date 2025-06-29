@@ -30,18 +30,31 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
           emit(UsersNotAuthenticated());
         } else {
           try {
-            Users users = appRepository.users;
+            final users = appRepository.users;
+            final permissions = appRepository.userRole.permissions;
             emit(UsersAuthenticated(
               roleUser: appRepository.userRole,
               companies: appRepository.companies,
               branches: appRepository.branches,
-              masterAdmins: users.masterAdmins,
-              admins: users.admins,
-              companyManagers: users.companyManagers,
-              branchManagers: users.branchManagers,
-              employees: users.employees,
-              clients: users.clients,
-              noRoleUsers: users.noRoleUsers,
+              masterAdmins: appRepository.userRole is MasterAdmin
+                  ? users.masterAdmins
+                  : [],
+              admins: permissions.canViewAdmins ? users.admins : [],
+              companyManagers: permissions.canViewCompanyManagers
+                  ? users.companyManagers
+                  : [],
+              branchManagers:
+                  permissions.canViewBranchManagers ? users.branchManagers : [],
+              employees: permissions.canViewEmployees ? users.employees : [],
+              clients: permissions.canViewClients ? users.clients : [],
+              noRoleUsers: appRepository.userRole is MasterAdmin ||
+                      permissions.canUpdateAdmins ||
+                      permissions.canUpdateCompanyManagers ||
+                      permissions.canUpdateBranchManagers ||
+                      permissions.canUpdateEmployees ||
+                      permissions.canUpdateClients
+                  ? users.noRoleUsers
+                  : [],
               message: event.message,
             ));
           } catch (e) {
