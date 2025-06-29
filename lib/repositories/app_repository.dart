@@ -11,45 +11,100 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppRepository {
   final FirebaseFirestore _firestore;
-  final AuthRepository _authRepository;
-  final BranchRepository _branchRepository;
-  final UserRepository _userRepository;
+  late final AuthRepository _authRepository;
+  late final BranchRepository _branchRepository;
+  late final UserRepository _userRepository;
   BranchesAndCompanies _branchesAndCompanies =
       BranchesAndCompanies(branches: [], companies: []);
   Users _users = Users();
+  final _usersController = StreamController<void>.broadcast();
   final _branchesAndCompaniesController =
-      StreamController<BranchesAndCompanies>.broadcast();
+      StreamController<void>.broadcast();
 
-  AppRepository()
-      : _firestore = FirebaseFirestore.instance,
-        _authRepository = AuthRepository(),
-        _branchRepository = BranchRepository(),
-        _userRepository = UserRepository() {
+  AppRepository() : _firestore = FirebaseFirestore.instance {
+    _userRepository = UserRepository(appRepository: this);
+    _authRepository = AuthRepository(appRepository: this);
+    _branchRepository = BranchRepository(appRepository: this);
+
     _authRepository.authStateChanges.listen((data) async {
       if (data == null) {
-        _users = await _userRepository.getAllUsers(
-          _authRepository.userRole,
-          _branchesAndCompanies.branches,
-          _branchesAndCompanies.companies,
-        );
+        _branchesAndCompanies = _branchRepository.getBranchesAndCompanies();
+        _branchesAndCompaniesController.add(null);
+        _users = _userRepository.getAllUsers();
+        _usersController.add(null);
       }
     }, onError: (error) {});
 
     _firestore.collection('branches').snapshots().listen((snapshot) {
       _branchRepository.branchesSnapshot = snapshot;
       _branchesAndCompanies = _branchRepository.getBranchesAndCompanies();
-      _branchesAndCompaniesController.add(_branchesAndCompanies);
+      _branchesAndCompaniesController.add(null);
     });
     _firestore.collection('companies').snapshots().listen((snapshot) {
       _branchRepository.companiesSnapshot = snapshot;
       _branchesAndCompanies = _branchRepository.getBranchesAndCompanies();
-      _branchesAndCompaniesController.add(_branchesAndCompanies);
+      _branchesAndCompaniesController.add(null);
+    });
+    _firestore.collection('users').snapshots().listen((snapshot) {
+      _userRepository.usersSnapshot = snapshot;
+      try {
+        _users = _userRepository.getAllUsers();
+        _usersController.add(null);
+      } catch (e) {
+        //print(e);
+      }
+    });
+    _firestore.collection('masterAdmins').snapshots().listen((snapshot) {
+      _userRepository.masterAdminsSnapshot = snapshot;
+      try {
+        _users = _userRepository.getAllUsers();
+        _usersController.add(null);
+      } catch (e) {
+        //print(e);
+      }
+    });
+    _firestore.collection('companyManagers').snapshots().listen((snapshot) {
+      _userRepository.companyManagersSnapshot = snapshot;
+      try {
+        _users = _userRepository.getAllUsers();
+        _usersController.add(null);
+      } catch (e) {
+        //print(e);
+      }
+    });
+    _firestore.collection('branchManagers').snapshots().listen((snapshot) {
+      _userRepository.branchManagersSnapshot = snapshot;
+      try {
+        _users = _userRepository.getAllUsers();
+        _usersController.add(null);
+      } catch (e) {
+        //print(e);
+      }
+    });
+    _firestore.collection('employees').snapshots().listen((snapshot) {
+      _userRepository.employeesSnapshot = snapshot;
+      try {
+        _users = _userRepository.getAllUsers();
+        _usersController.add(null);
+      } catch (e) {
+        //print(e);
+      }
+    });
+    _firestore.collection('clients').snapshots().listen((snapshot) {
+      _userRepository.clientsSnapshot = snapshot;
+      try {
+        _users = _userRepository.getAllUsers();
+        _usersController.add(null);
+      } catch (e) {
+        //print(e);
+      }
     });
   }
   AuthStatus get authStatus => _authRepository.authStatus;
   Stream<String?> get authStateStream => _authRepository.authStateChanges;
-  Stream<BranchesAndCompanies> get branchesAndCompaniesStream =>
+  Stream<void> get branchesAndCompaniesStream =>
       _branchesAndCompaniesController.stream;
+  Stream<void> get usersStream => _usersController.stream;
   List<Branch> get branches => _branchesAndCompanies.branches;
   List<Company> get companies => _branchesAndCompanies.companies;
   UserInfo get userInfo => _authRepository.userRole.info as UserInfo;

@@ -16,6 +16,12 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       add(AuthChanged(error: error.toString()));
     });
 
+    appRepository.usersStream.listen((data) {
+      add(AuthChanged());
+    }, onError: (error) {
+      add(AuthChanged(error: error.toString()));
+    });
+
     on<AuthChanged>((event, emit) async {
       if (event.error == null) {
         emit(UsersLoading());

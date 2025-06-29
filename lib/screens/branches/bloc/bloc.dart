@@ -4,21 +4,15 @@ import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fire_alarm_system/repositories/user_repository.dart';
-import 'package:fire_alarm_system/repositories/branch_repository.dart';
 import 'event.dart';
 import 'state.dart';
 
 class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
   final AppRepository appRepository;
-  final UserRepository userRepository;
-  final BranchRepository branchRepository;
   String? createdId;
 
   BranchesBloc({required this.appRepository})
-      : userRepository = UserRepository(),
-        branchRepository = BranchRepository(),
-        createdId = null,
+      : createdId = null,
         super(BranchesInitial()) {
     appRepository.authStateStream.listen((data) {
       add(AuthChanged(error: data));
@@ -59,7 +53,7 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<BranchModifyRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
-        await branchRepository.modifyBranch(event.branch);
+        await appRepository.branchRepository.modifyBranch(event.branch);
         add(AuthChanged(message: BranchesMessage.branchModified));
       } catch (e) {
         add(AuthChanged(error: e.toString()));
@@ -69,7 +63,7 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<BranchAddRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
-        createdId = await branchRepository.addBranch(event.branch);
+        createdId = await appRepository.branchRepository.addBranch(event.branch);
         add(AuthChanged(message: BranchesMessage.branchAdded));
       } catch (e) {
         add(AuthChanged(error: e.toString()));
@@ -79,7 +73,7 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<BranchDeleteRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
-        await branchRepository.deleteBranch(event.id);
+        await appRepository.branchRepository.deleteBranch(event.id);
         add(AuthChanged(message: BranchesMessage.branchDeleted));
       } catch (e) {
         add(AuthChanged(error: e.toString()));
@@ -89,7 +83,7 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<CompanyModifyRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
-        await branchRepository.modifyCompany(event.company, event.logoFile);
+        await appRepository.branchRepository.modifyCompany(event.company, event.logoFile);
         add(AuthChanged(message: BranchesMessage.companyModified));
       } catch (e) {
         add(AuthChanged(error: e.toString()));
@@ -99,7 +93,7 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<CompanyAddRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
-        createdId = await branchRepository.addCompany(
+        createdId = await appRepository.branchRepository.addCompany(
           event.company,
           event.logoFile,
         );
@@ -112,7 +106,7 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<CompanyDeleteRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
-        await branchRepository.deleteCompany(event.id, event.branches);
+        await appRepository.branchRepository.deleteCompany(event.id, event.branches);
         add(AuthChanged(message: BranchesMessage.companyDeleted));
       } catch (e) {
         add(AuthChanged(error: e.toString()));

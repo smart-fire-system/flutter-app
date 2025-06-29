@@ -3,16 +3,22 @@ import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
-import 'package:fire_alarm_system/repositories/branch_repository.dart';
+import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 
 class UserRepository {
-  final BranchRepository branchRepository;
   final FirebaseFirestore _firestore;
-  UserRepository()
-      : _firestore = FirebaseFirestore.instance,
-        branchRepository = BranchRepository();
+  QuerySnapshot? usersSnapshot;
+  QuerySnapshot? masterAdminsSnapshot;
+  QuerySnapshot? adminsSnapshot;
+  QuerySnapshot? companyManagersSnapshot;
+  QuerySnapshot? branchManagersSnapshot;
+  QuerySnapshot? employeesSnapshot;
+  QuerySnapshot? clientsSnapshot;
+  final AppRepository appRepository;
+  UserRepository({required this.appRepository})
+      : _firestore = FirebaseFirestore.instance;
 
   Future<void> updateInformation(
       {required String name,
@@ -131,27 +137,15 @@ class UserRepository {
     }
   }
 
-  Future<Users> getAllUsers(dynamic userRole,
-      List<Branch> branches, List<Company> companies) async {
+  Users getAllUsers() {
     Users users = Users();
     try {
-      final usersSnapshot =
-          await _firestore.collection('users').orderBy('name').get();
-      final masterAdminsSnapshot =
-          await _firestore.collection('masterAdmins').get();
-      final adminsSnapshot = await _firestore.collection('admins').get();
-      final companyManagersSnapshot =
-          await _firestore.collection('companyManagers').get();
-      final branchManagersSnapshot =
-          await _firestore.collection('branchManagers').get();
-      final employeesSnapshot = await _firestore.collection('employees').get();
-      final clientsSnapshot = await _firestore.collection('clients').get();
+      for (var doc in usersSnapshot!.docs) {
+        Map<String, dynamic> userData = doc.data() as Map<String, dynamic>;
 
-      for (var doc in usersSnapshot.docs) {
-        Map<String, dynamic> userData = doc.data();
-
-        if (isMasterAdmin(doc.id, masterAdminsSnapshot)) {
-          if (userRole is MasterAdmin) {
+        if (masterAdminsSnapshot != null &&
+            isMasterAdmin(doc.id, masterAdminsSnapshot!)) {
+          if (appRepository.userRole is MasterAdmin) {
             users.masterAdmins.add(
               MasterAdmin(
                 info: UserInfo.fromMap(
@@ -164,143 +158,154 @@ class UserRepository {
           continue;
         }
 
-        final permissions = isAdmin(doc.id, adminsSnapshot);
-        if (permissions != null) {
-          if (userRole.permissions.canViewAdmins) {
-            users.admins.add(
-              Admin(
-                permissions: permissions,
-                info: UserInfo.fromMap(
-                  userData,
-                  doc.id,
+        if (adminsSnapshot != null) {
+          final permissions = isAdmin(doc.id, adminsSnapshot!);
+          if (permissions != null) {
+            if (appRepository.userRole.permissions.canViewAdmins) {
+              users.admins.add(
+                Admin(
+                  permissions: permissions,
+                  info: UserInfo.fromMap(
+                    userData,
+                    doc.id,
+                  ),
                 ),
-              ),
+              );
+            }
+            continue;
+          }
+        }
+
+        if (companyManagersSnapshot != null) {
+          final companyManager = isCompanyManager(
+            doc.id,
+            companyManagersSnapshot!,
+          );
+          if (companyManager != null) {
+            Company? company = Company.getCompany(
+              companyManager['id'],
+              appRepository.companies,
             );
-          }
-          continue;
-        }
-
-        final companyManager = isCompanyManager(
-          doc.id,
-          companyManagersSnapshot,
-        );
-        if (companyManager != null) {
-          Company? company = Company.getCompany(
-            companyManager['id'],
-            companies,
-          );
-          if (company != null) {
-            if (userRole.permissions.canViewCompanyManagers) {
-              users.companyManagers.add(
-                CompanyManager(
-                  company: company,
-                  branches: Company.getBranches(company.id!, branches),
-                  permissions: companyManager['permissions'],
-                  info: UserInfo.fromMap(
-                    userData,
-                    doc.id,
+            if (company != null) {
+              if (appRepository.userRole.permissions.canViewCompanyManagers) {
+                users.companyManagers.add(
+                  CompanyManager(
+                    company: company,
+                    branches: Company.getBranches(
+                        company.id!, appRepository.branches),
+                    permissions: companyManager['permissions'],
+                    info: UserInfo.fromMap(
+                      userData,
+                      doc.id,
+                    ),
                   ),
-                ),
-              );
+                );
+              }
+              continue;
             }
-            continue;
           }
         }
 
-        final branchManager = isBranchManager(
-          doc.id,
-          branchManagersSnapshot,
-        );
-        if (branchManager != null) {
-          Branch? branch = Branch.getBranch(
-            branchManager['id'],
-            branches,
+        if (branchManagersSnapshot != null) {
+          final branchManager = isBranchManager(
+            doc.id,
+            branchManagersSnapshot!,
           );
-          if (branch != null) {
-            if (userRole.permissions.canViewBranchManagers &&
-                (userRole is MasterAdmin ||
-                    userRole is Admin ||
-                    (userRole is CompanyManager &&
-                        userRole.company.id ==
-                            branch.company.id))) {
-              users.branchManagers.add(
-                BranchManager(
-                  branch: branch,
-                  permissions: branchManager['permissions'],
-                  info: UserInfo.fromMap(
-                    userData,
-                    doc.id,
+          if (branchManager != null) {
+            Branch? branch = Branch.getBranch(
+              branchManager['id'],
+              appRepository.branches,
+            );
+            if (branch != null) {
+              if (appRepository.userRole.permissions.canViewBranchManagers &&
+                  (appRepository.userRole is MasterAdmin ||
+                      appRepository.userRole is Admin ||
+                      (appRepository.userRole is CompanyManager &&
+                          appRepository.userRole.company.id ==
+                              branch.company.id))) {
+                users.branchManagers.add(
+                  BranchManager(
+                    branch: branch,
+                    permissions: branchManager['permissions'],
+                    info: UserInfo.fromMap(
+                      userData,
+                      doc.id,
+                    ),
                   ),
-                ),
-              );
+                );
+              }
+              continue;
             }
-            continue;
           }
         }
 
-        final employee = isEmployee(
-          doc.id,
-          employeesSnapshot,
-        );
-        if (employee != null) {
-          Branch? branch = Branch.getBranch(
-            employee['id'],
-            branches,
+        if (employeesSnapshot != null) {
+          final employee = isEmployee(
+            doc.id,
+            employeesSnapshot!,
           );
-          if (branch != null) {
-            if (userRole.permissions.canViewEmployees &&
-                (userRole is MasterAdmin ||
-                    userRole is Admin ||
-                    (userRole is CompanyManager &&
-                        userRole.company.id ==
-                            branch.company.id) ||
-                    (userRole is BranchManager &&
-                        userRole.branch.id == branch.id))) {
-              users.employees.add(
-                Employee(
-                  branch: branch,
-                  permissions: employee['permissions'],
-                  info: UserInfo.fromMap(
-                    userData,
-                    doc.id,
+          if (employee != null) {
+            Branch? branch = Branch.getBranch(
+              employee['id'],
+              appRepository.branches,
+            );
+            if (branch != null) {
+              if (appRepository.userRole.permissions.canViewEmployees &&
+                  (appRepository.userRole is MasterAdmin ||
+                      appRepository.userRole is Admin ||
+                      (appRepository.userRole is CompanyManager &&
+                          appRepository.userRole.company.id ==
+                              branch.company.id) ||
+                      (appRepository.userRole is BranchManager &&
+                          appRepository.userRole.branch.id == branch.id))) {
+                users.employees.add(
+                  Employee(
+                    branch: branch,
+                    permissions: employee['permissions'],
+                    info: UserInfo.fromMap(
+                      userData,
+                      doc.id,
+                    ),
                   ),
-                ),
-              );
+                );
+              }
+              continue;
             }
-            continue;
           }
         }
 
-        final client = isClient(
-          doc.id,
-          clientsSnapshot,
-        );
-        if (client != null) {
-          Branch? branch = Branch.getBranch(
-            client['id'],
-            branches,
+        if (clientsSnapshot != null) {
+          final client = isClient(
+            doc.id,
+            clientsSnapshot!,
           );
-          if (branch != null) {
-            if (userRole.permissions.canViewClients &&
-                (userRole is MasterAdmin ||
-                    userRole is Admin ||
-                    (userRole is CompanyManager &&
-                        userRole.company.id ==
-                            branch.company.id) ||
-                    (userRole is BranchManager &&
-                        userRole.branch.id == branch.id))) {
-              users.clients.add(
-                Client(
-                  branch: branch,
-                  permissions: client['permissions'],
-                  info: UserInfo.fromMap(
-                    userData,
-                    doc.id,
+          if (client != null) {
+            Branch? branch = Branch.getBranch(
+              client['id'],
+              appRepository.branches,
+            );
+            if (branch != null) {
+              if (appRepository.userRole.permissions.canViewClients &&
+                  (appRepository.userRole is MasterAdmin ||
+                      appRepository.userRole is Admin ||
+                      (appRepository.userRole is CompanyManager &&
+                          appRepository.userRole.company.id ==
+                              branch.company.id) ||
+                      (appRepository.userRole is BranchManager &&
+                          appRepository.userRole.branch.id == branch.id))) {
+                users.clients.add(
+                  Client(
+                    branch: branch,
+                    permissions: client['permissions'],
+                    info: UserInfo.fromMap(
+                      userData,
+                      doc.id,
+                    ),
                   ),
-                ),
-              );
+                );
+              }
+              continue;
             }
-            continue;
           }
         }
 

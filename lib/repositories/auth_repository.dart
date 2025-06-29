@@ -2,8 +2,7 @@ import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
-import 'package:fire_alarm_system/repositories/branch_repository.dart';
-import 'package:fire_alarm_system/repositories/user_repository.dart';
+import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/models/user_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,14 +16,16 @@ class AuthRepository {
   final firebase.FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
   final UserAuth _userAuth;
-
+  final AppRepository appRepository;
   String? googleUserName;
   String? googleUserEmail;
 
-  AuthRepository()
+  AuthRepository({required this.appRepository})
       : _firebaseAuth = firebase.FirebaseAuth.instance,
         _firestore = FirebaseFirestore.instance,
-        _userAuth = UserAuth(authStatus: AuthStatus.notAuthenticated);
+        _userAuth = UserAuth(
+          authStatus: AuthStatus.notAuthenticated,
+        );
 
   AuthStatus get authStatus => _userAuth.authStatus;
   UserInfo get userInfo => _userAuth.userRole.info as UserInfo;
@@ -242,18 +243,18 @@ class AuthRepository {
   }
 
   Future<dynamic> _getRoleUser(UserInfo user) async {
-    UserRepository userRepository = UserRepository();
     QuerySnapshot querySnapshot;
 
     querySnapshot = await _firestore.collection('masterAdmins').get();
-    if (userRepository.isMasterAdmin(user.id, querySnapshot)) {
+    if (appRepository.userRepository.isMasterAdmin(user.id, querySnapshot)) {
       return MasterAdmin(
         info: user,
       );
     }
 
     querySnapshot = await _firestore.collection('admins').get();
-    AppPermissions? adminData = userRepository.isAdmin(user.id, querySnapshot);
+    AppPermissions? adminData =
+        appRepository.userRepository.isAdmin(user.id, querySnapshot);
     if (adminData != null) {
       return Admin(
         info: user,
@@ -263,10 +264,10 @@ class AuthRepository {
 
     querySnapshot = await _firestore.collection('companyManagers').get();
     Map<String, dynamic>? companyManagerData =
-        userRepository.isCompanyManager(user.id, querySnapshot);
+        appRepository.userRepository.isCompanyManager(user.id, querySnapshot);
     if (companyManagerData != null) {
       Map<String, dynamic>? companyData =
-          await BranchRepository().getCompanyAndBranches(
+          await appRepository.branchRepository.getCompanyAndBranches(
         companyManagerData['id'],
       );
       if (companyData == null) {
@@ -284,9 +285,9 @@ class AuthRepository {
 
     querySnapshot = await _firestore.collection('branchManagers').get();
     Map<String, dynamic>? branchManagerData =
-        userRepository.isBranchManager(user.id, querySnapshot);
+        appRepository.userRepository.isBranchManager(user.id, querySnapshot);
     if (branchManagerData != null) {
-      Branch? branch = await BranchRepository().getBranch(
+      Branch? branch = await appRepository.branchRepository.getBranch(
         branchManagerData['id'],
       );
       if (branch == null) {
@@ -301,9 +302,9 @@ class AuthRepository {
 
     querySnapshot = await _firestore.collection('employees').get();
     Map<String, dynamic>? employeeData =
-        userRepository.isEmployee(user.id, querySnapshot);
+        appRepository.userRepository.isEmployee(user.id, querySnapshot);
     if (employeeData != null) {
-      Branch? branch = await BranchRepository().getBranch(
+      Branch? branch = await appRepository.branchRepository.getBranch(
         employeeData['id'],
       );
       if (branch == null) {
@@ -318,9 +319,9 @@ class AuthRepository {
 
     querySnapshot = await _firestore.collection('clients').get();
     Map<String, dynamic>? clientData =
-        userRepository.isClient(user.id, querySnapshot);
+        appRepository.userRepository.isClient(user.id, querySnapshot);
     if (clientData != null) {
-      Branch? branch = await BranchRepository().getBranch(
+      Branch? branch = await appRepository.branchRepository.getBranch(
         clientData['id'],
       );
       if (branch == null) {

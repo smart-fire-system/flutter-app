@@ -1,5 +1,4 @@
 import 'package:fire_alarm_system/repositories/app_repository.dart';
-import 'package:fire_alarm_system/repositories/user_repository.dart';
 import 'package:fire_alarm_system/utils/message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
@@ -33,7 +32,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ChangeInfoRequested>((event, emit) async {
       emit(ProfileLoading());
       try {
-        await UserRepository().updateInformation(
+        await appRepository.userRepository.updateInformation(
           name: event.name,
           countryCode: event.countryCode,
           phoneNumber: event.phoneNumber,

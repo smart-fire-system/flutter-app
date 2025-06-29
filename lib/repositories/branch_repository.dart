@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/image_compress.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -17,9 +18,10 @@ class BranchesAndCompanies {
 class BranchRepository {
   final FirebaseFirestore _firestore;
   final FirebaseStorage _storage;
+  final AppRepository appRepository;
   QuerySnapshot? branchesSnapshot;
   QuerySnapshot? companiesSnapshot;
-  BranchRepository()
+  BranchRepository({required this.appRepository})
       : _firestore = FirebaseFirestore.instance,
         _storage = FirebaseStorage.instance;
 
