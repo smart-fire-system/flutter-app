@@ -1,6 +1,3 @@
-import 'package:country_code_picker/country_code_picker.dart';
-import 'package:fire_alarm_system/utils/data_validator_util.dart';
-import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
@@ -8,12 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/models/user.dart';
-import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/event.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/state.dart';
-import 'dart:ui';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
@@ -29,7 +24,6 @@ class ProfileScreen extends StatefulWidget {
 class ProfileScreenState extends State<ProfileScreen> {
   dynamic _user;
   UserInfo _userInfo = UserInfo();
-  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -152,7 +146,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const SizedBox(height: 24),
-                                Icon(Icons.logout, color: Colors.red, size: 36),
+                                const Icon(Icons.logout, color: Colors.red, size: 36),
                                 const SizedBox(height: 8),
                                 Text(
                                   S.of(context).logout,
@@ -178,15 +172,15 @@ class ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       ListTile(
-                        leading: Icon(Icons.email, color: Colors.blueGrey),
+                        leading: const Icon(Icons.email, color: Colors.blueGrey),
                         title: Text(S.of(context).email,
                             style: CustomStyle.smallText),
                         subtitle: Text(_userInfo.email,
                             style: CustomStyle.mediumTextB),
                       ),
-                      Divider(height: 1),
+                      const Divider(height: 1),
                       ListTile(
-                        leading: Icon(Icons.phone, color: Colors.blueGrey),
+                        leading: const Icon(Icons.phone, color: Colors.blueGrey),
                         title: Text(S.of(context).phone,
                             style: CustomStyle.smallText),
                         subtitle: Text(
@@ -263,15 +257,6 @@ class ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _onEditPressed() {
-    // TODO: Implement edit navigation or logic
-    // For now, just show a snackbar as a placeholder
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Edit profile feature coming soon!')),
-    );
-  }
-
-  // Helper to build permission badges grouped by type (like in view_user.dart)
   List<Widget> _buildRoleBasedPermissionsList(
       AppPermissions permissions, dynamic user) {
     final Map<String, List<MapEntry<String, bool>>> grouped = {};
