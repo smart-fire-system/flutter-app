@@ -119,5 +119,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(await getHomeState(error: error.toString()));
       }
     });
+
+    on<UpdatePhoneNumberRequested>((event, emit) async {
+      emit(HomeLoading());
+      try {
+        await appRepository.userRepository.updateInformation(
+          name: event.name,
+          phoneNumber: event.phoneNumber,
+          countryCode: event.countryCode,
+        );
+        await appRepository.authRepository.refreshUserAuth();
+        emit(await getHomeState());
+      } catch (error) {
+        emit(await getHomeState(error: error.toString()));
+      }
+    });
   }
 }

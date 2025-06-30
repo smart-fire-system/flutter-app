@@ -15,7 +15,11 @@ import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
-  const UpdateProfileScreen({super.key});
+  final String? name;
+  final String? phoneNumber;
+  final String? countryCode;
+  const UpdateProfileScreen(
+      {super.key, this.name, this.phoneNumber, this.countryCode});
 
   @override
   State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();
@@ -25,6 +29,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
+  UserInfo? info;
   String _countryCode = '+966';
 
   @override
@@ -33,7 +38,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     final user = context.read<ProfileBloc>().state is ProfileAuthenticated
         ? (context.read<ProfileBloc>().state as ProfileAuthenticated).user
         : null;
-    final info = user?.info as UserInfo?;
+    info = user?.info as UserInfo?;
     _nameController = TextEditingController(text: info?.name ?? '');
     _phoneController = TextEditingController(text: info?.phoneNumber ?? '');
     _countryCode =
@@ -68,6 +73,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     return BlocListener<ProfileBloc, ProfileState>(
       listener: (context, state) {
         if (state is ProfileAuthenticated) {
+          setState(() {
+            info = state.user?.info as UserInfo?;
+          });
+          _nameController = TextEditingController(text: info?.name ?? '');
+          _phoneController =
+              TextEditingController(text: info?.phoneNumber ?? '');
+          _countryCode =
+              info?.countryCode.isNotEmpty == true ? info!.countryCode : '+966';
+
           AppLoading().dismiss(
             context: context,
             screen: AppScreen.updateProfile,

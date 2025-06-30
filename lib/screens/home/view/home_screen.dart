@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/screens/home/view/add_phone_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/login_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/not_authorized_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/signup_screen.dart';
@@ -259,7 +260,23 @@ class HomeScreenState extends State<HomeScreen> {
         context.read<HomeBloc>().add(ResendEmailRequested());
       },
       onAddPhoneNumberClick: () {
-        Navigator.pushNamed(context, '/profile');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AddPhoneScreen(
+              name: _userInfo.name,
+              onSaveClick:
+                  (String name, String phoneNumber, String countryCode) {
+                Navigator.pop(context);
+                context.read<HomeBloc>().add(UpdatePhoneNumberRequested(
+                      name: name,
+                      phoneNumber: phoneNumber,
+                      countryCode: countryCode,
+                    ));
+              },
+            ),
+          ),
+        );
       },
       onLogoutClick: () {
         context.read<HomeBloc>().add(LogoutRequested());

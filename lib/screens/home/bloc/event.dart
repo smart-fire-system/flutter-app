@@ -34,3 +34,14 @@ class SignUpRequested extends HomeEvent {
     required this.name,
   });
 }
+
+class UpdatePhoneNumberRequested extends HomeEvent {
+  final String name;
+  final String phoneNumber;
+  final String countryCode;
+  UpdatePhoneNumberRequested({
+    required this.name,
+    required this.phoneNumber,
+    required this.countryCode,
+  });
+}
