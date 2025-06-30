@@ -130,6 +130,8 @@ class SystemRepository {
         final clientsConfigRaw = List.from(entry.value['clientsConfig'] ?? []);
         final isClientAliveRaw =
             List<bool>.from(entry.value['isClientAlive'] ?? []);
+        final isClientConfiguredRaw =
+            List<bool>.from(entry.value['isClientConfigured'] ?? []);
         List<List<PinConfig>> parsedPinsConfig = [];
         for (var clientPinsRaw in clientsConfigRaw) {
           if (clientPinsRaw == null) {
@@ -151,6 +153,7 @@ class SystemRepository {
           lastSeen: DateTime.fromMillisecondsSinceEpoch(lastSeenEpoch * 1000),
           pinsConfig: parsedPinsConfig,
           isClientAlive: isClientAliveRaw,
+          isClientConfigured: isClientConfiguredRaw,
         ));
       }
     }

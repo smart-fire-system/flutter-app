@@ -52,6 +52,11 @@ class SystemBloc extends Bloc<SystemEvent, SystemState> {
           add(MasterDataChanged(masters: newData));
         });
         masters = await systemRepository.getMasters(branchCode!);
+        List<DateTime> lastSeen =
+            await systemRepository.getLastSeen(branchCode!);
+        for (int i = 0; i < masters.length; i++) {
+          masters[i].lastSeen = lastSeen[i];
+        }
         emit(SystemAuthenticated(masters: masters));
       } catch (error) {
         emit(SystemAuthenticated(error: error.toString()));

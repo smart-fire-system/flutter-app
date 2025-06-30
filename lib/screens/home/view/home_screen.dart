@@ -30,8 +30,8 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   dynamic _user;
   UserInfo _userInfo = UserInfo();
-  AppTab _currentTab = AppTab.system;
-  final List<AppTab> _activeTabs = [AppTab.system];
+  AppTab _currentTab = AppTab.profile;
+  final List<AppTab> _activeTabs = [AppTab.profile];
   bool _canPop = true;
   bool? _viewLoginScreen;
 
@@ -250,7 +250,9 @@ class HomeScreenState extends State<HomeScreen> {
     return NotAuthorizedScreen(
       email: _userInfo.email,
       name: _userInfo.name,
-      role: _user.permissions.role == null? null : UserInfo.getRoleName(context, _user.permissions.role),
+      role: _user.permissions.role == null
+          ? null
+          : UserInfo.getRoleName(context, _user.permissions.role),
       isEmailVerified: isEmailVerified,
       isPhoneAdded: _userInfo.phoneNumber.isNotEmpty,
       onRefresh: () {

@@ -140,7 +140,19 @@ class SystemScreenState extends State<SystemScreen> {
                 children: _masters[0].pinsConfig.asMap().entries.map((entry) {
                   final clientId = entry.key;
                   final pins = entry.value;
-                  bool isAlive = _masters[0].isClientAlive[clientId];
+                  bool isAlive = _masters[0].isClientAlive[clientId] &&
+                      _masters[0].isClientConfigured[clientId];
+                  String clientIcon = '';
+                  String clientStatus = '';
+                  if (_masters[0].isClientConfigured[clientId]) {
+                    clientIcon = isAlive
+                        ? 'assets/images/devices/active.png'
+                        : 'assets/images/devices/inactive.png';
+                    clientStatus = isAlive ? 'Active' : 'Inactive';
+                  } else {
+                    clientIcon = 'assets/images/devices/disconnected.png';
+                    clientStatus = 'Not Configured';
+                  }
                   final outputPins =
                       pins.where((pin) => isOutput(pin.mode)).toList();
                   final inputPins =
@@ -162,13 +174,11 @@ class SystemScreenState extends State<SystemScreen> {
                     enabled: isAlive,
                     controller: _expansionTileControllers[clientId],
                     leading: Image.asset(
-                      isAlive
-                          ? 'assets/images/devices/active.png'
-                          : 'assets/images/devices/inactive.png',
+                      clientIcon,
                       width: 32,
                     ),
                     title: Text(
-                      "Client $clientId - ${isAlive ? 'Active' : 'Inactive'}",
+                      "Client $clientId - $clientStatus",
                       style: CustomStyle.mediumTextB,
                     ),
                     children: [

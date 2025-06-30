@@ -69,11 +69,13 @@ class Master {
   DateTime lastSeen;
   final List<List<PinConfig>> pinsConfig;
   final List<bool> isClientAlive;
+  final List<bool> isClientConfigured;
   Master({
     required this.id,
     required this.isActive,
     required this.lastSeen,
     required this.pinsConfig,
     required this.isClientAlive,
+    required this.isClientConfigured,
   });
 }
