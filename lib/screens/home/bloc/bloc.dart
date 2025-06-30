@@ -62,7 +62,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeLoading());
       try {
         await appRepository.authRepository.resendActivationEmail();
-        emit(await getHomeState(message: AppMessage.emailConfirmationSent));
+        emit(await getHomeState(
+          message: AppMessage(id: AppMessageId.emailConfirmationSent),
+        ));
       } catch (error) {
         emit(await getHomeState(error: error.toString()));
       }
@@ -91,7 +93,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeLoading());
       try {
         await appRepository.authRepository.sendPasswordResetEmail();
-        emit(await getHomeState(message: AppMessage.resetPasswordEmailSent));
+        emit(await getHomeState(
+          message: AppMessage(id: AppMessageId.resetPasswordEmailSent),
+        ));
       } catch (error) {
         emit(await getHomeState(error: error.toString()));
       }

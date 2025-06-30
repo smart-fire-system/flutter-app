@@ -69,33 +69,6 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       }
     });
 
-    on<AddRequested>((event, emit) async {
-      emit(UsersLoading());
-      try {
-        await appRepository.userRepository.addUserPermissions(
-          userId: event.userId,
-          permissions: event.permissions,
-          companyId: event.companyId,
-          branchId: event.branchId,
-        );
-        AppMessage? message;
-        if (event.permissions.role == UserRole.admin) {
-          message = AppMessage.adminAdded;
-        } else if (event.permissions.role == UserRole.companyManager) {
-          message = AppMessage.companyManagerAdded;
-        } else if (event.permissions.role == UserRole.branchManager) {
-          message = AppMessage.branchManagerAdded;
-        } else if (event.permissions.role == UserRole.employee) {
-          message = AppMessage.employeeAdded;
-        } else if (event.permissions.role == UserRole.client) {
-          message = AppMessage.clientAdded;
-        }
-        add(AuthChanged(message: message));
-      } catch (e) {
-        add(AuthChanged(error: e.toString()));
-      }
-    });
-
     on<ModifyRequested>((event, emit) async {
       emit(UsersLoading());
       try {
@@ -106,41 +79,58 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
           branchId: event.branchId,
         );
         AppMessage? message;
-        if (event.permissions.role == UserRole.admin) {
-          message = AppMessage.adminModified;
+        UserRole? oldRole =
+            appRepository.userRepository.getUserRole(event.userId);
+        if (event.permissions.role == UserRole.masterAdmin) {
+          if (oldRole == UserRole.masterAdmin) {
+            message = AppMessage(id: AppMessageId.masterAdminModified);
+          } else {
+            message = AppMessage(id: AppMessageId.masterAdminAdded);
+          }
+        } else if (event.permissions.role == UserRole.admin) {
+          if (oldRole == UserRole.admin) {
+            message = AppMessage(id: AppMessageId.adminModified);
+          } else {
+            message = AppMessage(id: AppMessageId.adminAdded);
+          }
         } else if (event.permissions.role == UserRole.companyManager) {
-          message = AppMessage.companyManagerModified;
+          if (oldRole == UserRole.companyManager) {
+            message = AppMessage(id: AppMessageId.companyManagerModified);
+          } else {
+            message = AppMessage(id: AppMessageId.companyManagerAdded);
+          }
         } else if (event.permissions.role == UserRole.branchManager) {
-          message = AppMessage.branchManagerModified;
+          if (oldRole == UserRole.branchManager) {
+            message = AppMessage(id: AppMessageId.branchManagerModified);
+          } else {
+            message = AppMessage(id: AppMessageId.branchManagerAdded);
+          }
         } else if (event.permissions.role == UserRole.employee) {
-          message = AppMessage.employeeModified;
+          if (oldRole == UserRole.employee) {
+            message = AppMessage(id: AppMessageId.employeeModified);
+          } else {
+            message = AppMessage(id: AppMessageId.employeeAdded);
+          }
         } else if (event.permissions.role == UserRole.client) {
-          message = AppMessage.clientModified;
-        }
-        add(AuthChanged(message: message));
-      } catch (e) {
-        add(AuthChanged(error: e.toString()));
-      }
-    });
-
-    on<DeleteRequested>((event, emit) async {
-      emit(UsersLoading());
-      try {
-        await appRepository.userRepository.deleteUserPermissions(
-          userId: event.userId,
-          userRole: event.userRole,
-        );
-        AppMessage? message;
-        if (event.userRole == UserRole.admin) {
-          message = AppMessage.adminDeleted;
-        } else if (event.userRole == UserRole.companyManager) {
-          message = AppMessage.companyManagerDeleted;
-        } else if (event.userRole == UserRole.branchManager) {
-          message = AppMessage.branchManagerDeleted;
-        } else if (event.userRole == UserRole.employee) {
-          message = AppMessage.employeeDeleted;
-        } else if (event.userRole == UserRole.client) {
-          message = AppMessage.clientDeleted;
+          if (oldRole == UserRole.client) {
+            message = AppMessage(id: AppMessageId.clientModified);
+          } else {
+            message = AppMessage(id: AppMessageId.clientAdded);
+          }
+        } else {
+          if (oldRole == UserRole.masterAdmin) {
+            message = AppMessage(id: AppMessageId.masterAdminDeleted);
+          } else if (oldRole == UserRole.admin) {
+            message = AppMessage(id: AppMessageId.adminDeleted);
+          } else if (oldRole == UserRole.companyManager) {
+            message = AppMessage(id: AppMessageId.companyManagerDeleted);
+          } else if (oldRole == UserRole.branchManager) {
+            message = AppMessage(id: AppMessageId.branchManagerDeleted);
+          } else if (oldRole == UserRole.employee) {
+            message = AppMessage(id: AppMessageId.employeeDeleted);
+          } else if (oldRole == UserRole.client) {
+            message = AppMessage(id: AppMessageId.clientDeleted);
+          }
         }
         add(AuthChanged(message: message));
       } catch (e) {

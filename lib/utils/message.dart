@@ -1,10 +1,15 @@
+import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:flutter/material.dart';
 
-enum AppMessage {
+enum AppMessageId {
   resetPasswordEmailSent,
   emailConfirmationSent,
 
   profileInfoUpdated,
 
+  masterAdminAdded,
+  masterAdminModified,
+  masterAdminDeleted,
   adminAdded,
   adminModified,
   adminDeleted,
@@ -20,8 +25,21 @@ enum AppMessage {
   clientAdded,
   clientModified,
   clientDeleted,
+}
 
-
-  
-  
+class AppMessage {
+  final AppMessageId id;
+  AppMessage({required this.id});
+  String getText(BuildContext context) {
+    switch (id) {
+      case AppMessageId.resetPasswordEmailSent:
+        return S.of(context).reset_email_sent;
+      case AppMessageId.emailConfirmationSent:
+        return S.of(context).confirmEmailSent;
+      case AppMessageId.profileInfoUpdated:
+        return S.of(context).profile;
+      default:
+        return 'This is message';
+    }
+  }
 }

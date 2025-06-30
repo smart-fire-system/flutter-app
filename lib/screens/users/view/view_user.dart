@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/models/user.dart';
@@ -157,6 +158,17 @@ class UserInfoScreen extends StatelessWidget {
                 ),
               ],
             ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: const Icon(Icons.edit),
+        label: const Text('Edit'),
+        backgroundColor: CustomStyle.redDark,
+        onPressed: () {
+          TabNavigator.settings.currentState?.pushNamed(
+            '/user/update',
+            arguments: userId,
           );
         },
       ),

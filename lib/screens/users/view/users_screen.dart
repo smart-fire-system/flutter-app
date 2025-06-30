@@ -155,23 +155,6 @@ class UsersScreenState extends State<UsersScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppBar(title: S.of(context).users),
-      floatingActionButton: !(_roleUser is MasterAdmin ||
-              _permissions.canUpdateAdmins ||
-              _permissions.canUpdateCompanyManagers ||
-              _permissions.canUpdateBranchManagers ||
-              _permissions.canUpdateEmployees ||
-              _permissions.canUpdateClients)
-          ? null
-          : FloatingActionButton.extended(
-              icon: const Icon(Icons.add),
-              label: const Text('Add Permission'),
-              backgroundColor: CustomStyle.redDark,
-              onPressed: () {
-                TabNavigator.settings.currentState?.pushNamed(
-                  '/user/add',
-                );
-              },
-            ),
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<BranchesBloc>().add(AuthChanged());

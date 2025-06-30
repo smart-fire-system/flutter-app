@@ -17,6 +17,7 @@ class UserRepository {
   QuerySnapshot? employeesSnapshot;
   QuerySnapshot? clientsSnapshot;
   final AppRepository appRepository;
+  Users users = Users();
   UserRepository({required this.appRepository})
       : _firestore = FirebaseFirestore.instance;
 
@@ -88,25 +89,37 @@ class UserRepository {
     String branchId = '',
   }) async {
     try {
-      if (permissions.role == UserRole.admin) {
+      UserRole? oldRole = getUserRole(userId);
+      if (oldRole != null && oldRole != permissions.role) {
+        final oldDocRef = _firestore
+            .collection('${UserInfo.getRoleId(oldRole)}s')
+            .doc(userId);
+        final docSnapshot = await oldDocRef.get();
+        if (docSnapshot.exists) {
+          await oldDocRef.delete();
+        }
+      }
+      if (permissions.role == UserRole.masterAdmin) {
+        await _firestore.collection('masterAdmins').doc(userId).set({});
+      } else if (permissions.role == UserRole.admin) {
         await _firestore
             .collection('admins')
             .doc(userId)
-            .update(AppPermissions().toAdminMap(permissions));
+            .set(AppPermissions().toAdminMap(permissions));
       } else if (permissions.role == UserRole.companyManager) {
-        await _firestore.collection('companyManagers').doc(userId).update(
+        await _firestore.collection('companyManagers').doc(userId).set(
               AppPermissions().toCompanyManagerMap(permissions, companyId),
             );
       } else if (permissions.role == UserRole.branchManager) {
-        await _firestore.collection('branchManagers').doc(userId).update(
+        await _firestore.collection('branchManagers').doc(userId).set(
               AppPermissions().toBranchManagerMap(permissions, branchId),
             );
       } else if (permissions.role == UserRole.employee) {
-        await _firestore.collection('employees').doc(userId).update(
+        await _firestore.collection('employees').doc(userId).set(
               AppPermissions().toEmployeeMap(permissions, branchId),
             );
       } else if (permissions.role == UserRole.client) {
-        await _firestore.collection('clients').doc(userId).update(
+        await _firestore.collection('clients').doc(userId).set(
               AppPermissions().toClientMap(permissions, branchId),
             );
       }
@@ -137,14 +150,41 @@ class UserRepository {
     }
   }
 
+  UserRole? getUserRole(String userId) {
+    if (isMasterAdmin(userId)) {
+      return UserRole.masterAdmin;
+    }
+    if (isAdmin(userId) != null) {
+      return UserRole.admin;
+    }
+    if (isCompanyManager(userId) != null) {
+      return UserRole.companyManager;
+    }
+    if (isBranchManager(userId) != null) {
+      return UserRole.branchManager;
+    }
+    if (isEmployee(userId) != null) {
+      return UserRole.employee;
+    }
+    if (isClient(userId) != null) {
+      return UserRole.client;
+    }
+    return null;
+  }
+
   Users getAllUsers() {
-    Users users = Users();
+    users.masterAdmins.clear();
+    users.admins.clear();
+    users.companyManagers.clear();
+    users.branchManagers.clear();
+    users.employees.clear();
+    users.clients.clear();
+    users.noRoleUsers.clear();
     try {
       for (var doc in usersSnapshot!.docs) {
         Map<String, dynamic> userData = doc.data() as Map<String, dynamic>;
 
-        if (masterAdminsSnapshot != null &&
-            isMasterAdmin(doc.id, masterAdminsSnapshot!)) {
+        if (isMasterAdmin(doc.id)) {
           if (appRepository.userRole is MasterAdmin) {
             users.masterAdmins.add(
               MasterAdmin(
@@ -158,13 +198,36 @@ class UserRepository {
           continue;
         }
 
-        if (adminsSnapshot != null) {
-          final permissions = isAdmin(doc.id, adminsSnapshot!);
-          if (permissions != null) {
-            if (appRepository.userRole.permissions.canViewAdmins) {
-              users.admins.add(
-                Admin(
-                  permissions: permissions,
+        final permissions = isAdmin(doc.id);
+        if (permissions != null) {
+          if (appRepository.userRole.permissions.canViewAdmins) {
+            users.admins.add(
+              Admin(
+                permissions: permissions,
+                info: UserInfo.fromMap(
+                  userData,
+                  doc.id,
+                ),
+              ),
+            );
+          }
+          continue;
+        }
+
+        final companyManager = isCompanyManager(doc.id);
+        if (companyManager != null) {
+          Company? company = Company.getCompany(
+            companyManager['id'],
+            appRepository.companies,
+          );
+          if (company != null) {
+            if (appRepository.userRole.permissions.canViewCompanyManagers) {
+              users.companyManagers.add(
+                CompanyManager(
+                  company: company,
+                  branches:
+                      Company.getBranches(company.id!, appRepository.branches),
+                  permissions: companyManager['permissions'],
                   info: UserInfo.fromMap(
                     userData,
                     doc.id,
@@ -176,136 +239,91 @@ class UserRepository {
           }
         }
 
-        if (companyManagersSnapshot != null) {
-          final companyManager = isCompanyManager(
-            doc.id,
-            companyManagersSnapshot!,
+        final branchManager = isBranchManager(doc.id);
+        if (branchManager != null) {
+          Branch? branch = Branch.getBranch(
+            branchManager['id'],
+            appRepository.branches,
           );
-          if (companyManager != null) {
-            Company? company = Company.getCompany(
-              companyManager['id'],
-              appRepository.companies,
-            );
-            if (company != null) {
-              if (appRepository.userRole.permissions.canViewCompanyManagers) {
-                users.companyManagers.add(
-                  CompanyManager(
-                    company: company,
-                    branches: Company.getBranches(
-                        company.id!, appRepository.branches),
-                    permissions: companyManager['permissions'],
-                    info: UserInfo.fromMap(
-                      userData,
-                      doc.id,
-                    ),
+          if (branch != null) {
+            if (appRepository.userRole.permissions.canViewBranchManagers &&
+                (appRepository.userRole is MasterAdmin ||
+                    appRepository.userRole is Admin ||
+                    (appRepository.userRole is CompanyManager &&
+                        appRepository.userRole.company.id ==
+                            branch.company.id))) {
+              users.branchManagers.add(
+                BranchManager(
+                  branch: branch,
+                  permissions: branchManager['permissions'],
+                  info: UserInfo.fromMap(
+                    userData,
+                    doc.id,
                   ),
-                );
-              }
-              continue;
+                ),
+              );
             }
+            continue;
           }
         }
 
-        if (branchManagersSnapshot != null) {
-          final branchManager = isBranchManager(
-            doc.id,
-            branchManagersSnapshot!,
+        final employee = isEmployee(doc.id);
+        if (employee != null) {
+          Branch? branch = Branch.getBranch(
+            employee['id'],
+            appRepository.branches,
           );
-          if (branchManager != null) {
-            Branch? branch = Branch.getBranch(
-              branchManager['id'],
-              appRepository.branches,
-            );
-            if (branch != null) {
-              if (appRepository.userRole.permissions.canViewBranchManagers &&
-                  (appRepository.userRole is MasterAdmin ||
-                      appRepository.userRole is Admin ||
-                      (appRepository.userRole is CompanyManager &&
-                          appRepository.userRole.company.id ==
-                              branch.company.id))) {
-                users.branchManagers.add(
-                  BranchManager(
-                    branch: branch,
-                    permissions: branchManager['permissions'],
-                    info: UserInfo.fromMap(
-                      userData,
-                      doc.id,
-                    ),
+          if (branch != null) {
+            if (appRepository.userRole.permissions.canViewEmployees &&
+                (appRepository.userRole is MasterAdmin ||
+                    appRepository.userRole is Admin ||
+                    (appRepository.userRole is CompanyManager &&
+                        appRepository.userRole.company.id ==
+                            branch.company.id) ||
+                    (appRepository.userRole is BranchManager &&
+                        appRepository.userRole.branch.id == branch.id))) {
+              users.employees.add(
+                Employee(
+                  branch: branch,
+                  permissions: employee['permissions'],
+                  info: UserInfo.fromMap(
+                    userData,
+                    doc.id,
                   ),
-                );
-              }
-              continue;
+                ),
+              );
             }
+            continue;
           }
         }
 
-        if (employeesSnapshot != null) {
-          final employee = isEmployee(
-            doc.id,
-            employeesSnapshot!,
+        final client = isClient(doc.id);
+        if (client != null) {
+          Branch? branch = Branch.getBranch(
+            client['id'],
+            appRepository.branches,
           );
-          if (employee != null) {
-            Branch? branch = Branch.getBranch(
-              employee['id'],
-              appRepository.branches,
-            );
-            if (branch != null) {
-              if (appRepository.userRole.permissions.canViewEmployees &&
-                  (appRepository.userRole is MasterAdmin ||
-                      appRepository.userRole is Admin ||
-                      (appRepository.userRole is CompanyManager &&
-                          appRepository.userRole.company.id ==
-                              branch.company.id) ||
-                      (appRepository.userRole is BranchManager &&
-                          appRepository.userRole.branch.id == branch.id))) {
-                users.employees.add(
-                  Employee(
-                    branch: branch,
-                    permissions: employee['permissions'],
-                    info: UserInfo.fromMap(
-                      userData,
-                      doc.id,
-                    ),
+          if (branch != null) {
+            if (appRepository.userRole.permissions.canViewClients &&
+                (appRepository.userRole is MasterAdmin ||
+                    appRepository.userRole is Admin ||
+                    (appRepository.userRole is CompanyManager &&
+                        appRepository.userRole.company.id ==
+                            branch.company.id) ||
+                    (appRepository.userRole is BranchManager &&
+                        appRepository.userRole.branch.id == branch.id))) {
+              users.clients.add(
+                Client(
+                  branch: branch,
+                  permissions: client['permissions'],
+                  info: UserInfo.fromMap(
+                    userData,
+                    doc.id,
                   ),
-                );
-              }
-              continue;
+                ),
+              );
             }
-          }
-        }
-
-        if (clientsSnapshot != null) {
-          final client = isClient(
-            doc.id,
-            clientsSnapshot!,
-          );
-          if (client != null) {
-            Branch? branch = Branch.getBranch(
-              client['id'],
-              appRepository.branches,
-            );
-            if (branch != null) {
-              if (appRepository.userRole.permissions.canViewClients &&
-                  (appRepository.userRole is MasterAdmin ||
-                      appRepository.userRole is Admin ||
-                      (appRepository.userRole is CompanyManager &&
-                          appRepository.userRole.company.id ==
-                              branch.company.id) ||
-                      (appRepository.userRole is BranchManager &&
-                          appRepository.userRole.branch.id == branch.id))) {
-                users.clients.add(
-                  Client(
-                    branch: branch,
-                    permissions: client['permissions'],
-                    info: UserInfo.fromMap(
-                      userData,
-                      doc.id,
-                    ),
-                  ),
-                );
-              }
-              continue;
-            }
+            continue;
           }
         }
 
@@ -328,17 +346,24 @@ class UserRepository {
     }
   }
 
-  bool isMasterAdmin(String userId, QuerySnapshot snapshot) {
-    if (snapshot.docs.any((user) => user.id == userId)) {
+  bool isMasterAdmin(String userId) {
+    if (masterAdminsSnapshot == null) {
+      return false;
+    }
+    if (masterAdminsSnapshot!.docs.any((user) => user.id == userId)) {
       return true;
     } else {
       return false;
     }
   }
 
-  AppPermissions? isAdmin(String userId, QuerySnapshot snapshot) {
+  AppPermissions? isAdmin(String userId) {
+    if (adminsSnapshot == null) {
+      return null;
+    }
     try {
-      final userDoc = snapshot.docs.firstWhere((user) => user.id == userId);
+      final userDoc =
+          adminsSnapshot!.docs.firstWhere((user) => user.id == userId);
       Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
       if (userData != null) {
         return AppPermissions.fromAdminMap(userData['permissions']);
@@ -350,10 +375,13 @@ class UserRepository {
     }
   }
 
-  Map<String, dynamic>? isCompanyManager(
-      String userId, QuerySnapshot snapshot) {
+  Map<String, dynamic>? isCompanyManager(String userId) {
+    if (companyManagersSnapshot == null) {
+      return null;
+    }
     try {
-      final userDoc = snapshot.docs.firstWhere((user) => user.id == userId);
+      final userDoc =
+          companyManagersSnapshot!.docs.firstWhere((user) => user.id == userId);
       Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
       if (userData != null) {
         return {
@@ -370,9 +398,13 @@ class UserRepository {
     }
   }
 
-  Map<String, dynamic>? isBranchManager(String userId, QuerySnapshot snapshot) {
+  Map<String, dynamic>? isBranchManager(String userId) {
+    if (branchManagersSnapshot == null) {
+      return null;
+    }
     try {
-      final userDoc = snapshot.docs.firstWhere((user) => user.id == userId);
+      final userDoc =
+          branchManagersSnapshot!.docs.firstWhere((user) => user.id == userId);
       Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
       if (userData != null) {
         return {
@@ -389,9 +421,13 @@ class UserRepository {
     }
   }
 
-  Map<String, dynamic>? isEmployee(String userId, QuerySnapshot snapshot) {
+  Map<String, dynamic>? isEmployee(String userId) {
+    if (employeesSnapshot == null) {
+      return null;
+    }
     try {
-      final userDoc = snapshot.docs.firstWhere((user) => user.id == userId);
+      final userDoc =
+          employeesSnapshot!.docs.firstWhere((user) => user.id == userId);
       Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
       if (userData != null) {
         return {
@@ -408,9 +444,13 @@ class UserRepository {
     }
   }
 
-  Map<String, dynamic>? isClient(String userId, QuerySnapshot snapshot) {
+  Map<String, dynamic>? isClient(String userId) {
+    if (clientsSnapshot == null) {
+      return null;
+    }
     try {
-      final userDoc = snapshot.docs.firstWhere((user) => user.id == userId);
+      final userDoc =
+          clientsSnapshot!.docs.firstWhere((user) => user.id == userId);
       Map<String, dynamic>? userData = userDoc.data() as Map<String, dynamic>?;
       if (userData != null) {
         return {

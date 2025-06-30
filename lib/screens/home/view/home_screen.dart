@@ -274,17 +274,10 @@ class HomeScreenState extends State<HomeScreen> {
   }) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (message != null) {
-        if (message == AppMessage.emailConfirmationSent) {
-          CustomAlert.showSuccess(
-            context: context,
-            title: S.of(context).confirmEmailSent,
-          );
-        } else if (message == AppMessage.resetPasswordEmailSent) {
-          CustomAlert.showSuccess(
-            context: context,
-            title: S.of(context).reset_email_sent,
-          );
-        }
+        CustomAlert.showSuccess(
+          context: context,
+          title: message.getText(context),
+        );
       } else if (error != null) {
         CustomAlert.showError(
           context: context,

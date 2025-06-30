@@ -243,18 +243,17 @@ class AuthRepository {
   }
 
   Future<dynamic> _getRoleUser(UserInfo user) async {
-    QuerySnapshot querySnapshot;
-
-    querySnapshot = await _firestore.collection('masterAdmins').get();
-    if (appRepository.userRepository.isMasterAdmin(user.id, querySnapshot)) {
+    appRepository.userRepository.masterAdminsSnapshot =
+        await _firestore.collection('masterAdmins').get();
+    if (appRepository.userRepository.isMasterAdmin(user.id)) {
       return MasterAdmin(
         info: user,
       );
     }
 
-    querySnapshot = await _firestore.collection('admins').get();
-    AppPermissions? adminData =
-        appRepository.userRepository.isAdmin(user.id, querySnapshot);
+    appRepository.userRepository.adminsSnapshot =
+        await _firestore.collection('admins').get();
+    AppPermissions? adminData = appRepository.userRepository.isAdmin(user.id);
     if (adminData != null) {
       return Admin(
         info: user,
@@ -262,9 +261,10 @@ class AuthRepository {
       );
     }
 
-    querySnapshot = await _firestore.collection('companyManagers').get();
+    appRepository.userRepository.companyManagersSnapshot =
+        await _firestore.collection('companyManagers').get();
     Map<String, dynamic>? companyManagerData =
-        appRepository.userRepository.isCompanyManager(user.id, querySnapshot);
+        appRepository.userRepository.isCompanyManager(user.id);
     if (companyManagerData != null) {
       Map<String, dynamic>? companyData =
           await appRepository.branchRepository.getCompanyAndBranches(
@@ -283,9 +283,10 @@ class AuthRepository {
       );
     }
 
-    querySnapshot = await _firestore.collection('branchManagers').get();
+    appRepository.userRepository.branchManagersSnapshot =
+        await _firestore.collection('branchManagers').get();
     Map<String, dynamic>? branchManagerData =
-        appRepository.userRepository.isBranchManager(user.id, querySnapshot);
+        appRepository.userRepository.isBranchManager(user.id);
     if (branchManagerData != null) {
       Branch? branch = await appRepository.branchRepository.getBranch(
         branchManagerData['id'],
@@ -300,9 +301,10 @@ class AuthRepository {
       );
     }
 
-    querySnapshot = await _firestore.collection('employees').get();
+    appRepository.userRepository.employeesSnapshot =
+        await _firestore.collection('employees').get();
     Map<String, dynamic>? employeeData =
-        appRepository.userRepository.isEmployee(user.id, querySnapshot);
+        appRepository.userRepository.isEmployee(user.id);
     if (employeeData != null) {
       Branch? branch = await appRepository.branchRepository.getBranch(
         employeeData['id'],
@@ -317,9 +319,10 @@ class AuthRepository {
       );
     }
 
-    querySnapshot = await _firestore.collection('clients').get();
+    appRepository.userRepository.clientsSnapshot =
+        await _firestore.collection('clients').get();
     Map<String, dynamic>? clientData =
-        appRepository.userRepository.isClient(user.id, querySnapshot);
+        appRepository.userRepository.isClient(user.id);
     if (clientData != null) {
       Branch? branch = await appRepository.branchRepository.getBranch(
         clientData['id'],

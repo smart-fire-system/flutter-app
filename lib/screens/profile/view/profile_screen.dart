@@ -1,7 +1,6 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:fire_alarm_system/utils/data_validator_util.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
-import 'package:fire_alarm_system/utils/message.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,17 +56,10 @@ class ProfileScreenState extends State<ProfileScreen> {
             });
           } else if (state.message != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) async {
-              if (state.message! == AppMessage.profileInfoUpdated) {
-                CustomAlert.showSuccess(
-                  context: context,
-                  title: S.of(context).info_updated,
-                );
-              } else if (state.message! == AppMessage.resetPasswordEmailSent) {
-                CustomAlert.showSuccess(
-                  context: context,
-                  title: S.of(context).reset_email_sent,
-                );
-              }
+              CustomAlert.showSuccess(
+                context: context,
+                title: state.message!.getText(context),
+              );
               context.read<ProfileBloc>().add(AuthChanged());
             });
           }

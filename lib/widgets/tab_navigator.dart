@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/screens/users/view/update_user.dart';
 import 'package:fire_alarm_system/screens/users/view/users_screen.dart';
 import 'package:fire_alarm_system/screens/users/view/view_user.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import 'package:fire_alarm_system/screens/profile/view/view.dart';
 import 'package:fire_alarm_system/screens/reports/view/view.dart';
 import 'package:fire_alarm_system/screens/settings/view/view.dart';
 import 'package:fire_alarm_system/screens/system/view/view.dart';
-import 'package:fire_alarm_system/screens/users/view/add_user.dart';
 
 enum AppTab {
   system,
@@ -100,11 +100,11 @@ class TabNavigator extends StatelessWidget {
             case '/users':
               page = const UsersScreen();
               break;
-            case '/user/add':
-              page = const AddUserScreen();
-              break;
             case '/user/view':
               page = UserInfoScreen(userId: routeSettings.arguments as String);
+              break;
+            case '/user/update':
+              page = UpdateUserScreen(userId: routeSettings.arguments as String);
               break;
 
             default:

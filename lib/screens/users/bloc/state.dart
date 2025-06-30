@@ -22,7 +22,7 @@ class UsersAuthenticated extends UsersState {
   final List<CompanyManager> companyManagers;
   final List<BranchManager> branchManagers;
   final List<Employee> employees;
-  final List<Client> clients; 
+  final List<Client> clients;
   final List<NoRoleUser> noRoleUsers;
   AppMessage? message;
   String? error;

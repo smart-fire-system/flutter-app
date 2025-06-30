@@ -40,7 +40,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         await appRepository.authRepository.refreshUserAuth();
         emit(ProfileAuthenticated(
           user: appRepository.userRole,
-          message: AppMessage.profileInfoUpdated,
+          message: AppMessage(id: AppMessageId.profileInfoUpdated),
         ));
       } catch (error) {
         emit(ProfileAuthenticated(
@@ -65,7 +65,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         await appRepository.authRepository.sendPasswordResetEmail();
         emit(ProfileAuthenticated(
           user: appRepository.userRole,
-          message: AppMessage.resetPasswordEmailSent,
+          message: AppMessage(id: AppMessageId.resetPasswordEmailSent),
         ));
       } catch (error) {
         emit(ProfileAuthenticated(

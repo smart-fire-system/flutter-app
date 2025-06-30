@@ -6,7 +6,6 @@ class HomeInitial extends HomeState {}
 
 class HomeLoading extends HomeState {}
 
-
 class HomeAuthenticated extends HomeState {
   final dynamic user;
   AppMessage? message;
@@ -30,7 +29,6 @@ class HomeNotAuthorized extends HomeState {
     this.error,
   });
 }
-
 
 class HomeNotAuthenticated extends HomeState {
   AppMessage? message;
