@@ -37,7 +37,7 @@ class AppMessage {
       case AppMessageId.emailConfirmationSent:
         return S.of(context).confirmEmailSent;
       case AppMessageId.profileInfoUpdated:
-        return S.of(context).profile;
+        return S.of(context).info_updated;
       default:
         return 'This is message';
     }

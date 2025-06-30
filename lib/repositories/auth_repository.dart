@@ -344,11 +344,11 @@ class AuthRepository {
     final firebaseUser = _firebaseAuth.currentUser;
     final infoDoc =
         await _firestore.collection('info').doc('maxUserCode').get();
-    userInfo.code = (infoDoc['value'] as int) + 1;
+    userInfo.code = infoDoc['value'] as int;
     await _firestore
         .collection('info')
         .doc('maxUserCode')
-        .set({'value': userInfo.code});
+        .set({'value': userInfo.code + 1});
     Map<String, dynamic> userData = {
       ...userInfo.toMap(),
       'createdAt': FieldValue.serverTimestamp(),

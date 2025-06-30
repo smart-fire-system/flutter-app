@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/screens/profile/view/update_profile.dart';
 import 'package:fire_alarm_system/screens/users/view/update_user.dart';
 import 'package:fire_alarm_system/screens/users/view/users_screen.dart';
 import 'package:fire_alarm_system/screens/users/view/view_user.dart';
@@ -106,7 +107,9 @@ class TabNavigator extends StatelessWidget {
             case '/user/update':
               page = UpdateUserScreen(userId: routeSettings.arguments as String);
               break;
-
+            case '/profile/update':
+              page = const UpdateProfileScreen();
+              break;
             default:
               page = Scaffold(
                 body:

@@ -30,7 +30,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     });
 
     on<ChangeInfoRequested>((event, emit) async {
-      emit(ProfileLoading());
+      emit(ProfileLoading(updatingData: true));
       try {
         await appRepository.userRepository.updateInformation(
           name: event.name,
@@ -51,7 +51,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     });
 
     on<LogoutRequested>((event, emit) async {
-      emit(ProfileLoading());
+      emit(ProfileLoading(loggingOut: true));
       try {
         await appRepository.authRepository.signOut();
       } catch (error) {
@@ -60,7 +60,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     });
 
     on<ResetPasswordRequested>((event, emit) async {
-      emit(ProfileLoading());
+      emit(ProfileLoading(resettingPassword: true));
       try {
         await appRepository.authRepository.sendPasswordResetEmail();
         emit(ProfileAuthenticated(
@@ -74,7 +74,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     });
 
     on<RefreshRequested>((event, emit) async {
-      emit(ProfileLoading());
+      emit(ProfileLoading(loadingData: true));
       try {
         await appRepository.authRepository.refreshUserAuth();
         emit(ProfileAuthenticated(

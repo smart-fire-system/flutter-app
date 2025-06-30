@@ -4,7 +4,18 @@ abstract class ProfileState {}
 
 class ProfileInitial extends ProfileState {}
 
-class ProfileLoading extends ProfileState {}
+class ProfileLoading extends ProfileState {
+  final bool loadingData;
+  final bool updatingData;
+  final bool resettingPassword;
+  final bool loggingOut;
+  ProfileLoading({
+    this.loadingData = false,
+    this.updatingData = false,
+    this.resettingPassword = false,
+    this.loggingOut = false,
+  });
+}
 
 class ProfileAuthenticated extends ProfileState {
   final dynamic user;
