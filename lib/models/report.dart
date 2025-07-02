@@ -1,16 +1,28 @@
-
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:jhijri_picker/_src/_jWidgets.dart';
 
 class ReportItem {
-  String templateValue;
-  Map<String, Type>? parameters;
-  TextDirection? direction;
+  final String templateValue;
+  final Map<String, dynamic>? parameters;
+  final TextAlign? align;
+  final bool? bold;
+  final bool? underlined;
+  final Color? color;
+  final Color? backgroundColor;
+  final double paddingAfter;
+  final bool addDivider;
+
   ReportItem({
     required this.templateValue,
     this.parameters,
-    this.direction,
+    this.align,
+    this.bold,
+    this.underlined,
+    this.color,
+    this.backgroundColor,
+    this.paddingAfter = 8,
+    this.addDivider = false,
   });
 }
 

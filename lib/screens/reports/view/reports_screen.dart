@@ -6,6 +6,10 @@ import 'package:jhijri_picker/jhijri_picker.dart';
 import 'package:fire_alarm_system/widgets/text_field.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/models/report.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/bloc.dart';
+import '../bloc/state.dart';
+import '../bloc/event.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -15,80 +19,88 @@ class ReportsScreen extends StatefulWidget {
 }
 
 class _ReportsScreenState extends State<ReportsScreen> {
-  ReportItem item = ReportItem(
-    templateValue:
-        'بعون من الله تعالى تم في يوم {{param_day}}\u00A0الموافق{{param_hijri_date}} هجرياً، الموافق {{param_gregorian_date}} ميلادياً الإتفاق بين كل من: ',
-    parameters: {
-      'param_day': DayParameter,
-      'param_hijri_date': HijriDateParameter,
-      'param_gregorian_date': GregorianDateParameter,
-    },
-  );
+  final List<Map<String, dynamic>> _paramValues = [];
 
-  // Store parameter values
-  final Map<String, dynamic> _paramValues = {};
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize parameter values
-    item.parameters!.forEach((key, type) {
+  void _initParamValues(int idx, ReportItem item) {
+    if (_paramValues.length > idx && _paramValues[idx].isNotEmpty) return;
+    while (_paramValues.length <= idx) {
+      _paramValues.add({});
+    }
+    final paramMap = <String, dynamic>{};
+    item.parameters?.forEach((key, type) {
       if (type == StringParameter) {
-        _paramValues[key] = StringParameter();
+        paramMap[key] = StringParameter();
       } else if (type == IntParameter) {
-        _paramValues[key] = IntParameter();
+        paramMap[key] = IntParameter();
       } else if (type == GregorianDateParameter) {
-        _paramValues[key] = GregorianDateParameter();
+        paramMap[key] = GregorianDateParameter();
       } else if (type == HijriDateParameter) {
-        _paramValues[key] = HijriDateParameter();
+        paramMap[key] = HijriDateParameter();
       } else if (type == DayParameter) {
-        _paramValues[key] = DayParameter();
+        paramMap[key] = DayParameter();
       }
     });
+    _paramValues[idx] = paramMap;
   }
 
-  List<Widget> _buildInlineTemplateWidgets(BuildContext context) {
+  List<Widget> _buildInlineTemplateWidgets(
+      BuildContext context, ReportItem item, Map<String, dynamic> paramValues) {
     final RegExp regExp = RegExp(r'\{\{(.*?)\}\}');
     final List<Widget> widgets = [];
     final String template = item.templateValue;
     int currentIndex = 0;
 
+    TextStyle baseStyle = CustomStyle.mediumText.copyWith(fontFamily: 'Arial');
+    if (item.bold == true) {
+      baseStyle = baseStyle.copyWith(fontWeight: FontWeight.bold);
+    }
+    if (item.underlined == true) {
+      baseStyle = baseStyle.copyWith(decoration: TextDecoration.underline);
+    }
+    if (item.color != null) baseStyle = baseStyle.copyWith(color: item.color);
+    // backgroundColor handled in Container below
+
     Iterable<RegExpMatch> matches = regExp.allMatches(template);
     for (final match in matches) {
       if (match.start > currentIndex) {
-        widgets.add(Text(
-          template.substring(currentIndex, match.start),
-          style: CustomStyle.mediumText,
-          textDirection: TextDirection.rtl,
+        widgets.add(Container(
+          color: item.backgroundColor,
+          child: Text(
+            template.substring(currentIndex, match.start),
+            style: baseStyle,
+            textDirection: TextDirection.rtl,
+            textAlign: item.align,
+          ),
         ));
       }
       final paramName = match.group(1)!;
-      final paramType = item.parameters![paramName];
+      final paramType =
+          item.parameters != null ? item.parameters![paramName] : null;
       Widget widget;
       if (paramType == StringParameter) {
         widget = GrowingTextField(
-          value: _paramValues[paramName].text,
+          value: paramValues[paramName].text,
           onChanged: (value) {
             setState(() {
-              _paramValues[paramName].value = value;
+              paramValues[paramName].value = value;
             });
           },
           maxWidth: MediaQuery.of(context).size.width,
-          style: CustomStyle.smallTextRed,
+          style: baseStyle,
           maxLines: 1,
           textDirection: TextDirection.rtl,
         );
       } else if (paramType == IntParameter) {
         widget = GrowingTextField(
-          value: _paramValues[paramName].text,
+          value: paramValues[paramName].text,
           onChanged: (value) {
             setState(() {
-              _paramValues[paramName].value = int.tryParse(value);
+              paramValues[paramName].value = int.tryParse(value);
             });
           },
           keyboardType: TextInputType.number,
           maxWidth: MediaQuery.of(context).size.width,
-          style: CustomStyle.smallTextRed,
+          style: baseStyle,
           maxLines: 1,
           textDirection: TextDirection.rtl,
         );
@@ -97,13 +109,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
           onTap: () async {
             DateTime? picked = await showDatePicker(
               context: context,
-              initialDate: _paramValues[paramName].date ?? DateTime.now(),
+              initialDate: paramValues[paramName].date ?? DateTime.now(),
               firstDate: DateTime(1900),
               lastDate: DateTime(2100),
             );
             if (picked != null) {
               setState(() {
-                _paramValues[paramName].value = picked;
+                paramValues[paramName].value = picked;
               });
             }
           },
@@ -113,11 +125,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
             decoration: BoxDecoration(
               border: Border.all(color: CustomStyle.redLight, width: 0.5),
               borderRadius: BorderRadius.circular(4),
+              color: item.backgroundColor,
             ),
             child: Text(
-              _paramValues[paramName].text,
-              style: CustomStyle.smallTextRed,
+              paramValues[paramName].text,
+              style: baseStyle,
               textDirection: TextDirection.rtl,
+              textAlign: item.align,
             ),
           ),
         );
@@ -128,10 +142,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 context: context,
                 pickerType: PickerType.JHijri,
                 selectedDate:
-                    JDateModel(jhijri: _paramValues[paramName].date?.jhijri));
+                    JDateModel(jhijri: paramValues[paramName].date?.jhijri));
             if (picked != null) {
               setState(() {
-                _paramValues[paramName].value = picked;
+                paramValues[paramName].value = picked;
               });
             }
           },
@@ -141,11 +155,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
             decoration: BoxDecoration(
               border: Border.all(color: CustomStyle.redLight, width: 0.5),
               borderRadius: BorderRadius.circular(4),
+              color: item.backgroundColor,
             ),
             child: Text(
-              _paramValues[paramName].text,
-              style: CustomStyle.smallTextRed,
+              paramValues[paramName].text,
+              style: baseStyle,
               textDirection: TextDirection.rtl,
+              textAlign: item.align,
             ),
           ),
         );
@@ -162,7 +178,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       shrinkWrap: true,
                       children: Day.values.map((day) {
                         return ListTile(
-                          title: Text(DayParameter(value: day).text, style: CustomStyle.mediumText,),
+                          title: Text(
+                            DayParameter(value: day).text,
+                            style: baseStyle,
+                          ),
                           onTap: () {
                             Navigator.of(context).pop(day);
                           },
@@ -175,7 +194,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
             );
             if (selectedDay != null) {
               setState(() {
-                _paramValues[paramName].value = selectedDay;
+                paramValues[paramName].value = selectedDay;
               });
             }
           },
@@ -185,11 +204,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
             decoration: BoxDecoration(
               border: Border.all(color: CustomStyle.redLight, width: 0.5),
               borderRadius: BorderRadius.circular(4),
+              color: item.backgroundColor,
             ),
             child: Text(
-              _paramValues[paramName].text,
-              style: CustomStyle.smallTextRed,
+              paramValues[paramName].text,
+              style: baseStyle,
               textDirection: TextDirection.rtl,
+              textAlign: item.align,
             ),
           ),
         );
@@ -204,41 +225,89 @@ class _ReportsScreenState extends State<ReportsScreen> {
     }
     // Add any remaining text after the last parameter
     if (currentIndex < template.length) {
-      widgets.add(Text(
-        template.substring(currentIndex),
-        style: CustomStyle.mediumText,
-        textDirection: TextDirection.rtl,
+      widgets.add(Container(
+        color: item.backgroundColor,
+        child: Text(
+          template.substring(currentIndex),
+          style: baseStyle,
+          textDirection: TextDirection.rtl,
+          textAlign: item.align,
+        ),
       ));
     }
     return widgets;
+  }
+
+  WrapAlignment _mapTextAlignToWrapAlignment(TextAlign? align) {
+    switch (align) {
+      case TextAlign.center:
+        return WrapAlignment.center;
+      case TextAlign.right:
+        return WrapAlignment.end;
+      case TextAlign.left:
+        return WrapAlignment.start;
+      default:
+        return WrapAlignment.start;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: S.of(context).reports),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Wrap(
-                    textDirection: TextDirection.rtl,
-                    alignment: WrapAlignment.start,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: _buildInlineTemplateWidgets(context),
+      body: BlocBuilder<ReportsBloc, ReportsState>(
+        builder: (context, state) {
+          if (state is ReportsLoaded && state.items.isNotEmpty) {
+            // Display all items
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(
+                child: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...state.items.asMap().entries.map((entry) {
+                        final idx = entry.key;
+                        final item = entry.value;
+                        _initParamValues(idx, item);
+                        final paramValues = _paramValues[idx];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Wrap(
+                                  textDirection: TextDirection.rtl,
+                                  alignment:
+                                      _mapTextAlignToWrapAlignment(item.align),
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  children: _buildInlineTemplateWidgets(
+                                      context, item, paramValues),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: item.paddingAfter),
+                            if (item.addDivider)
+                              const Divider(color: CustomStyle.redLight),
+                          ],
+                        );
+                      }),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 24),
-              ],
-            ),
-          ),
-        ),
+              ),
+            );
+          } else if (state is ReportsInitial) {
+            // Optionally trigger loading event here
+            context.read<ReportsBloc>().add(ReportsItemsRequested());
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
