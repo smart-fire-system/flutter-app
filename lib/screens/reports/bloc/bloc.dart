@@ -39,7 +39,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         paddingAfter: 24,
       ),
       ReportItem(
-        templateValue: 'الطرف الأول {{param_name}} ',
+        templateValue: 'الطرف الأول: {{param_name}} ',
         parameters: {
           'param_name': StringParameter,
         },
@@ -47,28 +47,28 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         bold: true,
       ),
       ReportItem(
-        templateValue: 'سجل تجاري رقم {{param_commercial_record}} ',
+        templateValue: 'سجل تجاري رقم: {{param_commercial_record}} ',
         parameters: {
           'param_commercial_record': IntParameter,
         },
         paddingAfter: 0,
       ),
       ReportItem(
-        templateValue: 'العنوان {{param_address}} ',
+        templateValue: 'العنوان: {{param_address}} ',
         parameters: {
           'param_address': StringParameter,
         },
         paddingAfter: 0,
       ),
       ReportItem(
-        templateValue: 'يمثلها المهندس {{param_engineer_name}} ',
+        templateValue: 'يمثلها المهندس: {{param_engineer_name}} ',
         parameters: {
           'param_engineer_name': StringParameter,
         },
         paddingAfter: 0,
       ),
       ReportItem(
-        templateValue: 'رقم الهوية {{param_id_number}} ',
+        templateValue: 'رقم الهوية: {{param_id_number}} ',
         parameters: {
           'param_id_number': StringParameter,
         },
@@ -82,7 +82,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         paddingAfter: 24,
       ),
       ReportItem(
-        templateValue: 'الطرف الثاني {{param_name}} ',
+        templateValue: 'الطرف الثاني: {{param_name}} ',
         parameters: {
           'param_name': StringParameter,
         },
@@ -90,28 +90,28 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         bold: true,
       ),
       ReportItem(
-        templateValue: 'سجل تجاري رقم {{param_commercial_record}} ',
+        templateValue: 'سجل تجاري رقم: {{param_commercial_record}} ',
         parameters: {
           'param_commercial_record': IntParameter,
         },
         paddingAfter: 0,
       ),
       ReportItem(
-        templateValue: 'العنوان {{param_address}} ',
+        templateValue: 'العنوان: {{param_address}} ',
         parameters: {
           'param_address': StringParameter,
         },
         paddingAfter: 0,
       ),
       ReportItem(
-        templateValue: 'يمثلها المهندس {{param_engineer_name}} ',
+        templateValue: 'يمثلها المهندس: {{param_engineer_name}} ',
         parameters: {
           'param_engineer_name': StringParameter,
         },
         paddingAfter: 0,
       ),
       ReportItem(
-        templateValue: 'رقم الهوية {{param_id_number}} ',
+        templateValue: 'رقم الهوية: {{param_id_number}} ',
         parameters: {
           'param_id_number': StringParameter,
         },
@@ -145,7 +145,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ),
       ReportItem(
         templateValue:
-            '4-	يلتزم الطرف الأول بالحضور أو من ينوب عنه من الفنيين في حالة حدوث عطل مفاجئ ولا تعد تلك ضمن الزيارات المجدولة وتسجل في سجل السلامة الخاص لدى المشاءة.',
+            '4-	يلتزم الطرف الأول بالحضور أو من ينوب عنه من الفنيين في حالة حدوث عطل مفاجئ ولا تعد تلك ضمن الزيارات المجدولة وتسجل في سجل السلامة الخاص لدى المنشأة.',
         paddingAfter: 12,
       ),
       ReportItem(
@@ -190,12 +190,12 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ),
       ReportItem(
         templateValue:
-            '13-	على الطرف الأول اتخاذ احتياطات الأمن والسلامة أثناءالعمل.',
+            '13-	على الطرف الأول اتخاذ احتياطات الأمن والسلامة أثناء العمل.',
         paddingAfter: 12,
       ),
       ReportItem(
         templateValue:
-            '14-	يلتزم الطرف الأول بإحضار أجهزة الرفع أو النقل التي يتطلبها أثناءالعمل.',
+            '14-	يلتزم الطرف الأول بإحضار أجهزة الرفع أو النقل التي يتطلبها أثناء العمل.',
         paddingAfter: 12,
       ),
       ReportItem(
@@ -217,6 +217,40 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         parameters: {
           'param_period': StringParameter,
           'param_amount': IntParameter,
+        },
+        paddingAfter: 24,
+      ),
+      ReportItem(
+        templateValue: 'هذا وتقبلوا منا فائق التحية والتقدير',
+        paddingAfter: 24,
+        bold: true,
+        align: TextAlign.center,
+      ),
+      ReportItem(
+        templateValue: 'الطرف الأول: {{param_name}} ',
+        parameters: {
+          'param_name': StringParameter,
+        },
+        paddingAfter: 0,
+      ),
+      ReportItem(
+        templateValue: 'التوقيع: {{param_signature}} ',
+        parameters: {
+          'param_signature': StringParameter,
+        },
+        paddingAfter: 24,
+      ),
+      ReportItem(
+        templateValue: 'الطرف الثاني: {{param_name}} ',
+        parameters: {
+          'param_name': StringParameter,
+        },
+        paddingAfter: 0,
+      ),
+      ReportItem(
+        templateValue: 'التوقيع: {{param_signature}} ',
+        parameters: {
+          'param_signature': StringParameter,
         },
         paddingAfter: 24,
       ),
