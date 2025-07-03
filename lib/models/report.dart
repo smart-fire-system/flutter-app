@@ -3,6 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:jhijri_picker/_src/_jWidgets.dart';
 
 class ReportItem {
+  final ReportImageItem? image;
+  final ReportTextItem? text;
+  final ReportTableItem? table;
+  ReportItem({this.image, this.text, this.table});
+}
+
+class ReportImageItem {
+  final String url;
+  ReportImageItem({required this.url});
+}
+
+class ReportTableItem {
+  String title;
+  List<String> types;
+    ReportTableItem({required this.title, required this.types});
+}
+
+class ReportTextItem {
   final String templateValue;
   final Map<String, dynamic>? parameters;
   final TextAlign? align;
@@ -13,7 +31,7 @@ class ReportItem {
   final double paddingAfter;
   final bool addDivider;
 
-  ReportItem({
+  ReportTextItem({
     required this.templateValue,
     this.parameters,
     this.align,

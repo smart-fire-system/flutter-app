@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/models/report.dart';
 
 class ReportPreviewScreen extends StatelessWidget {
-  final List<ReportItem> items;
+  final List<ReportTextItem> items;
   final List<Map<String, dynamic>> paramValues;
 
   const ReportPreviewScreen({
@@ -11,7 +11,8 @@ class ReportPreviewScreen extends StatelessWidget {
     required this.paramValues,
   });
 
-  String _renderTemplate(ReportItem item, Map<String, dynamic> paramValues) {
+  String _renderTemplate(
+      ReportTextItem item, Map<String, dynamic> paramValues) {
     String result = item.templateValue;
     if (item.parameters != null) {
       item.parameters!.forEach((key, type) {

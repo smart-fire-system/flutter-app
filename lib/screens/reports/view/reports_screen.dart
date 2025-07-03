@@ -21,8 +21,14 @@ class ReportsScreen extends StatefulWidget {
 
 class _ReportsScreenState extends State<ReportsScreen> {
   final List<Map<String, dynamic>> _paramValues = [];
+  // New state for table items
+  final List<Map<String, Map<String, dynamic>>> _tableStates = [];
 
-  void _initParamValues(int idx, ReportItem item) {
+  // Store controllers for table cells
+  final List<Map<String, Map<String, TextEditingController>>>
+      _tableControllers = [];
+
+  void _initParamValues(int idx, ReportTextItem item) {
     if (_paramValues.length > idx && _paramValues[idx].isNotEmpty) return;
     while (_paramValues.length <= idx) {
       _paramValues.add({});
@@ -44,8 +50,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
     _paramValues[idx] = paramMap;
   }
 
-  List<Widget> _buildInlineTemplateWidgets(
-      BuildContext context, ReportItem item, Map<String, dynamic> paramValues) {
+  List<Widget> _buildInlineTemplateWidgets(BuildContext context,
+      ReportTextItem item, Map<String, dynamic> paramValues) {
     final RegExp regExp = RegExp(r'\{\{(.*?)\}\}');
     final List<Widget> widgets = [];
     final String template = item.templateValue;
@@ -271,30 +277,196 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       ...state.items.asMap().entries.map((entry) {
                         final idx = entry.key;
                         final item = entry.value;
-                        _initParamValues(idx, item);
-                        final paramValues = _paramValues[idx];
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: double.infinity,
-                              child: SizedBox(
+                        if (item.text != null) {
+                          _initParamValues(idx, item.text!);
+                          final paramValues = _paramValues[idx];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
                                 width: double.infinity,
-                                child: Wrap(
-                                  textDirection: TextDirection.rtl,
-                                  alignment:
-                                      _mapTextAlignToWrapAlignment(item.align),
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  children: _buildInlineTemplateWidgets(
-                                      context, item, paramValues),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: Wrap(
+                                    textDirection: TextDirection.rtl,
+                                    alignment: _mapTextAlignToWrapAlignment(
+                                        item.text!.align),
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: _buildInlineTemplateWidgets(
+                                        context, item.text!, paramValues),
+                                  ),
                                 ),
                               ),
+                              SizedBox(height: item.text!.paddingAfter),
+                              if (item.text!.addDivider)
+                                const Divider(color: CustomStyle.redLight),
+                            ],
+                          );
+                        } else if (item.image != null) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Image.network(item.image!.url),
+                          );
+                        } else if (item.table != null) {
+                          final table = item.table!;
+                          // Use _tableStates for table item state
+                          if (_tableStates.length <= idx) {
+                            while (_tableStates.length <= idx) {
+                              _tableStates.add({});
+                              _tableControllers.add({});
+                            }
+                            _tableStates[idx] = {
+                              for (var type in table.types)
+                                type: {
+                                  'exists': false,
+                                  'quantity': '',
+                                  'notes': '',
+                                }
+                            };
+                            _tableControllers[idx] = {
+                              for (var type in table.types)
+                                type: {
+                                  'quantity': TextEditingController(
+                                      text: _tableStates[idx][type]![
+                                          'quantity']),
+                                  'notes': TextEditingController(
+                                      text: _tableStates[idx][type]!['notes']),
+                                }
+                            };
+                          }
+                          final typeStates = _tableStates[idx];
+                          final typeControllers = _tableControllers[idx];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (table.title.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 8.0),
+                                    child: Text(
+                                      table.title,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                  ),
+                                Table(
+                                  border: TableBorder.all(),
+                                  defaultVerticalAlignment:
+                                      TableCellVerticalAlignment.middle,
+                                  children: [
+                                    const TableRow(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.all(4.0),
+                                          child: Text('النوع',
+                                              textAlign: TextAlign.center),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.all(4.0),
+                                          child: Text('موجود',
+                                              textAlign: TextAlign.center),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.all(4.0),
+                                          child: Text('العدد',
+                                              textAlign: TextAlign.center),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.all(4.0),
+                                          child: Text('ملاحظات',
+                                              textAlign: TextAlign.center),
+                                        ),
+                                      ],
+                                    ),
+                                    ...table.types.map((type) => TableRow(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: Text(type,
+                                                  textAlign: TextAlign.center),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: Center(
+                                                child: Checkbox(
+                                                  value: typeStates[type]![
+                                                      'exists'],
+                                                  onChanged: (val) {
+                                                    setState(() {
+                                                      typeStates[type]![
+                                                              'exists'] =
+                                                          val ?? false;
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: TextField(
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  border: InputBorder.none,
+                                                  isDense: true,
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          vertical: 8,
+                                                          horizontal: 8),
+                                                ),
+                                                textAlign: TextAlign.center,
+                                                controller: typeControllers[
+                                                    type]!['quantity'],
+                                                onChanged: (val) {
+                                                  setState(() {
+                                                    typeStates[type]![
+                                                        'quantity'] = val;
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: TextField(
+                                                decoration:
+                                                    const InputDecoration(
+                                                  border: InputBorder.none,
+                                                  isDense: true,
+                                                  contentPadding:
+                                                      EdgeInsets.symmetric(
+                                                          vertical: 8,
+                                                          horizontal: 8),
+                                                ),
+                                                textAlign: TextAlign.center,
+                                                controller: typeControllers[
+                                                    type]!['notes'],
+                                                onChanged: (val) {
+                                                  setState(() {
+                                                    typeStates[type]!['notes'] =
+                                                        val;
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        )),
+                                  ],
+                                ),
+                              ],
                             ),
-                            SizedBox(height: item.paddingAfter),
-                            if (item.addDivider)
-                              const Divider(color: CustomStyle.redLight),
-                          ],
-                        );
+                          );
+                        }
+                        return const SizedBox.shrink();
                       }),
                       const SizedBox(height: 32),
                       Center(
@@ -303,7 +475,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => ReportPreviewScreen(
-                                  items: state.items,
+                                  items:
+                                      state.items.map((e) => e.text!).toList(),
                                   paramValues: _paramValues,
                                 ),
                               ),
@@ -327,5 +500,17 @@ class _ReportsScreenState extends State<ReportsScreen> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // Dispose all table controllers
+    for (final table in _tableControllers) {
+      for (final typeMap in table.values) {
+        typeMap['quantity']?.dispose();
+        typeMap['notes']?.dispose();
+      }
+    }
+    super.dispose();
   }
 }
