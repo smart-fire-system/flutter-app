@@ -331,9 +331,6 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         ),
       ),
       ReportItem(
-        image: ReportImageItem(url: 'https://picsum.photos/250?image=9'),
-      ),
-      ReportItem(
         table: ReportTableItem(
           title: 'المواد المطلوبة',
           types: ['لوحة تحكم 2 زون', 'حساس دخان ', 'جرس إنذار', 'كاسر زجاج', 'رشاش ماء سفلي ', 'مضخة ثلاثية مشتركة'],

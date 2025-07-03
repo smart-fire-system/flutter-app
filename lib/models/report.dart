@@ -3,15 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:jhijri_picker/_src/_jWidgets.dart';
 
 class ReportItem {
-  final ReportImageItem? image;
   final ReportTextItem? text;
   final ReportTableItem? table;
-  ReportItem({this.image, this.text, this.table});
-}
-
-class ReportImageItem {
-  final String url;
-  ReportImageItem({required this.url});
+  ReportItem({this.text, this.table});
 }
 
 class ReportTableItem {

@@ -303,11 +303,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                 const Divider(color: CustomStyle.redLight),
                             ],
                           );
-                        } else if (item.image != null) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Image.network(item.image!.url),
-                          );
                         } else if (item.table != null) {
                           final table = item.table!;
                           // Use _tableStates for table item state
@@ -328,8 +323,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                               for (var type in table.types)
                                 type: {
                                   'quantity': TextEditingController(
-                                      text: _tableStates[idx][type]![
-                                          'quantity']),
+                                      text: _tableStates[idx]
+                                          [type]!['quantity']),
                                   'notes': TextEditingController(
                                       text: _tableStates[idx][type]!['notes']),
                                 }
@@ -438,6 +433,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                               padding:
                                                   const EdgeInsets.all(4.0),
                                               child: TextField(
+                                                minLines: 1,
+                                                maxLines: null,
                                                 decoration:
                                                     const InputDecoration(
                                                   border: InputBorder.none,
@@ -475,9 +472,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => ReportPreviewScreen(
-                                  items:
-                                      state.items.map((e) => e.text!).toList(),
+                                  items: state.items,
                                   paramValues: _paramValues,
+                                  tableStates: _tableStates,
                                 ),
                               ),
                             );
