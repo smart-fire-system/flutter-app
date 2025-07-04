@@ -337,126 +337,152 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (table.title.isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                    child: Text(
-                                      table.title,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                      textDirection: TextDirection.rtl,
-                                    ),
-                                  ),
                                 Table(
-                                  border: TableBorder.all(),
+                                  border: TableBorder.all(
+                                      color: Colors.grey.shade300, width: 1),
+                                  columnWidths: const <int, TableColumnWidth>{
+                                    0: FlexColumnWidth(2),
+                                    1: FlexColumnWidth(1),
+                                    2: FlexColumnWidth(1),
+                                    3: FlexColumnWidth(2),
+                                  },
                                   defaultVerticalAlignment:
                                       TableCellVerticalAlignment.middle,
                                   children: [
                                     const TableRow(
+                                      decoration: BoxDecoration(
+                                        color: CustomStyle.greyDark,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(8),
+                                          topRight: Radius.circular(8),
+                                        ),
+                                      ),
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.all(4.0),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 12, horizontal: 8),
                                           child: Text('النوع',
-                                              textAlign: TextAlign.center),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white)),
                                         ),
                                         Padding(
-                                          padding: EdgeInsets.all(4.0),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 12, horizontal: 8),
                                           child: Text('موجود',
-                                              textAlign: TextAlign.center),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white)),
                                         ),
                                         Padding(
-                                          padding: EdgeInsets.all(4.0),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 12, horizontal: 8),
                                           child: Text('العدد',
-                                              textAlign: TextAlign.center),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white)),
                                         ),
                                         Padding(
-                                          padding: EdgeInsets.all(4.0),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 12, horizontal: 8),
                                           child: Text('ملاحظات',
-                                              textAlign: TextAlign.center),
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white)),
                                         ),
                                       ],
                                     ),
-                                    ...table.types.map((type) => TableRow(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              child: Text(type,
-                                                  textAlign: TextAlign.center),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              child: Center(
-                                                child: Checkbox(
-                                                  value: typeStates[type]![
-                                                      'exists'],
-                                                  onChanged: (val) {
-                                                    setState(() {
-                                                      typeStates[type]![
-                                                              'exists'] =
-                                                          val ?? false;
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              child: TextField(
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  border: InputBorder.none,
-                                                  isDense: true,
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          vertical: 8,
-                                                          horizontal: 8),
-                                                ),
-                                                textAlign: TextAlign.center,
-                                                controller: typeControllers[
-                                                    type]!['quantity'],
+                                    ...table.types.asMap().entries.map((entry) {
+                                      final i = entry.key;
+                                      final type = entry.value;
+                                      final isEven = i % 2 == 0;
+                                      return TableRow(
+                                        decoration: BoxDecoration(
+                                          color: isEven
+                                              ? Colors.grey.shade50
+                                              : Colors.white,
+                                        ),
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 8),
+                                            child: Text(type,
+                                                textAlign: TextAlign.center),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 8),
+                                            child: Center(
+                                              child: Checkbox(
+                                                value:
+                                                    typeStates[type]!['exists'],
                                                 onChanged: (val) {
                                                   setState(() {
                                                     typeStates[type]![
-                                                        'quantity'] = val;
+                                                            'exists'] =
+                                                        val ?? false;
                                                   });
                                                 },
                                               ),
                                             ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              child: TextField(
-                                                minLines: 1,
-                                                maxLines: null,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  border: InputBorder.none,
-                                                  isDense: true,
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          vertical: 8,
-                                                          horizontal: 8),
-                                                ),
-                                                textAlign: TextAlign.center,
-                                                controller: typeControllers[
-                                                    type]!['notes'],
-                                                onChanged: (val) {
-                                                  setState(() {
-                                                    typeStates[type]!['notes'] =
-                                                        val;
-                                                  });
-                                                },
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 8),
+                                            child: TextField(
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              decoration: const InputDecoration(
+                                                border: InputBorder.none,
+                                                isDense: true,
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        vertical: 8,
+                                                        horizontal: 8),
                                               ),
+                                              textAlign: TextAlign.center,
+                                              controller: typeControllers[
+                                                  type]!['quantity'],
+                                              onChanged: (val) {
+                                                setState(() {
+                                                  typeStates[type]![
+                                                      'quantity'] = val;
+                                                });
+                                              },
                                             ),
-                                          ],
-                                        )),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 8),
+                                            child: TextField(
+                                              minLines: 1,
+                                              maxLines: null,
+                                              decoration: const InputDecoration(
+                                                border: InputBorder.none,
+                                                isDense: true,
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        vertical: 8,
+                                                        horizontal: 8),
+                                              ),
+                                              textAlign: TextAlign.center,
+                                              controller: typeControllers[
+                                                  type]!['notes'],
+                                              onChanged: (val) {
+                                                setState(() {
+                                                  typeStates[type]!['notes'] =
+                                                      val;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }),
                                   ],
                                 ),
                               ],

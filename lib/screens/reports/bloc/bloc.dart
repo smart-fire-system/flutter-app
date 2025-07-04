@@ -288,6 +288,60 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ),
       ReportItem(
         text: ReportTextItem(
+          templateValue: '•	نظام الإنذار المبكر: -',
+          paddingAfter: 0,
+          bold: true,
+          underlined: true,
+        ),
+      ),
+      ReportItem(
+        table: ReportTableItem(
+          types: [
+            'لوحة تحكم 2 زون',
+            'حساس دخان ',
+            'جرس إنذار',
+            'كاسر زجاج',
+            'رشاش ماء سفلي',
+            'مضخة ثلاثية مشتركة'
+          ],
+        ),
+      ),
+      ReportItem(
+        text: ReportTextItem(
+          templateValue: '•	نظام الإطفاء التلقائي: -',
+          paddingAfter: 0,
+          bold: true,
+          underlined: true,
+        ),
+      ),
+      ReportItem(
+        table: ReportTableItem(
+          types: [
+            'لوحة تحكم 2 زون',
+            'رشاش ماء سفلي',
+            'مضخة ثلاثية مشتركة'
+          ],
+        ),
+      ),
+      ReportItem(
+        text: ReportTextItem(
+          templateValue: '•	أدوات السلامة: -',
+          paddingAfter: 0,
+          bold: true,
+          underlined: true,
+        ),
+      ),
+      ReportItem(
+        table: ReportTableItem(
+          types: [
+            'لوحة تحكم 2 زون',
+            'حساس دخان',
+            'جرس إنذار'
+          ],
+        ),
+      ),
+      ReportItem(
+        text: ReportTextItem(
           templateValue: 'هذا وتقبلوا منا فائق التحية والتقدير',
           paddingAfter: 24,
           bold: true,
@@ -328,12 +382,6 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
             'param_signature': StringParameter,
           },
           paddingAfter: 24,
-        ),
-      ),
-      ReportItem(
-        table: ReportTableItem(
-          title: 'المواد المطلوبة',
-          types: ['لوحة تحكم 2 زون', 'حساس دخان ', 'جرس إنذار', 'كاسر زجاج', 'رشاش ماء سفلي ', 'مضخة ثلاثية مشتركة'],
         ),
       ),
     ]));

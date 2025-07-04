@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/models/report.dart';
 
@@ -68,7 +69,7 @@ class ReportPreviewScreen extends StatelessWidget {
                     textAlign: item.text.align,
                   ),
                 );
-              }else if (item.table != null) {
+              } else if (item.table != null) {
                 final tableData =
                     (tableStates != null && idx < tableStates!.length)
                         ? tableStates![idx]
@@ -79,88 +80,115 @@ class ReportPreviewScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (table.title.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(
-                            table.title,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                            textDirection: TextDirection.rtl,
-                          ),
-                        ),
                       Table(
-                        border: TableBorder.all(),
+                        border: TableBorder.all(
+                            color: Colors.grey.shade300, width: 1),
+                        columnWidths: const <int, TableColumnWidth>{
+                          0: FlexColumnWidth(2),
+                          1: FlexColumnWidth(1),
+                          2: FlexColumnWidth(1),
+                          3: FlexColumnWidth(2),
+                        },
                         defaultVerticalAlignment:
                             TableCellVerticalAlignment.middle,
                         children: [
                           const TableRow(
+                            decoration: BoxDecoration(
+                              color: CustomStyle.greyDark,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(8),
+                                topRight: Radius.circular(8),
+                              ),
+                            ),
                             children: [
                               Padding(
-                                padding: EdgeInsets.all(4.0),
-                                child:
-                                    Text('النوع', textAlign: TextAlign.center),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 8),
+                                child: Text('النوع',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
                               ),
                               Padding(
-                                padding: EdgeInsets.all(4.0),
-                                child:
-                                    Text('موجود', textAlign: TextAlign.center),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 8),
+                                child: Text('موجود',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
                               ),
                               Padding(
-                                padding: EdgeInsets.all(4.0),
-                                child:
-                                    Text('العدد', textAlign: TextAlign.center),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 8),
+                                child: Text('العدد',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
                               ),
                               Padding(
-                                padding: EdgeInsets.all(4.0),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 8),
                                 child: Text('ملاحظات',
-                                    textAlign: TextAlign.center),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
                               ),
                             ],
                           ),
-                          ...table.types.map((type) {
-                            final exists = tableData != null &&
-                                tableData[type]?['exists'] == true;
-                            final quantity = tableData != null
-                                ? (tableData[type]?['quantity'] ?? '')
+                          ...table.types.asMap().entries.map((entry) {
+                            final i = entry.key;
+                            final type = entry.value;
+                            final isEven = i % 2 == 0;
+                            final tableDataRow = tableData;
+                            final exists = tableDataRow != null &&
+                                tableDataRow[type]?['exists'] == true;
+                            final quantity = tableDataRow != null
+                                ? (tableDataRow[type]?['quantity'] ?? '')
                                 : '';
-                            final notes = tableData != null
-                                ? (tableData[type]?['notes'] ?? '')
+                            final notes = tableDataRow != null
+                                ? (tableDataRow[type]?['notes'] ?? '')
                                 : '';
                             return TableRow(
+                              decoration: BoxDecoration(
+                                color:
+                                    isEven ? Colors.grey.shade50 : Colors.white,
+                              ),
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.all(4.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 8),
                                   child:
                                       Text(type, textAlign: TextAlign.center),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.all(4.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 8),
                                   child: Center(
                                     child: Icon(
-                                      exists
-                                          ? Icons.check_box
-                                          : Icons.check_box_outline_blank,
-                                      color:
-                                          exists ? Colors.green : Colors.grey,
+                                      exists ? Icons.check : Icons.close,
+                                      color: exists ? Colors.green : Colors.red,
                                     ),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.all(4.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 8),
                                   child: Text(quantity.toString(),
                                       textAlign: TextAlign.center),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.all(4.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 8),
                                   child: Text(notes.toString(),
                                       textAlign: TextAlign.center),
                                 ),
                               ],
                             );
-                          }).toList(),
+                          }),
                         ],
                       ),
                     ],

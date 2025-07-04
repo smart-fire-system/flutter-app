@@ -9,9 +9,8 @@ class ReportItem {
 }
 
 class ReportTableItem {
-  String title;
   List<String> types;
-    ReportTableItem({required this.title, required this.types});
+    ReportTableItem({required this.types});
 }
 
 class ReportTextItem {
