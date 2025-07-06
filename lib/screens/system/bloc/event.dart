@@ -7,25 +7,21 @@ class AuthChanged extends SystemEvent {
   AuthChanged({this.error});
 }
 
+class DataChanged extends SystemEvent {
+  DataChanged();
+}
+
+class BranchesChanged extends SystemEvent {
+  BranchesChanged();
+}
+
 class RefreshRequested extends SystemEvent {
   final int branchCode;
-
   RefreshRequested({required this.branchCode});
 }
 
 class CancelStreamRequested extends SystemEvent {
   CancelStreamRequested();
-}
-
-class LastSeenRequested extends SystemEvent {
-  final int branchCode;
-  LastSeenRequested({required this.branchCode});
-}
-
-class MasterDataChanged extends SystemEvent {
-  final List<Master> masters;
-
-  MasterDataChanged({required this.masters});
 }
 
 class SendCommandRequested extends SystemEvent {

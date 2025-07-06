@@ -65,6 +65,7 @@ class PinConfig {
 
 class Master {
   final int id;
+  final int branchCode;
   bool isActive;
   DateTime lastSeen;
   final List<List<PinConfig>> pinsConfig;
@@ -72,6 +73,7 @@ class Master {
   final List<bool> isClientConfigured;
   Master({
     required this.id,
+    required this.branchCode,
     required this.isActive,
     required this.lastSeen,
     required this.pinsConfig,

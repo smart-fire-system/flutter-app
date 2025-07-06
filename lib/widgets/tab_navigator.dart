@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/screens/profile/view/update_profile.dart';
+import 'package:fire_alarm_system/screens/system/view/master_details_screen.dart';
 import 'package:fire_alarm_system/screens/users/view/update_user.dart';
 import 'package:fire_alarm_system/screens/users/view/users_screen.dart';
 import 'package:fire_alarm_system/screens/users/view/view_user.dart';
@@ -105,10 +106,15 @@ class TabNavigator extends StatelessWidget {
               page = UserInfoScreen(userId: routeSettings.arguments as String);
               break;
             case '/user/update':
-              page = UpdateUserScreen(userId: routeSettings.arguments as String);
+              page =
+                  UpdateUserScreen(userId: routeSettings.arguments as String);
               break;
             case '/profile/update':
               page = const UpdateProfileScreen();
+              break;
+            case '/master/details':
+              page =
+                  MasterDetailsScreen(masterId: routeSettings.arguments as int);
               break;
             default:
               page = Scaffold(
@@ -130,9 +136,7 @@ class TabNavigator extends StatelessWidget {
   Widget _buildMainScreen(AppTab screen) {
     switch (screen) {
       case AppTab.system:
-        return const SystemScreen(
-          branchCode: 1,
-        );
+        return const SystemScreen();
       case AppTab.reports:
         return const ReportsScreen();
       case AppTab.profile:
