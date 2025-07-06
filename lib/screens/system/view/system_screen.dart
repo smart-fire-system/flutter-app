@@ -157,7 +157,9 @@ class SystemScreenState extends State<SystemScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _selectedBranch?.name ?? 'Choose Branch',
+                              _selectedBranch == null
+                                  ? 'Choose Branch'
+                                  : '${_selectedBranch!.name} - [${S.of(context).code}: ${_selectedBranch!.code}]',
                               style: CustomStyle.mediumText.copyWith(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -173,14 +175,6 @@ class SystemScreenState extends State<SystemScreen> {
                                 color: Colors.blueGrey[700],
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            if (_selectedBranch?.code != null)
-                              Text(
-                                'Branch Code: ${_selectedBranch!.code}',
-                                style: CustomStyle.smallText.copyWith(
-                                  color: Colors.blueGrey[500],
-                                ),
-                              ),
                           ],
                         ),
                       ),
