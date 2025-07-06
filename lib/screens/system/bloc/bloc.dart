@@ -101,6 +101,22 @@ class SystemBloc extends Bloc<SystemEvent, SystemState> {
       }
     });
 
+    on<MasterDeleteRequested>((event, emit) async {
+      emit(SystemLoading());
+      branchCode = event.branchCode;
+      try {
+        await appRepository.systemRepository
+            .deleteMaster(event.branchCode, event.masterId);
+        add(DataChanged());
+      } catch (error) {
+        emit(SystemAuthenticated(
+          branches: appRepository.branches,
+          companies: appRepository.companies,
+          error: error.toString(),
+        ));
+      }
+    });
+
     on<SendCommandRequested>((event, emit) async {
       try {
         await appRepository.systemRepository.sendCommand(

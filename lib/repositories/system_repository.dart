@@ -90,6 +90,16 @@ class SystemRepository {
     });
   }
 
+  Future<void> deleteMaster(int branchCode, int masterId) async {
+    try {
+      await _db
+          .ref('branches/branch_$branchCode/status/master_$masterId')
+          .remove();
+    } catch (e) {
+      /* TODO */
+    }
+  }
+
   List<Master> getMastersFromSnapshot(DataSnapshot snapshot, int branchCode) {
     List<Master> masters = [];
     if (snapshot.exists) {

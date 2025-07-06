@@ -24,6 +24,15 @@ class CancelStreamRequested extends SystemEvent {
   CancelStreamRequested();
 }
 
+class MasterDeleteRequested extends SystemEvent {
+  final int branchCode;
+  final int masterId;
+  MasterDeleteRequested({
+    required this.branchCode,
+    required this.masterId,
+  });
+}
+
 class SendCommandRequested extends SystemEvent {
   final int branchCode;
   final int masterId;

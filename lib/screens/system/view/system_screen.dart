@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fire_alarm_system/models/pin.dart';
+import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +15,6 @@ import 'package:intl/intl.dart';
 import 'package:fire_alarm_system/widgets/selection_screen.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/branch.dart';
-import 'package:fire_alarm_system/repositories/branch_repository.dart';
-import 'package:fire_alarm_system/repositories/app_repository.dart';
 
 class SystemScreen extends StatefulWidget {
   const SystemScreen({super.key});
@@ -35,19 +34,7 @@ class SystemScreenState extends State<SystemScreen> {
   @override
   void initState() {
     super.initState();
-    _loadCompaniesAndBranches();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {});
-  }
-
-  Future<void> _loadCompaniesAndBranches() async {
-    final branchRepo =
-        BranchRepository(appRepository: context.read<AppRepository>());
-    final authRepo = context.read<AppRepository>().authRepository;
-    final data = await branchRepo.getUserBranchesAndCompanies(authRepo);
-    setState(() {
-      _companies = List<Company>.from(data['companies'] ?? []);
-      _branches = List<Branch>.from(data['branches'] ?? []);
-    });
   }
 
   void _onSelectCompany() async {
@@ -61,23 +48,18 @@ class SystemScreenState extends State<SystemScreen> {
       ),
     );
     if (result is CompanySelectionResult) {
-      setState(() {
-        _selectedCompany = _companies.firstWhere((c) => c.id == result.id);
-        _selectedBranch = null;
-      });
-      _onSelectBranch();
+      _onSelectBranch(_companies.firstWhere((c) => c.id == result.id));
     }
   }
 
-  void _onSelectBranch() async {
-    if (_selectedCompany == null) return;
+  void _onSelectBranch(Company company) async {
     final companyBranches =
-        _branches.where((b) => b.company.id == _selectedCompany!.id).toList();
+        _branches.where((b) => b.company.id == company.id).toList();
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => BranchSelectionScreen(
-          companyId: _selectedCompany!.id!,
+          companyId: company.id!,
           selectedBranchId: _selectedBranch?.id,
           branches: companyBranches,
         ),
@@ -86,14 +68,10 @@ class SystemScreenState extends State<SystemScreen> {
     if (result is BranchSelectionResult) {
       setState(() {
         _selectedBranch = companyBranches.firstWhere((b) => b.id == result.id);
-      });
-    } else {
-      setState(() {
-        _selectedBranch = null;
-        _selectedCompany = null;
+        _selectedCompany = company;
+        _refreshMasters();
       });
     }
-    _refreshMasters();
   }
 
   void _refreshMasters() {
@@ -127,6 +105,8 @@ class SystemScreenState extends State<SystemScreen> {
           });
         } else if (state is SystemAuthenticated) {
           _masters = state.masters ?? [];
+          _companies = state.companies;
+          _branches = state.branches;
           if (state.branchesChanged) {
             _selectedBranch = null;
             _selectedCompany = null;
@@ -141,15 +121,7 @@ class SystemScreenState extends State<SystemScreen> {
   }
 
   String formatDateTime(DateTime dt) {
-    final localTime = dt.toLocal();
-    final timeZoneOffset = localTime.timeZoneOffset;
-    final offsetHours = timeZoneOffset.inHours;
-    final offsetMinutes = timeZoneOffset.inMinutes.remainder(60);
-    final gmtSign = offsetHours >= 0 ? '+' : '-';
-    final formattedOffset =
-        'GMT$gmtSign${offsetHours.abs().toString().padLeft(2, '0')}:${offsetMinutes.toString().padLeft(2, '0')}';
-    final formatter = DateFormat('dd/MM/yyyy - hh:mm:ss a');
-    return '${formatter.format(localTime)} $formattedOffset';
+    return DateFormat('dd/MM/yyyy - hh:mm:ss a').format(dt.toLocal());
   }
 
   Widget _buildSystem(BuildContext context) {
@@ -250,7 +222,6 @@ class SystemScreenState extends State<SystemScreen> {
                               )
                             : RefreshIndicator(
                                 onRefresh: () async {
-                                  print('refresh');
                                   _refreshMasters();
                                 },
                                 child: SingleChildScrollView(
@@ -289,23 +260,54 @@ class SystemScreenState extends State<SystemScreen> {
                           itemBuilder: (context, index) {
                             final master = _masters![index];
                             return GestureDetector(
-                              onTap: !master.isActive
-                                  ? null
-                                  : () {
-                                      TabNavigator.system.currentState
-                                          ?.pushNamed(
-                                        '/master/details',
-                                        arguments: master.id,
-                                      );
-                                    },
+                              onTap: () async {
+                                if (master.isActive) {
+                                  TabNavigator.system.currentState?.pushNamed(
+                                    '/master/details',
+                                    arguments: master.id,
+                                  );
+                                } else {
+                                  final value = await CustomAlert.showConfirmation(
+                                      context: context,
+                                      title: 'Delete Master',
+                                      subtitle:
+                                          'Are you sure you want to delete this master?',
+                                      buttons: [
+                                        CustomAlertConfirmationButton(
+                                          title: 'Yes, delete it',
+                                          value: 1,
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                        ),
+                                        CustomAlertConfirmationButton(
+                                          title: 'No, cancel',
+                                          value: 0,
+                                          backgroundColor:
+                                              CustomStyle.greyMedium,
+                                          textColor: Colors.white,
+                                        ),
+                                      ]);
+                                  if (value == 1 && context.mounted) {
+                                    context.read<SystemBloc>().add(
+                                          MasterDeleteRequested(
+                                            branchCode: _selectedBranch!.code!,
+                                            masterId: master.id,
+                                          ),
+                                        );
+                                  }
+                                }
+                              },
                               child: Card(
                                 margin: const EdgeInsets.symmetric(
                                     horizontal: 16, vertical: 8),
+                                color: master.isActive
+                                    ? Colors.green[100]
+                                    : Colors.red[100],
                                 child: ListTile(
                                   leading: Icon(
                                     master.isActive
-                                        ? Icons.circle
-                                        : Icons.circle_outlined,
+                                        ? Icons.cloud_done
+                                        : Icons.cloud_off,
                                     color: master.isActive
                                         ? Colors.green
                                         : Colors.red,
@@ -313,14 +315,11 @@ class SystemScreenState extends State<SystemScreen> {
                                   title: Text('Master ID: ${master.id}'),
                                   subtitle: Text(
                                       'Last Seen: ${formatDateTime(master.lastSeen)}'),
-                                  trailing: Text(
-                                      master.isActive ? 'Active' : 'Inactive',
-                                      style: TextStyle(
-                                        color: master.isActive
-                                            ? Colors.green
-                                            : Colors.red,
-                                        fontWeight: FontWeight.bold,
-                                      )),
+                                  trailing: master.isActive
+                                      ? const Icon(Icons.arrow_forward_sharp,
+                                          color: Colors.green, size: 32)
+                                      : const Icon(Icons.delete,
+                                          color: Colors.red, size: 32),
                                 ),
                               ),
                             );
