@@ -35,7 +35,7 @@ class SystemBloc extends Bloc<SystemEvent, SystemState> {
 
     appRepository.branchesAndCompaniesStream.listen((event) {
       appRepository.systemRepository.cancelStream();
-      _masters = appRepository.systemRepository.masters;
+      _masters = [];
       add(BranchesChanged());
     });
 

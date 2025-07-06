@@ -179,14 +179,15 @@ class _SelectionScreenState<T> extends State<_SelectionScreen<T>> {
                       return Card(
                         child: ListTile(
                           leading: Text(
-                            item.code.toString(),
+                            (index + 1).toString(),
                             style: CustomStyle.mediumTextBRed,
                           ),
                           title: Text(
                             item.name,
                             style: CustomStyle.mediumTextBRed,
                           ),
-                          subtitle: Text(item.email),
+                          subtitle:
+                              Text('Code: ${item.code}\nEmail: ${item.email}'),
                           trailing: isSelected
                               ? const Icon(Icons.check, color: Colors.green)
                               : null,

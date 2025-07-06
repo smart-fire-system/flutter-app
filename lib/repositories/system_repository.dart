@@ -82,12 +82,11 @@ class SystemRepository {
     final ref = _db.ref('branches/branch_$branchCode');
     _dataSubscription = ref.onValue.listen((event) async {
       if (event.snapshot.exists) {
-        List<Master> masters = getMastersFromSnapshot(event.snapshot, branchCode);
-        _masters = masters;
-        onChange(null);
+        _masters = getMastersFromSnapshot(event.snapshot, branchCode);
       } else {
-        /* TODO */
+        _masters = [];
       }
+      onChange(null);
     });
   }
 
