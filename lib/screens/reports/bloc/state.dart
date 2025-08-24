@@ -9,6 +9,12 @@ class ReportsLoaded extends ReportsState {
   ReportsLoaded({required this.items});
 }
 
+class ReportsContractComponentsLoaded extends ReportsState {
+  final List<ContractComponentItem> items;
+  ReportsContractComponentsLoaded({required this.items});
+}
+
+
 class ReportsLoading extends ReportsState {
   ReportsLoading();
 }

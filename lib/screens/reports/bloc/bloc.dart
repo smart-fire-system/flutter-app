@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/models/report.dart';
+import 'package:fire_alarm_system/repositories/reports_repository.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,29 @@ import 'state.dart';
 class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   ReportsBloc() : super(ReportsInitial()) {
     on<ReportsItemsRequested>(_onLoad);
+    on<ReportsContractComponentsRequested>(_onContractComponentsLoad);
+    on<ReportsContractComponentsAddRequested>(_onContractComponentsAdd);
+  }
+
+  Future<void> _onContractComponentsLoad(
+    ReportsContractComponentsRequested event,
+    Emitter<ReportsState> emit,
+  ) async {
+    emit(ReportsLoading());
+    final components = await ReportsRepository().readContractComponents();
+    emit(ReportsContractComponentsLoaded(items: components));
+  }
+
+  Future<void> _onContractComponentsAdd(
+    ReportsContractComponentsAddRequested event,
+    Emitter<ReportsState> emit,
+  ) async {
+    emit(ReportsLoading());
+    // Append to existing items rather than overwriting
+    final existing = await ReportsRepository().readContractComponents();
+    final updated = [...existing, event.item];
+    await ReportsRepository().setContractComponents(updated);
+    emit(ReportsContractComponentsLoaded(items: updated));
   }
 
   void _onLoad(ReportsItemsRequested event, Emitter<ReportsState> emit) {
@@ -316,11 +340,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ),
       ReportItem(
         table: ReportTableItem(
-          types: [
-            'لوحة تحكم 2 زون',
-            'رشاش ماء سفلي',
-            'مضخة ثلاثية مشتركة'
-          ],
+          types: ['لوحة تحكم 2 زون', 'رشاش ماء سفلي', 'مضخة ثلاثية مشتركة'],
         ),
       ),
       ReportItem(
@@ -333,11 +353,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ),
       ReportItem(
         table: ReportTableItem(
-          types: [
-            'لوحة تحكم 2 زون',
-            'حساس دخان',
-            'جرس إنذار'
-          ],
+          types: ['لوحة تحكم 2 زون', 'حساس دخان', 'جرس إنذار'],
         ),
       ),
       ReportItem(
