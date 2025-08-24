@@ -33,7 +33,8 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<BranchesBloc, BranchesState>(
       builder: (context, state) {
-        if (state is BranchesAuthenticated && state.user.permissions.canViewCompanies) {
+        if (state is BranchesAuthenticated &&
+            state.user.permissions.canViewCompanies) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (state.error != null) {
               CustomAlert.showError(
@@ -75,7 +76,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
           : FloatingActionButton.extended(
               backgroundColor: CustomStyle.redDark,
               onPressed: () async {
-                TabNavigator.settings.currentState
+                TabNavigator.home.currentState
                     ?.pushNamed('/company/edit', arguments: widget.companyId);
               },
               icon: const Icon(
@@ -179,7 +180,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                               ),
                         trailing: const Icon(Icons.arrow_forward_ios),
                         onTap: () {
-                          TabNavigator.settings.currentState?.pushNamed(
+                          TabNavigator.home.currentState?.pushNamed(
                               '/branch/details',
                               arguments: _branches[index].id);
                         },

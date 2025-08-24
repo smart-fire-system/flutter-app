@@ -77,7 +77,7 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
           : FloatingActionButton.extended(
               backgroundColor: CustomStyle.redDark,
               onPressed: () async {
-                TabNavigator.settings.currentState
+                TabNavigator.home.currentState
                     ?.pushNamed('/branch/edit', arguments: widget.branchId);
               },
               icon: const Icon(
@@ -118,8 +118,7 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
                 title: S.of(context).companyInformation,
                 icon: Icons.business_outlined,
                 onTap: () {
-                  TabNavigator.settings.currentState?.pushNamed(
-                      '/company/details',
+                  TabNavigator.home.currentState?.pushNamed('/company/details',
                       arguments: _branch!.company.id);
                 },
                 children: [

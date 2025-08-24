@@ -107,7 +107,7 @@ class CompaniesScreenState extends State<CompaniesScreen> {
           : FloatingActionButton.extended(
               backgroundColor: Colors.green,
               onPressed: () {
-                TabNavigator.settings.currentState?.pushNamed('/company/add');
+                TabNavigator.home.currentState?.pushNamed('/company/add');
               },
               icon: const Icon(
                 Icons.add,
@@ -175,7 +175,7 @@ class CompaniesScreenState extends State<CompaniesScreen> {
                                   ),
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: () {
-                              TabNavigator.settings.currentState?.pushNamed(
+                              TabNavigator.home.currentState?.pushNamed(
                                   '/company/details',
                                   arguments: company.id);
                             },

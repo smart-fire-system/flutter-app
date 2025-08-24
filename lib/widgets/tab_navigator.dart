@@ -28,7 +28,7 @@ class TabNavigator extends StatelessWidget {
   static final GlobalKey<NavigatorState> profile = GlobalKey<NavigatorState>();
   static final GlobalKey<NavigatorState> complaints =
       GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> settings = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> home = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class TabNavigator extends StatelessWidget {
         navigatorKey = complaints;
         break;
       case AppTab.home:
-        navigatorKey = settings;
+        navigatorKey = home;
         break;
     }
     return PopScope(
@@ -69,6 +69,9 @@ class TabNavigator extends StatelessWidget {
           switch (routeSettings.name) {
             case '/':
               page = _buildMainScreen(screen);
+              break;
+            case '/reports/system-types':
+              page = const SystemTypesScreen();
               break;
             case '/branches':
               page = const BranchesScreen();

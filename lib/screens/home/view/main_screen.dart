@@ -52,7 +52,7 @@ class MainScreen extends StatelessWidget {
                   color: CustomStyle.redDark,
                 ),
                 onTap: () {
-                  TabNavigator.settings.currentState?.pushNamed('/companies');
+                  TabNavigator.home.currentState?.pushNamed('/companies');
                 },
               ),
             ),
@@ -73,7 +73,7 @@ class MainScreen extends StatelessWidget {
                   color: CustomStyle.redDark,
                 ),
                 onTap: () {
-                  TabNavigator.settings.currentState?.pushNamed('/branches');
+                  TabNavigator.home.currentState?.pushNamed('/branches');
                 },
               ),
             ),
@@ -120,7 +120,75 @@ class MainScreen extends StatelessWidget {
                   color: CustomStyle.redDark,
                 ),
                 onTap: () {
-                  TabNavigator.settings.currentState?.pushNamed('/users');
+                  TabNavigator.home.currentState?.pushNamed('/users');
+                },
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Divider(
+                color: CustomStyle.greyMedium,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                leading: const Icon(
+                  Icons.settings_applications,
+                  color: CustomStyle.redDark,
+                ),
+                title: Text(
+                  'Contracts Settings',
+                  style: CustomStyle.largeText25B,
+                ),
+                subtitle: Text(
+                  'Manage contract-related configuration',
+                  style: CustomStyle.mediumText,
+                ),
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
+              child: ListTile(
+                title: Text(
+                  'System Types',
+                  style: CustomStyle.largeTextB,
+                ),
+                leading: const Icon(
+                  Icons.filter_1,
+                  color: CustomStyle.redDark,
+                ),
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: CustomStyle.redDark,
+                ),
+                onTap: () {
+                  TabNavigator.home.currentState
+                      ?.pushNamed('/reports/system-types');
+                },
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
+              child: ListTile(
+                title: Text(
+                  'Maintenance Plans',
+                  style: CustomStyle.largeTextB,
+                ),
+                leading: const Icon(
+                  Icons.filter_2,
+                  color: CustomStyle.redDark,
+                ),
+                trailing: const Icon(
+                  Icons.chevron_right,
+                  color: CustomStyle.redDark,
+                ),
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Coming soon')),
+                  );
                 },
               ),
             ),

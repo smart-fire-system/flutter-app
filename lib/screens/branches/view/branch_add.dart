@@ -61,7 +61,8 @@ class AddBranchScreenState extends State<AddBranchScreen> {
         context: context,
         screen: AppScreen.addBranhes,
       );
-      if (state is BranchesAuthenticated && state.user.permissions.canAddBranches) {
+      if (state is BranchesAuthenticated &&
+          state.user.permissions.canAddBranches) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           if (state.error != null) {
             CustomAlert.showError(
@@ -77,7 +78,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
               title: S.of(context).branchAdded,
             ).then((_) {
               if (context.mounted) {
-                TabNavigator.settings.currentState?.popAndPushNamed(
+                TabNavigator.home.currentState?.popAndPushNamed(
                     '/branch/details',
                     arguments: state.createdId as String);
                 state.createdId = null;
