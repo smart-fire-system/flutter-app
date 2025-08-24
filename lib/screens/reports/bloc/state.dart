@@ -14,7 +14,10 @@ class ReportsContractComponentsLoaded extends ReportsState {
   ReportsContractComponentsLoaded({required this.items});
 }
 
-
 class ReportsLoading extends ReportsState {
   ReportsLoading();
+}
+
+class ReportsSaved extends ReportsState {
+  ReportsSaved();
 }
