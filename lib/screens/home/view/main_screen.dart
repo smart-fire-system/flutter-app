@@ -4,195 +4,175 @@ import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  final ScrollController _quickActionsController = ScrollController();
+  final ScrollController _contractsController = ScrollController();
+
+  @override
+  void dispose() {
+    _quickActionsController.dispose();
+    _contractsController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Main'),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: <Widget>[
-            /**********************************************/
-            /*********** Companies and Branches ***********/
-            /**********************************************/
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                leading: const Icon(
-                  Icons.location_city,
-                  color: CustomStyle.redDark,
+      appBar: const CustomAppBar(title: 'Home'),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Quick Actions',
+                style: CustomStyle.largeText25B,
+              ),
+              const SizedBox(height: 12),
+              Scrollbar(
+                controller: _quickActionsController,
+                thumbVisibility: true,
+                interactive: true,
+                scrollbarOrientation: ScrollbarOrientation.bottom,
+                child: SingleChildScrollView(
+                  controller: _quickActionsController,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _ActionCard(
+                        icon: Icons.apartment,
+                        title: S.of(context).companies,
+                        subtitle: S.of(context).companiesAndBranches,
+                        onTap: () => TabNavigator.home.currentState
+                            ?.pushNamed('/companies'),
+                      ),
+                      const SizedBox(width: 12),
+                      _ActionCard(
+                        icon: Icons.business,
+                        title: S.of(context).branches,
+                        subtitle: S.of(context).companiesAndBranches,
+                        onTap: () => TabNavigator.home.currentState
+                            ?.pushNamed('/branches'),
+                      ),
+                      const SizedBox(width: 12),
+                      _ActionCard(
+                        icon: Icons.group,
+                        title: S.of(context).users,
+                        subtitle: S.of(context).usersDescription,
+                        onTap: () =>
+                            TabNavigator.home.currentState?.pushNamed('/users'),
+                      ),
+                    ],
+                  ),
                 ),
-                title: Text(
-                  S.of(context).companiesAndBranches,
-                  style: CustomStyle.largeText25B,
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Contracts',
+                style: CustomStyle.largeText25B,
+              ),
+              const SizedBox(height: 12),
+              Scrollbar(
+                controller: _contractsController,
+                thumbVisibility: true,
+                interactive: true,
+                scrollbarOrientation: ScrollbarOrientation.bottom,
+                child: SingleChildScrollView(
+                  controller: _contractsController,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _ActionCard(
+                        icon: Icons.category,
+                        title: 'Contract Components',
+                        subtitle: 'Configure system categories',
+                        onTap: () => TabNavigator.home.currentState
+                            ?.pushNamed('/reports/system-types'),
+                      ),
+                      const SizedBox(width: 12),
+                      _ActionCard(
+                        icon: Icons.assignment_turned_in,
+                        title: 'Maintenance Plans',
+                        subtitle: 'Define plan templates',
+                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Coming soon')),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                subtitle: Text(
-                  S.of(context).companiesAndBranchesDescription,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _ActionCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 180,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0x1AF44336),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  child: Icon(icon, color: CustomStyle.redDark, size: 24),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  title,
+                  style: CustomStyle.largeTextB,
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  subtitle,
                   style: CustomStyle.mediumText,
+                  maxLines: 10,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
+              ],
             ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
-              child: ListTile(
-                title: Text(
-                  S.of(context).companies,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.filter_1,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {
-                  TabNavigator.home.currentState?.pushNamed('/companies');
-                },
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
-              child: ListTile(
-                title: Text(
-                  S.of(context).branches,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.filter_2,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {
-                  TabNavigator.home.currentState?.pushNamed('/branches');
-                },
-              ),
-            ),
-            /**********************************************/
-            /******************** Users *******************/
-            /**********************************************/
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Divider(
-                color: CustomStyle.greyMedium,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                leading: const Icon(
-                  Icons.group,
-                  color: CustomStyle.redDark,
-                ),
-                title: Text(
-                  S.of(context).users,
-                  style: CustomStyle.largeText25B,
-                ),
-                subtitle: Text(
-                  S.of(context).usersDescription,
-                  style: CustomStyle.mediumText,
-                ),
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
-              child: ListTile(
-                title: Text(
-                  S.of(context).users,
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.filter_1,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {
-                  TabNavigator.home.currentState?.pushNamed('/users');
-                },
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Divider(
-                color: CustomStyle.greyMedium,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                leading: const Icon(
-                  Icons.settings_applications,
-                  color: CustomStyle.redDark,
-                ),
-                title: Text(
-                  'Contracts Settings',
-                  style: CustomStyle.largeText25B,
-                ),
-                subtitle: Text(
-                  'Manage contract-related configuration',
-                  style: CustomStyle.mediumText,
-                ),
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
-              child: ListTile(
-                title: Text(
-                  'System Types',
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.filter_1,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {
-                  TabNavigator.home.currentState
-                      ?.pushNamed('/reports/system-types');
-                },
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 50, right: 8, top: 8, bottom: 8),
-              child: ListTile(
-                title: Text(
-                  'Maintenance Plans',
-                  style: CustomStyle.largeTextB,
-                ),
-                leading: const Icon(
-                  Icons.filter_2,
-                  color: CustomStyle.redDark,
-                ),
-                trailing: const Icon(
-                  Icons.chevron_right,
-                  color: CustomStyle.redDark,
-                ),
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Coming soon')),
-                  );
-                },
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

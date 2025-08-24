@@ -92,3 +92,14 @@ class DayParameter {
     }
   }
 }
+
+class ContractComponentItem {
+  final String arName;
+  final String enName;
+  final String description;
+  ContractComponentItem({
+    this.arName = '',
+    this.enName = '',
+    this.description = '',
+  });
+}
