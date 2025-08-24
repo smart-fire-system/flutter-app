@@ -30,8 +30,8 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   dynamic _user;
   UserInfo _userInfo = UserInfo();
-  AppTab _currentTab = AppTab.profile;
-  final List<AppTab> _activeTabs = [AppTab.profile];
+  AppTab _currentTab = AppTab.home;
+  final List<AppTab> _activeTabs = [AppTab.home];
   bool _canPop = true;
   bool? _viewLoginScreen;
 
@@ -121,9 +121,9 @@ class HomeScreenState extends State<HomeScreen> {
         children: const [
           TabNavigator(screen: AppTab.system),
           TabNavigator(screen: AppTab.reports),
-          TabNavigator(screen: AppTab.profile),
+          TabNavigator(screen: AppTab.home),
           TabNavigator(screen: AppTab.complaints),
-          TabNavigator(screen: AppTab.settigns),
+          TabNavigator(screen: AppTab.profile),
         ],
       ),
       bottomNavigationBar: Container(
@@ -167,16 +167,16 @@ class HomeScreenState extends State<HomeScreen> {
               label: S.of(context).reports,
             ),
             BottomNavigationBarItem(
-              icon: const Icon(Icons.person),
-              label: S.of(context).myProfile,
+              icon: const Icon(Icons.home),
+              label: S.of(context).home,
             ),
             BottomNavigationBarItem(
               icon: const Icon(Icons.support_agent),
               label: S.of(context).complaints,
             ),
             BottomNavigationBarItem(
-              icon: const Icon(Icons.settings),
-              label: S.of(context).settings,
+              icon: const Icon(Icons.person),
+              label: S.of(context).myProfile,
             ),
           ],
         ),

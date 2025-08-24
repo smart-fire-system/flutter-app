@@ -9,15 +9,14 @@ import 'package:fire_alarm_system/screens/branches/view/view.dart';
 import 'package:fire_alarm_system/screens/complaints/view/view.dart';
 import 'package:fire_alarm_system/screens/profile/view/view.dart';
 import 'package:fire_alarm_system/screens/reports/view/view.dart';
-import 'package:fire_alarm_system/screens/settings/view/view.dart';
 import 'package:fire_alarm_system/screens/system/view/view.dart';
 
 enum AppTab {
   system,
   reports,
-  profile,
+  home,
   complaints,
-  settigns,
+  profile,
 }
 
 class TabNavigator extends StatelessWidget {
@@ -47,7 +46,7 @@ class TabNavigator extends StatelessWidget {
       case AppTab.complaints:
         navigatorKey = complaints;
         break;
-      case AppTab.settigns:
+      case AppTab.home:
         navigatorKey = settings;
         break;
     }
@@ -143,8 +142,8 @@ class TabNavigator extends StatelessWidget {
         return const ProfileScreen();
       case AppTab.complaints:
         return const ComplaintsScreen();
-      case AppTab.settigns:
-        return const SettingsScreen();
+      case AppTab.home:
+        return const MainScreen();
     }
   }
 }
