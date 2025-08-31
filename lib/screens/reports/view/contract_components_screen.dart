@@ -26,6 +26,7 @@ class _LocalComponent {
 
 class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
   final List<_LocalComponent> _localItems = [];
+  final List<ContractComponentCategory> _categories = [];
   bool _initialized = false;
   bool _saving = false;
   final TextEditingController _searchController = TextEditingController();
@@ -66,6 +67,7 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
     final ar = TextEditingController(text: current?.arName ?? '');
     final en = TextEditingController(text: current?.enName ?? '');
     final desc = TextEditingController(text: current?.description ?? '');
+    int categoryIndex = current?.categoryIndex ?? 0;
 
     showModalBottomSheet(
       context: context,
@@ -81,153 +83,190 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
             top: 8,
             bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
           ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 48,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
+          child: StatefulBuilder(
+            builder: (ctx, setModalState) {
+              return SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Text(
-                        isEdit ? 'Edit Component' : 'Add Contract Component',
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w600),
+                    Center(
+                      child: Container(
+                        width: 48,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(ctx),
-                      icon: const Icon(Icons.close),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            isEdit
+                                ? 'Edit Component'
+                                : 'Add Contract Component',
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: ar,
-                  decoration: InputDecoration(
-                    labelText: 'Arabic Name',
-                    hintText: 'اكتب الاسم بالعربية',
-                    prefixIcon: const Icon(Icons.translate),
-                    filled: true,
-                    fillColor: Colors.grey.shade50,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    isDense: true,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: en,
-                  decoration: InputDecoration(
-                    labelText: 'English Name',
-                    hintText: 'Enter English name',
-                    prefixIcon: const Icon(Icons.language),
-                    filled: true,
-                    fillColor: Colors.grey.shade50,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    isDense: true,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: desc,
-                  maxLines: 4,
-                  decoration: InputDecoration(
-                    labelText: 'Description',
-                    hintText: 'Optional description',
-                    prefixIcon: const Icon(Icons.notes),
-                    filled: true,
-                    fillColor: Colors.grey.shade50,
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    if (isEdit)
-                      OutlinedButton.icon(
-                        onPressed: () {
-                          Navigator.pop(ctx);
-                          setState(() {
-                            _localItems[index] = _LocalComponent(
-                              item: ContractComponentItem(
-                                arName: ar.text.trim(),
-                                enName: en.text.trim(),
-                                description: desc.text.trim(),
-                              ),
-                              status: _LocalStatus.deleted,
-                            );
-                          });
-                        },
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        label: const Text('Delete',
-                            style: TextStyle(color: Colors.red)),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: ar,
+                      decoration: InputDecoration(
+                        labelText: 'Arabic Name',
+                        hintText: 'اكتب الاسم بالعربية',
+                        prefixIcon: const Icon(Icons.translate),
+                        filled: true,
+                        fillColor: Colors.grey.shade50,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        isDense: true,
                       ),
-                    if (isEdit) const Spacer(),
-                    TextButton(
-                      onPressed: () => Navigator.pop(ctx),
-                      child: const Text('Cancel'),
                     ),
-                    const SizedBox(width: 8),
-                    FilledButton.icon(
-                      onPressed: () {
-                        if (!isEdit &&
-                            ar.text.trim().isEmpty &&
-                            en.text.trim().isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text(
-                                    'Please enter Arabic or English name')),
-                          );
-                          return;
-                        }
-                        Navigator.pop(ctx);
-                        setState(() {
-                          if (isEdit) {
-                            _localItems[index] = _LocalComponent(
-                              item: ContractComponentItem(
-                                arName: ar.text.trim(),
-                                enName: en.text.trim(),
-                                description: desc.text.trim(),
-                              ),
-                              status: _LocalStatus.updated,
-                            );
-                          } else {
-                            _searchText = '';
-                            _searchController.clear();
-                            _localItems.add(
-                              _LocalComponent(
-                                item: ContractComponentItem(
-                                  arName: ar.text.trim(),
-                                  enName: en.text.trim(),
-                                  description: desc.text.trim(),
-                                ),
-                                status: _LocalStatus.added,
-                              ),
-                            );
-                          }
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: en,
+                      decoration: InputDecoration(
+                        labelText: 'English Name',
+                        hintText: 'Enter English name',
+                        prefixIcon: const Icon(Icons.language),
+                        filled: true,
+                        fillColor: Colors.grey.shade50,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        isDense: true,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    DropdownButtonFormField<int>(
+                      isExpanded: true,
+                      value: categoryIndex,
+                      items: List.generate(_categories.length, (i) {
+                        final c = _categories[i];
+                        return DropdownMenuItem<int>(
+                          value: i,
+                          child: Text(
+                            '${c.arName} - ${c.enName}',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      }),
+                      onChanged: (v) {
+                        setModalState(() {
+                          categoryIndex = v ?? categoryIndex;
                         });
                       },
-                      icon: Icon(isEdit ? Icons.save : Icons.add),
-                      label: Text(isEdit ? 'Update' : 'Add'),
+                      decoration: InputDecoration(
+                        labelText: 'Category',
+                        prefixIcon: const Icon(Icons.category),
+                        filled: true,
+                        fillColor: Colors.grey.shade50,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        isDense: true,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: desc,
+                      maxLines: 4,
+                      decoration: InputDecoration(
+                        labelText: 'Description',
+                        hintText: 'Optional description',
+                        prefixIcon: const Icon(Icons.notes),
+                        filled: true,
+                        fillColor: Colors.grey.shade50,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        if (isEdit)
+                          OutlinedButton.icon(
+                            onPressed: () {
+                              Navigator.pop(ctx);
+                              setState(() {
+                                _localItems[index] = _LocalComponent(
+                                  item: ContractComponentItem(
+                                    arName: ar.text.trim(),
+                                    enName: en.text.trim(),
+                                    description: desc.text.trim(),
+                                  ),
+                                  status: _LocalStatus.deleted,
+                                );
+                              });
+                            },
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            label: const Text('Delete',
+                                style: TextStyle(color: Colors.red)),
+                          ),
+                        if (isEdit) const Spacer(),
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text('Cancel'),
+                        ),
+                        const SizedBox(width: 8),
+                        FilledButton.icon(
+                          onPressed: () {
+                            if (!isEdit &&
+                                ar.text.trim().isEmpty &&
+                                en.text.trim().isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Please enter Arabic or English name')),
+                              );
+                              return;
+                            }
+                            Navigator.pop(ctx);
+                            setState(() {
+                              if (isEdit) {
+                                _localItems[index] = _LocalComponent(
+                                  item: ContractComponentItem(
+                                    arName: ar.text.trim(),
+                                    enName: en.text.trim(),
+                                    description: desc.text.trim(),
+                                    categoryIndex: categoryIndex,
+                                  ),
+                                  status: _LocalStatus.updated,
+                                );
+                              } else {
+                                _searchText = '';
+                                _searchController.clear();
+                                _localItems.add(
+                                  _LocalComponent(
+                                    item: ContractComponentItem(
+                                      arName: ar.text.trim(),
+                                      enName: en.text.trim(),
+                                      description: desc.text.trim(),
+                                      categoryIndex: categoryIndex,
+                                    ),
+                                    status: _LocalStatus.added,
+                                  ),
+                                );
+                              }
+                            });
+                          },
+                          icon: Icon(isEdit ? Icons.save : Icons.add),
+                          label: Text(isEdit ? 'Update' : 'Add'),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         );
       },
@@ -273,6 +312,8 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
             }
             if (state is ReportsContractComponentsLoaded && !_initialized) {
               _localItems.clear();
+              _categories.clear();
+              _categories.addAll(state.categories);
               for (final item in state.items) {
                 _localItems.add(
                     _LocalComponent(item: item, status: _LocalStatus.normal));
@@ -415,24 +456,17 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w600)),
                               ],
+                              if (desc.isNotEmpty) ...[
+                                Text('Description: $desc',
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w600)),
+                              ],
+                              Text(
+                                  'Category: ${_categories[entry.item.categoryIndex].arName} - ${_categories[entry.item.categoryIndex].enName}',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600)),
                             ],
                           ),
-                          subtitle: desc.isNotEmpty
-                              ? Padding(
-                                  padding: const EdgeInsets.only(top: 6),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text('Description: $desc',
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w600)),
-                                    ],
-                                  ),
-                                )
-                              : null,
-                          isThreeLine: desc.isNotEmpty,
                         ),
                       );
                     },

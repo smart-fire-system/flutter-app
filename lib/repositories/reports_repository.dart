@@ -25,8 +25,45 @@ class ReportsRepository {
                 arName: (e['arName'] ?? '').toString(),
                 enName: (e['enName'] ?? '').toString(),
                 description: (e['description'] ?? '').toString(),
+                categoryIndex:
+                    int.tryParse((e['categoryIndex'] ?? '0').toString()) ?? 0,
               ))
           .toList();
+    } on FirebaseException catch (e) {
+      throw Exception(e.code);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<List<ContractComponentCategory>>
+      readContractComponentsCategories() async {
+    try {
+      final DocumentSnapshot<Map<String, dynamic>> snapshot = await _firestore
+          .collection('reportsMetaData')
+          .doc('contractComponentCategories')
+          .get();
+
+      if (!snapshot.exists) return [];
+
+      final Map<String, dynamic>? data = snapshot.data();
+      if (data == null) return [];
+
+      final List<dynamic> rawItems = List.from(data['categories'] ?? []);
+      final List<ContractComponentCategory> categories = [
+        ContractComponentCategory(
+          arName: 'أخرى',
+          enName: 'Other',
+        )
+      ];
+      categories.addAll(rawItems
+          .whereType<Map>()
+          .map((e) => ContractComponentCategory(
+                arName: (e['arName'] ?? '').toString(),
+                enName: (e['enName'] ?? '').toString(),
+              ))
+          .toList());
+      return categories;
     } on FirebaseException catch (e) {
       throw Exception(e.code);
     } catch (e) {
@@ -43,6 +80,7 @@ class ReportsRepository {
                 'arName': e.arName,
                 'enName': e.enName,
                 'description': e.description,
+                'categoryIndex': e.categoryIndex.toString(),
               })
           .toList();
 

@@ -10,7 +10,7 @@ class ReportItem {
 
 class ReportTableItem {
   List<String> types;
-    ReportTableItem({required this.types});
+  ReportTableItem({required this.types});
 }
 
 class ReportTextItem {
@@ -97,9 +97,20 @@ class ContractComponentItem {
   final String arName;
   final String enName;
   final String description;
+  final int categoryIndex; // 0 = Other, otherwise 1-based index
   ContractComponentItem({
     this.arName = '',
     this.enName = '',
     this.description = '',
+    this.categoryIndex = 0,
+  });
+}
+
+class ContractComponentCategory {
+  final String arName;
+  final String enName;
+  ContractComponentCategory({
+    this.arName = '',
+    this.enName = '',
   });
 }
