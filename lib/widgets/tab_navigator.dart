@@ -70,8 +70,11 @@ class TabNavigator extends StatelessWidget {
             case '/':
               page = _buildMainScreen(screen);
               break;
-            case '/reports/system-types':
+            case '/reports/contract-components':
               page = const ContractComponentsScreen();
+              break;
+            case '/reports/new-contract':
+              page = const NewContractScreen();
               break;
             case '/branches':
               page = const BranchesScreen();

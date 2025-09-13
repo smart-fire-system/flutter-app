@@ -95,16 +95,15 @@ class _MainScreenState extends State<MainScreen> {
                         title: 'Contract Components',
                         subtitle: 'Configure system categories',
                         onTap: () => TabNavigator.home.currentState
-                            ?.pushNamed('/reports/system-types'),
+                            ?.pushNamed('/reports/contract-components'),
                       ),
                       const SizedBox(width: 12),
                       _ActionCard(
                         icon: Icons.assignment_turned_in,
                         title: 'Maintenance Plans',
                         subtitle: 'Define plan templates',
-                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Coming soon')),
-                        ),
+                        onTap: () => TabNavigator.home.currentState
+                            ?.pushNamed('/reports/new-contract'),
                       ),
                     ],
                   ),

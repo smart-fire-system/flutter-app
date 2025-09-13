@@ -7,6 +7,10 @@ import 'event.dart';
 import 'state.dart';
 
 class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
+  List<ReportItem>? items;
+  List<ContractComponentItem>? components;
+  List<ContractComponentCategory>? categories;
+  
   ReportsBloc() : super(ReportsInitial()) {
     on<ReportsItemsRequested>(_onLoad);
     on<ReportsContractComponentsRequested>(_onContractComponentsLoad);
@@ -19,9 +23,9 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     Emitter<ReportsState> emit,
   ) async {
     emit(ReportsLoading());
-    final components = await ReportsRepository().readContractComponents();
-    final categories = await ReportsRepository().readContractComponentsCategories();
-    emit(ReportsContractComponentsLoaded(items: components, categories: categories));
+    components = await ReportsRepository().readContractComponents();
+    categories = await ReportsRepository().readContractComponentsCategories();
+    emit(ReportsContractComponentsLoaded(items: components!, categories: categories!));
   }
 
   Future<void> _onContractComponentsAdd(
@@ -29,12 +33,11 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     Emitter<ReportsState> emit,
   ) async {
     emit(ReportsLoading());
-    // Append to existing items rather than overwriting
-    final existing = await ReportsRepository().readContractComponents();
-    final updated = [...existing, event.item];
-    await ReportsRepository().setContractComponents(updated);
-    final categories = await ReportsRepository().readContractComponentsCategories();
-    emit(ReportsContractComponentsLoaded(items: updated, categories: categories));
+    final existing = components ?? await ReportsRepository().readContractComponents();
+    components = [...existing, event.item];
+    categories = categories ?? await ReportsRepository().readContractComponentsCategories();
+    await ReportsRepository().setContractComponents(components!);
+    emit(ReportsContractComponentsLoaded(items: components!, categories: categories!));
   }
 
   Future<void> _onContractComponentsSave(
@@ -42,11 +45,10 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     Emitter<ReportsState> emit,
   ) async {
     emit(ReportsLoading());
-    await ReportsRepository().setContractComponents(event.items);
+    components = event.items;
+    await ReportsRepository().setContractComponents(components!);
     emit(ReportsSaved());
-    final reloaded = await ReportsRepository().readContractComponents();
-    final categories = await ReportsRepository().readContractComponentsCategories();
-    emit(ReportsContractComponentsLoaded(items: reloaded, categories: categories));
+    emit(ReportsContractComponentsLoaded(items: components!, categories: categories!));
   }
 
   void _onLoad(ReportsItemsRequested event, Emitter<ReportsState> emit) {
