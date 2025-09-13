@@ -5,6 +5,7 @@ import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/repositories/branch_repository.dart';
+import 'package:fire_alarm_system/repositories/reports_repository.dart';
 import 'package:fire_alarm_system/repositories/system_repository.dart';
 import 'package:fire_alarm_system/repositories/user_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
@@ -16,6 +17,7 @@ class AppRepository {
   late final BranchRepository _branchRepository;
   late final UserRepository _userRepository;
   late final SystemRepository _systemRepository;
+  late final ReportsRepository _reportsRepository;
   BranchesAndCompanies _branchesAndCompanies =
       BranchesAndCompanies(branches: [], companies: []);
   Users _users = Users();
@@ -28,6 +30,7 @@ class AppRepository {
     _authRepository = AuthRepository(appRepository: this);
     _branchRepository = BranchRepository(appRepository: this);
     _systemRepository = SystemRepository();
+    _reportsRepository = ReportsRepository(appRepository: this);
     _authRepository.authStateChanges.listen((data) async {
       if (data == null) {
         _branchesAndCompanies = _branchRepository.getBranchesAndCompanies();
@@ -125,4 +128,5 @@ class AppRepository {
   UserRepository get userRepository => _userRepository;
   AuthRepository get authRepository => _authRepository;
   SystemRepository get systemRepository => _systemRepository;
+  ReportsRepository get reportsRepository => _reportsRepository;
 }

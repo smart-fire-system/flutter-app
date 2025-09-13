@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/report.dart';
+import 'package:fire_alarm_system/repositories/app_repository.dart';
 
 class ReportsRepository {
   final FirebaseFirestore _firestore;
-
-  ReportsRepository() : _firestore = FirebaseFirestore.instance;
+  final AppRepository appRepository;
+  ReportsRepository({required this.appRepository}) : _firestore = FirebaseFirestore.instance;
 
   Future<List<ContractComponentItem>> readContractComponents() async {
     try {

@@ -264,7 +264,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       appBar: CustomAppBar(title: S.of(context).reports),
       body: BlocBuilder<ReportsBloc, ReportsState>(
         builder: (context, state) {
-          if (state is ReportsLoaded && state.items.isNotEmpty) {
+          if (state is ReportsNewContractInfoLoaded && state.items.isNotEmpty) {
             // Display all items
             return Padding(
               padding: const EdgeInsets.all(16.0),

@@ -311,6 +311,8 @@ class UserRepository {
                         appRepository.userRole.company.id ==
                             branch.company.id) ||
                     (appRepository.userRole is BranchManager &&
+                        appRepository.userRole.branch.id == branch.id) ||
+                    (appRepository.userRole is Employee &&
                         appRepository.userRole.branch.id == branch.id))) {
               users.clients.add(
                 Client(

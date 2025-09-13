@@ -78,7 +78,7 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
             create: (_) => SystemBloc(appRepository: _appRepository),
           ),
           BlocProvider(
-            create: (_) => ReportsBloc(),
+            create: (_) => ReportsBloc(appRepository: _appRepository),
           ),
         ],
         child: MaterialApp(

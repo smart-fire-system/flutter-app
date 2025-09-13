@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
@@ -20,6 +21,8 @@ class NewContractScreen extends StatefulWidget {
 }
 
 class _NewContractScreenState extends State<NewContractScreen> {
+  List<Client> _clients = [];
+  Client? _selectedClient;
   final List<Map<String, dynamic>> _paramValues = [];
   // New state for table items
   final List<Map<String, Map<String, dynamic>>> _tableStates = [];
@@ -34,6 +37,156 @@ class _NewContractScreenState extends State<NewContractScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ReportsBloc>().add(ReportsItemsRequested());
     });
+  }
+
+  void _showSelectClientSheet() {
+    Client? tempClient =
+        _selectedClient ?? (_clients.isNotEmpty ? _clients.first : null);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 12,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
+          ),
+          child: StatefulBuilder(
+            builder: (ctx, setModalState) {
+              print(_clients);
+              return SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 48,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: Text(
+                            'اختيار العميل',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    if (_clients.isNotEmpty)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _clients.length,
+                          separatorBuilder: (_, __) => Divider(
+                            height: 1,
+                            color: Colors.grey.shade300,
+                          ),
+                          itemBuilder: (ctx, i) {
+                            final c = _clients[i];
+                            final bool checked =
+                                tempClient?.info.id == c.info.id;
+                            return Container(
+                              color: checked
+                                  ? Colors.green.withOpacity(0.06)
+                                  : null,
+                              child: ListTile(
+                                leading: const Icon(Icons.person_outline),
+                                title: Text(
+                                  c.info.name,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontWeight: checked
+                                        ? FontWeight.w600
+                                        : FontWeight.normal,
+                                  ),
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      c.info.email,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          color: Colors.black54),
+                                    ),
+                                    Text(
+                                      'Code: ${c.info.code}',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          color: Colors.black54),
+                                    ),
+                                  ],
+                                ),
+                                trailing: checked
+                                    ? const Icon(Icons.check_circle,
+                                        color: Colors.green)
+                                    : null,
+                                onTap: () {
+                                  setState(() {
+                                    _selectedClient = c;
+                                  });
+                                  Navigator.pop(ctx);
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text('إلغاء'),
+                        ),
+                        const Spacer(),
+                        FilledButton.icon(
+                          onPressed: () {
+                            setState(() {
+                              _selectedClient = tempClient;
+                            });
+                            Navigator.pop(ctx);
+                          },
+                          icon: const Icon(Icons.check),
+                          label: const Text('تأكيد'),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 
   void _initParamValues(int idx, ReportTextItem item) {
@@ -407,7 +560,8 @@ class _NewContractScreenState extends State<NewContractScreen> {
       appBar: CustomAppBar(title: S.of(context).reports),
       body: BlocBuilder<ReportsBloc, ReportsState>(
         builder: (context, state) {
-          if (state is ReportsLoaded && state.items.isNotEmpty) {
+          if (state is ReportsNewContractInfoLoaded && state.items.isNotEmpty) {
+            _clients = state.clients;
             // Display all items
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -417,6 +571,22 @@ class _NewContractScreenState extends State<NewContractScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: _showSelectClientSheet,
+                          icon: const Icon(Icons.group_add_outlined),
+                          label: const Text('اختيار العميل'),
+                        ),
+                      ),
+                      if (_selectedClient != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                          child: Text(
+                            'العميل: ${_selectedClient?.info.name ?? 'غير محدد'}',
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ),
                       ...state.items.asMap().entries.map((entry) {
                         final idx = entry.key;
                         final item = entry.value;

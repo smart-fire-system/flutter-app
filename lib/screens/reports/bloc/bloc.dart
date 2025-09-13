@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/models/report.dart';
-import 'package:fire_alarm_system/repositories/reports_repository.dart';
+import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,8 +11,9 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   List<ReportItem>? items;
   List<ContractComponentItem>? components;
   List<ContractComponentCategory>? categories;
+  final AppRepository appRepository;
 
-  ReportsBloc() : super(ReportsInitial()) {
+  ReportsBloc({required this.appRepository}) : super(ReportsInitial()) {
     on<ReportsItemsRequested>(_onLoad);
     on<ReportsContractComponentsRequested>(_onContractComponentsLoad);
     on<ReportsContractComponentsAddRequested>(_onContractComponentsAdd);
@@ -23,8 +25,8 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     Emitter<ReportsState> emit,
   ) async {
     emit(ReportsLoading());
-    components = await ReportsRepository().readContractComponents();
-    categories = await ReportsRepository().readContractComponentsCategories();
+    components = await appRepository.reportsRepository.readContractComponents();
+    categories = await appRepository.reportsRepository.readContractComponentsCategories();
     emit(ReportsContractComponentsLoaded(
         items: components!, categories: categories!));
   }
@@ -35,11 +37,11 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   ) async {
     emit(ReportsLoading());
     final existing =
-        components ?? await ReportsRepository().readContractComponents();
+        components ?? await appRepository.reportsRepository.readContractComponents();
     components = [...existing, event.item];
     categories = categories ??
-        await ReportsRepository().readContractComponentsCategories();
-    await ReportsRepository().setContractComponents(components!);
+        await appRepository.reportsRepository.readContractComponentsCategories();
+    await appRepository.reportsRepository.setContractComponents(components!);
     emit(ReportsContractComponentsLoaded(
         items: components!, categories: categories!));
   }
@@ -50,7 +52,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   ) async {
     emit(ReportsLoading());
     components = event.items;
-    await ReportsRepository().setContractComponents(components!);
+    await appRepository.reportsRepository.setContractComponents(components!);
     emit(ReportsSaved());
     emit(ReportsContractComponentsLoaded(
         items: components!, categories: categories!));
@@ -59,9 +61,9 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   Future<void> _onLoad(
       ReportsItemsRequested event, Emitter<ReportsState> emit) async {
     components =
-        components ?? await ReportsRepository().readContractComponents();
+        components ?? await appRepository.reportsRepository.readContractComponents();
     categories = categories ??
-        await ReportsRepository().readContractComponentsCategories();
+        await appRepository.reportsRepository.readContractComponentsCategories();
     final List<ReportItem> items = [
       ReportItem(
         text: ReportTextItem(
@@ -432,6 +434,12 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ),
     ]);
 
-    emit(ReportsLoaded(items: items));
+    emit(ReportsNewContractInfoLoaded(
+      items: items,
+      categories: categories!,
+      components: components!,
+      employee: appRepository.authRepository.userRole is Employee ? appRepository.authRepository.userRole : null,
+      clients: appRepository.users.clients,
+    ));
   }
 }

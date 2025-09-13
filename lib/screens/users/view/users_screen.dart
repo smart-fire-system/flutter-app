@@ -337,8 +337,8 @@ class UsersScreenState extends State<UsersScreen> {
                           branchName: user.branch.name,
                           onTap: () {
                             TabNavigator.home.currentState?.pushNamed(
-                              '/user/details',
-                              arguments: user,
+                              '/user/view',
+                              arguments: user.info.id,
                             );
                           },
                           searchQuery: _searchController.text,

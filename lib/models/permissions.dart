@@ -176,7 +176,7 @@ class AppPermissions {
 
   factory AppPermissions.fromEmployeeMap(Map<String, dynamic> map) {
     return AppPermissions(
-      role: UserRole.branchManager,
+      role: UserRole.employee,
       canViewClients: true,
       canUpdateClients: map['canUpdateClients'] ?? false,
       canViewBranches: true,
@@ -196,7 +196,7 @@ class AppPermissions {
 
   factory AppPermissions.fromClientMap(Map<String, dynamic> map) {
     return AppPermissions(
-      role: UserRole.branchManager,
+      role: UserRole.client,
       canViewBranches: true,
       canViewCompanies: true,
     );
