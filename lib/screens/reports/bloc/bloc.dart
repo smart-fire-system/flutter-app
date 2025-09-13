@@ -10,7 +10,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   List<ReportItem>? items;
   List<ContractComponentItem>? components;
   List<ContractComponentCategory>? categories;
-  
+
   ReportsBloc() : super(ReportsInitial()) {
     on<ReportsItemsRequested>(_onLoad);
     on<ReportsContractComponentsRequested>(_onContractComponentsLoad);
@@ -25,7 +25,8 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     emit(ReportsLoading());
     components = await ReportsRepository().readContractComponents();
     categories = await ReportsRepository().readContractComponentsCategories();
-    emit(ReportsContractComponentsLoaded(items: components!, categories: categories!));
+    emit(ReportsContractComponentsLoaded(
+        items: components!, categories: categories!));
   }
 
   Future<void> _onContractComponentsAdd(
@@ -33,11 +34,14 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     Emitter<ReportsState> emit,
   ) async {
     emit(ReportsLoading());
-    final existing = components ?? await ReportsRepository().readContractComponents();
+    final existing =
+        components ?? await ReportsRepository().readContractComponents();
     components = [...existing, event.item];
-    categories = categories ?? await ReportsRepository().readContractComponentsCategories();
+    categories = categories ??
+        await ReportsRepository().readContractComponentsCategories();
     await ReportsRepository().setContractComponents(components!);
-    emit(ReportsContractComponentsLoaded(items: components!, categories: categories!));
+    emit(ReportsContractComponentsLoaded(
+        items: components!, categories: categories!));
   }
 
   Future<void> _onContractComponentsSave(
@@ -48,11 +52,17 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     components = event.items;
     await ReportsRepository().setContractComponents(components!);
     emit(ReportsSaved());
-    emit(ReportsContractComponentsLoaded(items: components!, categories: categories!));
+    emit(ReportsContractComponentsLoaded(
+        items: components!, categories: categories!));
   }
 
-  void _onLoad(ReportsItemsRequested event, Emitter<ReportsState> emit) {
-    emit(ReportsLoaded(items: [
+  Future<void> _onLoad(
+      ReportsItemsRequested event, Emitter<ReportsState> emit) async {
+    components =
+        components ?? await ReportsRepository().readContractComponents();
+    categories = categories ??
+        await ReportsRepository().readContractComponentsCategories();
+    final List<ReportItem> items = [
       ReportItem(
         text: ReportTextItem(
           templateValue: 'عقد رقم {{param_contract}}/ت ',
@@ -327,52 +337,33 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
           paddingAfter: 24,
         ),
       ),
-      ReportItem(
-        text: ReportTextItem(
-          templateValue: '•	نظام الإنذار المبكر: -',
-          paddingAfter: 0,
-          bold: true,
-          underlined: true,
+    ];
+
+    // Dynamically add a section (title + empty table) for each category
+    for (int i = 0; i < (categories?.length ?? 0); i++) {
+      final cat = categories![i];
+      items.add(
+        ReportItem(
+          text: ReportTextItem(
+            templateValue: '• ${cat.arName}: -',
+            paddingAfter: 0,
+            bold: true,
+            underlined: true,
+          ),
         ),
-      ),
-      ReportItem(
-        table: ReportTableItem(
-          types: [
-            'لوحة تحكم 2 زون',
-            'حساس دخان ',
-            'جرس إنذار',
-            'كاسر زجاج',
-            'رشاش ماء سفلي',
-            'مضخة ثلاثية مشتركة'
-          ],
+      );
+      items.add(
+        ReportItem(
+          table: ReportTableItem(
+            types: [],
+            categoryIndex: i,
+          ),
         ),
-      ),
-      ReportItem(
-        text: ReportTextItem(
-          templateValue: '•	نظام الإطفاء التلقائي: -',
-          paddingAfter: 0,
-          bold: true,
-          underlined: true,
-        ),
-      ),
-      ReportItem(
-        table: ReportTableItem(
-          types: ['لوحة تحكم 2 زون', 'رشاش ماء سفلي', 'مضخة ثلاثية مشتركة'],
-        ),
-      ),
-      ReportItem(
-        text: ReportTextItem(
-          templateValue: '•	أدوات السلامة: -',
-          paddingAfter: 0,
-          bold: true,
-          underlined: true,
-        ),
-      ),
-      ReportItem(
-        table: ReportTableItem(
-          types: ['لوحة تحكم 2 زون', 'حساس دخان', 'جرس إنذار'],
-        ),
-      ),
+      );
+    }
+
+    // Trailing signature and closing items
+    items.addAll([
       ReportItem(
         text: ReportTextItem(
           templateValue: 'هذا وتقبلوا منا فائق التحية والتقدير',
@@ -417,6 +408,8 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
           paddingAfter: 24,
         ),
       ),
-    ]));
+    ]);
+
+    emit(ReportsLoaded(items: items));
   }
 }

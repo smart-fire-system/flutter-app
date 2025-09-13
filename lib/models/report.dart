@@ -10,7 +10,8 @@ class ReportItem {
 
 class ReportTableItem {
   List<String> types;
-  ReportTableItem({required this.types});
+  final int? categoryIndex;
+  ReportTableItem({required this.types, this.categoryIndex});
 }
 
 class ReportTextItem {

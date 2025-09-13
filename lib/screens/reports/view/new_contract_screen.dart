@@ -28,6 +28,14 @@ class _NewContractScreenState extends State<NewContractScreen> {
   final List<Map<String, Map<String, TextEditingController>>>
       _tableControllers = [];
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ReportsBloc>().add(ReportsItemsRequested());
+    });
+  }
+
   void _initParamValues(int idx, ReportTextItem item) {
     if (_paramValues.length > idx && _paramValues[idx].isNotEmpty) return;
     while (_paramValues.length <= idx) {
@@ -258,6 +266,141 @@ class _NewContractScreenState extends State<NewContractScreen> {
     }
   }
 
+  void _showAddComponentSheet(
+      {required int itemIndex, required ReportTableItem table}) {
+    final bloc = context.read<ReportsBloc>();
+    final allComponents = bloc.components ?? [];
+    final int categoryIndex = table.categoryIndex ?? 0;
+    final filtered =
+        allComponents.where((c) => c.categoryIndex == categoryIndex).toList();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: 8,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 48,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    const Expanded(
+                      child: Text(
+                        'اختر مكون لإضافته',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                if (filtered.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Text('لا توجد عناصر متاحة لهذه الفئة'),
+                  )
+                else
+                  Flexible(
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: filtered.length,
+                      separatorBuilder: (_, __) => const Divider(height: 1),
+                      itemBuilder: (ctx, i) {
+                        final comp = filtered[i];
+                        final name = (comp.arName.trim().isNotEmpty
+                                ? comp.arName.trim()
+                                : comp.enName.trim())
+                            .trim();
+                        final alreadyAdded = table.types.contains(name);
+                        return ListTile(
+                          leading: const Icon(Icons.add_box_outlined),
+                          title: Text(
+                            name.isEmpty ? comp.enName : name,
+                            style: TextStyle(
+                              color: alreadyAdded ? Colors.grey : null,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          subtitle: comp.description.trim().isEmpty
+                              ? null
+                              : Text(
+                                  comp.description.trim(),
+                                  style: TextStyle(
+                                    color: alreadyAdded ? Colors.grey : null,
+                                  ),
+                                ),
+                          enabled: !alreadyAdded,
+                          trailing: alreadyAdded
+                              ? const Icon(Icons.check, color: Colors.grey)
+                              : const Icon(Icons.add),
+                          onTap: alreadyAdded
+                              ? null
+                              : () {
+                                  setState(() {
+                                    // Ensure table state containers exist
+                                    while (_tableStates.length <= itemIndex) {
+                                      _tableStates.add({});
+                                      _tableControllers.add({});
+                                    }
+                                    final typeStates = _tableStates[itemIndex];
+                                    final typeControllers =
+                                        _tableControllers[itemIndex];
+
+                                    // Add to table types
+                                    table.types.add(name);
+
+                                    // Initialize state and controllers for the new row if missing
+                                    typeStates[name] ??= {
+                                      'quantity': '',
+                                      'notes': '',
+                                    };
+                                    typeControllers[name] ??= {
+                                      'quantity': TextEditingController(
+                                          text: typeStates[name]!['quantity']),
+                                      'notes': TextEditingController(
+                                          text: typeStates[name]!['notes']),
+                                    };
+                                  });
+                                  Navigator.pop(ctx);
+                                },
+                        );
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -314,7 +457,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
                             _tableStates[idx] = {
                               for (var type in table.types)
                                 type: {
-                                  'exists': false,
                                   'quantity': '',
                                   'notes': '',
                                 }
@@ -337,6 +479,18 @@ class _NewContractScreenState extends State<NewContractScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Row(
+                                  children: [
+                                    const Spacer(),
+                                    TextButton.icon(
+                                      onPressed: () => _showAddComponentSheet(
+                                          itemIndex: idx, table: table),
+                                      icon: const Icon(Icons.add),
+                                      label: const Text('إضافة'),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
                                 Table(
                                   border: TableBorder.all(
                                       color: Colors.grey.shade300, width: 1),
@@ -362,15 +516,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                           padding: EdgeInsets.symmetric(
                                               vertical: 12, horizontal: 8),
                                           child: Text('النوع',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white)),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 8),
-                                          child: Text('موجود',
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
@@ -412,23 +557,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                                 vertical: 10, horizontal: 8),
                                             child: Text(type,
                                                 textAlign: TextAlign.center),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 8),
-                                            child: Center(
-                                              child: Checkbox(
-                                                value:
-                                                    typeStates[type]!['exists'],
-                                                onChanged: (val) {
-                                                  setState(() {
-                                                    typeStates[type]![
-                                                            'exists'] =
-                                                        val ?? false;
-                                                  });
-                                                },
-                                              ),
-                                            ),
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
