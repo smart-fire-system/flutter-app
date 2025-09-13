@@ -86,8 +86,7 @@ class ReportPreviewScreen extends StatelessWidget {
                         columnWidths: const <int, TableColumnWidth>{
                           0: FlexColumnWidth(2),
                           1: FlexColumnWidth(1),
-                          2: FlexColumnWidth(1),
-                          3: FlexColumnWidth(2),
+                          2: FlexColumnWidth(2),
                         },
                         defaultVerticalAlignment:
                             TableCellVerticalAlignment.middle,
@@ -105,15 +104,6 @@ class ReportPreviewScreen extends StatelessWidget {
                                 padding: EdgeInsets.symmetric(
                                     vertical: 12, horizontal: 8),
                                 child: Text('النوع',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 8),
-                                child: Text('موجود',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
@@ -144,8 +134,6 @@ class ReportPreviewScreen extends StatelessWidget {
                             final type = entry.value;
                             final isEven = i % 2 == 0;
                             final tableDataRow = tableData;
-                            final exists = tableDataRow != null &&
-                                tableDataRow[type]?['exists'] == true;
                             final quantity = tableDataRow != null
                                 ? (tableDataRow[type]?['quantity'] ?? '')
                                 : '';
@@ -163,16 +151,6 @@ class ReportPreviewScreen extends StatelessWidget {
                                       vertical: 10, horizontal: 8),
                                   child:
                                       Text(type, textAlign: TextAlign.center),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 8),
-                                  child: Center(
-                                    child: Icon(
-                                      exists ? Icons.check : Icons.close,
-                                      color: exists ? Colors.green : Colors.red,
-                                    ),
-                                  ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(

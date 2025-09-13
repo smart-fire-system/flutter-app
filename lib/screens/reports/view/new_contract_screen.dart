@@ -479,24 +479,12 @@ class _NewContractScreenState extends State<NewContractScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    const Spacer(),
-                                    TextButton.icon(
-                                      onPressed: () => _showAddComponentSheet(
-                                          itemIndex: idx, table: table),
-                                      icon: const Icon(Icons.add),
-                                      label: const Text('إضافة'),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
                                 Table(
                                   border: TableBorder.all(
                                       color: Colors.grey.shade300, width: 1),
                                   columnWidths: const <int, TableColumnWidth>{
-                                    0: FlexColumnWidth(2),
-                                    1: FlexColumnWidth(1),
+                                    0: FixedColumnWidth(48),
+                                    1: FlexColumnWidth(2),
                                     2: FlexColumnWidth(1),
                                     3: FlexColumnWidth(2),
                                   },
@@ -512,6 +500,15 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                         ),
                                       ),
                                       children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 12, horizontal: 8),
+                                          child: Text('X',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white)),
+                                        ),
                                         Padding(
                                           padding: EdgeInsets.symmetric(
                                               vertical: 12, horizontal: 8),
@@ -552,6 +549,30 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                               : Colors.white,
                                         ),
                                         children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 4, horizontal: 4),
+                                            child: Center(
+                                              child: IconButton(
+                                                icon: const Icon(Icons.clear,
+                                                    color: Colors.red),
+                                                tooltip: 'حذف',
+                                                onPressed: () {
+                                                  setState(() {
+                                                    final controllers =
+                                                        typeControllers
+                                                            .remove(type);
+                                                    controllers?['quantity']
+                                                        ?.dispose();
+                                                    controllers?['notes']
+                                                        ?.dispose();
+                                                    typeStates.remove(type);
+                                                    table.types.remove(type);
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                          ),
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 vertical: 10, horizontal: 8),
@@ -612,6 +633,15 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                       );
                                     }),
                                   ],
+                                ),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: TextButton.icon(
+                                    onPressed: () => _showAddComponentSheet(
+                                        itemIndex: idx, table: table),
+                                    icon: const Icon(Icons.add),
+                                    label: const Text('إضافة'),
+                                  ),
                                 ),
                               ],
                             ),

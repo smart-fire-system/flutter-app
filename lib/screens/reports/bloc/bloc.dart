@@ -340,7 +340,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     ];
 
     // Dynamically add a section (title + empty table) for each category
-    for (int i = 0; i < (categories?.length ?? 0); i++) {
+    for (int i = 1; i < (categories?.length ?? 0); i++) {
       final cat = categories![i];
       items.add(
         ReportItem(
@@ -357,6 +357,28 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
           table: ReportTableItem(
             types: [],
             categoryIndex: i,
+          ),
+        ),
+      );
+    }
+
+    if ((categories?.length ?? 0) > 0) {
+      final cat = categories![0];
+      items.add(
+        ReportItem(
+          text: ReportTextItem(
+            templateValue: '• ${cat.arName}: -',
+            paddingAfter: 0,
+            bold: true,
+            underlined: true,
+          ),
+        ),
+      );
+      items.add(
+        ReportItem(
+          table: ReportTableItem(
+            types: [],
+            categoryIndex: 0,
           ),
         ),
       );
