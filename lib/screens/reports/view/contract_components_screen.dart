@@ -280,11 +280,27 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
         title: const Text('Contract Components'),
         backgroundColor: CustomStyle.redDark,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            onPressed: () => _showBottomSheet(),
+            icon: const Icon(Icons.add),
+            tooltip: 'Add',
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showBottomSheet(),
-        icon: const Icon(Icons.add),
-        label: const Text('Add'),
+        onPressed: _saving ? null : _saveAll,
+        icon: _saving
+            ? const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : const Icon(Icons.save),
+        label: Text(_saving ? 'Saving...' : 'Save'),
       ),
       body: BlocListener<ReportsBloc, ReportsState>(
         listener: (context, state) {
@@ -344,25 +360,6 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton.icon(
-                      onPressed: _saving ? null : _saveAll,
-                      icon: _saving
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(
-                                  strokeWidth: 2, color: Colors.white),
-                            )
-                          : const Icon(Icons.save),
-                      label: Text(_saving ? 'Saving...' : 'Save'),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                   child: Row(
                     children: [
                       Expanded(
