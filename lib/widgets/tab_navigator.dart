@@ -10,6 +10,7 @@ import 'package:fire_alarm_system/screens/complaints/view/view.dart';
 import 'package:fire_alarm_system/screens/profile/view/view.dart';
 import 'package:fire_alarm_system/screens/reports/view/view.dart';
 import 'package:fire_alarm_system/screens/system/view/view.dart';
+import 'package:fire_alarm_system/screens/offline/view/view.dart';
 
 enum AppTab {
   system,
@@ -120,6 +121,9 @@ class TabNavigator extends StatelessWidget {
             case '/master/details':
               page =
                   MasterDetailsScreen(masterId: routeSettings.arguments as int);
+              break;
+            case '/offline':
+              page = const OfflineScreen();
               break;
             default:
               page = Scaffold(

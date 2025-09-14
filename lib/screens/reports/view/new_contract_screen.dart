@@ -59,7 +59,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
           ),
           child: StatefulBuilder(
             builder: (ctx, setModalState) {
-              print(_clients);
               return SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

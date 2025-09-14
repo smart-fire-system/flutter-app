@@ -32,6 +32,14 @@ class _MainScreenState extends State<MainScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              ListTile(
+                leading: const Icon(Icons.wifi_off, color: Colors.white),
+                title: const Text('Offline Control', style: TextStyle(color: Colors.white),),
+                subtitle: const Text('Tap to control your system locally without internet', style: TextStyle(color: Colors.white),),
+                onTap: () => TabNavigator.home.currentState?.pushNamed('/offline'),
+                tileColor: CustomStyle.redDark,
+              ),
+              const SizedBox(height: 24),
               Text(
                 'Quick Actions',
                 style: CustomStyle.largeText25B,
