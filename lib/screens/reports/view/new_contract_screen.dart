@@ -156,6 +156,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                     _selectedClient = c;
                                     _clientController.text = c.info.name;
                                     _contractData.metaData.client = c;
+                                    _contractData.metaData.clientId = c.info.id;
                                   });
                                   Navigator.pop(ctx);
                                 },
@@ -216,56 +217,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
         _contractData.metaData.endDate = picked;
       });
     }
-  }
-
-  void _logContractData() {
-    final Map<String, dynamic> data = {
-      'contractStartDate': _contractData.metaData.startDate?.toIso8601String(),
-      'contractEndDate': _contractData.metaData.endDate?.toIso8601String(),
-      'contractId': _contractData.metaData.id,
-      'contractCode': _contractData.metaData.code,
-      'employeeId': _contractData.metaData.employee?.info.id,
-      'clientId': _contractData.metaData.client?.info.id,
-      'branchId': _contractData.metaData.employee?.branch.id,
-      'paramContractNumber': _contractData.paramContractNumber,
-      'paramContractAgreementDay': _contractData.paramContractAgreementDay,
-      'paramContractAgreementHijriDate':
-          _contractData.paramContractAgreementHijriDate,
-      'paramContractAgreementGregorianDate':
-          _contractData.paramContractAgreementGregorianDate,
-      'paramFirstPartyName': _contractData.paramFirstPartyName,
-      'paramFirstPartyCommNumber': _contractData.paramFirstPartyCommNumber,
-      'paramFirstPartyAddress': _contractData.paramFirstPartyAddress,
-      'paramFirstPartyRep': _contractData.paramFirstPartyRep,
-      'paramFirstPartyRepIdNumber': _contractData.paramFirstPartyRepIdNumber,
-      'paramFirstPartyG': _contractData.paramFirstPartyG,
-      'paramSecondPartyName': _contractData.paramSecondPartyName,
-      'paramSecondPartyCommNumber': _contractData.paramSecondPartyCommNumber,
-      'paramSecondPartyAddress': _contractData.paramSecondPartyAddress,
-      'paramSecondPartyRep': _contractData.paramSecondPartyRep,
-      'paramSecondPartyRepIdNumber': _contractData.paramSecondPartyRepIdNumber,
-      'paramSecondPartyG': _contractData.paramSecondPartyG,
-      'paramContractAddDate': _contractData.paramContractAddDate,
-      'paramContractPeriod': _contractData.paramContractPeriod,
-      'paramContractAmount': _contractData.paramContractAmount,
-      'components': _contractData.components
-          .map((cc) => {
-                'category': {
-                  'arName': cc.category.arName,
-                  'enName': cc.category.enName,
-                },
-                'items': cc.items
-                    .map((i) => {
-                          'arName': i.arName,
-                          'enName': i.enName,
-                          'description': i.description,
-                          'categoryIndex': i.categoryIndex,
-                        })
-                    .toList(),
-              })
-          .toList(),
-    };
-    debugPrint('ContractData => ${jsonEncode(data)}');
   }
 
   void _updateContractComponentsFromTables({
@@ -767,6 +718,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
             _employee = state.employee;
             _clients = state.clients;
             _contractData.metaData.employee = _employee;
+            _contractData.metaData.employeeId = _employee?.info.id;
             // Display all items
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -1102,7 +1054,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
                               allComponents: state.components,
                               categories: state.categories,
                             );
-                            _logContractData();
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => ContractPreviewScreen(
