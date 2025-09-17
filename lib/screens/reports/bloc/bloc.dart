@@ -127,7 +127,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'يمثلها المهندس: {{param_engineer_name}} ',
+          templateValue: 'يمثلها: {{param_engineer_name}} ',
           parameters: {
             'param_engineer_name': StringParameter,
           },
@@ -182,7 +182,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'يمثلها المهندس: {{param_engineer_name}} ',
+          templateValue: 'يمثلها: {{param_engineer_name}} ',
           parameters: {
             'param_engineer_name': StringParameter,
           },
@@ -407,29 +407,11 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'التوقيع: {{param_signature}} ',
-          parameters: {
-            'param_signature': StringParameter,
-          },
-          paddingAfter: 24,
-        ),
-      ),
-      ReportItem(
-        text: ReportTextItem(
           templateValue: 'الطرف الثاني: {{param_name}} ',
           parameters: {
             'param_name': StringParameter,
           },
           paddingAfter: 0,
-        ),
-      ),
-      ReportItem(
-        text: ReportTextItem(
-          templateValue: 'التوقيع: {{param_signature}} ',
-          parameters: {
-            'param_signature': StringParameter,
-          },
-          paddingAfter: 24,
         ),
       ),
     ]);

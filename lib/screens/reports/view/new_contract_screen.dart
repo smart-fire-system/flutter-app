@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +31,21 @@ class _NewContractScreenState extends State<NewContractScreen> {
   // Store controllers for table cells
   final List<Map<String, Map<String, TextEditingController>>>
       _tableControllers = [];
+  ContractData _contractData = ContractData();
+  // Contract info state
+  DateTime? _contractStartDate;
+  DateTime? _contractEndDate;
+  Employee? _employee;
+  late final TextEditingController _startDateController;
+  late final TextEditingController _endDateController;
+  late final TextEditingController _clientController;
 
   @override
   void initState() {
     super.initState();
+    _startDateController = TextEditingController();
+    _endDateController = TextEditingController();
+    _clientController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ReportsBloc>().add(ReportsItemsRequested());
     });
@@ -150,6 +162,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                 onTap: () {
                                   setState(() {
                                     _selectedClient = c;
+                                    _clientController.text = c.info.name;
                                   });
                                   Navigator.pop(ctx);
                                 },
@@ -170,6 +183,10 @@ class _NewContractScreenState extends State<NewContractScreen> {
                           onPressed: () {
                             setState(() {
                               _selectedClient = tempClient;
+                              if (tempClient != null) {
+                                _clientController.text = tempClient.info.name;
+                                _contractData.clientId = tempClient.info.id;
+                              }
                             });
                             Navigator.pop(ctx);
                           },
@@ -186,6 +203,48 @@ class _NewContractScreenState extends State<NewContractScreen> {
         );
       },
     );
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return '';
+    final String y = date.year.toString().padLeft(4, '0');
+    final String m = date.month.toString().padLeft(2, '0');
+    final String d = date.day.toString().padLeft(2, '0');
+    return '$y-$m-$d';
+  }
+
+  Future<void> _pickStartDate() async {
+    final DateTime now = DateTime.now();
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _contractStartDate ?? now,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        _contractStartDate = picked;
+        _startDateController.text = _formatDate(picked);
+        _contractData.contractStartDate = picked;
+      });
+    }
+  }
+
+  Future<void> _pickEndDate() async {
+    final DateTime now = DateTime.now();
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _contractEndDate ?? _contractStartDate ?? now,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        _contractEndDate = picked;
+        _endDateController.text = _formatDate(picked);
+        _contractData.contractEndDate = picked;
+      });
+    }
   }
 
   void _initParamValues(int idx, ReportTextItem item) {
@@ -560,6 +619,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
       body: BlocBuilder<ReportsBloc, ReportsState>(
         builder: (context, state) {
           if (state is ReportsNewContractInfoLoaded && state.items.isNotEmpty) {
+            _employee = state.employee;
             _clients = state.clients;
             // Display all items
             return Padding(
@@ -570,22 +630,89 @@ class _NewContractScreenState extends State<NewContractScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: _showSelectClientSheet,
-                          icon: const Icon(Icons.group_add_outlined),
-                          label: const Text('اختيار العميل'),
-                        ),
-                      ),
-                      if (_selectedClient != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                          child: Text(
-                            'العميل: ${_selectedClient?.info.name ?? 'غير محدد'}',
-                            style: const TextStyle(fontWeight: FontWeight.w600),
+                      Builder(builder: (ctx) {
+                        return Card(
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(color: Colors.grey.shade300),
                           ),
-                        ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'معلومات العقد',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                TextFormField(
+                                  enabled: false,
+                                  initialValue: _employee?.branch.name ?? 'غير محدد',
+                                  readOnly: true,
+                                  onTap: _showSelectClientSheet,
+                                  decoration: const InputDecoration(
+                                    labelText: 'الفرع',
+                                    suffixIcon: Icon(Icons.corporate_fare),
+                                  ),
+                                  textDirection: TextDirection.rtl,
+                                ),
+                                const SizedBox(height: 10),
+                                TextFormField(
+                                  enabled: false,
+                                  initialValue: _employee?.info.name ?? 'غير محدد',
+                                  readOnly: true,
+                                  onTap: _showSelectClientSheet,
+                                  decoration: const InputDecoration(
+                                    labelText: 'الموظف',
+                                    suffixIcon: Icon(Icons.person),
+                                  ),
+                                  textDirection: TextDirection.rtl,
+                                ),
+                                const SizedBox(height: 10),
+                                TextFormField(
+                                  controller: _clientController,
+                                  readOnly: true,
+                                  onTap: _showSelectClientSheet,
+                                  decoration: const InputDecoration(
+                                    labelText: 'العميل',
+                                    hintText: 'اختيار العميل',
+                                    suffixIcon: Icon(Icons.person),
+                                  ),
+                                  textDirection: TextDirection.rtl,
+                                ),
+                                const SizedBox(height: 12),
+                                TextFormField(
+                                  controller: _startDateController,
+                                  readOnly: true,
+                                  onTap: _pickStartDate,
+                                  decoration: const InputDecoration(
+                                    labelText: 'تاريخ بداية العقد',
+                                    suffixIcon: Icon(Icons.date_range),
+                                  ),
+                                  textDirection: TextDirection.rtl,
+                                ),
+                                const SizedBox(height: 10),
+                                TextFormField(
+                                  controller: _endDateController,
+                                  readOnly: true,
+                                  onTap: _pickEndDate,
+                                  decoration: const InputDecoration(
+                                    labelText: 'تاريخ نهاية العقد',
+                                    suffixIcon: Icon(Icons.event),
+                                  ),
+                                  textDirection: TextDirection.rtl,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: 24),
                       ...state.items.asMap().entries.map((entry) {
                         final idx = entry.key;
                         final item = entry.value;
@@ -861,6 +988,9 @@ class _NewContractScreenState extends State<NewContractScreen> {
         typeMap['notes']?.dispose();
       }
     }
+    _startDateController.dispose();
+    _endDateController.dispose();
+    _clientController.dispose();
     super.dispose();
   }
 }

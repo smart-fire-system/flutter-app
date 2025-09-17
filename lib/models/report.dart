@@ -115,3 +115,9 @@ class ContractComponentCategory {
     this.enName = '',
   });
 }
+
+class ContractComponentsData {
+  ContractComponentCategory category;
+  List<ContractComponentItem> items;
+  ContractComponentsData({required this.category, required this.items});
+}
