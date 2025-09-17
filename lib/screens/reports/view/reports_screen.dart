@@ -6,6 +6,7 @@ import 'package:jhijri_picker/jhijri_picker.dart';
 import 'package:fire_alarm_system/widgets/text_field.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/models/report.dart';
+import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/bloc.dart';
 import '../bloc/state.dart';
@@ -497,10 +498,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (_) => ReportPreviewScreen(
+                                builder: (_) => ContractPreviewScreen(
                                   items: state.items,
-                                  paramValues: _paramValues,
-                                  tableStates: _tableStates,
+                                  contract: ContractData(),
                                 ),
                               ),
                             );

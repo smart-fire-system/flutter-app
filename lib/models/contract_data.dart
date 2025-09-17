@@ -1,13 +1,8 @@
 import 'package:fire_alarm_system/models/report.dart';
+import 'package:fire_alarm_system/models/user.dart';
 
 class ContractData {
-  DateTime? contractStartDate;
-  DateTime? contractEndDate;
-  String? contractId;
-  String? contractCode;
-  String? employeeId;
-  String? clientId;
-  String? branchId;
+  ContractMetaData metaData = ContractMetaData();
   String? paramContractNumber;
   String? paramContractAgreementDay;
   String? paramContractAgreementHijriDate;
@@ -28,4 +23,26 @@ class ContractData {
   String? paramContractPeriod;
   String? paramContractAmount;
   List<ContractComponentsData> components = [];
+  
+}
+
+class ContractMetaData {
+  String? id;
+  int? code;
+  Employee? employee;
+  Client? client;
+  DateTime? startDate;
+  DateTime? endDate;
+  ContractState? state;
+  String? employeeSignatureId;
+  String? clientSignatureId;
+}
+
+enum ContractState {
+  draft,
+  pendingClient,
+  active,
+  requestCancellation,
+  expired,
+  cancelled,
 }

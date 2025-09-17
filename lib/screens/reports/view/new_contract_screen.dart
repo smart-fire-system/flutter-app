@@ -155,7 +155,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                   setState(() {
                                     _selectedClient = c;
                                     _clientController.text = c.info.name;
-                                    _contractData.clientId = c.info.id;
+                                    _contractData.metaData.client = c;
                                   });
                                   Navigator.pop(ctx);
                                 },
@@ -186,15 +186,15 @@ class _NewContractScreenState extends State<NewContractScreen> {
     final DateTime now = DateTime.now();
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _contractData.contractStartDate ?? now,
+      initialDate: _contractData.metaData.startDate ?? now,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
     );
     if (picked != null) {
       setState(() {
-        _contractData.contractStartDate = picked;
+        _contractData.metaData.startDate = picked;
         _startDateController.text = _formatDate(picked);
-        _contractData.contractStartDate = picked;
+        _contractData.metaData.startDate = picked;
       });
     }
   }
@@ -203,30 +203,30 @@ class _NewContractScreenState extends State<NewContractScreen> {
     final DateTime now = DateTime.now();
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _contractData.contractEndDate ??
-          _contractData.contractStartDate ??
+      initialDate: _contractData.metaData.endDate ??
+          _contractData.metaData.startDate ??
           now,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
     );
     if (picked != null) {
       setState(() {
-        _contractData.contractEndDate = picked;
+        _contractData.metaData.endDate = picked;
         _endDateController.text = _formatDate(picked);
-        _contractData.contractEndDate = picked;
+        _contractData.metaData.endDate = picked;
       });
     }
   }
 
   void _logContractData() {
     final Map<String, dynamic> data = {
-      'contractStartDate': _contractData.contractStartDate?.toIso8601String(),
-      'contractEndDate': _contractData.contractEndDate?.toIso8601String(),
-      'contractId': _contractData.contractId,
-      'contractCode': _contractData.contractCode,
-      'employeeId': _contractData.employeeId,
-      'clientId': _contractData.clientId,
-      'branchId': _contractData.branchId,
+      'contractStartDate': _contractData.metaData.startDate?.toIso8601String(),
+      'contractEndDate': _contractData.metaData.endDate?.toIso8601String(),
+      'contractId': _contractData.metaData.id,
+      'contractCode': _contractData.metaData.code,
+      'employeeId': _contractData.metaData.employee?.info.id,
+      'clientId': _contractData.metaData.client?.info.id,
+      'branchId': _contractData.metaData.employee?.branch.id,
       'paramContractNumber': _contractData.paramContractNumber,
       'paramContractAgreementDay': _contractData.paramContractAgreementDay,
       'paramContractAgreementHijriDate':
@@ -766,8 +766,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
           if (state is ReportsNewContractInfoLoaded && state.items.isNotEmpty) {
             _employee = state.employee;
             _clients = state.clients;
-            _contractData.employeeId = _employee?.info.id;
-            _contractData.branchId = _employee?.branch.id;
+            _contractData.metaData.employee = _employee;
             // Display all items
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -1106,10 +1105,9 @@ class _NewContractScreenState extends State<NewContractScreen> {
                             _logContractData();
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (_) => ReportPreviewScreen(
+                                builder: (_) => ContractPreviewScreen(
                                   items: state.items,
-                                  paramValues: _paramValues,
-                                  tableStates: _tableStates,
+                                  contract: _contractData,
                                 ),
                               ),
                             );

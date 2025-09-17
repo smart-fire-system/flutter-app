@@ -1,33 +1,145 @@
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/models/report.dart';
+import 'package:fire_alarm_system/models/contract_data.dart';
 
-class ReportPreviewScreen extends StatelessWidget {
+class ContractPreviewScreen extends StatelessWidget {
   final List<dynamic> items;
-  final List<Map<String, dynamic>> paramValues;
-  final List<Map<String, Map<String, dynamic>>>? tableStates;
+  final ContractData contract;
 
-  const ReportPreviewScreen({
+  const ContractPreviewScreen({
     super.key,
     required this.items,
-    required this.paramValues,
-    this.tableStates,
+    required this.contract,
   });
 
-  String _renderTemplate(
-      ReportTextItem item, Map<String, dynamic> paramValues) {
+  String _paramText(String key) {
+    switch (key) {
+      case 'paramContractNumber':
+        return contract.paramContractNumber ?? '';
+      case 'paramContractAgreementDay':
+        return contract.paramContractAgreementDay ?? '';
+      case 'paramContractAgreementHijriDate':
+        return contract.paramContractAgreementHijriDate ?? '';
+      case 'paramContractAgreementGregorianDate':
+        return contract.paramContractAgreementGregorianDate ?? '';
+      case 'paramFirstPartyName':
+        return contract.paramFirstPartyName ?? '';
+      case 'paramFirstPartyCommNumber':
+        return contract.paramFirstPartyCommNumber ?? '';
+      case 'paramFirstPartyAddress':
+        return contract.paramFirstPartyAddress ?? '';
+      case 'paramFirstPartyRep':
+        return contract.paramFirstPartyRep ?? '';
+      case 'paramFirstPartyRepIdNumber':
+        return contract.paramFirstPartyRepIdNumber ?? '';
+      case 'paramFirstPartyG':
+        return contract.paramFirstPartyG ?? '';
+      case 'paramSecondPartyName':
+        return contract.paramSecondPartyName ?? '';
+      case 'paramSecondPartyCommNumber':
+        return contract.paramSecondPartyCommNumber ?? '';
+      case 'paramSecondPartyAddress':
+        return contract.paramSecondPartyAddress ?? '';
+      case 'paramSecondPartyRep':
+        return contract.paramSecondPartyRep ?? '';
+      case 'paramSecondPartyRepIdNumber':
+        return contract.paramSecondPartyRepIdNumber ?? '';
+      case 'paramSecondPartyG':
+        return contract.paramSecondPartyG ?? '';
+      case 'paramContractAddDate':
+        return contract.paramContractAddDate ?? '';
+      case 'paramContractPeriod':
+        return contract.paramContractPeriod ?? '';
+      case 'paramContractAmount':
+        return contract.paramContractAmount ?? '';
+      default:
+        return '';
+    }
+  }
+
+  String _renderTemplate(ReportTextItem item) {
     String result = item.templateValue;
     if (item.parameters != null) {
       item.parameters!.forEach((key, type) {
-        final value = paramValues[key];
-        String text = '';
-        if (value != null && value.text != null) {
-          text = value.text;
-        }
+        final text = _paramText(key);
         result = result.replaceAll('{{$key}}', text);
       });
     }
     return result;
+  }
+
+  bool _isCategoryTitle(ReportTextItem item) {
+    final t = item.templateValue.trim();
+    return t.startsWith('• ');
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return '';
+    final String y = date.year.toString().padLeft(4, '0');
+    final String m = date.month.toString().padLeft(2, '0');
+    final String d = date.day.toString().padLeft(2, '0');
+    return '$y-$m-$d';
+  }
+
+  Widget _buildContractInfoCard(BuildContext context) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey.shade300),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'معلومات العقد',
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                const Expanded(child: Text('الفرع')),
+                Text(contract.metaData.employee?.branch.name ?? 'غير محدد'),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Expanded(child: Text('الموظف')),
+                Text(contract.metaData.employee?.info.name ?? 'غير محدد'),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Expanded(child: Text('العميل')),
+                Text(contract.metaData.client?.info.name ?? 'غير محدد'),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Expanded(child: Text('تاريخ بداية العقد')),
+                Text(_formatDate(contract.metaData.startDate)),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Expanded(child: Text('تاريخ نهاية العقد')),
+                Text(_formatDate(contract.metaData.endDate)),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -39,16 +151,27 @@ class ReportPreviewScreen extends StatelessWidget {
         child: Directionality(
           textDirection: TextDirection.rtl,
           child: ListView.separated(
-            itemCount: items.length,
-            separatorBuilder: (context, idx) =>
-                SizedBox(height: (items[idx]?.text?.paddingAfter ?? 0)),
+            itemCount: items.length + 1,
+            separatorBuilder: (context, idx) {
+              if (idx == 0) return const SizedBox(height: 16);
+              final realIdx = idx - 1;
+              return SizedBox(
+                  height: (items[realIdx]?.text?.paddingAfter ?? 0));
+            },
             itemBuilder: (context, idx) {
-              final item = items[idx];
+              if (idx == 0) {
+                return _buildContractInfoCard(context);
+              }
+              final realIdx = idx - 1;
+              final item = items[realIdx];
               if (item.text != null) {
-                final params = idx < paramValues.length
-                    ? Map<String, dynamic>.from(paramValues[idx])
-                    : <String, dynamic>{};
-                final text = _renderTemplate(item.text, params);
+                // Skip category title if next table has no selected types
+                if (_isCategoryTitle(item.text) &&
+                    realIdx + 1 < items.length &&
+                    (items[realIdx + 1]?.table?.types.isEmpty ?? false)) {
+                  return const SizedBox.shrink();
+                }
+                final text = _renderTemplate(item.text);
                 TextStyle style =
                     const TextStyle(fontFamily: 'Arial', fontSize: 16);
                 if (item.text.bold == true) {
@@ -70,10 +193,10 @@ class ReportPreviewScreen extends StatelessWidget {
                   ),
                 );
               } else if (item.table != null) {
-                final tableData =
-                    (tableStates != null && idx < tableStates!.length)
-                        ? tableStates![idx]
-                        : null;
+                // Skip empty component tables
+                if (item.table.types.isEmpty) {
+                  return const SizedBox.shrink();
+                }
                 final table = item.table;
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -133,13 +256,6 @@ class ReportPreviewScreen extends StatelessWidget {
                             final i = entry.key;
                             final type = entry.value;
                             final isEven = i % 2 == 0;
-                            final tableDataRow = tableData;
-                            final quantity = tableDataRow != null
-                                ? (tableDataRow[type]?['quantity'] ?? '')
-                                : '';
-                            final notes = tableDataRow != null
-                                ? (tableDataRow[type]?['notes'] ?? '')
-                                : '';
                             return TableRow(
                               decoration: BoxDecoration(
                                 color:
@@ -152,17 +268,15 @@ class ReportPreviewScreen extends StatelessWidget {
                                   child:
                                       Text(type, textAlign: TextAlign.center),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 8),
-                                  child: Text(quantity.toString(),
-                                      textAlign: TextAlign.center),
+                                  child: Text('', textAlign: TextAlign.center),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 8),
-                                  child: Text(notes.toString(),
-                                      textAlign: TextAlign.center),
+                                  child: Text('', textAlign: TextAlign.center),
                                 ),
                               ],
                             );
