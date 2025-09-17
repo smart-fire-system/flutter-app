@@ -67,9 +67,9 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     final List<ReportItem> items = [
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'عقد رقم {{param_contract}}/ت ',
+          templateValue: 'عقد رقم {{paramContractNumber}}/ت ',
           parameters: {
-            'param_contract': IntParameter,
+            'paramContractNumber': IntParameter,
           },
           bold: true,
           color: CustomStyle.redDark,
@@ -88,20 +88,20 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ReportItem(
         text: ReportTextItem(
           templateValue:
-              'بعون من الله تعالى تم في يوم {{param_day}}، الموافق{{param_hijri_date}} هجرياً، الموافق {{param_gregorian_date}} ميلادياً الإتفاق بين كل من: ',
+              'بعون من الله تعالى تم في يوم {{paramContractAgreementDay}}، الموافق{{paramContractAgreementHijriDate}} هجرياً، الموافق {{paramContractAgreementGregorianDate}} ميلادياً الإتفاق بين كل من: ',
           parameters: {
-            'param_day': DayParameter,
-            'param_hijri_date': HijriDateParameter,
-            'param_gregorian_date': GregorianDateParameter,
+            'paramContractAgreementDay': DayParameter,
+            'paramContractAgreementHijriDate': HijriDateParameter,
+            'paramContractAgreementGregorianDate': GregorianDateParameter,
           },
           paddingAfter: 24,
         ),
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'الطرف الأول: {{param_name}} ',
+          templateValue: 'الطرف الأول: {{paramFirstPartyName}} ',
           parameters: {
-            'param_name': StringParameter,
+            'paramFirstPartyName': StringParameter,
           },
           paddingAfter: 0,
           bold: true,
@@ -109,54 +109,54 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'سجل تجاري رقم: {{param_commercial_record}} ',
+          templateValue: 'سجل تجاري رقم: {{paramFirstPartyCommNumber}} ',
           parameters: {
-            'param_commercial_record': IntParameter,
+            'paramFirstPartyCommNumber': IntParameter,
           },
           paddingAfter: 0,
         ),
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'العنوان: {{param_address}} ',
+          templateValue: 'العنوان: {{paramFirstPartyAddress}} ',
           parameters: {
-            'param_address': StringParameter,
+            'paramFirstPartyAddress': StringParameter,
           },
           paddingAfter: 0,
         ),
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'يمثلها: {{param_engineer_name}} ',
+          templateValue: 'يمثلها: {{paramFirstPartyRep}} ',
           parameters: {
-            'param_engineer_name': StringParameter,
+            'paramFirstPartyRep': StringParameter,
           },
           paddingAfter: 0,
         ),
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'رقم الهوية: {{param_id_number}} ',
+          templateValue: 'رقم الهوية: {{paramFirstPartyRepIdNumber}} ',
           parameters: {
-            'param_id_number': StringParameter,
+            'paramFirstPartyRepIdNumber': StringParameter,
           },
           paddingAfter: 0,
         ),
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'ج/ {{param_G}} ',
+          templateValue: 'ج/ {{paramFirstPartyG}} ',
           parameters: {
-            'param_G': StringParameter,
+            'paramFirstPartyG': StringParameter,
           },
           paddingAfter: 24,
         ),
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'الطرف الثاني: {{param_name}} ',
+          templateValue: 'الطرف الثاني: {{paramSecondPartyName}} ',
           parameters: {
-            'param_name': StringParameter,
+            'paramSecondPartyName': StringParameter,
           },
           paddingAfter: 0,
           bold: true,
@@ -164,45 +164,45 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'سجل تجاري رقم: {{param_commercial_record}} ',
+          templateValue: 'سجل تجاري رقم: {{paramSecondPartyCommNumber}} ',
           parameters: {
-            'param_commercial_record': IntParameter,
+            'paramSecondPartyCommNumber': IntParameter,
           },
           paddingAfter: 0,
         ),
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'العنوان: {{param_address}} ',
+          templateValue: 'العنوان: {{paramSecondPartyAddress}} ',
           parameters: {
-            'param_address': StringParameter,
+            'paramSecondPartyAddress': StringParameter,
           },
           paddingAfter: 0,
         ),
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'يمثلها: {{param_engineer_name}} ',
+          templateValue: 'يمثلها: {{paramSecondPartyRep}} ',
           parameters: {
-            'param_engineer_name': StringParameter,
+            'paramSecondPartyRep': StringParameter,
           },
           paddingAfter: 0,
         ),
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'رقم الهوية: {{param_id_number}} ',
+          templateValue: 'رقم الهوية: {{paramSecondPartyRepIdNumber}} ',
           parameters: {
-            'param_id_number': StringParameter,
+            'paramSecondPartyRepIdNumber': StringParameter,
           },
           paddingAfter: 0,
         ),
       ),
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'ج/ {{param_G}} ',
+          templateValue: 'ج/ {{paramSecondPartyG}} ',
           parameters: {
-            'param_G': StringParameter,
+            'paramSecondPartyG': StringParameter,
           },
           paddingAfter: 24,
         ),
@@ -321,9 +321,9 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ReportItem(
         text: ReportTextItem(
           templateValue:
-              '16-	حرر هذا العقد بتاريخ {{param_hijri_date}} هجرياً من نسختين استلم كلا من الطرفين النسخة الخاصة به.',
+              '16-	حرر هذا العقد بتاريخ {{paramContractAddDate}} هجرياً من نسختين استلم كلا من الطرفين النسخة الخاصة به.',
           parameters: {
-            'param_hijri_date': HijriDateParameter,
+            'paramContractAddDate': HijriDateParameter,
           },
           paddingAfter: 12,
         ),
@@ -331,10 +331,10 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       ReportItem(
         text: ReportTextItem(
           templateValue:
-              '17-	قيمة هذا العقد الإجمالية لمدة {{param_period}} هو مبلغ {{param_amount}} ريال فقط سنوياً تدفع دفعة واحدة.',
+              '17-	قيمة هذا العقد الإجمالية لمدة {{paramContractPeriod}} هو مبلغ {{paramContractAmount}} ريال فقط سنوياً تدفع دفعة واحدة.',
           parameters: {
-            'param_period': StringParameter,
-            'param_amount': IntParameter,
+            'paramContractPeriod': StringParameter,
+            'paramContractAmount': IntParameter,
           },
           paddingAfter: 24,
         ),

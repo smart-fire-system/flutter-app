@@ -24,18 +24,12 @@ class NewContractScreen extends StatefulWidget {
 class _NewContractScreenState extends State<NewContractScreen> {
   List<Client> _clients = [];
   Client? _selectedClient;
+  Employee? _employee;
   final List<Map<String, dynamic>> _paramValues = [];
-  // New state for table items
   final List<Map<String, Map<String, dynamic>>> _tableStates = [];
-
-  // Store controllers for table cells
   final List<Map<String, Map<String, TextEditingController>>>
       _tableControllers = [];
-  ContractData _contractData = ContractData();
-  // Contract info state
-  DateTime? _contractStartDate;
-  DateTime? _contractEndDate;
-  Employee? _employee;
+  final ContractData _contractData = ContractData();
   late final TextEditingController _startDateController;
   late final TextEditingController _endDateController;
   late final TextEditingController _clientController;
@@ -52,9 +46,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
   }
 
   void _showSelectClientSheet() {
-    Client? tempClient =
-        _selectedClient ?? (_clients.isNotEmpty ? _clients.first : null);
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -121,7 +112,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
                           itemBuilder: (ctx, i) {
                             final c = _clients[i];
                             final bool checked =
-                                tempClient?.info.id == c.info.id;
+                                _selectedClient?.info.id == c.info.id;
                             return Container(
                               color: checked
                                   ? Colors.green.withOpacity(0.06)
@@ -163,6 +154,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                   setState(() {
                                     _selectedClient = c;
                                     _clientController.text = c.info.name;
+                                    _contractData.clientId = c.info.id;
                                   });
                                   Navigator.pop(ctx);
                                 },
@@ -171,30 +163,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
                           },
                         ),
                       ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          child: const Text('إلغاء'),
-                        ),
-                        const Spacer(),
-                        FilledButton.icon(
-                          onPressed: () {
-                            setState(() {
-                              _selectedClient = tempClient;
-                              if (tempClient != null) {
-                                _clientController.text = tempClient.info.name;
-                                _contractData.clientId = tempClient.info.id;
-                              }
-                            });
-                            Navigator.pop(ctx);
-                          },
-                          icon: const Icon(Icons.check),
-                          label: const Text('تأكيد'),
-                        )
-                      ],
-                    )
                   ],
                 ),
               );
@@ -217,13 +185,13 @@ class _NewContractScreenState extends State<NewContractScreen> {
     final DateTime now = DateTime.now();
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _contractStartDate ?? now,
+      initialDate: _contractData.contractStartDate ?? now,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
     );
     if (picked != null) {
       setState(() {
-        _contractStartDate = picked;
+        _contractData.contractStartDate = picked;
         _startDateController.text = _formatDate(picked);
         _contractData.contractStartDate = picked;
       });
@@ -234,13 +202,15 @@ class _NewContractScreenState extends State<NewContractScreen> {
     final DateTime now = DateTime.now();
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _contractEndDate ?? _contractStartDate ?? now,
+      initialDate: _contractData.contractEndDate ??
+          _contractData.contractStartDate ??
+          now,
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
     );
     if (picked != null) {
       setState(() {
-        _contractEndDate = picked;
+        _contractData.contractEndDate = picked;
         _endDateController.text = _formatDate(picked);
         _contractData.contractEndDate = picked;
       });
@@ -269,7 +239,75 @@ class _NewContractScreenState extends State<NewContractScreen> {
     _paramValues[idx] = paramMap;
   }
 
-  List<Widget> _buildInlineTemplateWidgets(BuildContext context,
+  void _updateContractDataFromParam(int itemIndex, String key, dynamic typed) {
+    String text;
+    try {
+      text = typed?.text ?? '';
+    } catch (_) {
+      text = typed?.toString() ?? '';
+    }
+    switch (key) {
+      case 'paramContractNumber':
+        _contractData.paramContractNumber = text;
+        break;
+      case 'paramContractAgreementDay':
+        _contractData.paramContractAgreementDay = text;
+        break;
+      case 'paramContractAgreementHijriDate':
+        _contractData.paramContractAgreementHijriDate = text;
+        break;
+      case 'paramContractAgreementGregorianDate':
+        _contractData.paramContractAgreementGregorianDate = text;
+        break;
+      case 'paramFirstPartyName':
+        _contractData.paramFirstPartyName = text;
+        break;
+      case 'paramFirstPartyCommNumber':
+        _contractData.paramFirstPartyCommNumber = text;
+        break;
+      case 'paramFirstPartyAddress':
+        _contractData.paramFirstPartyAddress = text;
+        break;
+      case 'paramFirstPartyRep':
+        _contractData.paramFirstPartyRep = text;
+        break;
+      case 'paramFirstPartyRepIdNumber':
+        _contractData.paramFirstPartyRepIdNumber = text;
+        break;
+      case 'paramFirstPartyG':
+        _contractData.paramFirstPartyG = text;
+        break;
+      case 'paramSecondPartyName':
+        _contractData.paramSecondPartyName = text;
+        break;
+      case 'paramSecondPartyCommNumber':
+        _contractData.paramSecondPartyCommNumber = text;
+        break;
+      case 'paramSecondPartyAddress':
+        _contractData.paramSecondPartyAddress = text;
+        break;
+      case 'paramSecondPartyRep':
+        _contractData.paramSecondPartyRep = text;
+        break;
+      case 'paramSecondPartyRepIdNumber':
+        _contractData.paramSecondPartyRepIdNumber = text;
+        break;
+      case 'paramSecondPartyG':
+        _contractData.paramSecondPartyG = text;
+        break;
+      case 'paramContractAddDate':
+        _contractData.paramContractAddDate = text;
+        break;
+      case 'paramContractPeriod':
+        _contractData.paramContractPeriod = text;
+        break;
+      case 'paramContractAmount':
+        _contractData.paramContractAmount = text;
+        break;
+    }
+  }
+
+  List<Widget> _buildInlineTemplateWidgets(BuildContext context, int itemIndex,
       ReportTextItem item, Map<String, dynamic> paramValues) {
     final RegExp regExp = RegExp(r'\{\{(.*?)\}\}');
     final List<Widget> widgets = [];
@@ -309,6 +347,8 @@ class _NewContractScreenState extends State<NewContractScreen> {
           onChanged: (value) {
             setState(() {
               paramValues[paramName].value = value;
+              _updateContractDataFromParam(
+                  itemIndex, paramName, paramValues[paramName]);
             });
           },
           maxWidth: MediaQuery.of(context).size.width,
@@ -322,6 +362,8 @@ class _NewContractScreenState extends State<NewContractScreen> {
           onChanged: (value) {
             setState(() {
               paramValues[paramName].value = int.tryParse(value);
+              _updateContractDataFromParam(
+                  itemIndex, paramName, paramValues[paramName]);
             });
           },
           keyboardType: TextInputType.number,
@@ -342,6 +384,8 @@ class _NewContractScreenState extends State<NewContractScreen> {
             if (picked != null) {
               setState(() {
                 paramValues[paramName].value = picked;
+                _updateContractDataFromParam(
+                    itemIndex, paramName, paramValues[paramName]);
               });
             }
           },
@@ -372,6 +416,8 @@ class _NewContractScreenState extends State<NewContractScreen> {
             if (picked != null) {
               setState(() {
                 paramValues[paramName].value = picked;
+                _updateContractDataFromParam(
+                    itemIndex, paramName, paramValues[paramName]);
               });
             }
           },
@@ -421,6 +467,8 @@ class _NewContractScreenState extends State<NewContractScreen> {
             if (selectedDay != null) {
               setState(() {
                 paramValues[paramName].value = selectedDay;
+                _updateContractDataFromParam(
+                    itemIndex, paramName, paramValues[paramName]);
               });
             }
           },
@@ -621,6 +669,8 @@ class _NewContractScreenState extends State<NewContractScreen> {
           if (state is ReportsNewContractInfoLoaded && state.items.isNotEmpty) {
             _employee = state.employee;
             _clients = state.clients;
+            _contractData.employeeId = _employee?.info.id;
+            _contractData.branchId = _employee?.branch.id;
             // Display all items
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -652,7 +702,8 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                 const SizedBox(height: 10),
                                 TextFormField(
                                   enabled: false,
-                                  initialValue: _employee?.branch.name ?? 'غير محدد',
+                                  initialValue:
+                                      _employee?.branch.name ?? 'غير محدد',
                                   readOnly: true,
                                   onTap: _showSelectClientSheet,
                                   decoration: const InputDecoration(
@@ -664,7 +715,8 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                 const SizedBox(height: 10),
                                 TextFormField(
                                   enabled: false,
-                                  initialValue: _employee?.info.name ?? 'غير محدد',
+                                  initialValue:
+                                      _employee?.info.name ?? 'غير محدد',
                                   readOnly: true,
                                   onTap: _showSelectClientSheet,
                                   decoration: const InputDecoration(
@@ -733,7 +785,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                     crossAxisAlignment:
                                         WrapCrossAlignment.center,
                                     children: _buildInlineTemplateWidgets(
-                                        context, item.text!, paramValues),
+                                        context, idx, item.text!, paramValues),
                                   ),
                                 ),
                               ),
