@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/models/contract_data.dart';
+import 'dart:convert';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
@@ -215,6 +216,102 @@ class _NewContractScreenState extends State<NewContractScreen> {
         _contractData.contractEndDate = picked;
       });
     }
+  }
+
+  void _logContractData() {
+    final Map<String, dynamic> data = {
+      'contractStartDate': _contractData.contractStartDate?.toIso8601String(),
+      'contractEndDate': _contractData.contractEndDate?.toIso8601String(),
+      'contractId': _contractData.contractId,
+      'contractCode': _contractData.contractCode,
+      'employeeId': _contractData.employeeId,
+      'clientId': _contractData.clientId,
+      'branchId': _contractData.branchId,
+      'paramContractNumber': _contractData.paramContractNumber,
+      'paramContractAgreementDay': _contractData.paramContractAgreementDay,
+      'paramContractAgreementHijriDate':
+          _contractData.paramContractAgreementHijriDate,
+      'paramContractAgreementGregorianDate':
+          _contractData.paramContractAgreementGregorianDate,
+      'paramFirstPartyName': _contractData.paramFirstPartyName,
+      'paramFirstPartyCommNumber': _contractData.paramFirstPartyCommNumber,
+      'paramFirstPartyAddress': _contractData.paramFirstPartyAddress,
+      'paramFirstPartyRep': _contractData.paramFirstPartyRep,
+      'paramFirstPartyRepIdNumber': _contractData.paramFirstPartyRepIdNumber,
+      'paramFirstPartyG': _contractData.paramFirstPartyG,
+      'paramSecondPartyName': _contractData.paramSecondPartyName,
+      'paramSecondPartyCommNumber': _contractData.paramSecondPartyCommNumber,
+      'paramSecondPartyAddress': _contractData.paramSecondPartyAddress,
+      'paramSecondPartyRep': _contractData.paramSecondPartyRep,
+      'paramSecondPartyRepIdNumber': _contractData.paramSecondPartyRepIdNumber,
+      'paramSecondPartyG': _contractData.paramSecondPartyG,
+      'paramContractAddDate': _contractData.paramContractAddDate,
+      'paramContractPeriod': _contractData.paramContractPeriod,
+      'paramContractAmount': _contractData.paramContractAmount,
+      'components': _contractData.components
+          .map((cc) => {
+                'category': {
+                  'arName': cc.category.arName,
+                  'enName': cc.category.enName,
+                },
+                'items': cc.items
+                    .map((i) => {
+                          'arName': i.arName,
+                          'enName': i.enName,
+                          'description': i.description,
+                          'categoryIndex': i.categoryIndex,
+                        })
+                    .toList(),
+              })
+          .toList(),
+    };
+    debugPrint('ContractData => ${jsonEncode(data)}');
+  }
+
+  void _updateContractComponentsFromTables({
+    required List<ReportItem> items,
+    required List<ContractComponentItem> allComponents,
+    required List<ContractComponentCategory> categories,
+  }) {
+    final Map<int, List<ContractComponentItem>> categoryIndexToItems = {};
+    for (final reportItem in items) {
+      final table = reportItem.table;
+      if (table == null) continue;
+      final int categoryIndex = table.categoryIndex ?? 0;
+      for (final String typeName in table.types) {
+        // Find the component by display name used in selection
+        final ContractComponentItem matched = allComponents.firstWhere(
+          (c) {
+            final String name =
+                (c.arName.trim().isNotEmpty ? c.arName.trim() : c.enName.trim())
+                    .trim();
+            return name == typeName;
+          },
+          orElse: () => ContractComponentItem(
+            arName: typeName,
+            enName: typeName,
+            description: '',
+            categoryIndex: categoryIndex,
+          ),
+        );
+        categoryIndexToItems.putIfAbsent(categoryIndex, () => []);
+        // Avoid duplicates per category
+        if (!categoryIndexToItems[categoryIndex]!.any(
+          (it) => (it.arName == matched.arName && it.enName == matched.enName),
+        )) {
+          categoryIndexToItems[categoryIndex]!.add(matched);
+        }
+      }
+    }
+
+    _contractData.components = [
+      for (final entry in categoryIndexToItems.entries)
+        if (entry.key >= 0 && entry.key < categories.length)
+          ContractComponentsData(
+            category: categories[entry.key],
+            items: entry.value,
+          )
+    ];
   }
 
   void _initParamValues(int idx, ReportTextItem item) {
@@ -1001,6 +1098,12 @@ class _NewContractScreenState extends State<NewContractScreen> {
                       Center(
                         child: ElevatedButton(
                           onPressed: () {
+                            _updateContractComponentsFromTables(
+                              items: state.items,
+                              allComponents: state.components,
+                              categories: state.categories,
+                            );
+                            _logContractData();
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) => ReportPreviewScreen(
