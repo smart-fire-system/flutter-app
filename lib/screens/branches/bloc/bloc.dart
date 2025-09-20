@@ -63,7 +63,8 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<BranchAddRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
-        createdId = await appRepository.branchRepository.addBranch(event.branch);
+        createdId =
+            await appRepository.branchRepository.addBranch(event.branch);
         add(AuthChanged(message: BranchesMessage.branchAdded));
       } catch (e) {
         add(AuthChanged(error: e.toString()));
@@ -83,7 +84,8 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<CompanyModifyRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
-        await appRepository.branchRepository.modifyCompany(event.company, event.logoFile);
+        await appRepository.branchRepository
+            .modifyCompany(event.company, event.logoFile);
         add(AuthChanged(message: BranchesMessage.companyModified));
       } catch (e) {
         add(AuthChanged(error: e.toString()));
@@ -106,7 +108,8 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<CompanyDeleteRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
-        await appRepository.branchRepository.deleteCompany(event.id, event.branches);
+        await appRepository.branchRepository
+            .deleteCompany(event.id, event.branches);
         add(AuthChanged(message: BranchesMessage.companyDeleted));
       } catch (e) {
         add(AuthChanged(error: e.toString()));

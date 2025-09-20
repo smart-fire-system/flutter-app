@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/report.dart';
+import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 
@@ -130,20 +131,64 @@ class ReportsRepository {
     try {
       final QuerySnapshot<Map<String, dynamic>> snapshot =
           await _firestore.collection('contracts').get();
-      return snapshot.docs.map((doc) {
+      final contracts = snapshot.docs.map((doc) {
         final Map<String, dynamic> data = doc.data();
         final contract = ContractData.fromJson(data);
         try {
-          contract.metaData.employee = appRepository.users.employees.firstWhere((c) => c.info.id == contract.metaData.employeeId);
-          contract.metaData.client = appRepository.users.clients.firstWhere((c) => c.info.id == contract.metaData.clientId);
+          contract.metaData.employee = appRepository.users.employees
+              .firstWhere((c) => c.info.id == contract.metaData.employeeId);
+          contract.metaData.client = appRepository.users.clients
+              .firstWhere((c) => c.info.id == contract.metaData.clientId);
         } catch (_) {}
         contract.metaData.id ??= doc.id;
         return contract;
       }).toList();
+      return filterContracts(contracts);
     } on FirebaseException catch (e) {
       throw Exception(e.code);
     } catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  List<ContractData> filterContracts(List<ContractData> contracts) {
+    for (var contract in contracts) {
+      dynamic user = appRepository.userRole;
+      Employee employee = contract.metaData.employee!;
+      Client client = contract.metaData.client!;
+      switch (user) {
+        case MasterAdmin():
+        case Admin():
+          break;
+        case CompanyManager():
+          if (employee.branch.company.id != user.company.id) {
+            contracts.remove(contract);
+            continue;
+          }
+          break;
+        case BranchManager():
+          if (employee.branch.id != user.branch.id) {
+            contracts.remove(contract);
+            continue;
+          }
+          break;
+        case Employee():
+          if (employee.info.id != user.info.id) {
+            contracts.remove(contract);
+            continue;
+          }
+          break;
+        case Client():
+          if (client.info.id != user.info.id) {
+            contracts.remove(contract);
+            continue;
+          }
+          break;
+        default:
+          contracts.remove(contract);
+          continue;
+      }
+    }
+    return contracts;
   }
 }
