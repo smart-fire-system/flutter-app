@@ -1,5 +1,4 @@
 import 'package:fire_alarm_system/models/contract_data.dart';
-import 'dart:convert';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
@@ -1066,6 +1065,21 @@ class _NewContractScreenState extends State<NewContractScreen> {
                           child: const Text('View'),
                         ),
                       ),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _updateContractComponentsFromTables(
+                              items: state.items,
+                              allComponents: state.components,
+                              categories: state.categories,
+                            );
+
+                            context.read<ReportsBloc>().add(
+                                SaveContractRequested(contract: _contractData));
+                          },
+                          child: const Text('Save'),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -1074,6 +1088,14 @@ class _NewContractScreenState extends State<NewContractScreen> {
           } else if (state is ReportsInitial) {
             // Optionally trigger loading event here
             context.read<ReportsBloc>().add(ReportsItemsRequested());
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is ReportsSaved) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Saved')),
+              );
+              Navigator.of(context).pop();
+            });
             return const Center(child: CircularProgressIndicator());
           } else {
             return const Center(child: CircularProgressIndicator());

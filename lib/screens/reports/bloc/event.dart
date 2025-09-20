@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/report.dart';
 
 abstract class ReportsEvent {}
@@ -18,4 +19,9 @@ class ReportsContractComponentsAddRequested extends ReportsEvent {
 class ReportsContractComponentsSaveRequested extends ReportsEvent {
   final List<ContractComponentItem> items;
   ReportsContractComponentsSaveRequested({required this.items});
+}
+
+class SaveContractRequested extends ReportsEvent {
+  final ContractData contract;
+  SaveContractRequested({required this.contract});
 }

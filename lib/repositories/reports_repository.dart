@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/report.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
+import 'package:fire_alarm_system/models/contract_data.dart';
 
 class ReportsRepository {
   final FirebaseFirestore _firestore;
   final AppRepository appRepository;
-  ReportsRepository({required this.appRepository}) : _firestore = FirebaseFirestore.instance;
+  ReportsRepository({required this.appRepository})
+      : _firestore = FirebaseFirestore.instance;
 
   Future<List<ContractComponentItem>> readContractComponents() async {
     try {
@@ -89,6 +91,34 @@ class ReportsRepository {
           .collection('reportsMetaData')
           .doc('contractComponents')
           .set({'items': sanitized});
+    } on FirebaseException catch (e) {
+      throw Exception(e.code);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<String> saveContract(ContractData contract) async {
+    try {
+      return await _firestore.runTransaction((txn) async {
+        final maxRef = _firestore.collection('info').doc('maxContractCode');
+        final maxSnap = await txn.get(maxRef);
+        int current = 0;
+        if (maxSnap.exists) {
+          final data = maxSnap.data() as Map<String, dynamic>;
+          current = int.tryParse((data['value'] ?? '0').toString()) ?? 0;
+        }
+        final next = current + 1;
+        txn.set(maxRef, {'value': next}, SetOptions(merge: true));
+
+        // assign code into contract
+        contract.metaData.code = next;
+
+        final docRef = _firestore.collection('contracts').doc();
+        contract.metaData.id = docRef.id;
+        txn.set(docRef, contract.toJson());
+        return docRef.id;
+      });
     } on FirebaseException catch (e) {
       throw Exception(e.code);
     } catch (e) {
