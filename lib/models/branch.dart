@@ -54,8 +54,12 @@ class Branch {
     if (company != null) {
       branchCompany = company;
     } else if (companies != null) {
-      branchCompany =
-          companies.firstWhere((element) => element.id == map['company']);
+      try {
+        branchCompany =
+            companies.firstWhere((element) => element.id == map['company']);
+      } catch (_) {
+        throw Exception('Company not found');
+      }
     } else {
       throw Exception('Company not found');
     }

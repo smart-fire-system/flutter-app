@@ -78,17 +78,72 @@ class BranchRepository {
       List<Branch> branches = [];
       for (var doc in companiesSnapshot!.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        companies.add(Company.fromMap(data, doc.id));
+        Company company = Company.fromMap(data, doc.id);
+        bool canView = false;
+        dynamic user = appRepository.userRole;
+        switch (user) {
+          case MasterAdmin():
+          case Admin():
+            canView = true;
+            break;
+          case CompanyManager():
+            canView = user.company.id == company.id;
+            break;
+          case BranchManager():
+            canView = user.branch.company.id == company.id;
+            break;
+          case Employee():
+            canView = user.branch.company.id == company.id;
+            break;
+          case Client():
+            canView = user.branch.company.id == company.id;
+            break;
+          default:
+            canView = false;
+            break;
+        }
+        if (canView) {
+          companies.add(company);
+        }
       }
       for (var doc in branchesSnapshot!.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        branches.add(
-          Branch.fromMap(
+        Branch branch;
+        try {
+          branch = Branch.fromMap(
             map: data,
             branchId: doc.id,
             companies: companies,
-          ),
-        );
+          );
+        } catch (e) {
+          continue;
+        }
+        bool canView = false;
+        dynamic user = appRepository.userRole;
+        switch (user) {
+          case MasterAdmin():
+          case Admin():
+            canView = true;
+            break;
+          case CompanyManager():
+            canView = user.company.id == branch.company.id;
+            break;
+          case BranchManager():
+            canView = user.branch.id == branch.id;
+            break;
+          case Employee():
+            canView = user.branch.id == branch.id;
+            break;
+          case Client():
+            canView = user.branch.id == branch.id;
+            break;
+          default:
+            canView = false;
+            break;
+        }
+        if (canView) {
+          branches.add(branch);
+        }
       }
       return BranchesAndCompanies(branches: branches, companies: companies);
     } catch (e) {
@@ -106,17 +161,72 @@ class BranchRepository {
           await _firestore.collection('companies').orderBy('name').get();
       for (var doc in companiesSnapshot.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        companies.add(Company.fromMap(data, doc.id));
+        Company company = Company.fromMap(data, doc.id);
+        bool canView = false;
+        dynamic user = appRepository.userRole;
+        switch (user) {
+          case MasterAdmin():
+          case Admin():
+            canView = true;
+            break;
+          case CompanyManager():
+            canView = user.company.id == company.id;
+            break;
+          case BranchManager():
+            canView = user.branch.company.id == company.id;
+            break;
+          case Employee():
+            canView = user.branch.company.id == company.id;
+            break;
+          case Client():
+            canView = user.branch.company.id == company.id;
+            break;
+          default:
+            canView = false;
+            break;
+        }
+        if (canView) {
+          companies.add(company);
+        }
       }
       for (var doc in branchesSnapshot.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        branches.add(
-          Branch.fromMap(
+        Branch branch;
+        try {
+          branch = Branch.fromMap(
             map: data,
             branchId: doc.id,
             companies: companies,
-          ),
-        );
+          );
+        } catch (e) {
+          continue;
+        }
+        bool canView = false;
+        dynamic user = appRepository.userRole;
+        switch (user) {
+          case MasterAdmin():
+          case Admin():
+            canView = true;
+            break;
+          case CompanyManager():
+            canView = user.company.id == branch.company.id;
+            break;
+          case BranchManager():
+            canView = user.branch.id == branch.id;
+            break;
+          case Employee():
+            canView = user.branch.id == branch.id;
+            break;
+          case Client():
+            canView = user.branch.id == branch.id;
+            break;
+          default:
+            canView = false;
+            break;
+        }
+        if (canView) {
+          branches.add(branch);
+        }
       }
       return {'branches': branches, 'companies': companies};
     } catch (e) {
@@ -147,13 +257,42 @@ class BranchRepository {
           .where('company', isEqualTo: companyId)
           .get();
       for (var doc in branchesSnapshot.docs) {
-        branches.add(
-          Branch.fromMap(
-            map: doc.data() as Map<String, dynamic>,
-            branchId: doc.id,
-            company: company,
-          ),
-        );
+        Branch branch;
+        try {
+          branch = Branch.fromMap(
+          map: doc.data() as Map<String, dynamic>,
+          branchId: doc.id,
+          company: company,
+          );
+        } catch (e) {
+          continue;
+        }
+        bool canView = false;
+        dynamic user = appRepository.userRole;
+        switch (user) {
+          case MasterAdmin():
+          case Admin():
+            canView = true;
+            break;
+          case CompanyManager():
+            canView = user.company.id == branch.company.id;
+            break;
+          case BranchManager():
+            canView = user.branch.id == branch.id;
+            break;
+          case Employee():
+            canView = user.branch.id == branch.id;
+            break;
+          case Client():
+            canView = user.branch.id == branch.id;
+            break;
+          default:
+            canView = false;
+            break;
+        }
+        if (canView) {
+          branches.add(branch);
+        }
       }
       return {'branches': branches, 'company': company};
     } catch (e) {
@@ -207,7 +346,33 @@ class BranchRepository {
           await _firestore.collection('companies').orderBy('name').get();
       for (var doc in companiesSnapshot.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        companies.add(Company.fromMap(data, doc.id));
+        Company company = Company.fromMap(data, doc.id);
+        bool canView = false;
+        dynamic user = appRepository.userRole;
+        switch (user) {
+          case MasterAdmin():
+          case Admin():
+            canView = true;
+            break;
+          case CompanyManager():
+            canView = user.company.id == company.id;
+            break;
+          case BranchManager():
+            canView = user.branch.company.id == company.id;
+            break;
+          case Employee():
+            canView = user.branch.company.id == company.id;
+            break;
+          case Client():
+            canView = user.branch.company.id == company.id;
+            break;
+          default:
+            canView = false;
+            break;
+        }
+        if (canView) {
+          companies.add(company);
+        }
       }
       return companies;
     } catch (e) {

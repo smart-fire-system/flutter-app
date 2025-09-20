@@ -2,7 +2,6 @@ import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
-import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -75,23 +74,20 @@ class BranchesScreenState extends State<BranchesScreen> {
               state.error = null;
             }
           });
-          if (state.user is MasterAdmin ||
-              state.user is Admin ||
-              state.user is CompanyManager) {
-            _branches = List.from(state.branches);
-            _companies = List.from(state.companies);
-            _permissions = state.user.permissions as AppPermissions;
-            if (_filterRequested) {
-              _filterRequested = false;
-            } else {
-              _filteredBranches = List.from(_branches);
-              _filteredCompanies = List.from(_companies);
-              _searchController.removeListener(_filterBranches);
-              _searchController.clear();
-              _searchController.addListener(_filterBranches);
-            }
-            return _buildBranches(context);
+
+          _branches = List.from(state.branches);
+          _companies = List.from(state.companies);
+          _permissions = state.user.permissions as AppPermissions;
+          if (_filterRequested) {
+            _filterRequested = false;
+          } else {
+            _filteredBranches = List.from(_branches);
+            _filteredCompanies = List.from(_companies);
+            _searchController.removeListener(_filterBranches);
+            _searchController.clear();
+            _searchController.addListener(_filterBranches);
           }
+          return _buildBranches(context);
         } else if (state is BranchesNotAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushNamedAndRemoveUntil(

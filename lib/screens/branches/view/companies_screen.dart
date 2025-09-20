@@ -1,7 +1,6 @@
 import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
-import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -70,19 +69,17 @@ class CompaniesScreenState extends State<CompaniesScreen> {
               state.error = null;
             }
           });
-          if (state.user is MasterAdmin || state.user is Admin) {
-            _permissions = state.user.permissions as AppPermissions;
-            _companies = List.from(state.companies);
-            if (_filterRequested) {
-              _filterRequested = false;
-            } else {
-              _filteredCompanies = List.from(_companies);
-              _searchController.removeListener(_filterCompanies);
-              _searchController.clear();
-              _searchController.addListener(_filterCompanies);
-            }
-            return _buildCompanies(context);
+          _permissions = state.user.permissions as AppPermissions;
+          _companies = List.from(state.companies);
+          if (_filterRequested) {
+            _filterRequested = false;
+          } else {
+            _filteredCompanies = List.from(_companies);
+            _searchController.removeListener(_filterCompanies);
+            _searchController.clear();
+            _searchController.addListener(_filterCompanies);
           }
+          return _buildCompanies(context);
         } else if (state is BranchesNotAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushNamedAndRemoveUntil(
