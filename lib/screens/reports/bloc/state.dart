@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/report.dart';
 import 'package:fire_alarm_system/models/user.dart';
 
@@ -25,6 +26,12 @@ class ReportsContractComponentsLoaded extends ReportsState {
   final List<ContractComponentCategory> categories;
   ReportsContractComponentsLoaded(
       {required this.items, required this.categories});
+}
+
+class ReportsContractsLoaded extends ReportsState {
+  final List<ContractData> contracts;
+  final List<ReportItem> items;
+  ReportsContractsLoaded({required this.contracts, required this.items});
 }
 
 class ReportsLoading extends ReportsState {

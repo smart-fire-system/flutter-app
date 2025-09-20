@@ -125,4 +125,21 @@ class ReportsRepository {
       throw Exception(e.toString());
     }
   }
+
+  Future<List<ContractData>> readContracts() async {
+    try {
+      final QuerySnapshot<Map<String, dynamic>> snapshot =
+          await _firestore.collection('contracts').get();
+      return snapshot.docs.map((doc) {
+        final Map<String, dynamic> data = doc.data();
+        final contract = ContractData.fromJson(data);
+        contract.metaData.id ??= doc.id;
+        return contract;
+      }).toList();
+    } on FirebaseException catch (e) {
+      throw Exception(e.code);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

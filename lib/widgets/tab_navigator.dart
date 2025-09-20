@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/screens/profile/view/update_profile.dart';
+import 'package:fire_alarm_system/screens/reports/view/contracts_screen.dart';
 import 'package:fire_alarm_system/screens/system/view/master_details_screen.dart';
 import 'package:fire_alarm_system/screens/users/view/update_user.dart';
 import 'package:fire_alarm_system/screens/users/view/users_screen.dart';
@@ -76,6 +77,9 @@ class TabNavigator extends StatelessWidget {
               break;
             case '/reports/new-contract':
               page = const NewContractScreen();
+              break;
+            case '/reports/contracts':
+              page = const ContractsScreen();
               break;
             case '/branches':
               page = const BranchesScreen();

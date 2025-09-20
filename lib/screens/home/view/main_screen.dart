@@ -99,19 +99,27 @@ class _MainScreenState extends State<MainScreen> {
                   child: Row(
                     children: [
                       _ActionCard(
+                        icon: Icons.assignment_turned_in,
+                        title: 'View Contracts',
+                        subtitle: 'View all contracts',
+                        onTap: () => TabNavigator.home.currentState
+                            ?.pushNamed('/reports/contracts'),
+                      ),
+                      const SizedBox(width: 12),
+                      _ActionCard(
+                        icon: Icons.assignment_turned_in,
+                        title: 'New Contract',
+                        subtitle: 'Add new contract',
+                        onTap: () => TabNavigator.home.currentState
+                            ?.pushNamed('/reports/new-contract'),
+                      ),
+                      const SizedBox(width: 12),
+                      _ActionCard(
                         icon: Icons.category,
                         title: 'Contract Components',
                         subtitle: 'Configure system categories',
                         onTap: () => TabNavigator.home.currentState
                             ?.pushNamed('/reports/contract-components'),
-                      ),
-                      const SizedBox(width: 12),
-                      _ActionCard(
-                        icon: Icons.assignment_turned_in,
-                        title: 'Maintenance Plans',
-                        subtitle: 'Define plan templates',
-                        onTap: () => TabNavigator.home.currentState
-                            ?.pushNamed('/reports/new-contract'),
                       ),
                     ],
                   ),

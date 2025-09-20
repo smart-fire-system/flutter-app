@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/report.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
@@ -11,6 +12,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   List<ReportItem>? items;
   List<ContractComponentItem>? components;
   List<ContractComponentCategory>? categories;
+  List<ContractData>? contracts;
   final AppRepository appRepository;
 
   ReportsBloc({required this.appRepository}) : super(ReportsInitial()) {
@@ -19,6 +21,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     on<ReportsContractComponentsAddRequested>(_onContractComponentsAdd);
     on<ReportsContractComponentsSaveRequested>(_onContractComponentsSave);
     on<SaveContractRequested>(_onSaveContract);
+    on<ReadContractsRequested>(_onReadContracts);
   }
 
   Future<void> _onContractComponentsLoad(
@@ -27,7 +30,8 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   ) async {
     emit(ReportsLoading());
     components = await appRepository.reportsRepository.readContractComponents();
-    categories = await appRepository.reportsRepository.readContractComponentsCategories();
+    categories = await appRepository.reportsRepository
+        .readContractComponentsCategories();
     emit(ReportsContractComponentsLoaded(
         items: components!, categories: categories!));
   }
@@ -37,11 +41,12 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     Emitter<ReportsState> emit,
   ) async {
     emit(ReportsLoading());
-    final existing =
-        components ?? await appRepository.reportsRepository.readContractComponents();
+    final existing = components ??
+        await appRepository.reportsRepository.readContractComponents();
     components = [...existing, event.item];
     categories = categories ??
-        await appRepository.reportsRepository.readContractComponentsCategories();
+        await appRepository.reportsRepository
+            .readContractComponentsCategories();
     await appRepository.reportsRepository.setContractComponents(components!);
     emit(ReportsContractComponentsLoaded(
         items: components!, categories: categories!));
@@ -68,12 +73,35 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     emit(ReportsSaved());
   }
 
+  Future<void> _onReadContracts(
+    ReadContractsRequested event,
+    Emitter<ReportsState> emit,
+  ) async {
+    emit(ReportsLoading());
+    contracts = await appRepository.reportsRepository.readContracts();
+    emit(ReportsContractsLoaded(contracts: contracts!, items: getContractItems()));
+  }
+
   Future<void> _onLoad(
       ReportsItemsRequested event, Emitter<ReportsState> emit) async {
-    components =
-        components ?? await appRepository.reportsRepository.readContractComponents();
+    components = components ??
+        await appRepository.reportsRepository.readContractComponents();
     categories = categories ??
-        await appRepository.reportsRepository.readContractComponentsCategories();
+        await appRepository.reportsRepository
+            .readContractComponentsCategories();
+
+    emit(ReportsNewContractInfoLoaded(
+      items: getContractItems(),
+      categories: categories!,
+      components: components!,
+      employee: appRepository.authRepository.userRole is Employee
+          ? appRepository.authRepository.userRole
+          : null,
+      clients: appRepository.users.clients,
+    ));
+  }
+
+  List<ReportItem> getContractItems() {
     final List<ReportItem> items = [
       ReportItem(
         text: ReportTextItem(
@@ -425,13 +453,6 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         ),
       ),
     ]);
-
-    emit(ReportsNewContractInfoLoaded(
-      items: items,
-      categories: categories!,
-      components: components!,
-      employee: appRepository.authRepository.userRole is Employee ? appRepository.authRepository.userRole : null,
-      clients: appRepository.users.clients,
-    ));
+    return items;
   }
 }
