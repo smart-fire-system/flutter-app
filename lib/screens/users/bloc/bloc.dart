@@ -36,17 +36,12 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
               roleUser: appRepository.userRole,
               companies: appRepository.companies,
               branches: appRepository.branches,
-              masterAdmins: appRepository.userRole is MasterAdmin
-                  ? users.masterAdmins
-                  : [],
-              admins: permissions.canViewAdmins ? users.admins : [],
-              companyManagers: permissions.canViewCompanyManagers
-                  ? users.companyManagers
-                  : [],
-              branchManagers:
-                  permissions.canViewBranchManagers ? users.branchManagers : [],
-              employees: permissions.canViewEmployees ? users.employees : [],
-              clients: permissions.canViewClients ? users.clients : [],
+              masterAdmins: users.masterAdmins,
+              admins: users.admins,
+              companyManagers: users.companyManagers,
+              branchManagers: users.branchManagers,
+              employees: users.employees,
+              clients: users.clients,
               noRoleUsers: appRepository.userRole is MasterAdmin ||
                       permissions.canUpdateAdmins ||
                       permissions.canUpdateCompanyManagers ||

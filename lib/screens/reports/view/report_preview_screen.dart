@@ -142,6 +142,23 @@ class ContractPreviewScreen extends StatelessWidget {
     );
   }
 
+  List<String> _typesForCategory(int? categoryIndex) {
+    if (categoryIndex == null) return const [];
+    final List<String> names = [];
+    for (final cat in contract.components) {
+      for (final item in cat.items) {
+        if (item.categoryIndex == categoryIndex) {
+          final String name = (item.arName.trim().isNotEmpty
+                  ? item.arName.trim()
+                  : item.enName.trim())
+              .trim();
+          if (!names.contains(name)) names.add(name);
+        }
+      }
+    }
+    return names;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,11 +182,12 @@ class ContractPreviewScreen extends StatelessWidget {
               final realIdx = idx - 1;
               final item = items[realIdx];
               if (item.text != null) {
-                // Skip category title if next table has no selected types
-                if (_isCategoryTitle(item.text) &&
-                    realIdx + 1 < items.length &&
-                    (items[realIdx + 1]?.table?.types.isEmpty ?? false)) {
-                  return const SizedBox.shrink();
+                // Skip category title if next table has no selected types (from contract)
+                if (_isCategoryTitle(item.text) && realIdx + 1 < items.length) {
+                  final table = items[realIdx + 1]?.table;
+                  final hasAny =
+                      _typesForCategory(table?.categoryIndex).isNotEmpty;
+                  if (!hasAny) return const SizedBox.shrink();
                 }
                 final text = _renderTemplate(item.text);
                 TextStyle style =
@@ -193,11 +211,9 @@ class ContractPreviewScreen extends StatelessWidget {
                   ),
                 );
               } else if (item.table != null) {
-                // Skip empty component tables
-                if (item.table.types.isEmpty) {
-                  return const SizedBox.shrink();
-                }
                 final table = item.table;
+                final types = _typesForCategory(table.categoryIndex);
+                if (types.isEmpty) return const SizedBox.shrink();
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Column(
@@ -252,10 +268,16 @@ class ContractPreviewScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                          ...table.types.asMap().entries.map((entry) {
+                          ...types.asMap().entries.map((entry) {
                             final i = entry.key;
                             final type = entry.value;
                             final isEven = i % 2 == 0;
+                            final details = contract.componentDetails[
+                                        table.categoryIndex?.toString() ?? '']
+                                    ?[type] ??
+                                const {};
+                            final quantity = details['quantity'] ?? '';
+                            final notes = details['notes'] ?? '';
                             return TableRow(
                               decoration: BoxDecoration(
                                 color:
@@ -268,15 +290,17 @@ class ContractPreviewScreen extends StatelessWidget {
                                   child:
                                       Text(type, textAlign: TextAlign.center),
                                 ),
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 8),
-                                  child: Text('', textAlign: TextAlign.center),
+                                  child: Text(quantity,
+                                      textAlign: TextAlign.center),
                                 ),
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 8),
-                                  child: Text('', textAlign: TextAlign.center),
+                                  child:
+                                      Text(notes, textAlign: TextAlign.center),
                                 ),
                               ],
                             );

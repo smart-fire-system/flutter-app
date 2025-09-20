@@ -133,6 +133,10 @@ class ReportsRepository {
       return snapshot.docs.map((doc) {
         final Map<String, dynamic> data = doc.data();
         final contract = ContractData.fromJson(data);
+        try {
+          contract.metaData.employee = appRepository.users.employees.firstWhere((c) => c.info.id == contract.metaData.employeeId);
+          contract.metaData.client = appRepository.users.clients.firstWhere((c) => c.info.id == contract.metaData.clientId);
+        } catch (_) {}
         contract.metaData.id ??= doc.id;
         return contract;
       }).toList();

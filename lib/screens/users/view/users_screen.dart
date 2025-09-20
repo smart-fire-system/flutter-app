@@ -84,7 +84,7 @@ class UsersScreenState extends State<UsersScreen> {
               ),
             );
           }
-          if (_permissions.canViewAdmins) {
+          if (_users.admins.isNotEmpty) {
             _userTypesDropdown.add(
               CustomDropdownItem(
                 title: S.of(context).admins,
@@ -92,7 +92,7 @@ class UsersScreenState extends State<UsersScreen> {
               ),
             );
           }
-          if (_permissions.canViewCompanyManagers) {
+          if (_users.companyManagers.isNotEmpty) {
             _userTypesDropdown.add(
               CustomDropdownItem(
                 title: S.of(context).companyManagers,
@@ -100,7 +100,7 @@ class UsersScreenState extends State<UsersScreen> {
               ),
             );
           }
-          if (_permissions.canViewBranchManagers) {
+          if (_users.branchManagers.isNotEmpty) {
             _userTypesDropdown.add(
               CustomDropdownItem(
                 title: S.of(context).branchManagers,
@@ -108,7 +108,7 @@ class UsersScreenState extends State<UsersScreen> {
               ),
             );
           }
-          if (_permissions.canViewEmployees) {
+          if (_users.employees.isNotEmpty) {
             _userTypesDropdown.add(
               CustomDropdownItem(
                 title: S.of(context).employees,
@@ -116,7 +116,7 @@ class UsersScreenState extends State<UsersScreen> {
               ),
             );
           }
-          if (_permissions.canViewClients) {
+          if (_users.clients.isNotEmpty) {
             _userTypesDropdown.add(
               CustomDropdownItem(
                 title: S.of(context).clients,

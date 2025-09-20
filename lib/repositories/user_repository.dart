@@ -200,7 +200,8 @@ class UserRepository {
 
         final permissions = isAdmin(doc.id);
         if (permissions != null) {
-          if (appRepository.userRole.permissions.canViewAdmins) {
+          if (appRepository.userRole is MasterAdmin ||
+              appRepository.userRole is Admin) {
             users.admins.add(
               Admin(
                 permissions: permissions,
@@ -221,7 +222,30 @@ class UserRepository {
             appRepository.companies,
           );
           if (company != null) {
-            if (appRepository.userRole.permissions.canViewCompanyManagers) {
+            bool canView = false;
+            dynamic user = appRepository.userRole;
+            switch (user) {
+              case MasterAdmin():
+              case Admin():
+                canView = true;
+                break;
+              case CompanyManager():
+                canView = user.info.id == doc.id;
+                break;
+              case BranchManager():
+                canView = user.branch.company.id == company.id;
+                break;
+              case Employee():
+                canView = user.branch.company.id == company.id;
+                break;
+              case Client():
+                canView = user.branch.company.id == company.id;
+                break;
+              default:
+                canView = false;
+                break;
+            }
+            if (canView) {
               users.companyManagers.add(
                 CompanyManager(
                   company: company,
@@ -246,12 +270,30 @@ class UserRepository {
             appRepository.branches,
           );
           if (branch != null) {
-            if (appRepository.userRole.permissions.canViewBranchManagers &&
-                (appRepository.userRole is MasterAdmin ||
-                    appRepository.userRole is Admin ||
-                    (appRepository.userRole is CompanyManager &&
-                        appRepository.userRole.company.id ==
-                            branch.company.id))) {
+            bool canView = false;
+            dynamic user = appRepository.userRole;
+            switch (user) {
+              case MasterAdmin():
+              case Admin():
+                canView = true;
+                break;
+              case CompanyManager():
+                canView = user.company.id == branch.company.id;
+                break;
+              case BranchManager():
+                canView = user.info.id == doc.id;
+                break;
+              case Employee():
+                canView = user.branch.id == branch.id;
+                break;
+              case Client():
+                canView = user.branch.id == branch.id;
+                break;
+              default:
+                canView = false;
+                break;
+            }
+            if (canView) {
               users.branchManagers.add(
                 BranchManager(
                   branch: branch,
@@ -274,14 +316,30 @@ class UserRepository {
             appRepository.branches,
           );
           if (branch != null) {
-            if (appRepository.userRole.permissions.canViewEmployees &&
-                (appRepository.userRole is MasterAdmin ||
-                    appRepository.userRole is Admin ||
-                    (appRepository.userRole is CompanyManager &&
-                        appRepository.userRole.company.id ==
-                            branch.company.id) ||
-                    (appRepository.userRole is BranchManager &&
-                        appRepository.userRole.branch.id == branch.id))) {
+            bool canView = false;
+            dynamic user = appRepository.userRole;
+            switch (user) {
+              case MasterAdmin():
+              case Admin():
+                canView = true;
+                break;
+              case CompanyManager():
+                canView = user.company.id == branch.company.id;
+                break;
+              case BranchManager():
+                canView = user.branch.id == branch.id;
+                break;
+              case Employee():
+                canView = user.info.id == doc.id;
+                break;
+              case Client():
+                canView = user.branch.id == branch.id;
+                break;
+              default:
+                canView = false;
+                break;
+            }
+            if (canView) {
               users.employees.add(
                 Employee(
                   branch: branch,
@@ -304,16 +362,30 @@ class UserRepository {
             appRepository.branches,
           );
           if (branch != null) {
-            if (appRepository.userRole.permissions.canViewClients &&
-                (appRepository.userRole is MasterAdmin ||
-                    appRepository.userRole is Admin ||
-                    (appRepository.userRole is CompanyManager &&
-                        appRepository.userRole.company.id ==
-                            branch.company.id) ||
-                    (appRepository.userRole is BranchManager &&
-                        appRepository.userRole.branch.id == branch.id) ||
-                    (appRepository.userRole is Employee &&
-                        appRepository.userRole.branch.id == branch.id))) {
+            bool canView = false;
+            dynamic user = appRepository.userRole;
+            switch (user) {
+              case MasterAdmin():
+              case Admin():
+                canView = true;
+                break;
+              case CompanyManager():
+                canView = user.company.id == branch.company.id;
+                break;
+              case BranchManager():
+                canView = user.branch.id == branch.id;
+                break;
+              case Employee():
+                canView = user.branch.id == branch.id;
+                break;
+              case Client():
+                canView = user.branch.id == branch.id;
+                break;
+              default:
+                canView = false;
+                break;
+            }
+            if (canView) {
               users.clients.add(
                 Client(
                   branch: branch,

@@ -24,6 +24,8 @@ class ContractData {
   String? paramContractPeriod;
   String? paramContractAmount;
   List<ContractComponentsData> components = [];
+  // categoryIndex -> typeName -> {'quantity': String, 'notes': String}
+  Map<String, Map<String, Map<String, String>>> componentDetails = {};
 
   Map<String, dynamic> toJson() {
     return {
@@ -64,6 +66,7 @@ class ContractData {
                     .toList(),
               })
           .toList(),
+      'componentDetails': componentDetails,
     };
   }
 
@@ -121,6 +124,15 @@ class ContractData {
         }).toList();
         return ContractComponentsData(category: category, items: items);
       }).toList();
+    }
+    final cd = json['componentDetails'];
+    if (cd is Map) {
+      data.componentDetails = cd.map((k, v) => MapEntry(
+          k.toString(),
+          (v as Map).map((k2, v2) => MapEntry(
+              k2.toString(),
+              (v2 as Map)
+                  .map((k3, v3) => MapEntry(k3.toString(), v3.toString()))))));
     }
     return data;
   }

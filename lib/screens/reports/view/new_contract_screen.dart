@@ -224,10 +224,13 @@ class _NewContractScreenState extends State<NewContractScreen> {
     required List<ContractComponentCategory> categories,
   }) {
     final Map<int, List<ContractComponentItem>> categoryIndexToItems = {};
+    final Map<String, Map<String, Map<String, String>>> details = {};
     for (final reportItem in items) {
       final table = reportItem.table;
       if (table == null) continue;
       final int categoryIndex = table.categoryIndex ?? 0;
+      final String categoryKey = categoryIndex.toString();
+      details.putIfAbsent(categoryKey, () => {});
       for (final String typeName in table.types) {
         // Find the component by display name used in selection
         final ContractComponentItem matched = allComponents.firstWhere(
@@ -251,6 +254,18 @@ class _NewContractScreenState extends State<NewContractScreen> {
         )) {
           categoryIndexToItems[categoryIndex]!.add(matched);
         }
+
+        // Capture quantity and notes
+        final tableIdx = items.indexOf(reportItem);
+        if (tableIdx >= 0 && tableIdx < _tableStates.length) {
+          final typeStates = _tableStates[tableIdx];
+          final q = typeStates[typeName]?['quantity']?.toString() ?? '';
+          final n = typeStates[typeName]?['notes']?.toString() ?? '';
+          details[categoryKey]![typeName] = {
+            'quantity': q,
+            'notes': n,
+          };
+        }
       }
     }
 
@@ -262,6 +277,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
             items: entry.value,
           )
     ];
+    _contractData.componentDetails = details;
   }
 
   void _initParamValues(int idx, ReportTextItem item) {
