@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/models/report.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 
-class ContractPreviewScreen extends StatelessWidget {
+class ViewContractScreen extends StatelessWidget {
   final List<dynamic> items;
   final ContractData contract;
 
-  const ContractPreviewScreen({
+  const ViewContractScreen({
     super.key,
     required this.items,
     required this.contract,

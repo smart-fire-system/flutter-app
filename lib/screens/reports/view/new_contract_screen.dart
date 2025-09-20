@@ -12,7 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/bloc.dart';
 import '../bloc/state.dart';
 import '../bloc/event.dart';
-import 'report_preview_screen.dart';
+import 'view_contract_screen.dart';
 
 class NewContractScreen extends StatefulWidget {
   const NewContractScreen({super.key});
@@ -1071,7 +1071,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
                             );
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (_) => ContractPreviewScreen(
+                                builder: (_) => ViewContractScreen(
                                   items: state.items,
                                   contract: _contractData,
                                 ),

@@ -8,8 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/bloc.dart';
 import '../bloc/state.dart';
 import '../bloc/event.dart';
-import 'report_preview_screen.dart';
-import 'package:fire_alarm_system/models/contract_data.dart' show ContractState;
+import 'view_contract_screen.dart';
 
 class ContractsScreen extends StatefulWidget {
   const ContractsScreen({super.key});
@@ -108,7 +107,7 @@ class _ContractsScreenState extends State<ContractsScreen> {
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => ContractPreviewScreen(
+                            builder: (_) => ViewContractScreen(
                               items: _items,
                               contract: c,
                             ),
