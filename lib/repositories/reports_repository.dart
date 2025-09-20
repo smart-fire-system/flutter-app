@@ -101,6 +101,7 @@ class ReportsRepository {
 
   Future<String> saveContract(ContractData contract) async {
     try {
+      contract.metaData.state = ContractState.draft;
       return await _firestore.runTransaction((txn) async {
         final maxRef = _firestore.collection('info').doc('maxContractCode');
         final maxSnap = await txn.get(maxRef);

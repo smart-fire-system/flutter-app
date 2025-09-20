@@ -79,7 +79,11 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   ) async {
     emit(ReportsLoading());
     contracts = await appRepository.reportsRepository.readContracts();
-    emit(ReportsContractsLoaded(contracts: contracts!, items: getContractItems()));
+    emit(ReportsContractsLoaded(
+      contracts: contracts!,
+      items: getContractItems(),
+      user: appRepository.authRepository.userRole,
+    ));
   }
 
   Future<void> _onLoad(

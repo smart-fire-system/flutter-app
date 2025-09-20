@@ -6,12 +6,10 @@ import 'package:jhijri_picker/jhijri_picker.dart';
 import 'package:fire_alarm_system/widgets/text_field.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/models/report.dart';
-import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/bloc.dart';
 import '../bloc/state.dart';
 import '../bloc/event.dart';
-import 'view_contract_screen.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
@@ -492,22 +490,6 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         }
                         return const SizedBox.shrink();
                       }),
-                      const SizedBox(height: 32),
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => ViewContractScreen(
-                                  items: state.items,
-                                  contract: ContractData(),
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text('View'),
-                        ),
-                      ),
                     ],
                   ),
                 ),

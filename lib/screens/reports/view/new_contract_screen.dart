@@ -12,7 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/bloc.dart';
 import '../bloc/state.dart';
 import '../bloc/event.dart';
-import 'view_contract_screen.dart';
 
 class NewContractScreen extends StatefulWidget {
   const NewContractScreen({super.key});
@@ -115,7 +114,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                 _selectedClient?.info.id == c.info.id;
                             return Container(
                               color: checked
-                                  ? Colors.green.withOpacity(0.06)
+                                  ? Colors.green.withValues(alpha: 0.1)
                                   : null,
                               child: ListTile(
                                 leading: const Icon(Icons.person_outline),
@@ -1060,27 +1059,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
                         }
                         return const SizedBox.shrink();
                       }),
-                      const SizedBox(height: 32),
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _updateContractComponentsFromTables(
-                              items: state.items,
-                              allComponents: state.components,
-                              categories: state.categories,
-                            );
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => ViewContractScreen(
-                                  items: state.items,
-                                  contract: _contractData,
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text('View'),
-                        ),
-                      ),
                       Center(
                         child: ElevatedButton(
                           onPressed: () {

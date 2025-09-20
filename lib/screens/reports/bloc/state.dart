@@ -31,7 +31,8 @@ class ReportsContractComponentsLoaded extends ReportsState {
 class ReportsContractsLoaded extends ReportsState {
   final List<ContractData> contracts;
   final List<ReportItem> items;
-  ReportsContractsLoaded({required this.contracts, required this.items});
+  final dynamic user;
+  ReportsContractsLoaded({required this.contracts, required this.items, required this.user});
 }
 
 class ReportsLoading extends ReportsState {

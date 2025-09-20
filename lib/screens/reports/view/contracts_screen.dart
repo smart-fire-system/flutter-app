@@ -20,6 +20,7 @@ class ContractsScreen extends StatefulWidget {
 class _ContractsScreenState extends State<ContractsScreen> {
   List<ContractData> _contracts = [];
   List<ReportItem> _items = [];
+  dynamic user;
 
   String _stateLabel(ContractState? state) {
     switch (state) {
@@ -58,6 +59,7 @@ class _ContractsScreenState extends State<ContractsScreen> {
             if (state is ReportsContractsLoaded && state.contracts.isNotEmpty) {
               _contracts = state.contracts;
               _items = state.items;
+              user = state.user;
               return ListView.separated(
                 padding: const EdgeInsets.all(16),
                 itemCount: _contracts.length,
@@ -110,6 +112,7 @@ class _ContractsScreenState extends State<ContractsScreen> {
                             builder: (_) => ViewContractScreen(
                               items: _items,
                               contract: c,
+                              user: user,
                             ),
                           ),
                         );
@@ -134,17 +137,15 @@ class _ContractsScreenState extends State<ContractsScreen> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: stateColor().withOpacity(0.1),
+                                    color: stateColor().withValues(alpha: 0.1),
                                     border: Border.all(
                                         color: stateColor(), width: 1),
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: Text(
                                     _stateLabel(meta.state),
-                                    style: TextStyle(
+                                    style: CustomStyle.smallTextB.copyWith(
                                       color: stateColor(),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12,
                                     ),
                                   ),
                                 ),

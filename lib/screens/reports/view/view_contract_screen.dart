@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/models/report.dart';
@@ -6,11 +7,13 @@ import 'package:fire_alarm_system/models/contract_data.dart';
 class ViewContractScreen extends StatelessWidget {
   final List<dynamic> items;
   final ContractData contract;
+  final dynamic user;
 
   const ViewContractScreen({
     super.key,
     required this.items,
     required this.contract,
+    required this.user,
   });
 
   String _paramText(String key) {
@@ -82,64 +85,445 @@ class ViewContractScreen extends StatelessWidget {
     return '$y-$m-$d';
   }
 
+  String _stateLabel(ContractState? state) {
+    switch (state) {
+      case ContractState.active:
+        return 'ساري';
+      case ContractState.pendingClient:
+        return 'بانتظار العميل';
+      case ContractState.requestCancellation:
+        return 'طلب إلغاء';
+      case ContractState.expired:
+        return 'منتهي';
+      case ContractState.cancelled:
+        return 'ملغي';
+      case ContractState.draft:
+      default:
+        return 'مسودة';
+    }
+  }
+
+  Color _stateColor(ContractState? state) {
+    switch (state) {
+      case ContractState.active:
+        return Colors.green;
+      case ContractState.pendingClient:
+        return Colors.orange;
+      case ContractState.requestCancellation:
+        return Colors.deepOrange;
+      case ContractState.expired:
+        return Colors.grey;
+      case ContractState.cancelled:
+        return Colors.red;
+      case ContractState.draft:
+      default:
+        return Colors.blueGrey;
+    }
+  }
+
   Widget _buildContractInfoCard(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey.shade300),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'معلومات العقد',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 18,
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: Colors.grey.shade300),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with contract number and state chip (match list style)
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      (contract.paramContractNumber?.isNotEmpty == true)
+                          ? 'عقد رقم: ${contract.paramContractNumber}'
+                          : (contract.metaData.code != null
+                              ? 'عقد رقم: ${contract.metaData.code}'
+                              : 'عقد'),
+                      style: CustomStyle.mediumTextBRed,
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: _stateColor(contract.metaData.state)
+                          .withValues(alpha: 0.1),
+                      border: Border.all(
+                        color: _stateColor(contract.metaData.state),
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      _stateLabel(contract.metaData.state),
+                      style: CustomStyle.smallTextB.copyWith(
+                        color: _stateColor(contract.metaData.state),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                const Expanded(child: Text('الفرع')),
-                Text(contract.metaData.employee?.branch.name ?? 'غير محدد'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Expanded(child: Text('الموظف')),
-                Text(contract.metaData.employee?.info.name ?? 'غير محدد'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Expanded(child: Text('العميل')),
-                Text(contract.metaData.client?.info.name ?? 'غير محدد'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Expanded(child: Text('تاريخ بداية العقد')),
-                Text(_formatDate(contract.metaData.startDate)),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Expanded(child: Text('تاريخ نهاية العقد')),
-                Text(_formatDate(contract.metaData.endDate)),
-              ],
-            ),
-          ],
+              const SizedBox(height: 10),
+              // Dates row
+              Row(
+                children: [
+                  const Icon(Icons.calendar_month_outlined,
+                      size: 18, color: CustomStyle.redDark),
+                  const SizedBox(width: 6),
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'ساري من ',
+                          style: CustomStyle.smallTextBRed,
+                        ),
+                        TextSpan(
+                          text: _formatDate(contract.metaData.startDate),
+                          style: CustomStyle.smallText,
+                        ),
+                        TextSpan(
+                          text: ' إلى ',
+                          style: CustomStyle.smallTextBRed,
+                        ),
+                        TextSpan(
+                          text: _formatDate(contract.metaData.endDate),
+                          style: CustomStyle.smallText,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              // Employee
+              Row(
+                children: [
+                  const Icon(Icons.person_outline,
+                      size: 18, color: CustomStyle.redDark),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'الموظف: ',
+                            style: CustomStyle.smallTextBRed,
+                          ),
+                          TextSpan(
+                            text: contract.metaData.employee?.info.name ?? '-',
+                            style: CustomStyle.smallText,
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              // Client
+              Row(
+                children: [
+                  const Icon(Icons.group_outlined,
+                      size: 18, color: CustomStyle.redDark),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'العميل: ',
+                            style: CustomStyle.smallTextBRed,
+                          ),
+                          TextSpan(
+                            text: contract.metaData.client?.info.name ?? '-',
+                            style: CustomStyle.smallText,
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              // Branch
+              Row(
+                children: [
+                  const Icon(Icons.apartment_outlined,
+                      size: 18, color: CustomStyle.redDark),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'الفرع: ',
+                            style: CustomStyle.smallTextBRed,
+                          ),
+                          TextSpan(
+                            text:
+                                contract.metaData.employee?.branch.name ?? '-',
+                            style: CustomStyle.smallText,
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  bool _isPendingCurrentEmployeeSign() {
+    if (user is! Employee) return false;
+    final String currentId = (user as Employee).info.id;
+    final String? contractEmpId = contract.metaData.employee?.info.id;
+    return contract.metaData.state == ContractState.draft &&
+        contractEmpId != null &&
+        contractEmpId == currentId;
+  }
+
+  bool _isPendingOtherEmployeeSign() {
+    return contract.metaData.state == ContractState.draft;
+  }
+
+  bool _isPendingCurrentClientSign() {
+    if (user is! Client) return false;
+    final String currentId = (user as Client).info.id;
+    final String? contractClientId = contract.metaData.client?.info.id;
+    return contract.metaData.state == ContractState.pendingClient &&
+        contractClientId != null &&
+        contractClientId == currentId;
+  }
+
+  bool _isPendingOtherClientSign() {
+    return contract.metaData.state == ContractState.pendingClient;
+  }
+
+  Widget _buildStateCard(BuildContext context) {
+    bool isEmployeeDraft = _isPendingCurrentEmployeeSign();
+    Color cardColor =
+        isEmployeeDraft ? Colors.red.shade50 : Colors.blue.shade50;
+    Color borderColor =
+        isEmployeeDraft ? CustomStyle.redLight : CustomStyle.greyLight;
+    Color iconColor =
+        isEmployeeDraft ? CustomStyle.redDark : CustomStyle.greyDark;
+    String title =
+        isEmployeeDraft ? 'توقيع الموظف مطلوب أولاً' : 'بانتظار توقيع العميل';
+    String subtitle = isEmployeeDraft
+        ? 'يجب أن تقوم بالتوقيع أولاً ليتمكّن العميل من التوقيع. اضغط للتوقيع.'
+        : 'تم توقيع الموظف. الرجاء إرسال الرابط للعميل أو تذكيره بالتوقيع.';
+    if (_isPendingCurrentEmployeeSign()) {
+      cardColor = Colors.red.shade50;
+      borderColor = CustomStyle.redLight;
+      iconColor = CustomStyle.redDark;
+      title = 'توقيع الموظف مطلوب أولاً';
+      subtitle =
+          'يجب أن تقوم بالتوقيع أولاً ليتمكّن العميل من التوقيع. اضغط للتوقيع.';
+    } else if (_isPendingOtherEmployeeSign()) {
+      cardColor = Colors.orange.shade50;
+      borderColor = Colors.orangeAccent;
+      iconColor = Colors.orange;
+      title = 'بانتظار توقيع الموظف';
+      subtitle = 'بانتظار توقيع الموظف لكي يتمكن العميل من التوقيع.';
+    } else if (_isPendingCurrentClientSign()) {
+      cardColor = Colors.red.shade50;
+      borderColor = CustomStyle.redLight;
+      iconColor = CustomStyle.redDark;
+      title = 'توقيع العميل مطلوب أولاً';
+      subtitle = 'يجب أن تقوم بالتوقيع أولاً ليكون العقد ساري. اضغط للتوقيع.';
+    } else if (_isPendingOtherClientSign()) {
+      cardColor = Colors.orange.shade50;
+      borderColor = Colors.orangeAccent;
+      iconColor = Colors.orange;
+      title = 'بانتظار توقيع العميل';
+      subtitle = 'بانتظار توقيع العميل لكي يكون العقد ساري.';
+    } else if (contract.metaData.state == ContractState.active) {
+      final DateTime today = DateTime.now();
+      final DateTime? end = contract.metaData.endDate;
+      if (end != null &&
+          !end.isBefore(DateTime(today.year, today.month, today.day))) {
+        cardColor = Colors.green.shade50;
+        borderColor = Colors.greenAccent;
+        iconColor = Colors.green;
+        title = 'العقد ساري';
+        subtitle = 'العقد ساري حتى ${_formatDate(end)}';
+      } else {
+        cardColor = Colors.red.shade50;
+        borderColor = CustomStyle.redLight;
+        iconColor = CustomStyle.redDark;
+        title = 'العقد منتهي';
+        subtitle = 'العقد منتهي منذ ${_formatDate(end)}';
+      }
+    }
+
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Card(
+        color: cardColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: borderColor, width: 1),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text(isEmployeeDraft
+                      ? 'التوقيع غير مفعّل بعد'
+                      : 'تنبيه العميل غير مفعّل بعد')),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: iconColor,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: const TextStyle(color: CustomStyle.greyDark),
+                      ),
+                      const SizedBox(height: 10),
+                      _buildLinearStateDiagram(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Build linear diagram: Draft -> Employee Signed -> Client Signed -> Active/Expired
+  Widget _buildLinearStateDiagram() {
+    final int stage = _currentStageIndex();
+    final String lastLabel = _finalStageLabel();
+    final List<String> labels = <String>[
+      'مسودة',
+      'توقيع الموظف',
+      'توقيع العميل',
+      lastLabel,
+    ];
+
+    Color stepColor(int idx) {
+      if (idx < stage) return Colors.green; // completed
+      if (idx == stage) return CustomStyle.redDark; // current
+      return Colors.grey; // pending
+    }
+
+    Widget dot(int idx) => Container(
+          width: 14,
+          height: 14,
+          decoration: BoxDecoration(
+            color: stepColor(idx),
+            shape: BoxShape.circle,
+          ),
+        );
+
+    Widget connector(int idx) => Expanded(
+          child: Container(
+            height: 2,
+            color: stepColor(idx),
+          ),
+        );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            dot(0),
+            connector(0),
+            dot(1),
+            connector(1),
+            dot(2),
+            connector(2),
+            dot(3),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            for (int i = 0; i < labels.length; i++)
+              Expanded(
+                child: Center(
+                  child: Text(
+                    labels[i],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight:
+                          i == stage ? FontWeight.w700 : FontWeight.w500,
+                      color: stepColor(i),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  int _currentStageIndex() {
+    final ContractState? s = contract.metaData.state;
+    if (s == ContractState.draft) return 0; // Draft
+    if (s == ContractState.pendingClient) return 1; // Employee Signed
+    // active: client signed, then Active/Expired based on end date
+    if (s == ContractState.active) {
+      // Stage index for Active/Expired is 3 (last)
+      return 3;
+    }
+    // Fallback
+    return 0;
+  }
+
+  String _finalStageLabel() {
+    if (contract.metaData.state == ContractState.active) {
+      final DateTime today = DateTime.now();
+      final DateTime? end = contract.metaData.endDate;
+      if (end != null &&
+          !end.isBefore(DateTime(today.year, today.month, today.day))) {
+        return 'ساري';
+      } else {
+        return 'منتهي';
+      }
+    }
+    // For non-active states, we still show the last node label based on end date if present
+    final DateTime today2 = DateTime.now();
+    final DateTime? end2 = contract.metaData.endDate;
+    if (end2 != null &&
+        !end2.isBefore(DateTime(today2.year, today2.month, today2.day))) {
+      return 'ساري';
+    }
+    return 'منتهي';
   }
 
   List<String> _typesForCategory(int? categoryIndex) {
@@ -168,18 +552,16 @@ class ViewContractScreen extends StatelessWidget {
         child: Directionality(
           textDirection: TextDirection.rtl,
           child: ListView.separated(
-            itemCount: items.length + 1,
-            separatorBuilder: (context, idx) {
-              if (idx == 0) return const SizedBox(height: 16);
-              final realIdx = idx - 1;
-              return SizedBox(
-                  height: (items[realIdx]?.text?.paddingAfter ?? 0));
-            },
             itemBuilder: (context, idx) {
-              if (idx == 0) {
-                return _buildContractInfoCard(context);
+              // Build dynamic header stack (single unified state card)
+              final List<Widget> header = [];
+              header.add(_buildStateCard(context));
+              header.add(_buildContractInfoCard(context));
+
+              if (idx < header.length) {
+                return header[idx];
               }
-              final realIdx = idx - 1;
+              final realIdx = idx - header.length;
               final item = items[realIdx];
               if (item.text != null) {
                 // Skip category title if next table has no selected types (from contract)
@@ -312,6 +694,13 @@ class ViewContractScreen extends StatelessWidget {
                 );
               }
               return const SizedBox.shrink();
+            },
+            itemCount: () {
+              return 2 + items.length; // state + info + items
+            }(),
+            separatorBuilder: (context, idx) {
+              // Add spacing between header blocks and items
+              return const SizedBox(height: 16);
             },
           ),
         ),
