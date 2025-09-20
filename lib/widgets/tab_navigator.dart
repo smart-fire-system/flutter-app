@@ -2,6 +2,7 @@ import 'package:fire_alarm_system/screens/profile/view/update_profile.dart';
 import 'package:fire_alarm_system/screens/reports/view/contracts_screen.dart';
 import 'package:fire_alarm_system/screens/system/view/master_details_screen.dart';
 import 'package:fire_alarm_system/screens/users/view/update_user.dart';
+import 'package:fire_alarm_system/screens/users/view/users_hierarchy_screen.dart';
 import 'package:fire_alarm_system/screens/users/view/users_screen.dart';
 import 'package:fire_alarm_system/screens/users/view/view_user.dart';
 import 'package:flutter/material.dart';
@@ -111,6 +112,9 @@ class TabNavigator extends StatelessWidget {
               break;
             case '/users':
               page = const UsersScreen();
+              break;
+            case '/users-diagram':
+              page = const UsersHierarchyScreen();
               break;
             case '/user/view':
               page = UserInfoScreen(userId: routeSettings.arguments as String);

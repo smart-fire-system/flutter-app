@@ -78,6 +78,14 @@ class _MainScreenState extends State<MainScreen> {
                         onTap: () =>
                             TabNavigator.home.currentState?.pushNamed('/users'),
                       ),
+                      const SizedBox(width: 12),
+                      _ActionCard(
+                        icon: Icons.group,
+                        title: S.of(context).users,
+                        subtitle: S.of(context).usersDescription,
+                        onTap: () =>
+                            TabNavigator.home.currentState?.pushNamed('/users-diagram'),
+                      ),
                     ],
                   ),
                 ),
