@@ -1,24 +1,33 @@
 {
   "project_info": {
     "project_number": "808637869294",
+    "firebase_url": "https://smart-fire-system-app-default-rtdb.firebaseio.com",
     "project_id": "smart-fire-system-app",
     "storage_bucket": "smart-fire-system-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:808637869294:android:22267adc85b6fed9f2d7ff",
+        "mobilesdk_app_id": "1:808637869294:android:37e476a66025424ef2d7ff",
         "android_client_info": {
-          "package_name": "com.example.fire_alarm_system"
+          "package_name": "com.hassan.firealarm"
         }
       },
       "oauth_client": [
         {
-          "client_id": "808637869294-928on0j223nm56ip5kdnrmqlr3l821mo.apps.googleusercontent.com",
+          "client_id": "808637869294-g4l794o386r4639ecis89nck31hmogj7.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.fire_alarm_system",
+            "package_name": "com.hassan.firealarm",
             "certificate_hash": "336e9f521b4411df663cb8d5f5c4a52ba2f0619f"
+          }
+        },
+        {
+          "client_id": "808637869294-r21bsrhsp4oo551fhu1thk2t2luhmj65.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hassan.firealarm",
+            "certificate_hash": "65ede8509de1e0fb09884fca090ddd1b45646a70"
           }
         },
         {
