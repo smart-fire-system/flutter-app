@@ -1,4 +1,4 @@
-package com.ahmad.firealarm
+package com.hassan.firealarm
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -5,6 +5,7 @@ import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fire_alarm_system/utils/app_version.dart';
 
 class SignUpScreen extends StatelessWidget {
   final void Function(String name, String email, String password) onSignUpClick;
@@ -199,6 +200,8 @@ class SignUpScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    Text(appVersion, style: CustomStyle.smallTextGrey),
                   ],
                 ),
               ),

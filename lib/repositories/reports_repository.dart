@@ -192,4 +192,55 @@ class ReportsRepository {
     }
     return contracts;
   }
+
+  Future<void> signContract(
+      {required dynamic user, required ContractData contract}) async {
+    final bool isClient = user is Client;
+    final bool isEmployee = user is Employee;
+    if (!isClient && !isEmployee) {
+      throw Exception('Unsupported signer');
+    }
+
+    await _firestore.runTransaction((txn) async {
+      // Read/increment maxSignatureCode
+      final maxRef = _firestore.collection('info').doc('maxSignatureCode');
+      final maxSnap = await txn.get(maxRef);
+      int current = 0;
+      if (maxSnap.exists) {
+        final data = maxSnap.data() as Map<String, dynamic>;
+        current = int.tryParse((data['value'] ?? '0').toString()) ?? 0;
+      }
+      final next = current + 1;
+      txn.set(maxRef, {'value': next}, SetOptions(merge: true));
+
+      // Build signature name
+      final DateTime now = DateTime.now();
+      final String dd = now.day.toString().padLeft(2, '0');
+      final String mm = now.month.toString().padLeft(2, '0');
+      final String yyyy = now.year.toString();
+      final int userCode = appRepository.userInfo.code;
+      final String contractCode = (contract.metaData.code ?? '').toString();
+      final String prefix = isClient ? 'CC' : 'CE';
+      final String name = '$prefix-$dd$mm$yyyy-$userCode-$contractCode-$next';
+
+      // Create signature doc
+      final sigRef = _firestore.collection('signatures').doc();
+      txn.set(sigRef, {
+        'code': next,
+        'name': name,
+        'createdAt': FieldValue.serverTimestamp(),
+        'userId': appRepository.userInfo.id,
+        'contractId': contract.metaData.id,
+      });
+
+      // Update contract with signature id
+      final contractRef =
+          _firestore.collection('contracts').doc(contract.metaData.id);
+      if (isClient) {
+        txn.update(contractRef, {'metaData.clientSignatureId': sigRef.id});
+      } else {
+        txn.update(contractRef, {'metaData.employeeSignatureId': sigRef.id});
+      }
+    });
+  }
 }

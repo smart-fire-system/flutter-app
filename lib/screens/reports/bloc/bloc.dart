@@ -16,6 +16,9 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   final AppRepository appRepository;
 
   ReportsBloc({required this.appRepository}) : super(ReportsInitial()) {
+    appRepository.authStateStream.listen((_) {
+      add(ReportsItemsRequested());
+    });
     on<ReportsItemsRequested>(_onLoad);
     on<ReportsContractComponentsRequested>(_onContractComponentsLoad);
     on<ReportsContractComponentsAddRequested>(_onContractComponentsAdd);
