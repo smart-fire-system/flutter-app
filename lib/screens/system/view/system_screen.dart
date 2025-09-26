@@ -85,7 +85,9 @@ class SystemScreenState extends State<SystemScreen> {
   @override
   void dispose() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      context.read<SystemBloc>().add(CancelStreamRequested());
+      if (mounted) {
+        context.read<SystemBloc>().add(CancelStreamRequested());
+      }
     });
     _timer.cancel();
     super.dispose();

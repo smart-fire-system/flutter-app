@@ -22,8 +22,7 @@ class AppRepository {
       BranchesAndCompanies(branches: [], companies: []);
   Users _users = Users();
   final _usersController = StreamController<void>.broadcast();
-  final _branchesAndCompaniesController =
-      StreamController<void>.broadcast();
+  final _branchesAndCompaniesController = StreamController<void>.broadcast();
 
   AppRepository() : _firestore = FirebaseFirestore.instance {
     _userRepository = UserRepository(appRepository: this);
@@ -32,7 +31,8 @@ class AppRepository {
     _systemRepository = SystemRepository();
     _reportsRepository = ReportsRepository(appRepository: this);
     _authRepository.authStateChanges.listen((data) async {
-      if (data == null) {
+      if (data == null &&
+          _authRepository.authStatus == AuthStatus.authenticated) {
         _branchesAndCompanies = _branchRepository.getBranchesAndCompanies();
         _branchesAndCompaniesController.add(null);
         _users = _userRepository.getAllUsers();
@@ -52,68 +52,41 @@ class AppRepository {
     });
     _firestore.collection('users').snapshots().listen((snapshot) {
       _userRepository.usersSnapshot = snapshot;
-      try {
-        _users = _userRepository.getAllUsers();
-        _usersController.add(null);
-      } catch (e) {
-        //print(e);
-      }
+      _users = _userRepository.getAllUsers();
+      _usersController.add(null);
     });
     _firestore.collection('masterAdmins').snapshots().listen((snapshot) {
       _userRepository.masterAdminsSnapshot = snapshot;
-      try {
-        _users = _userRepository.getAllUsers();
-        _usersController.add(null);
-      } catch (e) {
-        //print(e);
-      }
+      _users = _userRepository.getAllUsers();
+      _usersController.add(null);
     });
     _firestore.collection('admins').snapshots().listen((snapshot) {
       _userRepository.adminsSnapshot = snapshot;
-      try {
-        _users = _userRepository.getAllUsers();
-        _usersController.add(null);
-      } catch (e) {
-        //print(e);
-      }
+      _users = _userRepository.getAllUsers();
+      _usersController.add(null);
     });
     _firestore.collection('companyManagers').snapshots().listen((snapshot) {
       _userRepository.companyManagersSnapshot = snapshot;
-      try {
-        _users = _userRepository.getAllUsers();
-        _usersController.add(null);
-      } catch (e) {
-        //print(e);
-      }
+      _users = _userRepository.getAllUsers();
+      _usersController.add(null);
     });
     _firestore.collection('branchManagers').snapshots().listen((snapshot) {
       _userRepository.branchManagersSnapshot = snapshot;
-      try {
-        _users = _userRepository.getAllUsers();
-        _usersController.add(null);
-      } catch (e) {
-        //print(e);
-      }
+      _users = _userRepository.getAllUsers();
+      _usersController.add(null);
     });
     _firestore.collection('employees').snapshots().listen((snapshot) {
       _userRepository.employeesSnapshot = snapshot;
-      try {
-        _users = _userRepository.getAllUsers();
-        _usersController.add(null);
-      } catch (e) {
-        //print(e);
-      }
+      _users = _userRepository.getAllUsers();
+      _usersController.add(null);
     });
     _firestore.collection('clients').snapshots().listen((snapshot) {
       _userRepository.clientsSnapshot = snapshot;
-      try {
-        _users = _userRepository.getAllUsers();
-        _usersController.add(null);
-      } catch (e) {
-        //print(e);
-      }
+      _users = _userRepository.getAllUsers();
+      _usersController.add(null);
     });
   }
+  
   AuthStatus get authStatus => _authRepository.authStatus;
   Stream<String?> get authStateStream => _authRepository.authStateChanges;
   Stream<void> get branchesAndCompaniesStream =>

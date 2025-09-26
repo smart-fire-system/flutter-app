@@ -21,10 +21,10 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     });
 
     on<AuthChanged>((event, emit) async {
-      UserInfo userInfo = appRepository.userRole.info as UserInfo;
       if (appRepository.authStatus != AuthStatus.authenticated ||
-          userInfo.phoneNumber.isEmpty ||
-          appRepository.userRole is NoRoleUser) {
+          appRepository.userRole == null ||
+          appRepository.userRole is NoRoleUser ||
+          appRepository.userRole.info.phoneNumber.isEmpty) {
         emit(BranchesNotAuthenticated(error: event.error));
         return;
       }

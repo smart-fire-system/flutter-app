@@ -3,6 +3,7 @@ import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/users/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/users/bloc/state.dart';
+import 'package:fire_alarm_system/screens/users/bloc/event.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -16,10 +17,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
-
-import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
-import 'package:fire_alarm_system/screens/branches/bloc/event.dart';
-import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({super.key});
@@ -134,8 +131,10 @@ class UsersScreenState extends State<UsersScreen> {
                   title: S.of(context).noRoleUsers, value: 'noRoleUsers'),
             );
           }
+          // Reset initial filter to include all available categories after data updates
+          _isFirstFilterCall = true;
           return _buildUsers(context);
-        } else if (state is BranchesNotAuthenticated) {
+        } else if (state is UsersNotAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushNamedAndRemoveUntil(
               context,
@@ -157,7 +156,7 @@ class UsersScreenState extends State<UsersScreen> {
       appBar: CustomAppBar(title: S.of(context).users),
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<BranchesBloc>().add(AuthChanged());
+          context.read<UsersBloc>().add(AuthChanged());
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
