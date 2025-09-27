@@ -42,3 +42,8 @@ class ReportsLoading extends ReportsState {
 class ReportsSaved extends ReportsState {
   ReportsSaved();
 }
+
+class ReportsSigned extends ReportsState {
+  final ContractData contract;
+  ReportsSigned({required this.contract});
+}

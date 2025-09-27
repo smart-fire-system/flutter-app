@@ -149,7 +149,7 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
                     const SizedBox(height: 12),
                     DropdownButtonFormField<int>(
                       isExpanded: true,
-                      value: categoryIndex,
+                      initialValue: categoryIndex,
                       items: List.generate(_categories.length, (i) {
                         final c = _categories[i];
                         return DropdownMenuItem<int>(

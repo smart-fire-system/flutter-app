@@ -29,3 +29,8 @@ class SaveContractRequested extends ReportsEvent {
 class ReadContractsRequested extends ReportsEvent {
   ReadContractsRequested();
 }
+
+class SignContractRequested extends ReportsEvent {
+  final ContractData contract;
+  SignContractRequested({required this.contract});
+}

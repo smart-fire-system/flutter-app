@@ -25,6 +25,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     on<ReportsContractComponentsSaveRequested>(_onContractComponentsSave);
     on<SaveContractRequested>(_onSaveContract);
     on<ReadContractsRequested>(_onReadContracts);
+    on<SignContractRequested>(_onSignContract);
   }
 
   Future<void> _onContractComponentsLoad(
@@ -87,6 +88,16 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       items: getContractItems(),
       user: appRepository.authRepository.userRole,
     ));
+  }
+
+  Future<void> _onSignContract(
+    SignContractRequested event,
+    Emitter<ReportsState> emit,
+  ) async {
+    emit(ReportsLoading());
+    ContractData signedContract = await appRepository.reportsRepository
+        .signContract(user: appRepository.userRole, contract: event.contract);
+    emit(ReportsSigned(contract: signedContract));
   }
 
   Future<void> _onLoad(

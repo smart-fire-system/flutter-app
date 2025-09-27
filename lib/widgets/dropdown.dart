@@ -330,26 +330,33 @@ class CustomDropdownSingleState extends State<CustomDropdownSingle> {
                           ),
                         ),
                         Expanded(
-                          child: ListView(
-                            children: widget.items.asMap().entries.map((entry) {
-                              var item = entry.value;
-                              return RadioListTile<String>(
-                                title: Text(item.title),
-                                value: item.value,
-                                groupValue: _selectedItem,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedItem = value;
-                                    _controller.text = item.title;
-                                    widget.onChanged(
-                                      CustomDropdownItem(
-                                          value: item.value, title: item.title),
-                                    );
-                                    Navigator.pop(context);
-                                  });
-                                },
-                              );
-                            }).toList(),
+                          child: RadioGroup<String>(
+                            groupValue: _selectedItem,
+                            onChanged: (value) {
+                              if (value == null) return;
+                              final selected = widget.items.firstWhere(
+                                  (i) => i.value == value,
+                                  orElse: () => CustomDropdownItem(
+                                      title: '', value: value));
+                              setState(() {
+                                _selectedItem = value;
+                                _controller.text = selected.title;
+                              });
+                              widget.onChanged(CustomDropdownItem(
+                                  value: selected.value,
+                                  title: selected.title));
+                              Navigator.pop(context);
+                            },
+                            child: ListView(
+                              children:
+                                  widget.items.asMap().entries.map((entry) {
+                                var item = entry.value;
+                                return RadioListTile<String>(
+                                  title: Text(item.title),
+                                  value: item.value,
+                                );
+                              }).toList(),
+                            ),
                           ),
                         ),
                       ],

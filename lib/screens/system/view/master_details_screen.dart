@@ -21,17 +21,17 @@ class MasterDetailsScreen extends StatefulWidget {
 
 class MasterDetailsScreenState extends State<MasterDetailsScreen> {
   Master? _master;
-  List<ExpansionTileController> _expansionTileControllers = [];
+  List<ExpansibleController> _expansionTileControllers = [];
 
   @override
   void initState() {
     _expansionTileControllers = [
-      ExpansionTileController(),
-      ExpansionTileController(),
-      ExpansionTileController(),
-      ExpansionTileController(),
-      ExpansionTileController(),
-      ExpansionTileController()
+      ExpansibleController(),
+      ExpansibleController(),
+      ExpansibleController(),
+      ExpansibleController(),
+      ExpansibleController(),
+      ExpansibleController()
     ];
 
     super.initState();
@@ -332,7 +332,7 @@ class MasterDetailsScreenState extends State<MasterDetailsScreen> {
                             Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: DropdownButtonFormField<AppPinMode>(
-                                value: selectedMode,
+                                initialValue: selectedMode,
                                 decoration: InputDecoration(
                                   labelText:
                                       "Pin Mode", // 🏷️ Your dropdown label
@@ -361,7 +361,7 @@ class MasterDetailsScreenState extends State<MasterDetailsScreen> {
                             Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: DropdownButtonFormField<AppPinDirection>(
-                                value: selectedDirection,
+                                initialValue: selectedDirection,
                                 decoration: InputDecoration(
                                   labelText:
                                       "Pin Direction", // 🏷️ Your dropdown label
@@ -387,7 +387,7 @@ class MasterDetailsScreenState extends State<MasterDetailsScreen> {
                             Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: DropdownButtonFormField<int>(
-                                value: selectedNumber,
+                                initialValue: selectedNumber,
                                 decoration: InputDecoration(
                                   labelText:
                                       "Pin Number", // 🏷️ Your dropdown label

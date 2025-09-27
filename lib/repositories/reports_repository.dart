@@ -153,50 +153,48 @@ class ReportsRepository {
   }
 
   List<ContractData> filterContracts(List<ContractData> contracts) {
-    for (var contract in contracts) {
-      dynamic user = appRepository.userRole;
-      Employee employee = contract.metaData.employee!;
-      Client client = contract.metaData.client!;
+    final List<ContractData> filtered = [];
+    final dynamic user = appRepository.userRole;
+    for (final ContractData contract in contracts) {
+      final Employee? employee = contract.metaData.employee;
+      final Client? client = contract.metaData.client;
+
+      bool include = true;
       switch (user) {
         case MasterAdmin():
         case Admin():
+          include = true;
           break;
         case CompanyManager():
-          if (employee.branch.company.id != user.company.id) {
-            contracts.remove(contract);
-            continue;
-          }
+          include = employee?.branch.company.id == user.company.id;
           break;
         case BranchManager():
-          if (employee.branch.id != user.branch.id) {
-            contracts.remove(contract);
-            continue;
-          }
+          include = employee?.branch.id == user.branch.id;
           break;
         case Employee():
-          if (employee.info.id != user.info.id) {
-            contracts.remove(contract);
-            continue;
-          }
+          include = employee?.info.id == user.info.id;
           break;
         case Client():
-          if (client.info.id != user.info.id) {
-            contracts.remove(contract);
-            continue;
-          }
+          include = client?.info.id == user.info.id;
           break;
         default:
-          contracts.remove(contract);
-          continue;
+          include = false;
+      }
+
+      if (include) {
+        filtered.add(contract);
       }
     }
-    return contracts;
+    return filtered;
   }
 
-  Future<void> signContract(
-      {required dynamic user, required ContractData contract}) async {
+  Future<ContractData> signContract({
+    required dynamic user,
+    required ContractData contract,
+  }) async {
     final bool isClient = user is Client;
     final bool isEmployee = user is Employee;
+    ContractData signedContract = contract;
     if (!isClient && !isEmployee) {
       throw Exception('Unsupported signer');
     }
@@ -237,10 +235,21 @@ class ReportsRepository {
       final contractRef =
           _firestore.collection('contracts').doc(contract.metaData.id);
       if (isClient) {
-        txn.update(contractRef, {'metaData.clientSignatureId': sigRef.id});
+        txn.update(contractRef, {
+          'metaData.clientSignatureId': sigRef.id,
+          'metaData.state': 'active'
+        });
+        signedContract.metaData.clientSignatureId = sigRef.id;
+        signedContract.metaData.state = ContractState.active;
       } else {
-        txn.update(contractRef, {'metaData.employeeSignatureId': sigRef.id});
+        txn.update(contractRef, {
+          'metaData.employeeSignatureId': sigRef.id,
+          'metaData.state': 'pendingClient'
+        });
+        signedContract.metaData.employeeSignatureId = sigRef.id;
+        signedContract.metaData.state = ContractState.pendingClient;
       }
     });
+    return signedContract;
   }
 }
