@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/screens/profile/view/profile_screen.dart';
 import 'package:fire_alarm_system/screens/profile/view/update_profile.dart';
 import 'package:fire_alarm_system/screens/reports/view/contracts_screen.dart';
 import 'package:fire_alarm_system/screens/system/view/master_details_screen.dart';
@@ -36,7 +37,7 @@ class TabNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    GlobalKey<NavigatorState> navigatorKey = system;
+    GlobalKey<NavigatorState> navigatorKey = home;
     switch (screen) {
       case AppTab.system:
         navigatorKey = system;
@@ -123,6 +124,9 @@ class TabNavigator extends StatelessWidget {
             case '/user/update':
               page =
                   UpdateUserScreen(userId: routeSettings.arguments as String);
+              break;
+            case '/profile':
+              page = const ProfileScreen();
               break;
             case '/profile/update':
               page = const UpdateProfileScreen();

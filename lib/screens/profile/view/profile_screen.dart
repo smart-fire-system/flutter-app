@@ -246,7 +246,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          TabNavigator.usersAndBranches.currentState?.pushNamed(
+          TabNavigator.home.currentState?.pushNamed(
             '/profile/update',
           );
         },

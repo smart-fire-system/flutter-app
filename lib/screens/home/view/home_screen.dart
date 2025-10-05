@@ -47,7 +47,12 @@ class HomeScreenState extends State<HomeScreen> {
 
   void setCurrentTab(AppTab tab) {
     setState(() {
-      _currentTab = tab;
+      _currentTab = AppTab.values[tab.index];
+      _activeTabs.remove(_currentTab);
+      _activeTabs.add(_currentTab);
+      if (_activeTabs.length > 1) {
+        _canPop = false;
+      }
     });
   }
 
@@ -75,7 +80,7 @@ class HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: isSelected 
+        color: isSelected
             ? CustomStyle.redDark.withValues(alpha: 0.1)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(12),

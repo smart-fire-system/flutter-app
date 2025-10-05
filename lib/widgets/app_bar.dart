@@ -4,9 +4,11 @@ import 'package:fire_alarm_system/utils/localization_util.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final Widget? leading;
   const CustomAppBar({
     super.key,
     required this.title,
+    this.leading,
   });
 
   @override
@@ -20,6 +22,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       iconTheme: const IconThemeData(
         color: Colors.white,
       ),
+      leading: leading,
       //leading: Padding(
       //  padding: const EdgeInsets.all(8.0),
       //  child: Image.asset(
