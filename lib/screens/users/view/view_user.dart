@@ -166,7 +166,7 @@ class UserInfoScreen extends StatelessWidget {
         label: const Text('Edit'),
         backgroundColor: CustomStyle.redDark,
         onPressed: () {
-          TabNavigator.home.currentState?.pushNamed(
+          TabNavigator.usersAndBranches.currentState?.pushNamed(
             '/user/update',
             arguments: userId,
           );

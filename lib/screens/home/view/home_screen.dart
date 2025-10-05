@@ -75,6 +75,21 @@ class HomeScreenState extends State<HomeScreen> {
     return _canPop;
   }
 
+  GlobalKey<NavigatorState> _navigatorKeyFor(AppTab tab) {
+    switch (tab) {
+      case AppTab.system:
+        return TabNavigator.system;
+      case AppTab.reports:
+        return TabNavigator.reports;
+      case AppTab.home:
+        return TabNavigator.home;
+      case AppTab.complaints:
+        return TabNavigator.complaints;
+      case AppTab.usersAndBranches:
+        return TabNavigator.usersAndBranches;
+    }
+  }
+
   Widget _buildNavIcon(IconData icon, int index) {
     final isSelected = _currentTab.index == index;
     return Container(
@@ -185,8 +200,14 @@ class HomeScreenState extends State<HomeScreen> {
             elevation: 0,
             currentIndex: _currentTab.index,
             onTap: (int newIndex) {
+              final AppTab tappedTab = AppTab.values[newIndex];
+              final navigatorKey = _navigatorKeyFor(tappedTab);
+              if (_currentTab.index == newIndex) {
+                navigatorKey.currentState?.popUntil((route) => route.isFirst);
+                return;
+              }
               setState(() {
-                _currentTab = AppTab.values[newIndex];
+                _currentTab = tappedTab;
                 _activeTabs.remove(_currentTab);
                 _activeTabs.add(_currentTab);
                 if (_activeTabs.length > 1) {

@@ -119,7 +119,7 @@ class BranchesScreenState extends State<BranchesScreen> {
                   );
                   return;
                 }
-                TabNavigator.home.currentState?.pushNamed('/branch/add');
+                TabNavigator.usersAndBranches.currentState?.pushNamed('/branch/add');
               },
               icon: const Icon(
                 Icons.add,
@@ -207,7 +207,7 @@ class BranchesScreenState extends State<BranchesScreen> {
                             ),
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: () {
-                              TabNavigator.home.currentState?.pushNamed(
+                              TabNavigator.usersAndBranches.currentState?.pushNamed(
                                   '/branch/details',
                                   arguments: branch.id);
                             },

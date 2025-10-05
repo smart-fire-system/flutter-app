@@ -76,7 +76,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
           : FloatingActionButton.extended(
               backgroundColor: CustomStyle.redDark,
               onPressed: () async {
-                TabNavigator.home.currentState
+                TabNavigator.usersAndBranches.currentState
                     ?.pushNamed('/company/edit', arguments: widget.companyId);
               },
               icon: const Icon(
@@ -180,7 +180,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                               ),
                         trailing: const Icon(Icons.arrow_forward_ios),
                         onTap: () {
-                          TabNavigator.home.currentState?.pushNamed(
+                          TabNavigator.usersAndBranches.currentState?.pushNamed(
                               '/branch/details',
                               arguments: _branches[index].id);
                         },

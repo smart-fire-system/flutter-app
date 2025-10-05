@@ -78,7 +78,7 @@ class AddCompanyScreenState extends State<AddCompanyScreen> {
               title: S.of(context).companyAdded,
             ).then((_) {
               if (context.mounted) {
-                TabNavigator.home.currentState?.popAndPushNamed(
+                TabNavigator.usersAndBranches.currentState?.popAndPushNamed(
                     '/company/details',
                     arguments: state.createdId as String);
                 state.createdId = null;

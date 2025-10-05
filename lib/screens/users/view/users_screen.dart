@@ -218,7 +218,7 @@ class UsersScreenState extends State<UsersScreen> {
                           name: user.info.name,
                           role: S.of(context).masterAdmin,
                           onTap: () {
-                            TabNavigator.home.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );
@@ -238,7 +238,7 @@ class UsersScreenState extends State<UsersScreen> {
                           name: user.info.name,
                           role: S.of(context).admin,
                           onTap: () {
-                            TabNavigator.home.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );
@@ -260,7 +260,7 @@ class UsersScreenState extends State<UsersScreen> {
                           role: S.of(context).companyManager,
                           companyName: user.company.name,
                           onTap: () {
-                            TabNavigator.home.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );
@@ -284,7 +284,7 @@ class UsersScreenState extends State<UsersScreen> {
                           companyName: user.branch.company.name,
                           branchName: user.branch.name,
                           onTap: () {
-                            TabNavigator.home.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );
@@ -309,7 +309,7 @@ class UsersScreenState extends State<UsersScreen> {
                           companyName: user.branch.company.name,
                           branchName: user.branch.name,
                           onTap: () {
-                            TabNavigator.home.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );
@@ -335,7 +335,7 @@ class UsersScreenState extends State<UsersScreen> {
                           companyName: user.branch.company.name,
                           branchName: user.branch.name,
                           onTap: () {
-                            TabNavigator.home.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );
@@ -360,7 +360,7 @@ class UsersScreenState extends State<UsersScreen> {
                           name: user.info.name,
                           role: S.of(context).noRole,
                           onTap: () {
-                            TabNavigator.home.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );

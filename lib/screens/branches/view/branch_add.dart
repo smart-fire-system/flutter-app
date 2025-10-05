@@ -78,7 +78,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
               title: S.of(context).branchAdded,
             ).then((_) {
               if (context.mounted) {
-                TabNavigator.home.currentState?.popAndPushNamed(
+                TabNavigator.usersAndBranches.currentState?.popAndPushNamed(
                     '/branch/details',
                     arguments: state.createdId as String);
                 state.createdId = null;
