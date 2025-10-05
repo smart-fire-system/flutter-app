@@ -140,7 +140,7 @@ class HomeScreenState extends State<HomeScreen> {
           TabNavigator(screen: AppTab.reports),
           TabNavigator(screen: AppTab.home),
           TabNavigator(screen: AppTab.complaints),
-          TabNavigator(screen: AppTab.profile),
+          TabNavigator(screen: AppTab.usersAndBranches),
         ],
       ),
       bottomNavigationBar: Container(
@@ -207,8 +207,8 @@ class HomeScreenState extends State<HomeScreen> {
                 label: S.of(context).complaints,
               ),
               BottomNavigationBarItem(
-                icon: _buildNavIcon(Icons.person_rounded, 4),
-                label: S.of(context).myProfile,
+                icon: _buildNavIcon(Icons.people_alt_rounded, 4),
+                label: 'Users & Branches',
               ),
             ],
           ),

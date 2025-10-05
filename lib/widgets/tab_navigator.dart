@@ -5,11 +5,11 @@ import 'package:fire_alarm_system/screens/users/view/update_user.dart';
 import 'package:fire_alarm_system/screens/users/view/users_hierarchy_screen.dart';
 import 'package:fire_alarm_system/screens/users/view/users_screen.dart';
 import 'package:fire_alarm_system/screens/users/view/view_user.dart';
+import 'package:fire_alarm_system/screens/users/view/users_and_branches_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/screens/home/view/view.dart';
 import 'package:fire_alarm_system/screens/branches/view/view.dart';
 import 'package:fire_alarm_system/screens/complaints/view/view.dart';
-import 'package:fire_alarm_system/screens/profile/view/view.dart';
 import 'package:fire_alarm_system/screens/reports/view/view.dart';
 import 'package:fire_alarm_system/screens/system/view/view.dart';
 import 'package:fire_alarm_system/screens/offline/view/view.dart';
@@ -19,7 +19,7 @@ enum AppTab {
   reports,
   home,
   complaints,
-  profile,
+  usersAndBranches,
 }
 
 class TabNavigator extends StatelessWidget {
@@ -28,7 +28,8 @@ class TabNavigator extends StatelessWidget {
 
   static final GlobalKey<NavigatorState> system = GlobalKey<NavigatorState>();
   static final GlobalKey<NavigatorState> reports = GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> profile = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> usersAndBranches =
+      GlobalKey<NavigatorState>();
   static final GlobalKey<NavigatorState> complaints =
       GlobalKey<NavigatorState>();
   static final GlobalKey<NavigatorState> home = GlobalKey<NavigatorState>();
@@ -43,8 +44,8 @@ class TabNavigator extends StatelessWidget {
       case AppTab.reports:
         navigatorKey = reports;
         break;
-      case AppTab.profile:
-        navigatorKey = profile;
+      case AppTab.usersAndBranches:
+        navigatorKey = usersAndBranches;
         break;
       case AppTab.complaints:
         navigatorKey = complaints;
@@ -156,8 +157,8 @@ class TabNavigator extends StatelessWidget {
         return const SystemScreen();
       case AppTab.reports:
         return const ReportsScreen();
-      case AppTab.profile:
-        return const ProfileScreen();
+      case AppTab.usersAndBranches:
+        return const UsersAndBranchesScreen();
       case AppTab.complaints:
         return const ComplaintsScreen();
       case AppTab.home:
