@@ -6,6 +6,7 @@ import 'package:fire_alarm_system/screens/profile/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/state.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
+import 'package:fire_alarm_system/utils/styles.dart';
 
 class ReportsAndContractsScreen extends StatelessWidget {
   const ReportsAndContractsScreen({super.key});
@@ -35,7 +36,7 @@ class ReportsAndContractsScreen extends StatelessWidget {
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFFDC2626), Color(0xFFB91C1C)],
+                    colors: [CustomStyle.redDark, CustomStyle.redDark],
                   ),
                   onTap: () =>
                       TabNavigator.reports.currentState?.pushNamed('/reports'),
@@ -50,10 +51,10 @@ class ReportsAndContractsScreen extends StatelessWidget {
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFFDC2626), Color(0xFFB91C1C)],
+                    colors: [CustomStyle.redDark, CustomStyle.redDark],
                   ),
-                  onTap: () =>
-                      TabNavigator.reports.currentState?.pushNamed('/reports/contracts'),
+                  onTap: () => TabNavigator.reports.currentState
+                      ?.pushNamed('/reports/contracts'),
                 ),
 
                 const SizedBox(height: 16),
@@ -70,24 +71,22 @@ class ReportsAndContractsScreen extends StatelessWidget {
                             title: 'Create Contract',
                             subtitle: 'Create a new contract',
                             color: const Color(0xFFE11D48),
-                            onTap: () => TabNavigator
-                                .reports.currentState
+                            onTap: () => TabNavigator.reports.currentState
                                 ?.pushNamed('/reports/new-contract'),
                           ),
                         ),
                       ],
                       if (_user is Admin || _user is MasterAdmin) ...[
-                      Expanded(
-                        child: WideCard(
-                          icon: Icons.edit,
-                          title: 'Contract Components',
-                          subtitle: 'Update contract components',
-                          color: const Color(0xFFF43F5E),
-                          onTap: () => TabNavigator
-                              .reports.currentState
-                              ?.pushNamed('/reports/contract-components'),
+                        Expanded(
+                          child: WideCard(
+                            icon: Icons.edit,
+                            title: 'Contract Components',
+                            subtitle: 'Update contract components',
+                            color: const Color(0xFFF43F5E),
+                            onTap: () => TabNavigator.reports.currentState
+                                ?.pushNamed('/reports/contract-components'),
+                          ),
                         ),
-                      ),
                       ],
                     ],
                   ),

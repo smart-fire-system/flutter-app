@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/screens/home/view/home_screen.dart';
+import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ class _MainScreenState extends State<MainScreen> {
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFFDC2626), Color(0xFFB91C1C)],
+                colors: [CustomStyle.redDark, CustomStyle.redDark],
               ),
               onTap: () {
                 homeScreenKey.currentState!.setCurrentTab(AppTab.system);
@@ -53,8 +54,8 @@ class _MainScreenState extends State<MainScreen> {
               title: 'Profile',
               subtitle: 'View and manage profile',
               color: const Color(0xFFEF4444),
-              onTap: () => TabNavigator.home.currentState
-                  ?.pushNamed('/profile'),
+              onTap: () =>
+                  TabNavigator.home.currentState?.pushNamed('/profile'),
             ),
             const SizedBox(height: 16),
 
@@ -118,8 +119,8 @@ class _MainScreenState extends State<MainScreen> {
                   Color.fromARGB(255, 121, 118, 118)
                 ],
               ),
-              onTap: () => TabNavigator.home.currentState
-                  ?.pushNamed('/offline'),
+              onTap: () =>
+                  TabNavigator.home.currentState?.pushNamed('/offline'),
             ),
           ],
         ),

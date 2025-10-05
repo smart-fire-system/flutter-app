@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:fire_alarm_system/models/user.dart';
@@ -44,7 +45,7 @@ class CurrentUserCard extends StatelessWidget {
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [Color(0xFFDC2626), Color(0xFFB91C1C)],
+                      colors: [CustomStyle.redDark, CustomStyle.redDark],
                     ),
                     shape: BoxShape.circle,
                   ),
