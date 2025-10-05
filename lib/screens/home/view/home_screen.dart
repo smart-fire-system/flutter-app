@@ -70,6 +70,23 @@ class HomeScreenState extends State<HomeScreen> {
     return _canPop;
   }
 
+  Widget _buildNavIcon(IconData icon, int index) {
+    final isSelected = _currentTab.index == index;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: isSelected 
+            ? CustomStyle.redDark.withValues(alpha: 0.1)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Icon(
+        icon,
+        size: 24,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
@@ -127,58 +144,74 @@ class HomeScreenState extends State<HomeScreen> {
         ],
       ),
       bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.white,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
           boxShadow: [
             BoxShadow(
-              color: Color.fromARGB(255, 205, 202, 202),
-              spreadRadius: 2,
-              blurRadius: 10,
-              offset: Offset(0, -2),
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 20,
+              offset: const Offset(0, -5),
             ),
           ],
         ),
-        child: BottomNavigationBar(
-          selectedLabelStyle: CustomStyle.smallTextRed,
-          unselectedLabelStyle: CustomStyle.smallTextGrey,
-          backgroundColor: Colors.green,
-          selectedItemColor: CustomStyle.redDark,
-          unselectedItemColor: CustomStyle.greyMedium,
-          showUnselectedLabels: true,
-          type: BottomNavigationBarType.shifting,
-          currentIndex: _currentTab.index,
-          onTap: (int newIndex) {
-            setState(() {
-              _currentTab = AppTab.values[newIndex];
-              _activeTabs.remove(_currentTab);
-              _activeTabs.add(_currentTab);
-              if (_activeTabs.length > 1) {
-                _canPop = false;
-              }
-            });
-          },
-          items: [
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.bar_chart_outlined),
-              label: S.of(context).system,
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
+          ),
+          child: BottomNavigationBar(
+            selectedLabelStyle: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
             ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.article),
-              label: S.of(context).reports,
+            unselectedLabelStyle: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
             ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.home),
-              label: S.of(context).home,
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.support_agent),
-              label: S.of(context).complaints,
-            ),
-            BottomNavigationBarItem(
-              icon: const Icon(Icons.person),
-              label: S.of(context).myProfile,
-            ),
-          ],
+            backgroundColor: Colors.white,
+            selectedItemColor: CustomStyle.redDark,
+            unselectedItemColor: const Color(0xFF9CA3AF),
+            showUnselectedLabels: true,
+            type: BottomNavigationBarType.fixed,
+            elevation: 0,
+            currentIndex: _currentTab.index,
+            onTap: (int newIndex) {
+              setState(() {
+                _currentTab = AppTab.values[newIndex];
+                _activeTabs.remove(_currentTab);
+                _activeTabs.add(_currentTab);
+                if (_activeTabs.length > 1) {
+                  _canPop = false;
+                }
+              });
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: _buildNavIcon(Icons.bar_chart_rounded, 0),
+                label: S.of(context).system,
+              ),
+              BottomNavigationBarItem(
+                icon: _buildNavIcon(Icons.article_rounded, 1),
+                label: S.of(context).reports,
+              ),
+              BottomNavigationBarItem(
+                icon: _buildNavIcon(Icons.home_rounded, 2),
+                label: S.of(context).home,
+              ),
+              BottomNavigationBarItem(
+                icon: _buildNavIcon(Icons.support_agent_rounded, 3),
+                label: S.of(context).complaints,
+              ),
+              BottomNavigationBarItem(
+                icon: _buildNavIcon(Icons.person_rounded, 4),
+                label: S.of(context).myProfile,
+              ),
+            ],
+          ),
         ),
       ),
     );
