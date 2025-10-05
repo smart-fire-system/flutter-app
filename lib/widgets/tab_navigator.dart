@@ -1,6 +1,7 @@
 import 'package:fire_alarm_system/screens/profile/view/profile_screen.dart';
 import 'package:fire_alarm_system/screens/profile/view/update_profile.dart';
 import 'package:fire_alarm_system/screens/reports/view/contracts_screen.dart';
+import 'package:fire_alarm_system/screens/reports/view/reports_and_contracts_screen.dart';
 import 'package:fire_alarm_system/screens/system/view/master_details_screen.dart';
 import 'package:fire_alarm_system/screens/users/view/update_user.dart';
 import 'package:fire_alarm_system/screens/users/view/users_hierarchy_screen.dart';
@@ -160,7 +161,7 @@ class TabNavigator extends StatelessWidget {
       case AppTab.system:
         return const SystemScreen();
       case AppTab.reports:
-        return const ReportsScreen();
+        return const ReportsAndContractsScreen();
       case AppTab.usersAndBranches:
         return const UsersAndBranchesScreen();
       case AppTab.complaints:
