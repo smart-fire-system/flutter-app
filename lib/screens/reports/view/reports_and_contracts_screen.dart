@@ -13,14 +13,17 @@ class ReportsAndContractsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    dynamic _user;
+    dynamic user;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: const CustomAppBar(title: 'Reports & Contracts'),
+      appBar: const CustomAppBar(
+        title: 'Reports & Contracts',
+        leading: Icon(Icons.article),
+      ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
           if (state is ProfileAuthenticated) {
-            _user = state.user;
+            user = state.user;
           }
 
           return SingleChildScrollView(
@@ -28,22 +31,6 @@ class ReportsAndContractsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Large featured card - Users
-                LargeCard(
-                  icon: Icons.account_tree_rounded,
-                  title: 'Reports',
-                  subtitle: 'View and manage reports',
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [CustomStyle.redDark, CustomStyle.redDark],
-                  ),
-                  onTap: () =>
-                      TabNavigator.reports.currentState?.pushNamed('/reports'),
-                ),
-
-                const SizedBox(height: 16),
-
                 LargeCard(
                   icon: Icons.assignment,
                   title: 'Contracts',
@@ -56,41 +43,42 @@ class ReportsAndContractsScreen extends StatelessWidget {
                   onTap: () => TabNavigator.reports.currentState
                       ?.pushNamed('/reports/contracts'),
                 ),
-
                 const SizedBox(height: 16),
-
-                // Grid of smaller cards
-                IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      if (_user is Employee) ...[
-                        Expanded(
-                          child: WideCard(
-                            icon: Icons.assignment_add,
-                            title: 'Create Contract',
-                            subtitle: 'Create a new contract',
-                            color: const Color(0xFFE11D48),
-                            onTap: () => TabNavigator.reports.currentState
-                                ?.pushNamed('/reports/new-contract'),
-                          ),
-                        ),
-                      ],
-                      if (_user is Admin || _user is MasterAdmin) ...[
-                        Expanded(
-                          child: WideCard(
-                            icon: Icons.edit,
-                            title: 'Contract Components',
-                            subtitle: 'Update contract components',
-                            color: const Color(0xFFF43F5E),
-                            onTap: () => TabNavigator.reports.currentState
-                                ?.pushNamed('/reports/contract-components'),
-                          ),
-                        ),
-                      ],
-                    ],
+                if (user is Employee) ...[
+                  WideCard(
+                    icon: Icons.assignment_add,
+                    title: 'Create Contract',
+                    subtitle: 'Create a new contract',
+                    color: const Color(0xFFE11D48),
+                    onTap: () => TabNavigator.reports.currentState
+                        ?.pushNamed('/reports/new-contract'),
                   ),
+                  const SizedBox(height: 16),
+                ],
+                if (user is Admin || user is MasterAdmin) ...[
+                  WideCard(
+                    icon: Icons.edit,
+                    title: 'Contract Components',
+                    subtitle: 'Update contract components',
+                    color: const Color(0xFFF43F5E),
+                    onTap: () => TabNavigator.reports.currentState
+                        ?.pushNamed('/reports/contract-components'),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                LargeCard(
+                  icon: Icons.account_tree_rounded,
+                  title: 'Reports',
+                  subtitle: 'View and manage reports',
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [CustomStyle.redDark, CustomStyle.redDark],
+                  ),
+                  onTap: () =>
+                      TabNavigator.reports.currentState?.pushNamed('/reports'),
                 ),
+                const SizedBox(height: 16),
               ],
             ),
           );

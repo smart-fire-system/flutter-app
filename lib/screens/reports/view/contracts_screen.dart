@@ -1,7 +1,7 @@
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/report.dart';
+import 'package:fire_alarm_system/widgets/empty.dart';
 import 'package:flutter/material.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,20 +44,23 @@ class _ContractsScreenState extends State<ContractsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ReportsBloc>().add(ReadContractsRequested());
+      context.read<ReportsBloc>().add(AllContractsRequested());
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).reports),
+      appBar: const CustomAppBar(title: 'Contracts'),
       body: Directionality(
         textDirection: TextDirection.rtl,
         child: BlocBuilder<ReportsBloc, ReportsState>(
           builder: (context, state) {
-            if (state is ReportsContractsLoaded && state.contracts.isNotEmpty) {
+            if (state is AllContractsLoaded) {
               _contracts = state.contracts;
+              if (state.contracts.isEmpty) {
+                return const CustomEmpty(message: 'There are no contracts yet');
+              }
               _items = state.items;
               user = state.user;
               return ListView.separated(
@@ -271,10 +274,6 @@ class _ContractsScreenState extends State<ContractsScreen> {
                   );
                 },
               );
-            } else if (state is ReportsInitial) {
-              // Optionally trigger loading event here
-              context.read<ReportsBloc>().add(ReadContractsRequested());
-              return const Center(child: CircularProgressIndicator());
             } else {
               return const Center(child: CircularProgressIndicator());
             }

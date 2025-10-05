@@ -56,6 +56,20 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void clearStack() {
+    setState(() {
+      TabNavigator.system.currentState?.popUntil((route) => route.isFirst);
+      TabNavigator.reports.currentState?.popUntil((route) => route.isFirst);
+      TabNavigator.home.currentState?.popUntil((route) => route.isFirst);
+      TabNavigator.complaints.currentState?.popUntil((route) => route.isFirst);
+      TabNavigator.usersAndBranches.currentState?.popUntil((route) => route.isFirst);
+      _activeTabs.clear();
+      _currentTab = AppTab.home;
+      _activeTabs.add(_currentTab);
+      _canPop = true;
+    });
+  }
+
   AppTab getCurrentTab() {
     return _currentTab;
   }

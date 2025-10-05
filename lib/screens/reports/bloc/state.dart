@@ -28,11 +28,15 @@ class ReportsContractComponentsLoaded extends ReportsState {
       {required this.items, required this.categories});
 }
 
-class ReportsContractsLoaded extends ReportsState {
+class AllContractsLoaded extends ReportsState {
   final List<ContractData> contracts;
   final List<ReportItem> items;
   final dynamic user;
-  ReportsContractsLoaded({required this.contracts, required this.items, required this.user});
+  AllContractsLoaded({
+    required this.contracts,
+    required this.items,
+    required this.user,
+  });
 }
 
 class ReportsLoading extends ReportsState {
