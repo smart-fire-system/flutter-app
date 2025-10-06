@@ -184,6 +184,13 @@ class UserRepository {
       for (var doc in usersSnapshot!.docs) {
         Map<String, dynamic> userData = doc.data() as Map<String, dynamic>;
 
+        users.allUsers.add(
+          UserInfo.fromMap(
+            userData,
+            doc.id,
+          ),
+        );
+
         if (isMasterAdmin(doc.id)) {
           if (appRepository.userRole is MasterAdmin) {
             users.masterAdmins.add(

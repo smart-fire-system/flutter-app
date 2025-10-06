@@ -8,6 +8,7 @@ import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/event.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/state.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class ViewContractScreen extends StatefulWidget {
   final List<dynamic> items;
@@ -638,6 +639,239 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     return 'منتهي';
   }
 
+  Widget _buildSignatureBox({
+    required String title,
+    required String subtitle,
+    SignatureData? signature,
+    String? signatureUrl,
+  }) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.right,
+              style: CustomStyle.smallTextBRed,
+            ),
+            const SizedBox(height: 8),
+            Container(
+              height: 80,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                border: Border.all(color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                subtitle,
+                textAlign: TextAlign.center,
+                style: CustomStyle.smallText,
+              ),
+            ),
+            const SizedBox(height: 8),
+            if (signature != null && signature.name != null) ...[
+              Center(
+                child: GestureDetector(
+                  onTap: () => _showSignatureInfoDialog(
+                      context, title, subtitle, signature,
+                      signatureUrl: signatureUrl),
+                  child: QrImageView(
+                    data: signature.name ?? '',
+                    version: QrVersions.auto,
+                    size: 100,
+                  ),
+                ),
+              ),
+              Text(
+                signature.name ?? '',
+                textAlign: TextAlign.center,
+                style: CustomStyle.smallText,
+              ),
+              if (signatureUrl != null)
+                Image.network(signatureUrl, height: 100),
+            ]
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showSignatureInfoDialog(BuildContext context, String title,
+      String subtitle, SignatureData signature,
+      {String? signatureUrl}) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: AlertDialog(
+            title: Text(title, style: CustomStyle.mediumTextBRed),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(subtitle, style: CustomStyle.smallText),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: QrImageView(
+                          data: signature.name ?? '',
+                          version: QrVersions.auto,
+                        ),
+                      ),
+                      if (signatureUrl != null)
+                        Image.network(signatureUrl, height: 100),
+                    ],
+                  ),
+                  Table(
+                    border:
+                        TableBorder.all(color: Colors.grey.shade300, width: 1),
+                    columnWidths: const <int, TableColumnWidth>{
+                      0: IntrinsicColumnWidth(),
+                      1: FlexColumnWidth(),
+                    },
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: [
+                      TableRow(children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 8),
+                          child: Text('كود التوقيع',
+                              style: CustomStyle.smallTextBRed,
+                              textAlign: TextAlign.right),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 8),
+                          child: Text(signature.name?.toString() ?? '-',
+                              style: CustomStyle.smallText,
+                              textAlign: TextAlign.right),
+                        ),
+                      ]),
+                      TableRow(children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 8),
+                          child: Text('تاريخ التوقيع',
+                              style: CustomStyle.smallTextBRed,
+                              textAlign: TextAlign.right),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 8),
+                          child: Text(
+                            (() {
+                              final v = signature.createdAt?.toDate();
+                              if (v == null) return '-';
+                              return _formatDate(v);
+                            })(),
+                            style: CustomStyle.smallText,
+                            textAlign: TextAlign.right,
+                          ),
+                        ),
+                      ]),
+                      TableRow(children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 8),
+                          child: Text('اسم المستخدم',
+                              style: CustomStyle.smallTextBRed,
+                              textAlign: TextAlign.right),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 8),
+                          child: Text(signature.user?.name ?? '-',
+                              style: CustomStyle.smallText,
+                              textAlign: TextAlign.right),
+                        ),
+                      ]),
+                      TableRow(children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 8),
+                          child: Text('كود المستخدم',
+                              style: CustomStyle.smallTextBRed,
+                              textAlign: TextAlign.right),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 8),
+                          child: Text(signature.user?.code.toString() ?? '-',
+                              style: CustomStyle.smallText,
+                              textAlign: TextAlign.right),
+                        ),
+                      ]),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: const Text('إغلاق'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSignaturesSection(BuildContext context) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: Colors.grey.shade300),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSignatureBox(
+                    title: 'الطرف الأول',
+                    subtitle: contract.metaData.employee?.branch
+                            .contractFirstParty?.name ??
+                        '',
+                    signature: contract.metaData.employeeSignature,
+                    signatureUrl: contract.metaData.employee?.branch
+                        .contractFirstParty?.signatureUrl,
+                  ),
+                  const SizedBox(width: 12),
+                  _buildSignatureBox(
+                    title: 'الطرف الثاني',
+                    subtitle: contract.metaData.client?.info.name ?? '',
+                    signature: contract.metaData.clientSignature,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -681,148 +915,153 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                 if (idx < header.length) {
                   return header[idx];
                 }
-                final realIdx = idx - header.length;
-                final item = items[realIdx];
-                if (item.text != null) {
-                  // Skip category title if next table has no selected types (from contract)
-                  if (ContractsCommon().isCategoryTitle(item.text) &&
-                      realIdx + 1 < items.length) {
-                    final table = items[realIdx + 1]?.table;
-                    final hasAny = ContractsCommon()
-                        .typesForCategory(contract, table?.categoryIndex)
-                        .isNotEmpty;
-                    if (!hasAny) return const SizedBox.shrink();
-                  }
-                  final text =
-                      ContractsCommon().renderTemplate(contract, item.text);
-                  TextStyle style =
-                      const TextStyle(fontFamily: 'Arial', fontSize: 16);
-                  if (item.text.bold == true) {
-                    style = style.copyWith(fontWeight: FontWeight.bold);
-                  }
-                  if (item.text.underlined == true) {
-                    style =
-                        style.copyWith(decoration: TextDecoration.underline);
-                  }
-                  if (item.text.color != null) {
-                    style = style.copyWith(color: item.text.color);
-                  }
-                  return Container(
-                    color: item.text.backgroundColor,
-                    width: double.infinity,
-                    child: Text(
-                      text,
-                      style: style,
-                      textAlign: item.text.align,
-                    ),
-                  );
-                } else if (item.table != null) {
-                  final table = item.table;
-                  final types = ContractsCommon()
-                      .typesForCategory(contract, table.categoryIndex);
-                  if (types.isEmpty) return const SizedBox.shrink();
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Table(
-                          border: TableBorder.all(
-                              color: Colors.grey.shade300, width: 1),
-                          columnWidths: const <int, TableColumnWidth>{
-                            0: FlexColumnWidth(2),
-                            1: FlexColumnWidth(1),
-                            2: FlexColumnWidth(2),
-                          },
-                          defaultVerticalAlignment:
-                              TableCellVerticalAlignment.middle,
-                          children: [
-                            const TableRow(
-                              decoration: BoxDecoration(
-                                color: CustomStyle.greyDark,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(8),
-                                  topRight: Radius.circular(8),
-                                ),
-                              ),
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 8),
-                                  child: Text('النوع',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 8),
-                                  child: Text('العدد',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 8),
-                                  child: Text('ملاحظات',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
-                                ),
-                              ],
-                            ),
-                            ...types.asMap().entries.map((entry) {
-                              final i = entry.key;
-                              final type = entry.value;
-                              final isEven = i % 2 == 0;
-                              final details = contract.componentDetails[
-                                          table.categoryIndex?.toString() ?? '']
-                                      ?[type] ??
-                                  const {};
-                              final quantity = details['quantity'] ?? '';
-                              final notes = details['notes'] ?? '';
-                              return TableRow(
+                final int afterHeaderIdx = idx - header.length;
+                // Items range
+                if (afterHeaderIdx < items.length) {
+                  final item = items[afterHeaderIdx];
+                  if (item.text != null) {
+                    // Skip category title if next table has no selected types (from contract)
+                    if (ContractsCommon().isCategoryTitle(item.text) &&
+                        afterHeaderIdx + 1 < items.length) {
+                      final table = items[afterHeaderIdx + 1]?.table;
+                      final hasAny = ContractsCommon()
+                          .typesForCategory(contract, table?.categoryIndex)
+                          .isNotEmpty;
+                      if (!hasAny) return const SizedBox.shrink();
+                    }
+                    final text =
+                        ContractsCommon().renderTemplate(contract, item.text);
+                    TextStyle style =
+                        const TextStyle(fontFamily: 'Arial', fontSize: 16);
+                    if (item.text.bold == true) {
+                      style = style.copyWith(fontWeight: FontWeight.bold);
+                    }
+                    if (item.text.underlined == true) {
+                      style =
+                          style.copyWith(decoration: TextDecoration.underline);
+                    }
+                    if (item.text.color != null) {
+                      style = style.copyWith(color: item.text.color);
+                    }
+                    return Container(
+                      color: item.text.backgroundColor,
+                      width: double.infinity,
+                      child: Text(
+                        text,
+                        style: style,
+                        textAlign: item.text.align,
+                      ),
+                    );
+                  } else if (item.table != null) {
+                    final table = item.table;
+                    final types = ContractsCommon()
+                        .typesForCategory(contract, table.categoryIndex);
+                    if (types.isEmpty) return const SizedBox.shrink();
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Table(
+                            border: TableBorder.all(
+                                color: Colors.grey.shade300, width: 1),
+                            columnWidths: const <int, TableColumnWidth>{
+                              0: FlexColumnWidth(2),
+                              1: FlexColumnWidth(1),
+                              2: FlexColumnWidth(2),
+                            },
+                            defaultVerticalAlignment:
+                                TableCellVerticalAlignment.middle,
+                            children: [
+                              const TableRow(
                                 decoration: BoxDecoration(
-                                  color: isEven
-                                      ? Colors.grey.shade50
-                                      : Colors.white,
+                                  color: CustomStyle.greyDark,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(8),
+                                    topRight: Radius.circular(8),
+                                  ),
                                 ),
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 8),
-                                    child:
-                                        Text(type, textAlign: TextAlign.center),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 8),
+                                    child: Text('النوع',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white)),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 8),
-                                    child: Text(quantity,
-                                        textAlign: TextAlign.center),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 8),
+                                    child: Text('العدد',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white)),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 8),
-                                    child: Text(notes,
-                                        textAlign: TextAlign.center),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 12, horizontal: 8),
+                                    child: Text('ملاحظات',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white)),
                                   ),
                                 ],
-                              );
-                            }),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
+                              ),
+                              ...types.asMap().entries.map((entry) {
+                                final i = entry.key;
+                                final type = entry.value;
+                                final isEven = i % 2 == 0;
+                                final details = contract.componentDetails[
+                                        table.categoryIndex?.toString() ??
+                                            '']?[type] ??
+                                    const {};
+                                final quantity = details['quantity'] ?? '';
+                                final notes = details['notes'] ?? '';
+                                return TableRow(
+                                  decoration: BoxDecoration(
+                                    color: isEven
+                                        ? Colors.grey.shade50
+                                        : Colors.white,
+                                  ),
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 8),
+                                      child: Text(type,
+                                          textAlign: TextAlign.center),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 8),
+                                      child: Text(quantity,
+                                          textAlign: TextAlign.center),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 8),
+                                      child: Text(notes,
+                                          textAlign: TextAlign.center),
+                                    ),
+                                  ],
+                                );
+                              }),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
                 }
-                return const SizedBox.shrink();
+                // After items: show signatures section
+                return _buildSignaturesSection(context);
               },
               itemCount: () {
-                return 2 + items.length; // state + info + items
+                return 3 + items.length + 1; // 3 headers + items + signatures
               }(),
               separatorBuilder: (context, idx) {
                 // Add spacing between header blocks and items

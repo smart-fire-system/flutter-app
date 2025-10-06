@@ -1,6 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/company.dart';
 
+class ContractFirstParty {
+  String name;
+  String address;
+  String commercialRecord;
+  String g;
+  String idNumber;
+  String signatureUrl;
+  ContractFirstParty({
+    required this.name,
+    required this.address,
+    required this.commercialRecord,
+    required this.g,
+    required this.idNumber,
+    required this.signatureUrl,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'address': address,
+      'commercialRecord': commercialRecord,
+      'g': g,
+      'idNumber': idNumber,
+      'signatureUrl': signatureUrl,
+    };
+  }
+
+  factory ContractFirstParty.fromMap(Map<String, dynamic> map) {
+    return ContractFirstParty(
+      name: map['name'],
+      address: map['address'],
+      commercialRecord: map['commercialRecord'],
+      g: map['g'],
+      idNumber: map['idNumber'],
+      signatureUrl: map['signatureUrl'],
+    );
+  }
+}
+
 class Branch {
   int? code;
   String? id;
@@ -11,11 +50,13 @@ class Branch {
   String comment;
   Timestamp? createdAt;
   Company company;
+  ContractFirstParty? contractFirstParty;
 
   Branch({
     this.id,
     this.code,
     this.createdAt,
+    this.contractFirstParty,
     required this.company,
     required this.name,
     required this.address,
@@ -73,6 +114,9 @@ class Branch {
       email: map['email'],
       comment: map['comment'],
       createdAt: map['createdAt'],
+      contractFirstParty: map['contractFirstParty'] != null
+          ? ContractFirstParty.fromMap(map['contractFirstParty'])
+          : null,
     );
   }
 }

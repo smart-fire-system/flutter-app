@@ -132,6 +132,20 @@ class ReportsRepository {
     try {
       final QuerySnapshot<Map<String, dynamic>> snapshot =
           await _firestore.collection('contracts').get();
+      final QuerySnapshot<Map<String, dynamic>> signaturesSnapshot =
+          await _firestore.collection('signatures').get();
+      final List<SignatureData> signatures = signaturesSnapshot.docs.map((doc) {
+        final Map<String, dynamic> data = doc.data();
+        SignatureData signature = SignatureData.fromJson(data);
+        signature.id = doc.id;
+        try {
+          signature.user = appRepository.users.allUsers
+              .firstWhere((u) => u.id == signature.userId);
+        } catch (_) {
+          signature.user = null;
+        }
+        return signature;
+      }).toList();
       final contracts = snapshot.docs.map((doc) {
         final Map<String, dynamic> data = doc.data();
         final contract = ContractData.fromJson(data);
@@ -140,6 +154,18 @@ class ReportsRepository {
               .firstWhere((c) => c.info.id == contract.metaData.employeeId);
           contract.metaData.client = appRepository.users.clients
               .firstWhere((c) => c.info.id == contract.metaData.clientId);
+          try {
+            contract.metaData.employeeSignature = signatures.firstWhere(
+                (s) => s.id == contract.metaData.employeeSignature.id);
+          } catch (_) {
+            contract.metaData.employeeSignature = SignatureData();
+          }
+          try {
+            contract.metaData.clientSignature = signatures.firstWhere(
+                (s) => s.id == contract.metaData.clientSignature.id);
+          } catch (_) {
+            contract.metaData.clientSignature = SignatureData();
+          }
         } catch (_) {}
         contract.metaData.id ??= doc.id;
         return contract;
@@ -239,14 +265,14 @@ class ReportsRepository {
           'metaData.clientSignatureId': sigRef.id,
           'metaData.state': 'active'
         });
-        signedContract.metaData.clientSignatureId = sigRef.id;
+        signedContract.metaData.clientSignature.id = sigRef.id;
         signedContract.metaData.state = ContractState.active;
       } else {
         txn.update(contractRef, {
           'metaData.employeeSignatureId': sigRef.id,
           'metaData.state': 'pendingClient'
         });
-        signedContract.metaData.employeeSignatureId = sigRef.id;
+        signedContract.metaData.employeeSignature.id = sigRef.id;
         signedContract.metaData.state = ContractState.pendingClient;
       }
     });

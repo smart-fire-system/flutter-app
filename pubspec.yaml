@@ -65,6 +65,7 @@ dependencies:
   jhijri_picker: ^1.0.1
   pdf: ^3.10.8
   printing: ^5.13.3
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_launcher_icons: "^0.14.1"

@@ -180,4 +180,5 @@ class Users {
   List<Employee> employees = [];
   List<Client> clients = [];
   List<NoRoleUser> noRoleUsers = [];
+  List<UserInfo> allUsers = [];
 }
