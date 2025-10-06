@@ -24,6 +24,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
   List<Client> _clients = [];
   Client? _selectedClient;
   Employee? _employee;
+  int _duplicatdDateIndex = 0;
   final List<Map<String, dynamic>> _paramValues = [];
   final List<Map<String, Map<String, dynamic>>> _tableStates = [];
   final List<Map<String, Map<String, TextEditingController>>>
@@ -294,6 +295,9 @@ class _NewContractScreenState extends State<NewContractScreen> {
         paramMap[key] = GregorianDateParameter();
       } else if (type == HijriDateParameter) {
         paramMap[key] = HijriDateParameter();
+        if (key == 'paramContractAddDate') {
+          _duplicatdDateIndex = idx;
+        }
       } else if (type == DayParameter) {
         paramMap[key] = DayParameter();
       }
@@ -301,7 +305,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
     _paramValues[idx] = paramMap;
   }
 
-  void _updateContractDataFromParam(int itemIndex, String key, dynamic typed) {
+  void _updateContractDataFromParam(String key, dynamic typed) {
     String text;
     try {
       text = typed?.text ?? '';
@@ -429,8 +433,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
           onChanged: (value) {
             setState(() {
               paramValues[paramName].value = value;
-              _updateContractDataFromParam(
-                  itemIndex, paramName, paramValues[paramName]);
+              _updateContractDataFromParam(paramName, paramValues[paramName]);
             });
           },
           maxWidth: MediaQuery.of(context).size.width,
@@ -444,8 +447,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
           onChanged: (value) {
             setState(() {
               paramValues[paramName].value = int.tryParse(value);
-              _updateContractDataFromParam(
-                  itemIndex, paramName, paramValues[paramName]);
+              _updateContractDataFromParam(paramName, paramValues[paramName]);
             });
           },
           keyboardType: TextInputType.number,
@@ -466,8 +468,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
             if (picked != null) {
               setState(() {
                 paramValues[paramName].value = picked;
-                _updateContractDataFromParam(
-                    itemIndex, paramName, paramValues[paramName]);
+                _updateContractDataFromParam(paramName, paramValues[paramName]);
               });
             }
           },
@@ -490,6 +491,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
       } else if (paramType == HijriDateParameter) {
         widget = GestureDetector(
           onTap: () async {
+            if (paramName == 'paramContractAddDate') return;
             JPickerValue? picked = await showGlobalDatePicker(
                 context: context,
                 pickerType: PickerType.JHijri,
@@ -498,8 +500,15 @@ class _NewContractScreenState extends State<NewContractScreen> {
             if (picked != null) {
               setState(() {
                 paramValues[paramName].value = picked;
-                _updateContractDataFromParam(
-                    itemIndex, paramName, paramValues[paramName]);
+                _updateContractDataFromParam(paramName, paramValues[paramName]);
+                if (paramName == 'paramContractAgreementHijriDate') {
+                  _paramValues[_duplicatdDateIndex]['paramContractAddDate']
+                      .value = picked;
+                  _updateContractDataFromParam(
+                      'paramContractAddDate',
+                      _paramValues[_duplicatdDateIndex]
+                          ['paramContractAddDate']);
+                }
               });
             }
           },
@@ -549,8 +558,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
             if (selectedDay != null) {
               setState(() {
                 paramValues[paramName].value = selectedDay;
-                _updateContractDataFromParam(
-                    itemIndex, paramName, paramValues[paramName]);
+                _updateContractDataFromParam(paramName, paramValues[paramName]);
               });
             }
           },
