@@ -116,15 +116,28 @@ class ExportPdf {
         return '\u202B$t\u202C';
       }
 
+      String formatDate(DateTime? dt) {
+        if (dt == null) return '-';
+        final y = dt.year.toString().padLeft(4, '0');
+        final m = dt.month.toString().padLeft(2, '0');
+        final d = dt.day.toString().padLeft(2, '0');
+        return '$y-$m-$d';
+      }
+
+      // Network images are omitted for PDF to keep generation synchronous
+
       pw.Widget buildSignatureBox({
         required String title,
+        required String subtitle,
         required SignatureData signature,
-        required String fallbackName,
+        required String userName,
+        required String userCode,
+        pw.ImageProvider? signatureImage,
       }) {
-        final String name = signature.name?.trim().isNotEmpty == true
-            ? signature.name!.trim()
-            : fallbackName;
-        final String dateStr = signature.createdAt?.toDate().toString() ?? '';
+        final String codeValue = signature.name ?? '-';
+        final String dateValue = signature.createdAt == null
+            ? '-'
+            : formatDate(signature.createdAt?.toDate());
         return pw.Container(
           padding: const pw.EdgeInsets.all(8),
           decoration: pw.BoxDecoration(
@@ -140,66 +153,112 @@ class ExportPdf {
                 textDirection: pw.TextDirection.rtl,
                 style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
               ),
-              pw.SizedBox(height: 6),
+              pw.SizedBox(height: 8),
               pw.Container(
-                height: 48,
+                height: 60,
+                alignment: pw.Alignment.topRight,
                 decoration: pw.BoxDecoration(
                   border: pw.Border.all(
-                    color: pw_colors.PdfColors.grey300,
-                    width: 1,
-                  ),
+                      color: pw_colors.PdfColors.grey300, width: 1),
                   color: pw_colors.PdfColors.white,
+                  borderRadius: pw.BorderRadius.circular(6),
+                ),
+                child: pw.Text(
+                  enforceRtl(subtitle),
+                  textAlign: pw.TextAlign.right,
+                  textDirection: pw.TextDirection.rtl,
+                  style: const pw.TextStyle(fontSize: 10),
                 ),
               ),
-              pw.SizedBox(height: 6),
+              pw.SizedBox(height: 8),
               pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  pw.Expanded(
-                    child: pw.Text(
-                      enforceRtl('الاسم: ${name.isEmpty ? '-' : name}').trim(),
-                      textAlign: pw.TextAlign.right,
-                      textDirection: pw.TextDirection.rtl,
-                      style: const pw.TextStyle(fontSize: 10),
+                  pw.SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: pw.BarcodeWidget(
+                      barcode: pw.Barcode.qrCode(),
+                      data: codeValue,
                     ),
                   ),
-                  pw.SizedBox(width: 8),
-                  pw.Text(
-                    enforceRtl('التاريخ: ${dateStr.isEmpty ? '-' : dateStr}')
-                        .trim(),
+                  if (signatureImage != null) ...[
+                    pw.SizedBox(width: 10),
+                    pw.SizedBox(
+                        width: 100,
+                        height: 100,
+                        child:
+                            pw.Image(signatureImage, fit: pw.BoxFit.contain)),
+                  ],
+                ],
+              ),
+              pw.SizedBox(height: 8),
+              pw.Padding(
+                padding:
+                    const pw.EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                child: pw.Text(enforceRtl(codeValue),
                     textAlign: pw.TextAlign.right,
                     textDirection: pw.TextDirection.rtl,
-                    style: const pw.TextStyle(fontSize: 10),
-                  ),
-                ],
+                    style: const pw.TextStyle(fontSize: 10)),
+              ),
+              pw.Padding(
+                padding:
+                    const pw.EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                child: pw.Text(enforceRtl(dateValue),
+                    textAlign: pw.TextAlign.right,
+                    textDirection: pw.TextDirection.rtl,
+                    style: const pw.TextStyle(fontSize: 10)),
               ),
             ],
           ),
         );
       }
 
-      List<pw.Widget> buildSignatures() {
+      Future<List<pw.Widget>> buildSignatures() async {
         final emp = contract.metaData.employeeSignature;
         final cli = contract.metaData.clientSignature;
         final empName = contract.metaData.employee?.info.name ?? '';
         final cliName = contract.metaData.client?.info.name ?? '';
+        final empCode = (contract.metaData.employee?.info.code ?? 0).toString();
+        final cliCode = (contract.metaData.client?.info.code ?? 0).toString();
+        final empSubtitle =
+            contract.metaData.employee?.branch.contractFirstParty?.name ?? '';
+        final cliSubtitle = contract.metaData.client?.info.name ?? '';
+        pw.ImageProvider? empSigImage; // Omitted to keep export synchronous
+        try {
+          final resp = await http
+              .get(Uri.parse(contract.metaData.employee?.branch
+                      .contractFirstParty?.signatureUrl ??
+                  ''))
+              .timeout(const Duration(seconds: 10));
+          if (resp.statusCode == 200) {
+            empSigImage = pw.MemoryImage(Uint8List.fromList(resp.bodyBytes));
+          }
+        } catch (_) {}
+
         return [
           pw.SizedBox(height: 16),
           pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Expanded(
                 child: buildSignatureBox(
-                  title: 'توقيع الموظف',
+                  title: 'الطرف الأول',
+                  subtitle: empSubtitle,
                   signature: emp,
-                  fallbackName: empName,
+                  userName: empName,
+                  userCode: empCode,
+                  signatureImage: empSigImage,
                 ),
               ),
               pw.SizedBox(width: 12),
               pw.Expanded(
                 child: buildSignatureBox(
-                  title: 'توقيع العميل',
+                  title: 'الطرف الثاني',
+                  subtitle: cliSubtitle,
                   signature: cli,
-                  fallbackName: cliName,
+                  userName: cliName,
+                  userCode: cliCode,
                 ),
               ),
             ],
@@ -350,18 +409,33 @@ class ExportPdf {
         return body;
       }
 
+      List<pw.Widget> signatures = await buildSignatures();
+
       pdf.addPage(
         pw.MultiPage(
           pageFormat: pw_colors.PdfPageFormat.a4,
           textDirection: pw.TextDirection.rtl,
           build: (context) => [
             ...buildBody(),
-            ...buildSignatures(),
+            ...signatures,
           ],
         ),
       );
 
-      await Printing.layoutPdf(onLayout: (format) async => pdf.save());
+      final String defaultName = (() {
+        final num = contract.paramContractNumber;
+        final code = contract.metaData.code?.toString();
+        final base = (num != null && num.isNotEmpty)
+            ? 'contract_$num'
+            : (code != null && code.isNotEmpty)
+                ? 'contract_$code'
+                : 'contract';
+        return '$base.pdf';
+      })();
+      await Printing.layoutPdf(
+        name: defaultName,
+        onLayout: (format) async => pdf.save(),
+      );
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
