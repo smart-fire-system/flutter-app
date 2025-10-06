@@ -122,6 +122,7 @@ class GrowingTextField extends StatefulWidget {
   final TextStyle? style;
   final int? maxLines;
   final TextDirection textDirection;
+  final bool enabled;
 
   const GrowingTextField({
     super.key,
@@ -134,6 +135,7 @@ class GrowingTextField extends StatefulWidget {
     this.style,
     this.maxLines,
     this.textDirection = TextDirection.rtl,
+    this.enabled = true,
   });
 
   @override
@@ -165,8 +167,8 @@ class _GrowingTextFieldState extends State<GrowingTextField> {
 
   void _updateWidth(String text) {
     final textStyle = widget.style ?? const TextStyle(fontSize: 16);
-    final span =
-        TextSpan(text: text.isEmpty ? widget.hintText ?? '' : text, style: textStyle);
+    final span = TextSpan(
+        text: text.isEmpty ? widget.hintText ?? '' : text, style: textStyle);
     final tp = TextPainter(
         text: span, maxLines: 1, textDirection: widget.textDirection);
     tp.layout();
@@ -185,6 +187,7 @@ class _GrowingTextFieldState extends State<GrowingTextField> {
         width: _width,
         child: TextField(
           controller: _controller,
+          enabled: widget.enabled,
           decoration: InputDecoration(
             isDense: true,
             contentPadding:

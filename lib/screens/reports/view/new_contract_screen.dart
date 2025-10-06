@@ -404,8 +404,28 @@ class _NewContractScreenState extends State<NewContractScreen> {
           item.parameters != null ? item.parameters![paramName] : null;
       Widget widget;
       if (paramType == StringParameter) {
+        if (paramName == 'paramFirstPartyName') {
+          paramValues[paramName].value =
+              _employee!.branch.contractFirstParty!.name;
+        } else if (paramName == 'paramFirstPartyCommNumber') {
+          paramValues[paramName].value =
+              _employee!.branch.contractFirstParty!.commercialRecord;
+        } else if (paramName == 'paramFirstPartyAddress') {
+          paramValues[paramName].value =
+              _employee!.branch.contractFirstParty!.address;
+        } else if (paramName == 'paramFirstPartyRep') {
+          paramValues[paramName].value =
+              _employee!.branch.contractFirstParty!.repName;
+        } else if (paramName == 'paramFirstPartyRepIdNumber') {
+          paramValues[paramName].value =
+              _employee!.branch.contractFirstParty!.idNumber;
+        } else if (paramName == 'paramFirstPartyG') {
+          paramValues[paramName].value =
+              _employee!.branch.contractFirstParty!.g;
+        }
         widget = GrowingTextField(
           value: paramValues[paramName].text,
+          enabled: !paramName.startsWith('paramFirstParty'),
           onChanged: (value) {
             setState(() {
               paramValues[paramName].value = value;

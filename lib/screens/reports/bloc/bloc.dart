@@ -125,7 +125,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     final List<ReportItem> items = [
       ReportItem(
         text: ReportTextItem(
-          templateValue: 'عقد رقم {{paramContractNumber}}/ت ',
+          templateValue: 'عقد رقم {{paramContractNumber}}/FB ',
           parameters: {
             'paramContractNumber': IntParameter,
           },
@@ -169,7 +169,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         text: ReportTextItem(
           templateValue: 'سجل تجاري رقم: {{paramFirstPartyCommNumber}} ',
           parameters: {
-            'paramFirstPartyCommNumber': IntParameter,
+            'paramFirstPartyCommNumber': StringParameter,
           },
           paddingAfter: 0,
         ),
@@ -452,24 +452,6 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
           paddingAfter: 24,
           bold: true,
           align: TextAlign.center,
-        ),
-      ),
-      ReportItem(
-        text: ReportTextItem(
-          templateValue: 'الطرف الأول: {{param_name}} ',
-          parameters: {
-            'param_name': StringParameter,
-          },
-          paddingAfter: 0,
-        ),
-      ),
-      ReportItem(
-        text: ReportTextItem(
-          templateValue: 'الطرف الثاني: {{param_name}} ',
-          parameters: {
-            'param_name': StringParameter,
-          },
-          paddingAfter: 0,
         ),
       ),
     ]);

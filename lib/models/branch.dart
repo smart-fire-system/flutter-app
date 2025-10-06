@@ -3,6 +3,7 @@ import 'package:fire_alarm_system/models/company.dart';
 
 class ContractFirstParty {
   String name;
+  String repName;
   String address;
   String commercialRecord;
   String g;
@@ -10,6 +11,7 @@ class ContractFirstParty {
   String signatureUrl;
   ContractFirstParty({
     required this.name,
+    required this.repName,
     required this.address,
     required this.commercialRecord,
     required this.g,
@@ -20,6 +22,7 @@ class ContractFirstParty {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
+      'repName': repName,
       'address': address,
       'commercialRecord': commercialRecord,
       'g': g,
@@ -31,6 +34,7 @@ class ContractFirstParty {
   factory ContractFirstParty.fromMap(Map<String, dynamic> map) {
     return ContractFirstParty(
       name: map['name'],
+      repName: map['repName'],
       address: map['address'],
       commercialRecord: map['commercialRecord'],
       g: map['g'],
