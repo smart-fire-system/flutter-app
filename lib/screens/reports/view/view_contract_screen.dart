@@ -1,11 +1,12 @@
 import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/screens/reports/view/common.dart';
+import 'package:fire_alarm_system/screens/reports/view/export_pdf.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/event.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/state.dart';
-import 'package:fire_alarm_system/models/report.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 
 class ViewContractScreen extends StatefulWidget {
@@ -35,67 +36,6 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     items = widget.items;
     contract = widget.contract;
     user = widget.user;
-  }
-
-  String _paramText(String key) {
-    switch (key) {
-      case 'paramContractNumber':
-        return contract.paramContractNumber ?? '';
-      case 'paramContractAgreementDay':
-        return contract.paramContractAgreementDay ?? '';
-      case 'paramContractAgreementHijriDate':
-        return contract.paramContractAgreementHijriDate ?? '';
-      case 'paramContractAgreementGregorianDate':
-        return contract.paramContractAgreementGregorianDate ?? '';
-      case 'paramFirstPartyName':
-        return contract.paramFirstPartyName ?? '';
-      case 'paramFirstPartyCommNumber':
-        return contract.paramFirstPartyCommNumber ?? '';
-      case 'paramFirstPartyAddress':
-        return contract.paramFirstPartyAddress ?? '';
-      case 'paramFirstPartyRep':
-        return contract.paramFirstPartyRep ?? '';
-      case 'paramFirstPartyRepIdNumber':
-        return contract.paramFirstPartyRepIdNumber ?? '';
-      case 'paramFirstPartyG':
-        return contract.paramFirstPartyG ?? '';
-      case 'paramSecondPartyName':
-        return contract.paramSecondPartyName ?? '';
-      case 'paramSecondPartyCommNumber':
-        return contract.paramSecondPartyCommNumber ?? '';
-      case 'paramSecondPartyAddress':
-        return contract.paramSecondPartyAddress ?? '';
-      case 'paramSecondPartyRep':
-        return contract.paramSecondPartyRep ?? '';
-      case 'paramSecondPartyRepIdNumber':
-        return contract.paramSecondPartyRepIdNumber ?? '';
-      case 'paramSecondPartyG':
-        return contract.paramSecondPartyG ?? '';
-      case 'paramContractAddDate':
-        return contract.paramContractAddDate ?? '';
-      case 'paramContractPeriod':
-        return contract.paramContractPeriod ?? '';
-      case 'paramContractAmount':
-        return contract.paramContractAmount ?? '';
-      default:
-        return '';
-    }
-  }
-
-  String _renderTemplate(ReportTextItem item) {
-    String result = item.templateValue;
-    if (item.parameters != null) {
-      item.parameters!.forEach((key, type) {
-        final text = _paramText(key);
-        result = result.replaceAll('{{$key}}', text);
-      });
-    }
-    return result;
-  }
-
-  bool _isCategoryTitle(ReportTextItem item) {
-    final t = item.templateValue.trim();
-    return t.startsWith('• ');
   }
 
   String _formatDate(DateTime? date) {
@@ -698,27 +638,23 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     return 'منتهي';
   }
 
-  List<String> _typesForCategory(int? categoryIndex) {
-    if (categoryIndex == null) return const [];
-    final List<String> names = [];
-    for (final cat in contract.components) {
-      for (final item in cat.items) {
-        if (item.categoryIndex == categoryIndex) {
-          final String name = (item.arName.trim().isNotEmpty
-                  ? item.arName.trim()
-                  : item.enName.trim())
-              .trim();
-          if (!names.contains(name)) names.add(name);
-        }
-      }
-    }
-    return names;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Preview Report')),
+      appBar: AppBar(
+        title: const Text('Preview Report'),
+        actions: [
+          IconButton(
+            tooltip: 'Export PDF',
+            icon: const Icon(Icons.picture_as_pdf),
+            onPressed: () => ExportPdf().contract(
+              context: context,
+              items: items,
+              contract: contract,
+            ),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Directionality(
@@ -749,14 +685,16 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                 final item = items[realIdx];
                 if (item.text != null) {
                   // Skip category title if next table has no selected types (from contract)
-                  if (_isCategoryTitle(item.text) &&
+                  if (ContractsCommon().isCategoryTitle(item.text) &&
                       realIdx + 1 < items.length) {
                     final table = items[realIdx + 1]?.table;
-                    final hasAny =
-                        _typesForCategory(table?.categoryIndex).isNotEmpty;
+                    final hasAny = ContractsCommon()
+                        .typesForCategory(contract, table?.categoryIndex)
+                        .isNotEmpty;
                     if (!hasAny) return const SizedBox.shrink();
                   }
-                  final text = _renderTemplate(item.text);
+                  final text =
+                      ContractsCommon().renderTemplate(contract, item.text);
                   TextStyle style =
                       const TextStyle(fontFamily: 'Arial', fontSize: 16);
                   if (item.text.bold == true) {
@@ -780,7 +718,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                   );
                 } else if (item.table != null) {
                   final table = item.table;
-                  final types = _typesForCategory(table.categoryIndex);
+                  final types = ContractsCommon()
+                      .typesForCategory(contract, table.categoryIndex);
                   if (types.isEmpty) return const SizedBox.shrink();
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),

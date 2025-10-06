@@ -16,9 +16,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   final AppRepository appRepository;
 
   ReportsBloc({required this.appRepository}) : super(ReportsInitial()) {
-    appRepository.authStateStream.listen((_) {
-      
-    });
+    appRepository.authStateStream.listen((_) {});
     on<ReportsItemsRequested>(_onLoad);
     on<ReportsContractComponentsRequested>(_onContractComponentsLoad);
     on<ReportsContractComponentsAddRequested>(_onContractComponentsAdd);
@@ -83,6 +81,10 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
   ) async {
     emit(ReportsLoading());
     contracts = await appRepository.reportsRepository.readContracts();
+    components = await appRepository.reportsRepository.readContractComponents();
+    categories = await appRepository.reportsRepository
+        .readContractComponentsCategories();
+
     emit(AllContractsLoaded(
       contracts: contracts!,
       items: getContractItems(),
