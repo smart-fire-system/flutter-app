@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
@@ -6,6 +8,7 @@ import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/models/user_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fire_alarm_system/utils/error_logger.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -46,14 +49,12 @@ class AuthRepository {
 
       try {
         await _checkUserExists();
+        ErrorLogger.uploadErrorLog();
         return null;
-      } catch (e) {
-        await signOut();
-        if (e is FirebaseException) {
-          return e.code;
-        } else {
-          return e.toString();
-        }
+      } catch (e, stack) {
+        _setUserNotAuthenticated();
+        ErrorLogger.log(e, stack);
+        return 'network_error';
       }
     });
   }
@@ -220,8 +221,11 @@ class AuthRepository {
     UserInfo userInfo = UserInfo(
       id: user.uid,
     );
-    final documentSnapshot =
-        await _firestore.collection('users').doc(userInfo.id).get();
+    final documentSnapshot = await _firestore
+        .collection('users')
+        .doc(userInfo.id)
+        .get(const GetOptions(source: Source.server))
+        .timeout(const Duration(seconds: 10));
     if (documentSnapshot.exists) {
       userInfo.name = documentSnapshot.get('name');
       userInfo.email = documentSnapshot.get('email');
@@ -243,16 +247,20 @@ class AuthRepository {
   }
 
   Future<dynamic> _getRoleUser(UserInfo user) async {
-    appRepository.userRepository.masterAdminsSnapshot =
-        await _firestore.collection('masterAdmins').get();
+    appRepository.userRepository.masterAdminsSnapshot = await _firestore
+        .collection('masterAdmins')
+        .get(const GetOptions(source: Source.server))
+        .timeout(const Duration(seconds: 10));
     if (appRepository.userRepository.isMasterAdmin(user.id)) {
       return MasterAdmin(
         info: user,
       );
     }
 
-    appRepository.userRepository.adminsSnapshot =
-        await _firestore.collection('admins').get();
+    appRepository.userRepository.adminsSnapshot = await _firestore
+        .collection('admins')
+        .get(const GetOptions(source: Source.server))
+        .timeout(const Duration(seconds: 10));
     AppPermissions? adminData = appRepository.userRepository.isAdmin(user.id);
     if (adminData != null) {
       return Admin(
@@ -261,8 +269,10 @@ class AuthRepository {
       );
     }
 
-    appRepository.userRepository.companyManagersSnapshot =
-        await _firestore.collection('companyManagers').get();
+    appRepository.userRepository.companyManagersSnapshot = await _firestore
+        .collection('companyManagers')
+        .get(const GetOptions(source: Source.server))
+        .timeout(const Duration(seconds: 10));
     Map<String, dynamic>? companyManagerData =
         appRepository.userRepository.isCompanyManager(user.id);
     if (companyManagerData != null) {
@@ -283,8 +293,10 @@ class AuthRepository {
       );
     }
 
-    appRepository.userRepository.branchManagersSnapshot =
-        await _firestore.collection('branchManagers').get();
+    appRepository.userRepository.branchManagersSnapshot = await _firestore
+        .collection('branchManagers')
+        .get(const GetOptions(source: Source.server))
+        .timeout(const Duration(seconds: 10));
     Map<String, dynamic>? branchManagerData =
         appRepository.userRepository.isBranchManager(user.id);
     if (branchManagerData != null) {
@@ -301,8 +313,10 @@ class AuthRepository {
       );
     }
 
-    appRepository.userRepository.employeesSnapshot =
-        await _firestore.collection('employees').get();
+    appRepository.userRepository.employeesSnapshot = await _firestore
+        .collection('employees')
+        .get(const GetOptions(source: Source.server))
+        .timeout(const Duration(seconds: 10));
     Map<String, dynamic>? employeeData =
         appRepository.userRepository.isEmployee(user.id);
     if (employeeData != null) {
@@ -319,8 +333,10 @@ class AuthRepository {
       );
     }
 
-    appRepository.userRepository.clientsSnapshot =
-        await _firestore.collection('clients').get();
+    appRepository.userRepository.clientsSnapshot = await _firestore
+        .collection('clients')
+        .get(const GetOptions(source: Source.server))
+        .timeout(const Duration(seconds: 10));
     Map<String, dynamic>? clientData =
         appRepository.userRepository.isClient(user.id);
     if (clientData != null) {
@@ -342,8 +358,11 @@ class AuthRepository {
 
   Future<void> _addUserToFirestore(UserInfo userInfo) async {
     final firebaseUser = _firebaseAuth.currentUser;
-    final infoDoc =
-        await _firestore.collection('info').doc('maxUserCode').get();
+    final infoDoc = await _firestore
+        .collection('info')
+        .doc('maxUserCode')
+        .get(const GetOptions(source: Source.server))
+        .timeout(const Duration(seconds: 10));
     userInfo.code = infoDoc['value'] as int;
     await _firestore
         .collection('info')
