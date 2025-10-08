@@ -8,57 +8,32 @@ import 'state.dart';
 
 class UsersBloc extends Bloc<UsersEvent, UsersState> {
   final AppRepository appRepository;
+  AppMessage? message;
 
   UsersBloc({required this.appRepository}) : super(UsersInitial()) {
-    appRepository.authStateStream.listen((data) {
-      add(AuthChanged(error: data));
-    }, onError: (error) {
-      add(AuthChanged(error: error.toString()));
-    });
-
-    appRepository.usersStream.listen((data) {
-      add(AuthChanged());
-    }, onError: (error) {
-      add(AuthChanged(error: error.toString()));
-    });
-
-    on<AuthChanged>((event, emit) async {
-      if (event.error == null) {
+    on<Refresh>((event, emit) async {
+      if (event.error == null && appRepository.isUserReady()) {
         emit(UsersLoading());
-        if (appRepository.authStatus != AuthStatus.authenticated ||
-            appRepository.userInfo.phoneNumber.isEmpty) {
-          emit(UsersNotAuthenticated());
-        } else {
-          try {
-            final users = appRepository.users;
-            final permissions = appRepository.userRole.permissions;
-            emit(UsersAuthenticated(
-              roleUser: appRepository.userRole,
-              companies: appRepository.companies,
-              branches: appRepository.branches,
-              masterAdmins: users.masterAdmins,
-              admins: users.admins,
-              companyManagers: users.companyManagers,
-              branchManagers: users.branchManagers,
-              employees: users.employees,
-              clients: users.clients,
-              noRoleUsers: appRepository.userRole is MasterAdmin ||
-                      permissions.canUpdateAdmins ||
-                      permissions.canUpdateCompanyManagers ||
-                      permissions.canUpdateBranchManagers ||
-                      permissions.canUpdateEmployees ||
-                      permissions.canUpdateClients
-                  ? users.noRoleUsers
-                  : [],
-              message: event.message,
-            ));
-          } catch (e) {
-            emit(UsersAuthenticated(
-              roleUser: appRepository.userRole,
-              error: e.toString(),
-            ));
-          }
-        }
+        emit(UsersAuthenticated(
+          roleUser: appRepository.userRole,
+          companies: appRepository.companies,
+          branches: appRepository.branches,
+          masterAdmins: appRepository.masterAdmins,
+          admins: appRepository.admins,
+          companyManagers: appRepository.companyManagers,
+          branchManagers: appRepository.branchManagers,
+          employees: appRepository.employees,
+          clients: appRepository.clients,
+          noRoleUsers: appRepository.userRole is MasterAdmin ||
+                  appRepository.permissions.canUpdateAdmins ||
+                  appRepository.permissions.canUpdateCompanyManagers ||
+                  appRepository.permissions.canUpdateBranchManagers ||
+                  appRepository.permissions.canUpdateEmployees ||
+                  appRepository.permissions.canUpdateClients
+              ? appRepository.noRoleUsers
+              : [],
+          message: message,
+        ));
       } else {
         emit(UsersNotAuthenticated(error: event.error));
       }
@@ -73,7 +48,6 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
           companyId: event.companyId,
           branchId: event.branchId,
         );
-        AppMessage? message;
         UserRole? oldRole =
             appRepository.userRepository.getUserRole(event.userId);
         if (event.permissions.role == UserRole.masterAdmin) {
@@ -127,10 +101,29 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
             message = AppMessage(id: AppMessageId.clientDeleted);
           }
         }
-        add(AuthChanged(message: message));
       } catch (e) {
-        add(AuthChanged(error: e.toString()));
+        add(Refresh(error: e.toString()));
       }
+    });
+
+    add(Refresh());
+
+    appRepository.authStateStream.listen((data) {
+      add(Refresh());
+    }, onError: (error) {
+      add(Refresh(error: error.toString()));
+    });
+
+    appRepository.branchesAndCompaniesStream.listen((_) {
+      add(Refresh());
+    }, onError: (error) {
+      add(Refresh(error: error.toString()));
+    });
+
+    appRepository.usersStream.listen((_) {
+      add(Refresh());
+    }, onError: (error) {
+      add(Refresh(error: error.toString()));
     });
   }
 }

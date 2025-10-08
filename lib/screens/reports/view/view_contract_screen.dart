@@ -8,18 +8,15 @@ import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/event.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/state.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
+import 'package:fire_alarm_system/models/report.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class ViewContractScreen extends StatefulWidget {
-  final List<dynamic> items;
-  final ContractData contract;
-  final dynamic user;
+  final String contractId;
 
   const ViewContractScreen({
     super.key,
-    required this.items,
-    required this.contract,
-    required this.user,
+    required this.contractId,
   });
 
   @override
@@ -27,17 +24,9 @@ class ViewContractScreen extends StatefulWidget {
 }
 
 class _ViewContractScreenState extends State<ViewContractScreen> {
-  late List<dynamic> items;
-  late ContractData contract;
-  late dynamic user;
-
-  @override
-  void initState() {
-    super.initState();
-    items = widget.items;
-    contract = widget.contract;
-    user = widget.user;
-  }
+  late ContractData _contract;
+  late dynamic _user;
+  late List<ContractItem> _contractItems;
 
   String _formatDate(DateTime? date) {
     if (date == null) return '';
@@ -102,10 +91,10 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                 children: [
                   Expanded(
                     child: Text(
-                      (contract.paramContractNumber?.isNotEmpty == true)
-                          ? 'عقد رقم: ${contract.paramContractNumber}'
-                          : (contract.metaData.code != null
-                              ? 'عقد رقم: ${contract.metaData.code}'
+                      (_contract.paramContractNumber?.isNotEmpty == true)
+                          ? 'عقد رقم: ${_contract.paramContractNumber}'
+                          : (_contract.metaData.code != null
+                              ? 'عقد رقم: ${_contract.metaData.code}'
                               : 'عقد'),
                       style: CustomStyle.mediumTextBRed,
                       textAlign: TextAlign.right,
@@ -115,18 +104,18 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: _stateColor(contract.metaData.state)
+                      color: _stateColor(_contract.metaData.state)
                           .withValues(alpha: 0.1),
                       border: Border.all(
-                        color: _stateColor(contract.metaData.state),
+                        color: _stateColor(_contract.metaData.state),
                         width: 1,
                       ),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
-                      _stateLabel(contract.metaData.state),
+                      _stateLabel(_contract.metaData.state),
                       style: CustomStyle.smallTextB.copyWith(
-                        color: _stateColor(contract.metaData.state),
+                        color: _stateColor(_contract.metaData.state),
                       ),
                     ),
                   ),
@@ -147,7 +136,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                           style: CustomStyle.smallTextBRed,
                         ),
                         TextSpan(
-                          text: _formatDate(contract.metaData.startDate),
+                          text: _formatDate(_contract.metaData.startDate),
                           style: CustomStyle.smallText,
                         ),
                         TextSpan(
@@ -155,7 +144,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                           style: CustomStyle.smallTextBRed,
                         ),
                         TextSpan(
-                          text: _formatDate(contract.metaData.endDate),
+                          text: _formatDate(_contract.metaData.endDate),
                           style: CustomStyle.smallText,
                         ),
                       ],
@@ -179,7 +168,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
-                            text: contract.metaData.employee?.info.name ?? '-',
+                            text: _contract.metaData.employee?.info.name ?? '-',
                             style: CustomStyle.smallText,
                           ),
                         ],
@@ -205,7 +194,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
-                            text: contract.metaData.client?.info.name ?? '-',
+                            text: _contract.metaData.client?.info.name ?? '-',
                             style: CustomStyle.smallText,
                           ),
                         ],
@@ -232,7 +221,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                           ),
                           TextSpan(
                             text:
-                                contract.metaData.employee?.branch.name ?? '-',
+                                _contract.metaData.employee?.branch.name ?? '-',
                             style: CustomStyle.smallText,
                           ),
                         ],
@@ -250,29 +239,29 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
   }
 
   bool _isPendingCurrentEmployeeSign() {
-    if (user is! Employee) return false;
-    final String currentId = (user as Employee).info.id;
-    final String? contractEmpId = contract.metaData.employee?.info.id;
-    return contract.metaData.state == ContractState.draft &&
+    if (_user is! Employee) return false;
+    final String currentId = (_user as Employee).info.id;
+    final String? contractEmpId = _contract.metaData.employee?.info.id;
+    return _contract.metaData.state == ContractState.draft &&
         contractEmpId != null &&
         contractEmpId == currentId;
   }
 
   bool _isPendingOtherEmployeeSign() {
-    return contract.metaData.state == ContractState.draft;
+    return _contract.metaData.state == ContractState.draft;
   }
 
   bool _isPendingCurrentClientSign() {
-    if (user is! Client) return false;
-    final String currentId = (user as Client).info.id;
-    final String? contractClientId = contract.metaData.client?.info.id;
-    return contract.metaData.state == ContractState.pendingClient &&
+    if (_user is! Client) return false;
+    final String currentId = (_user as Client).info.id;
+    final String? contractClientId = _contract.metaData.client?.info.id;
+    return _contract.metaData.state == ContractState.pendingClient &&
         contractClientId != null &&
         contractClientId == currentId;
   }
 
   bool _isPendingOtherClientSign() {
-    return contract.metaData.state == ContractState.pendingClient;
+    return _contract.metaData.state == ContractState.pendingClient;
   }
 
   Widget _buildStateCard(BuildContext context) {
@@ -313,9 +302,9 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
       iconColor = Colors.orange;
       title = 'بانتظار توقيع العميل';
       subtitle = 'بانتظار توقيع العميل لكي يكون العقد ساري.';
-    } else if (contract.metaData.state == ContractState.active) {
+    } else if (_contract.metaData.state == ContractState.active) {
       final DateTime today = DateTime.now();
-      final DateTime? end = contract.metaData.endDate;
+      final DateTime? end = _contract.metaData.endDate;
       if (end != null &&
           !end.isBefore(DateTime(today.year, today.month, today.day))) {
         cardColor = Colors.green.shade50;
@@ -513,7 +502,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                                       Navigator.of(ctx).pop();
                                       context.read<ReportsBloc>().add(
                                             SignContractRequested(
-                                                contract: contract),
+                                                contract: _contract),
                                           );
                                     }
                                   },
@@ -606,7 +595,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
   }
 
   int _currentStageIndex() {
-    final ContractState? s = contract.metaData.state;
+    final ContractState? s = _contract.metaData.state;
     if (s == ContractState.draft) return 0; // Draft
     if (s == ContractState.pendingClient) return 1; // Employee Signed
     // active: client signed, then Active/Expired based on end date
@@ -619,9 +608,9 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
   }
 
   String _finalStageLabel() {
-    if (contract.metaData.state == ContractState.active) {
+    if (_contract.metaData.state == ContractState.active) {
       final DateTime today = DateTime.now();
-      final DateTime? end = contract.metaData.endDate;
+      final DateTime? end = _contract.metaData.endDate;
       if (end != null &&
           !end.isBefore(DateTime(today.year, today.month, today.day))) {
         return 'ساري';
@@ -631,7 +620,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     }
     // For non-active states, we still show the last node label based on end date if present
     final DateTime today2 = DateTime.now();
-    final DateTime? end2 = contract.metaData.endDate;
+    final DateTime? end2 = _contract.metaData.endDate;
     if (end2 != null &&
         !end2.isBefore(DateTime(today2.year, today2.month, today2.day))) {
       return 'ساري';
@@ -850,18 +839,18 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                 children: [
                   _buildSignatureBox(
                     title: 'الطرف الأول',
-                    subtitle: contract.metaData.employee?.branch
+                    subtitle: _contract.metaData.employee?.branch
                             .contractFirstParty?.name ??
                         '',
-                    signature: contract.metaData.employeeSignature,
-                    signatureUrl: contract.metaData.employee?.branch
+                    signature: _contract.metaData.employeeSignature,
+                    signatureUrl: _contract.metaData.employee?.branch
                         .contractFirstParty?.signatureUrl,
                   ),
                   const SizedBox(width: 12),
                   _buildSignatureBox(
                     title: 'الطرف الثاني',
-                    subtitle: contract.metaData.client?.info.name ?? '',
-                    signature: contract.metaData.clientSignature,
+                    subtitle: _contract.metaData.client?.info.name ?? '',
+                    signature: _contract.metaData.clientSignature,
                   ),
                 ],
               ),
@@ -883,8 +872,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
             icon: const Icon(Icons.picture_as_pdf),
             onPressed: () => ExportPdf().contract(
               context: context,
-              items: items,
-              contract: contract,
+              items: _contractItems,
+              contract: _contract,
             ),
           ),
         ],
@@ -893,184 +882,186 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Directionality(
           textDirection: TextDirection.rtl,
-          child: BlocListener<ReportsBloc, ReportsState>(
-            listener: (context, state) {
-              if (state is ReportsSigned) {
-                setState(() {
-                  contract = state.contract;
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('تم التوقيع بنجاح')),
-                );
+          child: BlocBuilder<ReportsBloc, ReportsState>(
+            builder: (context, state) {
+              if (state is ReportsAuthenticated) {
+                return _buildBody(state);
               }
+              return const Center(child: CircularProgressIndicator());
             },
-            child: ListView.separated(
-              itemBuilder: (context, idx) {
-                // Build dynamic header stack (single unified state card)
-                final List<Widget> header = [];
-                header.add(_buildSignActionCard(context));
-                header.add(_buildStateCard(context));
-                header.add(_buildContractInfoCard(context));
-
-                if (idx < header.length) {
-                  return header[idx];
-                }
-                final int afterHeaderIdx = idx - header.length;
-                // Items range
-                if (afterHeaderIdx < items.length) {
-                  final item = items[afterHeaderIdx];
-                  if (item.text != null) {
-                    // Skip category title if next table has no selected types (from contract)
-                    if (ContractsCommon().isCategoryTitle(item.text) &&
-                        afterHeaderIdx + 1 < items.length) {
-                      final table = items[afterHeaderIdx + 1]?.table;
-                      final hasAny = ContractsCommon()
-                          .typesForCategory(contract, table?.categoryIndex)
-                          .isNotEmpty;
-                      if (!hasAny) return const SizedBox.shrink();
-                    }
-                    final text =
-                        ContractsCommon().renderTemplate(contract, item.text);
-                    TextStyle style =
-                        const TextStyle(fontFamily: 'Arial', fontSize: 16);
-                    if (item.text.bold == true) {
-                      style = style.copyWith(fontWeight: FontWeight.bold);
-                    }
-                    if (item.text.underlined == true) {
-                      style =
-                          style.copyWith(decoration: TextDecoration.underline);
-                    }
-                    if (item.text.color != null) {
-                      style = style.copyWith(color: item.text.color);
-                    }
-                    return Container(
-                      color: item.text.backgroundColor,
-                      width: double.infinity,
-                      child: Text(
-                        text,
-                        style: style,
-                        textAlign: item.text.align,
-                      ),
-                    );
-                  } else if (item.table != null) {
-                    final table = item.table;
-                    final types = ContractsCommon()
-                        .typesForCategory(contract, table.categoryIndex);
-                    if (types.isEmpty) return const SizedBox.shrink();
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Table(
-                            border: TableBorder.all(
-                                color: Colors.grey.shade300, width: 1),
-                            columnWidths: const <int, TableColumnWidth>{
-                              0: FlexColumnWidth(2),
-                              1: FlexColumnWidth(1),
-                              2: FlexColumnWidth(2),
-                            },
-                            defaultVerticalAlignment:
-                                TableCellVerticalAlignment.middle,
-                            children: [
-                              const TableRow(
-                                decoration: BoxDecoration(
-                                  color: CustomStyle.greyDark,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    topRight: Radius.circular(8),
-                                  ),
-                                ),
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 12, horizontal: 8),
-                                    child: Text('النوع',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white)),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 12, horizontal: 8),
-                                    child: Text('العدد',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white)),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 12, horizontal: 8),
-                                    child: Text('ملاحظات',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white)),
-                                  ),
-                                ],
-                              ),
-                              ...types.asMap().entries.map((entry) {
-                                final i = entry.key;
-                                final type = entry.value;
-                                final isEven = i % 2 == 0;
-                                final details = contract.componentDetails[
-                                        table.categoryIndex?.toString() ??
-                                            '']?[type] ??
-                                    const {};
-                                final quantity = details['quantity'] ?? '';
-                                final notes = details['notes'] ?? '';
-                                return TableRow(
-                                  decoration: BoxDecoration(
-                                    color: isEven
-                                        ? Colors.grey.shade50
-                                        : Colors.white,
-                                  ),
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 8),
-                                      child: Text(type,
-                                          textAlign: TextAlign.center),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 8),
-                                      child: Text(quantity,
-                                          textAlign: TextAlign.center),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 8),
-                                      child: Text(notes,
-                                          textAlign: TextAlign.center),
-                                    ),
-                                  ],
-                                );
-                              }),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                }
-                // After items: show signatures section
-                return _buildSignaturesSection(context);
-              },
-              itemCount: () {
-                return 3 + items.length + 1; // 3 headers + items + signatures
-              }(),
-              separatorBuilder: (context, idx) {
-                // Add spacing between header blocks and items
-                return const SizedBox(height: 16);
-              },
-            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildBody(ReportsAuthenticated state) {
+    if (state.contracts == null ||
+        state.contractItems == null ||
+        state.user == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    _user = state.user;
+    _contractItems = state.contractItems!;
+    _contract = state.contracts!.firstWhere(
+      (c) => c.metaData.id == widget.contractId,
+    );
+    return ListView.separated(
+      itemBuilder: (context, idx) {
+        // Build dynamic header stack (single unified state card)
+        final List<Widget> header = [];
+        header.add(_buildSignActionCard(context));
+        header.add(_buildStateCard(context));
+        header.add(_buildContractInfoCard(context));
+
+        if (idx < header.length) {
+          return header[idx];
+        }
+        final int afterHeaderIdx = idx - header.length;
+        // Items range
+        if (afterHeaderIdx < _contractItems.length) {
+          final item = _contractItems[afterHeaderIdx];
+          if (item.text != null) {
+            // Skip category title if next table has no selected types (from contract)
+            if (ContractsCommon().isCategoryTitle(item.text!) &&
+                afterHeaderIdx + 1 < _contractItems.length) {
+              final table = _contractItems[afterHeaderIdx + 1].table;
+              final hasAny = ContractsCommon()
+                  .typesForCategory(_contract, table?.categoryIndex)
+                  .isNotEmpty;
+              if (!hasAny) return const SizedBox.shrink();
+            }
+            final text =
+                ContractsCommon().renderTemplate(_contract, item.text!);
+            TextStyle style =
+                const TextStyle(fontFamily: 'Arial', fontSize: 16);
+            if (item.text!.bold == true) {
+              style = style.copyWith(fontWeight: FontWeight.bold);
+            }
+            if (item.text!.underlined == true) {
+              style = style.copyWith(decoration: TextDecoration.underline);
+            }
+            if (item.text!.color != null) {
+              style = style.copyWith(color: item.text!.color);
+            }
+            return Container(
+              color: item.text!.backgroundColor,
+              width: double.infinity,
+              child: Text(
+                text,
+                style: style,
+                textAlign: item.text!.align,
+              ),
+            );
+          } else if (item.table != null) {
+            final table = item.table;
+            final types = ContractsCommon()
+                .typesForCategory(_contract, table!.categoryIndex);
+            if (types.isEmpty) return const SizedBox.shrink();
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Table(
+                    border:
+                        TableBorder.all(color: Colors.grey.shade300, width: 1),
+                    columnWidths: const <int, TableColumnWidth>{
+                      0: FlexColumnWidth(2),
+                      1: FlexColumnWidth(1),
+                      2: FlexColumnWidth(2),
+                    },
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: [
+                      const TableRow(
+                        decoration: BoxDecoration(
+                          color: CustomStyle.greyDark,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            topRight: Radius.circular(8),
+                          ),
+                        ),
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 8),
+                            child: Text('النوع',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 8),
+                            child: Text('العدد',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 8),
+                            child: Text('ملاحظات',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white)),
+                          ),
+                        ],
+                      ),
+                      ...types.asMap().entries.map((entry) {
+                        final i = entry.key;
+                        final type = entry.value;
+                        final isEven = i % 2 == 0;
+                        final details = _contract.componentDetails[
+                                table.categoryIndex?.toString() ?? '']?[type] ??
+                            const {};
+                        final quantity = details['quantity'] ?? '';
+                        final notes = details['notes'] ?? '';
+                        return TableRow(
+                          decoration: BoxDecoration(
+                            color: isEven ? Colors.grey.shade50 : Colors.white,
+                          ),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 8),
+                              child: Text(type, textAlign: TextAlign.center),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 8),
+                              child:
+                                  Text(quantity, textAlign: TextAlign.center),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 8),
+                              child: Text(notes, textAlign: TextAlign.center),
+                            ),
+                          ],
+                        );
+                      }),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        }
+        // After items: show signatures section
+        return _buildSignaturesSection(context);
+      },
+      itemCount: () {
+        return 3 + _contractItems.length + 1; // 3 headers + items + signatures
+      }(),
+      separatorBuilder: (context, idx) {
+        // Add spacing between header blocks and items
+        return const SizedBox(height: 16);
+      },
     );
   }
 }

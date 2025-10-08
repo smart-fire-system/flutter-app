@@ -19,14 +19,13 @@ class ErrorLogger {
     _file = File('${dir.path}/error_log.txt');
   }
 
-  static Future<void> log(Object error, StackTrace stack,
-      {String? where}) async {
+  static Future<void> log(Object error, StackTrace stack, String? comment) async {
     await init();
     final time = DateTime.now().toIso8601String();
     final entry = StringBuffer()
       ..writeln('-------------------------')
       ..writeln('🕒 $time')
-      ..writeln('Function: ${where ?? "Unknown"}')
+      ..writeln('Comment: ${comment ?? "Unknown"}')
       ..writeln('Type: ${error.runtimeType}')
       ..writeln('Message: $error')
       ..writeln('Stack Trace:')

@@ -15,6 +15,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 
+enum AuthChangeResult {
+  noError,
+  networkError,
+  generalError,
+  appNeedsUpdate,
+}
+
 class AuthRepository {
   final firebase.FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
@@ -22,51 +29,54 @@ class AuthRepository {
   final AppRepository appRepository;
   String? googleUserName;
   String? googleUserEmail;
+  final _authStateChangesController =
+      StreamController<AuthChangeResult>.broadcast();
 
   AuthRepository({required this.appRepository})
       : _firebaseAuth = firebase.FirebaseAuth.instance,
         _firestore = FirebaseFirestore.instance,
-        _userAuth = UserAuth(
-          authStatus: AuthStatus.notAuthenticated,
-        );
+        _userAuth = UserAuth(authStatus: AuthStatus.notAuthenticated) {
+    _firebaseAuth.authStateChanges().listen((_) async {
+      final result = await _handleAuthStateChanged();
+      _authStateChangesController.add(result);
+    });
+  }
 
   AuthStatus get authStatus => _userAuth.authStatus;
   UserInfo get userInfo => _userAuth.userRole.info as UserInfo;
   dynamic get userRole => _userAuth.userRole;
+  Stream<AuthChangeResult> get authStateChanges =>
+      _authStateChangesController.stream;
 
-  Stream<String?> get authStateChanges {
-    return _firebaseAuth.authStateChanges().asyncMap((firebaseUser) async {
-      if (firebaseUser == null) {
-        _setUserNotAuthenticated();
-        return null;
-      }
+  Future<AuthChangeResult> _handleAuthStateChanged() async {
+    final firebaseUser = _firebaseAuth.currentUser;
+    AuthChangeResult result = AuthChangeResult.noError;
+    if (firebaseUser == null) {
+      _setUserNotAuthenticated();
+      return result;
+    }
 
-      if (firebaseUser.emailVerified) {
-        _userAuth.authStatus = AuthStatus.authenticated;
-      } else {
-        _userAuth.authStatus = AuthStatus.authenticatedNotVerified;
-      }
+    if (firebaseUser.emailVerified) {
+      _userAuth.authStatus = AuthStatus.authenticated;
+    } else {
+      _userAuth.authStatus = AuthStatus.authenticatedNotVerified;
+    }
 
-      try {
-        await _checkUserExists();
-        ErrorLogger.uploadErrorLog();
-        return null;
-      } catch (e, stack) {
-        _setUserNotAuthenticated();
-        ErrorLogger.log(e, stack);
-        return 'network_error';
-      }
-    });
+    try {
+      await _checkUserExists();
+      ErrorLogger.uploadErrorLog();
+    } catch (e, stack) {
+      _setUserNotAuthenticated();
+      ErrorLogger.log(e, stack, '_handleAuthStateChanged');
+      result = AuthChangeResult.networkError;
+    }
+    return result;
   }
 
   Future<void> refreshUserAuth() async {
     await _firebaseAuth.currentUser?.reload();
-    firebase.User? firebaseUser = _firebaseAuth.currentUser;
-    if (firebaseUser == null) {
-      _setUserNotAuthenticated();
-    } else {
-      await _checkUserExists();
-    }
+    final result = await _handleAuthStateChanged();
+    _authStateChangesController.add(result);
   }
 
   Future<void> signOut() async {
@@ -240,7 +250,6 @@ class AuthRepository {
       await _addUserToFirestore(userInfo);
     }
     _userAuth.userRole = await _getRoleUser(userInfo);
-    // TODO: Remove this in production
     if (userInfo.email.endsWith("@test.com")) {
       _userAuth.authStatus = AuthStatus.authenticated;
     }

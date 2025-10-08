@@ -156,7 +156,7 @@ class UsersScreenState extends State<UsersScreen> {
       appBar: CustomAppBar(title: S.of(context).users),
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<UsersBloc>().add(AuthChanged());
+          context.read<UsersBloc>().add(Refresh());
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -218,7 +218,8 @@ class UsersScreenState extends State<UsersScreen> {
                           name: user.info.name,
                           role: S.of(context).masterAdmin,
                           onTap: () {
-                            TabNavigator.usersAndBranches.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState
+                                ?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );
@@ -238,7 +239,8 @@ class UsersScreenState extends State<UsersScreen> {
                           name: user.info.name,
                           role: S.of(context).admin,
                           onTap: () {
-                            TabNavigator.usersAndBranches.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState
+                                ?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );
@@ -260,7 +262,8 @@ class UsersScreenState extends State<UsersScreen> {
                           role: S.of(context).companyManager,
                           companyName: user.company.name,
                           onTap: () {
-                            TabNavigator.usersAndBranches.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState
+                                ?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );
@@ -284,7 +287,8 @@ class UsersScreenState extends State<UsersScreen> {
                           companyName: user.branch.company.name,
                           branchName: user.branch.name,
                           onTap: () {
-                            TabNavigator.usersAndBranches.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState
+                                ?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );
@@ -309,7 +313,8 @@ class UsersScreenState extends State<UsersScreen> {
                           companyName: user.branch.company.name,
                           branchName: user.branch.name,
                           onTap: () {
-                            TabNavigator.usersAndBranches.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState
+                                ?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );
@@ -335,7 +340,8 @@ class UsersScreenState extends State<UsersScreen> {
                           companyName: user.branch.company.name,
                           branchName: user.branch.name,
                           onTap: () {
-                            TabNavigator.usersAndBranches.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState
+                                ?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );
@@ -360,7 +366,8 @@ class UsersScreenState extends State<UsersScreen> {
                           name: user.info.name,
                           role: S.of(context).noRole,
                           onTap: () {
-                            TabNavigator.usersAndBranches.currentState?.pushNamed(
+                            TabNavigator.usersAndBranches.currentState
+                                ?.pushNamed(
                               '/user/view',
                               arguments: user.info.id,
                             );

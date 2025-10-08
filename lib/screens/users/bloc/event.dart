@@ -3,10 +3,10 @@ import 'package:fire_alarm_system/utils/message.dart';
 
 abstract class UsersEvent {}
 
-class AuthChanged extends UsersEvent {
+class Refresh extends UsersEvent {
   final AppMessage? message;
   final String? error;
-  AuthChanged({this.message, this.error});
+  Refresh({this.message, this.error});
 }
 
 class ModifyRequested extends UsersEvent {

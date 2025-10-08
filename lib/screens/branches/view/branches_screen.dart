@@ -119,7 +119,8 @@ class BranchesScreenState extends State<BranchesScreen> {
                   );
                   return;
                 }
-                TabNavigator.usersAndBranches.currentState?.pushNamed('/branch/add');
+                TabNavigator.usersAndBranches.currentState
+                    ?.pushNamed('/branch/add');
               },
               icon: const Icon(
                 Icons.add,
@@ -134,7 +135,7 @@ class BranchesScreenState extends State<BranchesScreen> {
           : FloatingActionButtonLocation.endFloat,
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<BranchesBloc>().add(AuthChanged());
+          context.read<BranchesBloc>().add(Refresh());
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -207,9 +208,9 @@ class BranchesScreenState extends State<BranchesScreen> {
                             ),
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: () {
-                              TabNavigator.usersAndBranches.currentState?.pushNamed(
-                                  '/branch/details',
-                                  arguments: branch.id);
+                              TabNavigator.usersAndBranches.currentState
+                                  ?.pushNamed('/branch/details',
+                                      arguments: branch.id);
                             },
                           );
                         }).toList(),

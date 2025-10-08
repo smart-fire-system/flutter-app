@@ -2,10 +2,10 @@ import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:jhijri_picker/_src/_jWidgets.dart';
 
-class ReportItem {
+class ContractItem {
   final ReportTextItem? text;
   final ReportTableItem? table;
-  ReportItem({this.text, this.table});
+  ContractItem({this.text, this.table});
 }
 
 class ReportTableItem {
@@ -94,12 +94,12 @@ class DayParameter {
   }
 }
 
-class ContractComponentItem {
+class ContractComponent {
   final String arName;
   final String enName;
   final String description;
   final int categoryIndex; // 0 = Other, otherwise 1-based index
-  ContractComponentItem({
+  ContractComponent({
     this.arName = '',
     this.enName = '',
     this.description = '',
@@ -107,17 +107,17 @@ class ContractComponentItem {
   });
 }
 
-class ContractComponentCategory {
+class ContractCategory {
   final String arName;
   final String enName;
-  ContractComponentCategory({
+  ContractCategory({
     this.arName = '',
     this.enName = '',
   });
 }
 
 class ContractComponentsData {
-  ContractComponentCategory category;
-  List<ContractComponentItem> items;
+  ContractCategory category;
+  List<ContractComponent> items;
   ContractComponentsData({required this.category, required this.items});
 }

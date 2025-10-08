@@ -1,8 +1,8 @@
 abstract class ProfileEvent {}
 
-class AuthChanged extends ProfileEvent {
+class Refresh extends ProfileEvent {
   final String? error;
-  AuthChanged({this.error});
+  Refresh({this.error});
 }
 
 class ResetPasswordRequested extends ProfileEvent {}

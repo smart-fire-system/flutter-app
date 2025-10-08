@@ -104,7 +104,8 @@ class CompaniesScreenState extends State<CompaniesScreen> {
           : FloatingActionButton.extended(
               backgroundColor: Colors.green,
               onPressed: () {
-                TabNavigator.usersAndBranches.currentState?.pushNamed('/company/add');
+                TabNavigator.usersAndBranches.currentState
+                    ?.pushNamed('/company/add');
               },
               icon: const Icon(
                 Icons.add,
@@ -119,7 +120,7 @@ class CompaniesScreenState extends State<CompaniesScreen> {
           : FloatingActionButtonLocation.endFloat,
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<BranchesBloc>().add(AuthChanged());
+          context.read<BranchesBloc>().add(Refresh());
         },
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -172,9 +173,9 @@ class CompaniesScreenState extends State<CompaniesScreen> {
                                   ),
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: () {
-                              TabNavigator.usersAndBranches.currentState?.pushNamed(
-                                  '/company/details',
-                                  arguments: company.id);
+                              TabNavigator.usersAndBranches.currentState
+                                  ?.pushNamed('/company/details',
+                                      arguments: company.id);
                             },
                           );
                         }).toList(),

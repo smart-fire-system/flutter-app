@@ -1,24 +1,19 @@
+import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/report.dart';
+import 'package:fire_alarm_system/screens/reports/bloc/state.dart';
 
 abstract class ReportsEvent {}
 
-class ReportsItemsRequested extends ReportsEvent {
-  ReportsItemsRequested();
+class Refresh extends ReportsEvent {
+  final ReportsMessage? message;
+  final String? error;
+  Refresh({this.message, this.error});
 }
 
-class ReportsContractComponentsRequested extends ReportsEvent {
-  ReportsContractComponentsRequested();
-}
-
-class ReportsContractComponentsAddRequested extends ReportsEvent {
-  final ContractComponentItem item;
-  ReportsContractComponentsAddRequested({required this.item});
-}
-
-class ReportsContractComponentsSaveRequested extends ReportsEvent {
-  final List<ContractComponentItem> items;
-  ReportsContractComponentsSaveRequested({required this.items});
+class SaveContractComponentsRequested extends ReportsEvent {
+  final List<ContractComponent> component;
+  SaveContractComponentsRequested({required this.component});
 }
 
 class SaveContractRequested extends ReportsEvent {
@@ -26,11 +21,12 @@ class SaveContractRequested extends ReportsEvent {
   SaveContractRequested({required this.contract});
 }
 
-class AllContractsRequested extends ReportsEvent {
-  AllContractsRequested();
-}
-
 class SignContractRequested extends ReportsEvent {
   final ContractData contract;
   SignContractRequested({required this.contract});
+}
+
+class FirstPartyInformationUpateRequested extends ReportsEvent {
+  final ContractFirstParty firstParty;
+  FirstPartyInformationUpateRequested({required this.firstParty});
 }

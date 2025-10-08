@@ -39,9 +39,7 @@ class SystemRepository {
 
     try {
       await db.ref(path).update(update);
-    } catch (e) {
-      /* TODO */
-    }
+    } catch (_) {}
   }
 
   Future<void> sendCommand({
@@ -66,9 +64,7 @@ class SystemRepository {
 
     try {
       await _db.ref(path).update(update);
-    } catch (e) {
-      /* TODO */
-    }
+    } catch (_) {}
   }
 
   StreamSubscription<DatabaseEvent>? _dataSubscription;
@@ -95,9 +91,7 @@ class SystemRepository {
       await _db
           .ref('branches/branch_$branchCode/status/master_$masterId')
           .remove();
-    } catch (e) {
-      /* TODO */
-    }
+    } catch (_) {}
   }
 
   List<Master> getMastersFromSnapshot(DataSnapshot snapshot, int branchCode) {

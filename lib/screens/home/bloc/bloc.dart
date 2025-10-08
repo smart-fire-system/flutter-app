@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
+import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
@@ -35,8 +36,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     }
 
-    appRepository.authStateStream.listen((data) {
-      add(AuthChanged(error: data));
+    appRepository.authStateStream.listen((status) {
+      add(AuthChanged(
+          error:
+              status == AuthChangeResult.noError ? null : status.toString()));
     }, onError: (error) {
       add(AuthChanged(error: error.toString()));
     });

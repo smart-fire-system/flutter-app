@@ -6,10 +6,10 @@ import 'package:fire_alarm_system/screens/branches/bloc/state.dart';
 
 abstract class BranchesEvent {}
 
-class AuthChanged extends BranchesEvent {
+class Refresh extends BranchesEvent {
   final BranchesMessage? message;
   final String? error;
-  AuthChanged({this.message, this.error});
+  Refresh({this.message, this.error});
 }
 
 class BranchModifyRequested extends BranchesEvent {

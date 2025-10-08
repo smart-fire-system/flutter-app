@@ -34,6 +34,5 @@ class BranchesAuthenticated extends BranchesState {
 }
 
 class BranchesNotAuthenticated extends BranchesState {
-  String? error;
-  BranchesNotAuthenticated({this.error});
+  BranchesNotAuthenticated();
 }

@@ -140,14 +140,14 @@ class ContractData {
       data.components = comps.map((e) {
         final map = (e as Map).cast<String, dynamic>();
         final catMap = (map['category'] as Map?)?.cast<String, dynamic>() ?? {};
-        final category = ContractComponentCategory(
+        final category = ContractCategory(
           arName: catMap['arName']?.toString() ?? '',
           enName: catMap['enName']?.toString() ?? '',
         );
         final itemsList = (map['items'] as List?) ?? [];
         final items = itemsList.map((it) {
           final itMap = (it as Map).cast<String, dynamic>();
-          return ContractComponentItem(
+          return ContractComponent(
             arName: itMap['arName']?.toString() ?? '',
             enName: itMap['enName']?.toString() ?? '',
             description: itMap['description']?.toString() ?? '',

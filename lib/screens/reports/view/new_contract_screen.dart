@@ -25,10 +25,14 @@ class _NewContractScreenState extends State<NewContractScreen> {
   Client? _selectedClient;
   Employee? _employee;
   int _duplicatdDateIndex = 0;
+  List<ContractComponent> _contractComponents = [];
+  List<ContractCategory> _contractCategories = [];
   final List<Map<String, dynamic>> _paramValues = [];
   final List<Map<String, Map<String, dynamic>>> _tableStates = [];
   final List<Map<String, Map<String, TextEditingController>>>
       _tableControllers = [];
+  // Local per-table selected types to avoid mutating bloc state
+  final List<List<String>> _localTableTypes = [];
   final ContractData _contractData = ContractData();
   late final TextEditingController _startDateController;
   late final TextEditingController _endDateController;
@@ -40,9 +44,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
     _startDateController = TextEditingController();
     _endDateController = TextEditingController();
     _clientController = TextEditingController();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ReportsBloc>().add(ReportsItemsRequested());
-    });
   }
 
   void _showSelectClientSheet() {
@@ -219,11 +220,11 @@ class _NewContractScreenState extends State<NewContractScreen> {
   }
 
   void _updateContractComponentsFromTables({
-    required List<ReportItem> items,
-    required List<ContractComponentItem> allComponents,
-    required List<ContractComponentCategory> categories,
+    required List<ContractItem> items,
+    required List<ContractComponent> allComponents,
+    required List<ContractCategory> categories,
   }) {
-    final Map<int, List<ContractComponentItem>> categoryIndexToItems = {};
+    final Map<int, List<ContractComponent>> categoryIndexToItems = {};
     final Map<String, Map<String, Map<String, String>>> details = {};
     for (final reportItem in items) {
       final table = reportItem.table;
@@ -231,16 +232,24 @@ class _NewContractScreenState extends State<NewContractScreen> {
       final int categoryIndex = table.categoryIndex ?? 0;
       final String categoryKey = categoryIndex.toString();
       details.putIfAbsent(categoryKey, () => {});
-      for (final String typeName in table.types) {
+
+      // Use local table types for this table index
+      final int tableIdx = items.indexOf(reportItem);
+      final List<String> localTypes =
+          (tableIdx >= 0 && tableIdx < _localTableTypes.length)
+              ? _localTableTypes[tableIdx]
+              : const [];
+
+      for (final String typeName in localTypes) {
         // Find the component by display name used in selection
-        final ContractComponentItem matched = allComponents.firstWhere(
+        final ContractComponent matched = allComponents.firstWhere(
           (c) {
             final String name =
                 (c.arName.trim().isNotEmpty ? c.arName.trim() : c.enName.trim())
                     .trim();
             return name == typeName;
           },
-          orElse: () => ContractComponentItem(
+          orElse: () => ContractComponent(
             arName: typeName,
             enName: typeName,
             description: '',
@@ -256,7 +265,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
         }
 
         // Capture quantity and notes
-        final tableIdx = items.indexOf(reportItem);
         if (tableIdx >= 0 && tableIdx < _tableStates.length) {
           final typeStates = _tableStates[tableIdx];
           final q = typeStates[typeName]?['quantity']?.toString() ?? '';
@@ -617,8 +625,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
 
   void _showAddComponentSheet(
       {required int itemIndex, required ReportTableItem table}) {
-    final bloc = context.read<ReportsBloc>();
-    final allComponents = bloc.components ?? [];
+    final allComponents = _contractComponents;
     final int categoryIndex = table.categoryIndex ?? 0;
     final filtered =
         allComponents.where((c) => c.categoryIndex == categoryIndex).toList();
@@ -686,7 +693,12 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                 ? comp.arName.trim()
                                 : comp.enName.trim())
                             .trim();
-                        final alreadyAdded = table.types.contains(name);
+                        // Ensure local table types list exists
+                        while (_localTableTypes.length <= itemIndex) {
+                          _localTableTypes.add([]);
+                        }
+                        final localTypes = _localTableTypes[itemIndex];
+                        final alreadyAdded = localTypes.contains(name);
                         return ListTile(
                           leading: const Icon(Icons.add_box_outlined),
                           title: Text(
@@ -721,8 +733,8 @@ class _NewContractScreenState extends State<NewContractScreen> {
                                     final typeControllers =
                                         _tableControllers[itemIndex];
 
-                                    // Add to table types
-                                    table.types.add(name);
+                                    // Add to local table types
+                                    localTypes.add(name);
 
                                     // Initialize state and controllers for the new row if missing
                                     typeStates[name] ??= {
@@ -756,373 +768,371 @@ class _NewContractScreenState extends State<NewContractScreen> {
       appBar: CustomAppBar(title: S.of(context).reports),
       body: BlocBuilder<ReportsBloc, ReportsState>(
         builder: (context, state) {
-          if (state is ReportsNewContractInfoLoaded && state.items.isNotEmpty) {
-            _employee = state.employee;
-            _clients = state.clients;
-            _contractData.metaData.employee = _employee;
-            _contractData.metaData.employeeId = _employee?.info.id;
-            // Display all items
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: Column(
+          if (state is ReportsAuthenticated) {
+            return _buildBody(state);
+          }
+          return const Center(child: CircularProgressIndicator());
+        },
+      ),
+    );
+  }
+
+  Widget _buildBody(ReportsAuthenticated state) {
+    if (state.employees == null ||
+        state.clients == null ||
+        state.contractItems == null ||
+        state.contractComponents == null ||
+        state.contractCategories == null ||
+        state.user == null ||
+        state.user is! Employee) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    _employee = state.user;
+    _clients = state.clients!;
+    _contractData.metaData.employee = _employee;
+    _contractData.metaData.employeeId = _employee?.info.id;
+    _contractComponents = state.contractComponents!;
+    _contractCategories = state.contractCategories!;
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Builder(builder: (ctx) {
+                return Card(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'معلومات العقد',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          enabled: false,
+                          initialValue: _employee?.branch.name ?? 'غير محدد',
+                          readOnly: true,
+                          onTap: _showSelectClientSheet,
+                          decoration: const InputDecoration(
+                            labelText: 'الفرع',
+                            suffixIcon: Icon(Icons.corporate_fare),
+                          ),
+                          textDirection: TextDirection.rtl,
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          enabled: false,
+                          initialValue: _employee?.info.name ?? 'غير محدد',
+                          readOnly: true,
+                          onTap: _showSelectClientSheet,
+                          decoration: const InputDecoration(
+                            labelText: 'الموظف',
+                            suffixIcon: Icon(Icons.person),
+                          ),
+                          textDirection: TextDirection.rtl,
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _clientController,
+                          readOnly: true,
+                          onTap: _showSelectClientSheet,
+                          decoration: const InputDecoration(
+                            labelText: 'العميل',
+                            hintText: 'اختيار العميل',
+                            suffixIcon: Icon(Icons.person),
+                          ),
+                          textDirection: TextDirection.rtl,
+                        ),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                          controller: _startDateController,
+                          readOnly: true,
+                          onTap: _pickStartDate,
+                          decoration: const InputDecoration(
+                            labelText: 'تاريخ بداية العقد',
+                            suffixIcon: Icon(Icons.date_range),
+                          ),
+                          textDirection: TextDirection.rtl,
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _endDateController,
+                          readOnly: true,
+                          onTap: _pickEndDate,
+                          decoration: const InputDecoration(
+                            labelText: 'تاريخ نهاية العقد',
+                            suffixIcon: Icon(Icons.event),
+                          ),
+                          textDirection: TextDirection.rtl,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 24),
+              ...state.contractItems!.asMap().entries.map((entry) {
+                final idx = entry.key;
+                final item = entry.value;
+                if (item.text != null) {
+                  _initParamValues(idx, item.text!);
+                  final paramValues = _paramValues[idx];
+                  return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Builder(builder: (ctx) {
-                        return Card(
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            side: BorderSide(color: Colors.grey.shade300),
+                      SizedBox(
+                        width: double.infinity,
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Wrap(
+                            textDirection: TextDirection.rtl,
+                            alignment:
+                                _mapTextAlignToWrapAlignment(item.text!.align),
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: _buildInlineTemplateWidgets(
+                                context, idx, item.text!, paramValues),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'معلومات العقد',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                TextFormField(
-                                  enabled: false,
-                                  initialValue:
-                                      _employee?.branch.name ?? 'غير محدد',
-                                  readOnly: true,
-                                  onTap: _showSelectClientSheet,
-                                  decoration: const InputDecoration(
-                                    labelText: 'الفرع',
-                                    suffixIcon: Icon(Icons.corporate_fare),
-                                  ),
-                                  textDirection: TextDirection.rtl,
-                                ),
-                                const SizedBox(height: 10),
-                                TextFormField(
-                                  enabled: false,
-                                  initialValue:
-                                      _employee?.info.name ?? 'غير محدد',
-                                  readOnly: true,
-                                  onTap: _showSelectClientSheet,
-                                  decoration: const InputDecoration(
-                                    labelText: 'الموظف',
-                                    suffixIcon: Icon(Icons.person),
-                                  ),
-                                  textDirection: TextDirection.rtl,
-                                ),
-                                const SizedBox(height: 10),
-                                TextFormField(
-                                  controller: _clientController,
-                                  readOnly: true,
-                                  onTap: _showSelectClientSheet,
-                                  decoration: const InputDecoration(
-                                    labelText: 'العميل',
-                                    hintText: 'اختيار العميل',
-                                    suffixIcon: Icon(Icons.person),
-                                  ),
-                                  textDirection: TextDirection.rtl,
-                                ),
-                                const SizedBox(height: 12),
-                                TextFormField(
-                                  controller: _startDateController,
-                                  readOnly: true,
-                                  onTap: _pickStartDate,
-                                  decoration: const InputDecoration(
-                                    labelText: 'تاريخ بداية العقد',
-                                    suffixIcon: Icon(Icons.date_range),
-                                  ),
-                                  textDirection: TextDirection.rtl,
-                                ),
-                                const SizedBox(height: 10),
-                                TextFormField(
-                                  controller: _endDateController,
-                                  readOnly: true,
-                                  onTap: _pickEndDate,
-                                  decoration: const InputDecoration(
-                                    labelText: 'تاريخ نهاية العقد',
-                                    suffixIcon: Icon(Icons.event),
-                                  ),
-                                  textDirection: TextDirection.rtl,
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
-                      const SizedBox(height: 24),
-                      ...state.items.asMap().entries.map((entry) {
-                        final idx = entry.key;
-                        final item = entry.value;
-                        if (item.text != null) {
-                          _initParamValues(idx, item.text!);
-                          final paramValues = _paramValues[idx];
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                width: double.infinity,
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  child: Wrap(
-                                    textDirection: TextDirection.rtl,
-                                    alignment: _mapTextAlignToWrapAlignment(
-                                        item.text!.align),
-                                    crossAxisAlignment:
-                                        WrapCrossAlignment.center,
-                                    children: _buildInlineTemplateWidgets(
-                                        context, idx, item.text!, paramValues),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: item.text!.paddingAfter),
-                              if (item.text!.addDivider)
-                                const Divider(color: CustomStyle.redLight),
-                            ],
-                          );
-                        } else if (item.table != null) {
-                          final table = item.table!;
-                          // Use _tableStates for table item state
-                          if (_tableStates.length <= idx) {
-                            while (_tableStates.length <= idx) {
-                              _tableStates.add({});
-                              _tableControllers.add({});
-                            }
-                            _tableStates[idx] = {
-                              for (var type in table.types)
-                                type: {
-                                  'quantity': '',
-                                  'notes': '',
-                                }
-                            };
-                            _tableControllers[idx] = {
-                              for (var type in table.types)
-                                type: {
-                                  'quantity': TextEditingController(
-                                      text: _tableStates[idx]
-                                          [type]!['quantity']),
-                                  'notes': TextEditingController(
-                                      text: _tableStates[idx][type]!['notes']),
-                                }
-                            };
-                          }
-                          final typeStates = _tableStates[idx];
-                          final typeControllers = _tableControllers[idx];
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Table(
-                                  border: TableBorder.all(
-                                      color: Colors.grey.shade300, width: 1),
-                                  columnWidths: const <int, TableColumnWidth>{
-                                    0: FixedColumnWidth(48),
-                                    1: FlexColumnWidth(2),
-                                    2: FlexColumnWidth(1),
-                                    3: FlexColumnWidth(2),
-                                  },
-                                  defaultVerticalAlignment:
-                                      TableCellVerticalAlignment.middle,
-                                  children: [
-                                    const TableRow(
-                                      decoration: BoxDecoration(
-                                        color: CustomStyle.greyDark,
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(8),
-                                          topRight: Radius.circular(8),
-                                        ),
-                                      ),
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 8),
-                                          child: Text('X',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white)),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 8),
-                                          child: Text('النوع',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white)),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 8),
-                                          child: Text('العدد',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white)),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 8),
-                                          child: Text('ملاحظات',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white)),
-                                        ),
-                                      ],
-                                    ),
-                                    ...table.types.asMap().entries.map((entry) {
-                                      final i = entry.key;
-                                      final type = entry.value;
-                                      final isEven = i % 2 == 0;
-                                      return TableRow(
-                                        decoration: BoxDecoration(
-                                          color: isEven
-                                              ? Colors.grey.shade50
-                                              : Colors.white,
-                                        ),
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 4, horizontal: 4),
-                                            child: Center(
-                                              child: IconButton(
-                                                icon: const Icon(Icons.clear,
-                                                    color: Colors.red),
-                                                tooltip: 'حذف',
-                                                onPressed: () {
-                                                  setState(() {
-                                                    final controllers =
-                                                        typeControllers
-                                                            .remove(type);
-                                                    controllers?['quantity']
-                                                        ?.dispose();
-                                                    controllers?['notes']
-                                                        ?.dispose();
-                                                    typeStates.remove(type);
-                                                    table.types.remove(type);
-                                                  });
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 8),
-                                            child: Text(type,
-                                                textAlign: TextAlign.center),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 8),
-                                            child: TextField(
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              decoration: const InputDecoration(
-                                                border: InputBorder.none,
-                                                isDense: true,
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        vertical: 8,
-                                                        horizontal: 8),
-                                              ),
-                                              textAlign: TextAlign.center,
-                                              controller: typeControllers[
-                                                  type]!['quantity'],
-                                              onChanged: (val) {
-                                                setState(() {
-                                                  typeStates[type]![
-                                                      'quantity'] = val;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 8),
-                                            child: TextField(
-                                              minLines: 1,
-                                              maxLines: null,
-                                              decoration: const InputDecoration(
-                                                border: InputBorder.none,
-                                                isDense: true,
-                                                contentPadding:
-                                                    EdgeInsets.symmetric(
-                                                        vertical: 8,
-                                                        horizontal: 8),
-                                              ),
-                                              textAlign: TextAlign.center,
-                                              controller: typeControllers[
-                                                  type]!['notes'],
-                                              onChanged: (val) {
-                                                setState(() {
-                                                  typeStates[type]!['notes'] =
-                                                      val;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }),
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: TextButton.icon(
-                                    onPressed: () => _showAddComponentSheet(
-                                        itemIndex: idx, table: table),
-                                    icon: const Icon(Icons.add),
-                                    label: const Text('إضافة'),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      }),
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _updateContractComponentsFromTables(
-                              items: state.items,
-                              allComponents: state.components,
-                              categories: state.categories,
-                            );
-
-                            context.read<ReportsBloc>().add(
-                                SaveContractRequested(contract: _contractData));
-                          },
-                          child: const Text('Save'),
                         ),
                       ),
+                      SizedBox(height: item.text!.paddingAfter),
+                      if (item.text!.addDivider)
+                        const Divider(color: CustomStyle.redLight),
                     ],
-                  ),
+                  );
+                } else if (item.table != null) {
+                  final table = item.table!;
+                  // Initialize local lists and controllers/states for this table index
+                  if (_localTableTypes.length <= idx) {
+                    while (_localTableTypes.length <= idx) {
+                      _localTableTypes.add([]);
+                    }
+                  }
+                  if (_tableStates.length <= idx) {
+                    while (_tableStates.length <= idx) {
+                      _tableStates.add({});
+                      _tableControllers.add({});
+                    }
+                    // Initialize empty for current local types
+                    _tableStates[idx] = {
+                      for (var type in _localTableTypes[idx])
+                        type: {
+                          'quantity': '',
+                          'notes': '',
+                        }
+                    };
+                    _tableControllers[idx] = {
+                      for (var type in _localTableTypes[idx])
+                        type: {
+                          'quantity': TextEditingController(
+                              text: _tableStates[idx][type]!['quantity']),
+                          'notes': TextEditingController(
+                              text: _tableStates[idx][type]!['notes']),
+                        }
+                    };
+                  }
+                  final typeStates = _tableStates[idx];
+                  final typeControllers = _tableControllers[idx];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Table(
+                          border: TableBorder.all(
+                              color: Colors.grey.shade300, width: 1),
+                          columnWidths: const <int, TableColumnWidth>{
+                            0: FixedColumnWidth(48),
+                            1: FlexColumnWidth(2),
+                            2: FlexColumnWidth(1),
+                            3: FlexColumnWidth(2),
+                          },
+                          defaultVerticalAlignment:
+                              TableCellVerticalAlignment.middle,
+                          children: [
+                            const TableRow(
+                              decoration: BoxDecoration(
+                                color: CustomStyle.greyDark,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(8),
+                                  topRight: Radius.circular(8),
+                                ),
+                              ),
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 8),
+                                  child: Text('X',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 8),
+                                  child: Text('النوع',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 8),
+                                  child: Text('العدد',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 12, horizontal: 8),
+                                  child: Text('ملاحظات',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
+                                ),
+                              ],
+                            ),
+                            ..._localTableTypes[idx]
+                                .asMap()
+                                .entries
+                                .map((entry) {
+                              final i = entry.key;
+                              final type = entry.value;
+                              final isEven = i % 2 == 0;
+                              return TableRow(
+                                decoration: BoxDecoration(
+                                  color: isEven
+                                      ? Colors.grey.shade50
+                                      : Colors.white,
+                                ),
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4, horizontal: 4),
+                                    child: Center(
+                                      child: IconButton(
+                                        icon: const Icon(Icons.clear,
+                                            color: Colors.red),
+                                        tooltip: 'حذف',
+                                        onPressed: () {
+                                          setState(() {
+                                            final controllers =
+                                                typeControllers.remove(type);
+                                            controllers?['quantity']?.dispose();
+                                            controllers?['notes']?.dispose();
+                                            typeStates.remove(type);
+                                            _localTableTypes[idx].remove(type);
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 8),
+                                    child:
+                                        Text(type, textAlign: TextAlign.center),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 8),
+                                    child: TextField(
+                                      keyboardType: TextInputType.number,
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                        isDense: true,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 8, horizontal: 8),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      controller:
+                                          typeControllers[type]!['quantity'],
+                                      onChanged: (val) {
+                                        setState(() {
+                                          typeStates[type]!['quantity'] = val;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10, horizontal: 8),
+                                    child: TextField(
+                                      minLines: 1,
+                                      maxLines: null,
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                        isDense: true,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 8, horizontal: 8),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      controller:
+                                          typeControllers[type]!['notes'],
+                                      onChanged: (val) {
+                                        setState(() {
+                                          typeStates[type]!['notes'] = val;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }),
+                          ],
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: TextButton.icon(
+                            onPressed: () => _showAddComponentSheet(
+                                itemIndex: idx, table: table),
+                            icon: const Icon(Icons.add),
+                            label: const Text('إضافة'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              }),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    _updateContractComponentsFromTables(
+                      items: state.contractItems!,
+                      allComponents: _contractComponents,
+                      categories: _contractCategories,
+                    );
+
+                    context
+                        .read<ReportsBloc>()
+                        .add(SaveContractRequested(contract: _contractData));
+                  },
+                  child: const Text('Save'),
                 ),
               ),
-            );
-          } else if (state is ReportsInitial) {
-            // Optionally trigger loading event here
-            context.read<ReportsBloc>().add(ReportsItemsRequested());
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is ReportsSaved) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Saved')),
-              );
-              Navigator.of(context).pop();
-            });
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
+            ],
+          ),
+        ),
       ),
     );
   }

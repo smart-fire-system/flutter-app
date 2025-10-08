@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/models/pin.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
+import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'event.dart';
@@ -28,7 +29,8 @@ class SystemBloc extends Bloc<SystemEvent, SystemState> {
     });
 
     appRepository.authStateStream.listen((data) {
-      add(AuthChanged(error: data == "" ? null : data));
+      add(AuthChanged(
+          error: data == AuthChangeResult.noError ? null : data.toString()));
     }, onError: (error) {
       add(AuthChanged(error: error.toString()));
     });

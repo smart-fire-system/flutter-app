@@ -2,52 +2,45 @@ import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/report.dart';
 import 'package:fire_alarm_system/models/user.dart';
 
+enum ReportsMessage {
+  contractComponentsSaved,
+  contractSaved,
+  contractSigned,
+}
+
 abstract class ReportsState {}
 
 class ReportsInitial extends ReportsState {}
 
-class ReportsNewContractInfoLoaded extends ReportsState {
-  final List<ReportItem> items;
-  final List<ContractComponentCategory> categories;
-  final List<ContractComponentItem> components;
-  final Employee? employee;
-  final List<Client> clients;
-  ReportsNewContractInfoLoaded({
-    required this.items,
-    required this.categories,
-    required this.components,
-    required this.employee,
-    required this.clients,
-  });
-}
-
-class ReportsContractComponentsLoaded extends ReportsState {
-  final List<ContractComponentItem> items;
-  final List<ContractComponentCategory> categories;
-  ReportsContractComponentsLoaded(
-      {required this.items, required this.categories});
-}
-
-class AllContractsLoaded extends ReportsState {
-  final List<ContractData> contracts;
-  final List<ReportItem> items;
+class ReportsAuthenticated extends ReportsState {
+  final List<ContractItem>? contractItems;
+  final List<ContractCategory>? contractCategories;
+  final List<ContractComponent>? contractComponents;
+  final List<ContractData>? contracts;
   final dynamic user;
-  AllContractsLoaded({
+  final List<Employee>? employees;
+  final List<Client>? clients;
+  final ReportsMessage? message;
+  final String? error;
+  ReportsAuthenticated({
+    required this.contractItems,
+    required this.contractCategories,
+    required this.contractComponents,
     required this.contracts,
-    required this.items,
     required this.user,
+    required this.employees,
+    required this.clients,
+    this.message,
+    this.error,
   });
+}
+
+class ReportsNotAuthenticated extends ReportsState {
+  final ReportsMessage? message;
+  final String? error;
+  ReportsNotAuthenticated({this.message, this.error});
 }
 
 class ReportsLoading extends ReportsState {
   ReportsLoading();
-}
-
-class ReportsSaved extends ReportsState {
-  ReportsSaved();
-}
-
-class ReportsSigned extends ReportsState {
-  final ContractData contract;
-  ReportsSigned({required this.contract});
 }

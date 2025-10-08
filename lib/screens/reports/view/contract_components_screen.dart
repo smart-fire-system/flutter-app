@@ -19,15 +19,15 @@ enum _LocalStatus { normal, added, updated, deleted }
 enum _SortBy { ar, en }
 
 class _LocalComponent {
-  ContractComponentItem item;
+  ContractComponent component;
   _LocalStatus status;
-  _LocalComponent({required this.item, required this.status});
+  _LocalComponent({required this.component, required this.status});
 }
 
 class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
-  final List<_LocalComponent> _localItems = [];
-  final List<ContractComponentCategory> _categories = [];
-  bool _initialized = false;
+  final List<_LocalComponent> _localComponents = [];
+  final List<ContractCategory> _categories = [];
+  List<_LocalComponent> _viewItems = [];
   bool _saving = false;
   final TextEditingController _searchController = TextEditingController();
   String _searchText = '';
@@ -36,11 +36,6 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (context.mounted) {
-        context.read<ReportsBloc>().add(ReportsContractComponentsRequested());
-      }
-    });
   }
 
   @override
@@ -51,19 +46,19 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
 
   Future<void> _saveAll() async {
     setState(() => _saving = true);
-    final toSave = _localItems
+    final toSave = _localComponents
         .where((e) => e.status != _LocalStatus.deleted)
-        .map((e) => e.item)
+        .map((e) => e.component)
         .toList();
     context.read<ReportsBloc>().add(
-          ReportsContractComponentsSaveRequested(items: toSave),
+          SaveContractComponentsRequested(component: toSave),
         );
   }
 
   void _showBottomSheet({int? index}) {
     final bool isEdit = index != null;
-    final ContractComponentItem? current =
-        isEdit ? _localItems[index].item : null;
+    final ContractComponent? current =
+        isEdit ? _localComponents[index].component : null;
     final ar = TextEditingController(text: current?.arName ?? '');
     final en = TextEditingController(text: current?.enName ?? '');
     final desc = TextEditingController(text: current?.description ?? '');
@@ -197,8 +192,8 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
                             onPressed: () {
                               Navigator.pop(ctx);
                               setState(() {
-                                _localItems[index] = _LocalComponent(
-                                  item: ContractComponentItem(
+                                _localComponents[index] = _LocalComponent(
+                                  component: ContractComponent(
                                     arName: ar.text.trim(),
                                     enName: en.text.trim(),
                                     description: desc.text.trim(),
@@ -232,8 +227,8 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
                             Navigator.pop(ctx);
                             setState(() {
                               if (isEdit) {
-                                _localItems[index] = _LocalComponent(
-                                  item: ContractComponentItem(
+                                _localComponents[index] = _LocalComponent(
+                                  component: ContractComponent(
                                     arName: ar.text.trim(),
                                     enName: en.text.trim(),
                                     description: desc.text.trim(),
@@ -244,9 +239,9 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
                               } else {
                                 _searchText = '';
                                 _searchController.clear();
-                                _localItems.add(
+                                _localComponents.add(
                                   _LocalComponent(
-                                    item: ContractComponentItem(
+                                    component: ContractComponent(
                                       arName: ar.text.trim(),
                                       enName: en.text.trim(),
                                       description: desc.text.trim(),
@@ -304,14 +299,15 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
       ),
       body: BlocListener<ReportsBloc, ReportsState>(
         listener: (context, state) {
-          if (state is ReportsSaved) {
+          if (state is ReportsAuthenticated) {
             setState(() {
-              for (final entry in _localItems) {
+              for (final entry in _localComponents) {
                 if (entry.status != _LocalStatus.deleted) {
                   entry.status = _LocalStatus.normal;
                 }
               }
-              _localItems.removeWhere((e) => e.status == _LocalStatus.deleted);
+              _localComponents
+                  .removeWhere((e) => e.status == _LocalStatus.deleted);
               _saving = false;
             });
             ScaffoldMessenger.of(context).showSnackBar(
@@ -320,160 +316,157 @@ class _ContractComponentsScreenState extends State<ContractComponentsScreen> {
           }
         },
         child: BlocBuilder<ReportsBloc, ReportsState>(
-          buildWhen: (prev, curr) =>
-              curr is ReportsLoading || curr is ReportsContractComponentsLoaded,
           builder: (context, state) {
-            if (state is ReportsLoading && !_initialized) {
+            if (state is ReportsLoading) {
               return const Center(child: CircularProgressIndicator());
+            } else if (state is ReportsAuthenticated) {
+              return _buildBody(state);
             }
-            if (state is ReportsContractComponentsLoaded && !_initialized) {
-              _localItems.clear();
-              _categories.clear();
-              _categories.addAll(state.categories);
-              for (final item in state.items) {
-                _localItems.add(
-                    _LocalComponent(item: item, status: _LocalStatus.normal));
-              }
-              _initialized = true;
-            }
-            if (_localItems.isEmpty) {
-              return const Center(child: Text('No components yet'));
-            }
-
-            final String q = _searchText.trim().toLowerCase();
-            final List<_LocalComponent> viewItems = _localItems
-                .where((e) => q.isEmpty
-                    ? true
-                    : (e.item.arName.toLowerCase().contains(q) ||
-                        e.item.enName.toLowerCase().contains(q) ||
-                        e.item.description.toLowerCase().contains(q)))
-                .toList();
-            viewItems.sort((a, b) {
-              final String ak =
-                  _sortBy == _SortBy.ar ? a.item.arName : a.item.enName;
-              final String bk =
-                  _sortBy == _SortBy.ar ? b.item.arName : b.item.enName;
-              return ak.toLowerCase().compareTo(bk.toLowerCase());
-            });
-
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                            hintText: 'Search (AR/EN/Description)',
-                            prefixIcon: const Icon(Icons.search),
-                            suffixIcon: _searchText.isEmpty
-                                ? null
-                                : IconButton(
-                                    icon: const Icon(Icons.clear),
-                                    onPressed: () {
-                                      setState(() {
-                                        _searchText = '';
-                                        _searchController.clear();
-                                      });
-                                    },
-                                  ),
-                            border: const OutlineInputBorder(),
-                            isDense: true,
-                          ),
-                          onChanged: (v) => setState(() => _searchText = v),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      DropdownButton<_SortBy>(
-                        value: _sortBy,
-                        items: const [
-                          DropdownMenuItem(
-                              value: _SortBy.en, child: Text('Sort: EN')),
-                          DropdownMenuItem(
-                              value: _SortBy.ar, child: Text('Sort: AR')),
-                        ],
-                        onChanged: (v) =>
-                            setState(() => _sortBy = v ?? _SortBy.en),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: viewItems.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
-                    itemBuilder: (context, index) {
-                      final entry = viewItems[index];
-                      Color? color;
-                      switch (entry.status) {
-                        case _LocalStatus.added:
-                          color = Colors.green.withValues(alpha: 0.50);
-                          break;
-                        case _LocalStatus.updated:
-                          color = Colors.orange.withValues(alpha: 0.50);
-                          break;
-                        case _LocalStatus.deleted:
-                          color = Colors.red.withValues(alpha: 0.50);
-                          break;
-                        case _LocalStatus.normal:
-                          color = null;
-                          break;
-                      }
-                      final String arName = entry.item.arName.trim();
-                      final String enName = entry.item.enName.trim();
-                      final String desc = entry.item.description.trim();
-                      final bool bothNames =
-                          arName.isNotEmpty && enName.isNotEmpty;
-                      final String singleName =
-                          enName.isNotEmpty ? enName : arName;
-
-                      return Card(
-                        color: color,
-                        child: ListTile(
-                          onTap: () => _showBottomSheet(
-                              index: _localItems.indexOf(entry)),
-                          leading: const Icon(Icons.category),
-                          title: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (bothNames) ...[
-                                Text('Arabic Name: $arName',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600)),
-                                const SizedBox(height: 4),
-                                Text('English Name: $enName',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600)),
-                              ] else ...[
-                                Text('Name: $singleName',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600)),
-                              ],
-                              if (desc.isNotEmpty) ...[
-                                Text('Description: $desc',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w600)),
-                              ],
-                              Text(
-                                  'Category: ${_categories[entry.item.categoryIndex].arName} - ${_categories[entry.item.categoryIndex].enName}',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w600)),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            );
+            return const Center(child: CircularProgressIndicator());
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildBody(ReportsAuthenticated state) {
+    if (state.contractCategories == null || state.contractComponents == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    _localComponents.clear();
+    _categories.clear();
+    _categories.addAll(state.contractCategories!);
+    for (final component in state.contractComponents!) {
+      _localComponents.add(
+          _LocalComponent(component: component, status: _LocalStatus.normal));
+    }
+    if (_localComponents.isEmpty) {
+      return const Center(child: Text('No components yet'));
+    }
+
+    final String q = _searchText.trim().toLowerCase();
+    _viewItems = _localComponents
+        .where((e) => q.isEmpty
+            ? true
+            : (e.component.arName.toLowerCase().contains(q) ||
+                e.component.enName.toLowerCase().contains(q) ||
+                e.component.description.toLowerCase().contains(q)))
+        .toList();
+    _viewItems.sort((a, b) {
+      final String ak =
+          _sortBy == _SortBy.ar ? a.component.arName : a.component.enName;
+      final String bk =
+          _sortBy == _SortBy.ar ? b.component.arName : b.component.enName;
+      return ak.toLowerCase().compareTo(bk.toLowerCase());
+    });
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search (AR/EN/Description)',
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: _searchText.isEmpty
+                        ? null
+                        : IconButton(
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              setState(() {
+                                _searchText = '';
+                                _searchController.clear();
+                              });
+                            },
+                          ),
+                    border: const OutlineInputBorder(),
+                    isDense: true,
+                  ),
+                  onChanged: (v) => setState(() => _searchText = v),
+                ),
+              ),
+              const SizedBox(width: 12),
+              DropdownButton<_SortBy>(
+                value: _sortBy,
+                items: const [
+                  DropdownMenuItem(value: _SortBy.en, child: Text('Sort: EN')),
+                  DropdownMenuItem(value: _SortBy.ar, child: Text('Sort: AR')),
+                ],
+                onChanged: (v) => setState(() => _sortBy = v ?? _SortBy.en),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: ListView.separated(
+            padding: const EdgeInsets.all(16),
+            itemCount: _viewItems.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            itemBuilder: (context, index) {
+              final entry = _viewItems[index];
+              Color? color;
+              switch (entry.status) {
+                case _LocalStatus.added:
+                  color = Colors.green.withValues(alpha: 0.50);
+                  break;
+                case _LocalStatus.updated:
+                  color = Colors.orange.withValues(alpha: 0.50);
+                  break;
+                case _LocalStatus.deleted:
+                  color = Colors.red.withValues(alpha: 0.50);
+                  break;
+                case _LocalStatus.normal:
+                  color = null;
+                  break;
+              }
+              final String arName = entry.component.arName.trim();
+              final String enName = entry.component.enName.trim();
+              final String desc = entry.component.description.trim();
+              final bool bothNames = arName.isNotEmpty && enName.isNotEmpty;
+              final String singleName = enName.isNotEmpty ? enName : arName;
+              return Card(
+                color: color,
+                child: ListTile(
+                  onTap: () =>
+                      _showBottomSheet(index: _localComponents.indexOf(entry)),
+                  leading: const Icon(Icons.category),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (bothNames) ...[
+                        Text('Arabic Name: $arName',
+                            style:
+                                const TextStyle(fontWeight: FontWeight.w600)),
+                        const SizedBox(height: 4),
+                        Text('English Name: $enName',
+                            style:
+                                const TextStyle(fontWeight: FontWeight.w600)),
+                      ] else ...[
+                        Text('Name: $singleName',
+                            style:
+                                const TextStyle(fontWeight: FontWeight.w600)),
+                      ],
+                      if (desc.isNotEmpty) ...[
+                        Text('Description: $desc',
+                            style:
+                                const TextStyle(fontWeight: FontWeight.w600)),
+                      ],
+                      Text(
+                          'Category: ${_categories[entry.component.categoryIndex].arName} - ${_categories[entry.component.categoryIndex].enName}',
+                          style: const TextStyle(fontWeight: FontWeight.w600)),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

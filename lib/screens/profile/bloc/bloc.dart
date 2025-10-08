@@ -7,18 +7,13 @@ import 'state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final AppRepository appRepository;
+  AppMessage? message;
 
   ProfileBloc({required this.appRepository}) : super(ProfileInitial()) {
-    appRepository.authStateStream.listen((data) {
-      add(AuthChanged(error: data));
-    }, onError: (error) {
-      add(AuthChanged(error: error.toString()));
-    });
-
-    on<AuthChanged>((event, emit) {
+    on<Refresh>((event, emit) {
       if (event.error == null) {
         if (appRepository.authStatus == AuthStatus.notAuthenticated) {
-          emit(ProfileNotAuthenticated());
+          emit(ProfileNotAuthenticated(message: message));
         } else {
           emit(ProfileAuthenticated(
             user: appRepository.userRole,
@@ -38,10 +33,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           phoneNumber: event.phoneNumber,
         );
         await appRepository.authRepository.refreshUserAuth();
-        emit(ProfileAuthenticated(
-          user: appRepository.userRole,
-          message: AppMessage(id: AppMessageId.profileInfoUpdated),
-        ));
+        message = AppMessage(id: AppMessageId.profileInfoUpdated);
       } catch (error) {
         emit(ProfileAuthenticated(
           user: appRepository.userRole,
@@ -54,9 +46,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileLoading(loggingOut: true));
       try {
         await appRepository.authRepository.signOut();
-      } catch (error) {
-        // Do nothing.
-      }
+      } catch (_) {}
     });
 
     on<ResetPasswordRequested>((event, emit) async {
@@ -77,13 +67,30 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileLoading(loadingData: true));
       try {
         await appRepository.authRepository.refreshUserAuth();
-        emit(ProfileAuthenticated(
-          user: appRepository.userRole,
-        ));
       } catch (error) {
         emit(ProfileAuthenticated(
             user: appRepository.userRole, error: error.toString()));
       }
+    });
+
+    add(Refresh());
+
+    appRepository.authStateStream.listen((status) {
+      add(Refresh());
+    }, onError: (error) {
+      add(Refresh(error: error.toString()));
+    });
+
+    appRepository.branchesAndCompaniesStream.listen((_) {
+      add(Refresh());
+    }, onError: (error) {
+      add(Refresh(error: error.toString()));
+    });
+
+    appRepository.usersStream.listen((_) {
+      add(Refresh());
+    }, onError: (error) {
+      add(Refresh(error: error.toString()));
     });
   }
 }

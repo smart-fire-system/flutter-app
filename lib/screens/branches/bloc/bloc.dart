@@ -1,8 +1,4 @@
-import 'package:fire_alarm_system/models/branch.dart';
-import 'package:fire_alarm_system/models/company.dart';
-import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
-import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'event.dart';
 import 'state.dart';
@@ -10,53 +6,34 @@ import 'state.dart';
 class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
   final AppRepository appRepository;
   String? createdId;
+  BranchesMessage? message;
 
   BranchesBloc({required this.appRepository})
       : createdId = null,
         super(BranchesInitial()) {
-    appRepository.authStateStream.listen((data) {
-      add(AuthChanged(error: data));
-    }, onError: (error) {
-      add(AuthChanged(error: error.toString()));
-    });
-
-    on<AuthChanged>((event, emit) async {
-      if (appRepository.authStatus != AuthStatus.authenticated ||
-          appRepository.userRole == null ||
-          appRepository.userRole is NoRoleUser ||
-          appRepository.userRole.info.phoneNumber.isEmpty) {
-        emit(BranchesNotAuthenticated(error: event.error));
+    on<Refresh>((event, emit) async {
+      if (!appRepository.isUserReady()) {
+        emit(BranchesNotAuthenticated());
         return;
       }
-      emit(BranchesLoading());
-      try {
-        List<Branch> branches = [];
-        List<Company> companies = [];
-        branches = appRepository.branches;
-        companies = appRepository.companies;
-        emit(BranchesAuthenticated(
-          user: appRepository.userRole,
-          branches: branches,
-          companies: companies,
-          createdId: createdId,
-          message: event.message,
-          error: event.error,
-        ));
-      } catch (e) {
-        emit(BranchesAuthenticated(
-          user: appRepository.userRole,
-          error: event.error ?? e.toString(),
-        ));
-      }
+      emit(BranchesAuthenticated(
+        user: appRepository.userRole,
+        branches: appRepository.branches,
+        companies: appRepository.companies,
+        createdId: createdId,
+        message: message,
+        error: event.error,
+      ));
+      message = null;
     });
 
     on<BranchModifyRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
         await appRepository.branchRepository.modifyBranch(event.branch);
-        add(AuthChanged(message: BranchesMessage.branchModified));
+        message = BranchesMessage.branchModified;
       } catch (e) {
-        add(AuthChanged(error: e.toString()));
+        add(Refresh(error: e.toString()));
       }
     });
 
@@ -65,9 +42,9 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
       try {
         createdId =
             await appRepository.branchRepository.addBranch(event.branch);
-        add(AuthChanged(message: BranchesMessage.branchAdded));
+        message = BranchesMessage.branchAdded;
       } catch (e) {
-        add(AuthChanged(error: e.toString()));
+        add(Refresh(error: e.toString()));
       }
     });
 
@@ -75,9 +52,9 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
       emit(BranchesLoading());
       try {
         await appRepository.branchRepository.deleteBranch(event.id);
-        add(AuthChanged(message: BranchesMessage.branchDeleted));
+        message = BranchesMessage.branchDeleted;
       } catch (e) {
-        add(AuthChanged(error: e.toString()));
+        add(Refresh(error: e.toString()));
       }
     });
 
@@ -86,9 +63,9 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
       try {
         await appRepository.branchRepository
             .modifyCompany(event.company, event.logoFile);
-        add(AuthChanged(message: BranchesMessage.companyModified));
+        message = BranchesMessage.companyModified;
       } catch (e) {
-        add(AuthChanged(error: e.toString()));
+        add(Refresh(error: e.toString()));
       }
     });
 
@@ -99,9 +76,9 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
           event.company,
           event.logoFile,
         );
-        add(AuthChanged(message: BranchesMessage.companyAdded));
+        message = BranchesMessage.companyAdded;
       } catch (e) {
-        add(AuthChanged(error: e.toString()));
+        add(Refresh(error: e.toString()));
       }
     });
 
@@ -110,10 +87,30 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
       try {
         await appRepository.branchRepository
             .deleteCompany(event.id, event.branches);
-        add(AuthChanged(message: BranchesMessage.companyDeleted));
+        message = BranchesMessage.companyDeleted;
       } catch (e) {
-        add(AuthChanged(error: e.toString()));
+        add(Refresh(error: e.toString()));
       }
+    });
+
+    add(Refresh());
+
+    appRepository.authStateStream.listen((status) {
+      add(Refresh());
+    }, onError: (error) {
+      add(Refresh(error: error.toString()));
+    });
+
+    appRepository.branchesAndCompaniesStream.listen((_) {
+      add(Refresh());
+    }, onError: (error) {
+      add(Refresh(error: error.toString()));
+    });
+
+    appRepository.usersStream.listen((_) {
+      add(Refresh());
+    }, onError: (error) {
+      add(Refresh(error: error.toString()));
     });
   }
 }
