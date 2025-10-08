@@ -1,7 +1,9 @@
+import 'package:fire_alarm_system/repositories/auth_repository.dart';
+
 abstract class HomeEvent {}
 
 class AuthChanged extends HomeEvent {
-  final String? error;
+  final AuthChangeResult? error;
   AuthChanged({this.error});
 }
 

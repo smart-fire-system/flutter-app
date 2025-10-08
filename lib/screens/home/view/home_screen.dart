@@ -1,4 +1,6 @@
+import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/screens/home/view/add_phone_screen.dart';
+import 'package:fire_alarm_system/screens/home/view/error_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/login_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/not_authorized_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/signup_screen.dart';
@@ -62,7 +64,8 @@ class HomeScreenState extends State<HomeScreen> {
       TabNavigator.reports.currentState?.popUntil((route) => route.isFirst);
       TabNavigator.home.currentState?.popUntil((route) => route.isFirst);
       TabNavigator.complaints.currentState?.popUntil((route) => route.isFirst);
-      TabNavigator.usersAndBranches.currentState?.popUntil((route) => route.isFirst);
+      TabNavigator.usersAndBranches.currentState
+          ?.popUntil((route) => route.isFirst);
       _activeTabs.clear();
       _currentTab = AppTab.home;
       _activeTabs.add(_currentTab);
@@ -159,6 +162,23 @@ class HomeScreenState extends State<HomeScreen> {
           _user = state.user;
           _userInfo = _user.info as UserInfo;
           return _buildHome(context);
+        } else if (state is HomeError) {
+          IconData icon = Icons.error_outline_rounded;
+          String errorMessage = state.error.toString();
+          if (state.error == AuthChangeResult.networkError) {
+            errorMessage = S.of(context).network_error;
+            icon = Icons.wifi_off_rounded;
+          } else if (state.error == AuthChangeResult.generalError) {
+            errorMessage = S.of(context).unknown_error;
+            icon = Icons.error_outline_rounded;
+          }
+          return ErrorScreen(
+            onRefreshClick: () {
+              context.read<HomeBloc>().add(RefreshRequested());
+            },
+            errorMessage: errorMessage,
+            icon: icon,
+          );
         }
         return const CustomLoading();
       },

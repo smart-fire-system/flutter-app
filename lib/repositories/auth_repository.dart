@@ -74,8 +74,14 @@ class AuthRepository {
   }
 
   Future<void> refreshUserAuth() async {
-    await _firebaseAuth.currentUser?.reload();
-    final result = await _handleAuthStateChanged();
+    AuthChangeResult result = AuthChangeResult.noError;
+    try {
+      await _firebaseAuth.currentUser?.reload();
+      result = await _handleAuthStateChanged();
+    } catch (_) {
+      _setUserNotAuthenticated();
+      result = AuthChangeResult.networkError;
+    }
     _authStateChangesController.add(result);
   }
 

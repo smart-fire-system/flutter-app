@@ -37,18 +37,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
 
     appRepository.authStateStream.listen((status) {
-      add(AuthChanged(
-          error:
-              status == AuthChangeResult.noError ? null : status.toString()));
+      add(AuthChanged(error: status));
     }, onError: (error) {
-      add(AuthChanged(error: error.toString()));
+      add(AuthChanged(error: AuthChangeResult.generalError));
     });
 
     on<AuthChanged>((event, emit) async {
-      if (event.error == null) {
+      if (event.error == AuthChangeResult.noError) {
         emit(await getHomeState());
       } else {
-        emit(await getHomeState(error: event.error!));
+        emit(HomeError(error: event.error!));
       }
     });
 
@@ -77,7 +75,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(HomeLoading());
       try {
         await appRepository.authRepository.refreshUserAuth();
-        emit(await getHomeState());
       } catch (error) {
         emit(await getHomeState(error: error.toString()));
       }

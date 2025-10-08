@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/message.dart';
 
 abstract class HomeState {}
@@ -34,4 +35,9 @@ class HomeNotAuthenticated extends HomeState {
   AppMessage? message;
   String? error;
   HomeNotAuthenticated({this.message, this.error});
+}
+
+class HomeError extends HomeState {
+  final AuthChangeResult error;
+  HomeError({required this.error});
 }
