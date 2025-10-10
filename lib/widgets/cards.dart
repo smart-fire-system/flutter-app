@@ -299,6 +299,7 @@ class WideCard extends StatelessWidget {
   final String subtitle;
   final Color color;
   final VoidCallback onTap;
+  final Color backgroundColor;
 
   const WideCard({
     super.key,
@@ -306,6 +307,7 @@ class WideCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.color,
+    this.backgroundColor = Colors.white,
     required this.onTap,
   });
 
@@ -313,7 +315,7 @@ class WideCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(

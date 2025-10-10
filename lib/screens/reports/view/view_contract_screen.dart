@@ -1,16 +1,14 @@
 import 'package:fire_alarm_system/models/user.dart';
-import 'package:fire_alarm_system/screens/reports/view/common.dart';
-import 'package:fire_alarm_system/screens/reports/view/components_builder.dart';
-import 'package:fire_alarm_system/screens/reports/view/export_pdf.dart';
+import 'package:fire_alarm_system/screens/reports/view/contract_details_screen.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
+import 'package:fire_alarm_system/widgets/app_bar.dart';
+import 'package:fire_alarm_system/widgets/cards.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/event.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/state.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
-import 'package:fire_alarm_system/models/report.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class ViewContractScreen extends StatefulWidget {
   final String contractId;
@@ -27,7 +25,6 @@ class ViewContractScreen extends StatefulWidget {
 class _ViewContractScreenState extends State<ViewContractScreen> {
   late ContractData _contract;
   late dynamic _user;
-  late List<ContractItem> _contractItems;
 
   String _formatDate(DateTime? date) {
     if (date == null) return '';
@@ -634,255 +631,11 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     return true;
   }
 
-  Widget _buildSignatureBox({
-    required String title,
-    required String subtitle,
-    SignatureData? signature,
-    String? signatureUrl,
-  }) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              title,
-              textAlign: TextAlign.right,
-              style: CustomStyle.smallTextBRed,
-            ),
-            const SizedBox(height: 8),
-            Container(
-              height: 80,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                subtitle,
-                textAlign: TextAlign.center,
-                style: CustomStyle.smallText,
-              ),
-            ),
-            const SizedBox(height: 8),
-            if (signature != null && signature.name != null) ...[
-              Center(
-                child: GestureDetector(
-                  onTap: () => _showSignatureInfoDialog(
-                      context, title, subtitle, signature,
-                      signatureUrl: signatureUrl),
-                  child: QrImageView(
-                    data: signature.name ?? '',
-                    version: QrVersions.auto,
-                    size: 100,
-                  ),
-                ),
-              ),
-              Text(
-                signature.name ?? '',
-                textAlign: TextAlign.center,
-                style: CustomStyle.smallText,
-              ),
-              if (signatureUrl != null)
-                Image.network(signatureUrl, height: 100),
-            ]
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showSignatureInfoDialog(BuildContext context, String title,
-      String subtitle, SignatureData signature,
-      {String? signatureUrl}) {
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: AlertDialog(
-            title: Text(title, style: CustomStyle.mediumTextBRed),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(subtitle, style: CustomStyle.smallText),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: QrImageView(
-                          data: signature.name ?? '',
-                          version: QrVersions.auto,
-                        ),
-                      ),
-                      if (signatureUrl != null)
-                        Image.network(signatureUrl, height: 100),
-                    ],
-                  ),
-                  Table(
-                    border:
-                        TableBorder.all(color: Colors.grey.shade300, width: 1),
-                    columnWidths: const <int, TableColumnWidth>{
-                      0: IntrinsicColumnWidth(),
-                      1: FlexColumnWidth(),
-                    },
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: [
-                      TableRow(children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 8),
-                          child: Text('كود التوقيع',
-                              style: CustomStyle.smallTextBRed,
-                              textAlign: TextAlign.right),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 8),
-                          child: Text(signature.name?.toString() ?? '-',
-                              style: CustomStyle.smallText,
-                              textAlign: TextAlign.right),
-                        ),
-                      ]),
-                      TableRow(children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 8),
-                          child: Text('تاريخ التوقيع',
-                              style: CustomStyle.smallTextBRed,
-                              textAlign: TextAlign.right),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 8),
-                          child: Text(
-                            (() {
-                              final v = signature.createdAt?.toDate();
-                              if (v == null) return '-';
-                              return _formatDate(v);
-                            })(),
-                            style: CustomStyle.smallText,
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                      ]),
-                      TableRow(children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 8),
-                          child: Text('اسم المستخدم',
-                              style: CustomStyle.smallTextBRed,
-                              textAlign: TextAlign.right),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 8),
-                          child: Text(signature.user?.name ?? '-',
-                              style: CustomStyle.smallText,
-                              textAlign: TextAlign.right),
-                        ),
-                      ]),
-                      TableRow(children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 8),
-                          child: Text('كود المستخدم',
-                              style: CustomStyle.smallTextBRed,
-                              textAlign: TextAlign.right),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 8),
-                          child: Text(signature.user?.code.toString() ?? '-',
-                              style: CustomStyle.smallText,
-                              textAlign: TextAlign.right),
-                        ),
-                      ]),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('إغلاق'),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildSignaturesSection(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: Colors.grey.shade300),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildSignatureBox(
-                    title: 'الطرف الأول',
-                    subtitle: _contract.metaData.employee?.branch
-                            .contractFirstParty?.name ??
-                        '',
-                    signature: _contract.metaData.employeeSignature,
-                    signatureUrl: _contract.metaData.employee?.branch
-                        .contractFirstParty?.signatureUrl,
-                  ),
-                  const SizedBox(width: 12),
-                  _buildSignatureBox(
-                    title: 'الطرف الثاني',
-                    subtitle: _contract.metaData.client?.info.name ?? '',
-                    signature: _contract.metaData.clientSignature,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Preview Report'),
-        actions: [
-          IconButton(
-            tooltip: 'Export PDF',
-            icon: const Icon(Icons.picture_as_pdf),
-            onPressed: () => ExportPdf().contract(
-              context: context,
-              items: _contractItems,
-              contract: _contract,
-            ),
-          ),
-        ],
+      appBar: const CustomAppBar(
+        title: 'عرض العقد',
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -908,79 +661,73 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
       return const Center(child: CircularProgressIndicator());
     }
     _user = state.user;
-    _contractItems = state.contractItems!;
     _contract = state.contracts!.firstWhere(
       (c) => c.metaData.id == widget.contractId,
     );
-    return ListView.separated(
-      itemBuilder: (context, idx) {
-        // Build dynamic header stack (single unified state card)
-        final List<Widget> header = [];
-        header.add(_buildSignActionCard(context));
-        header.add(_buildStateCard(context));
-        header.add(_buildContractInfoCard(context));
-
-        if (idx < header.length) {
-          return header[idx];
-        }
-        final int afterHeaderIdx = idx - header.length;
-        // Items range
-        if (afterHeaderIdx < _contractItems.length) {
-          final item = _contractItems[afterHeaderIdx];
-          if (item.text != null) {
-            // Skip category title if next table has no selected types (from contract)
-            if (ContractsCommon().isCategoryTitle(item.text!) &&
-                afterHeaderIdx + 1 < _contractItems.length) {
-              final table = _contractItems[afterHeaderIdx + 1].category;
-              final hasAny = ContractsCommon()
-                  .typesForCategory(_contract, table?.categoryIndex)
-                  .isNotEmpty;
-              if (!hasAny) return const SizedBox.shrink();
-            }
-            final text =
-                ContractsCommon().renderTemplate(_contract, item.text!);
-            TextStyle style =
-                const TextStyle(fontFamily: 'Arial', fontSize: 16);
-            if (item.text!.bold == true) {
-              style = style.copyWith(fontWeight: FontWeight.bold);
-            }
-            if (item.text!.underlined == true) {
-              style = style.copyWith(decoration: TextDecoration.underline);
-            }
-            if (item.text!.color != null) {
-              style = style.copyWith(color: item.text!.color);
-            }
-            return Container(
-              color: item.text!.backgroundColor,
-              width: double.infinity,
-              child: Text(
-                text,
-                style: style,
-                textAlign: item.text!.align,
-              ),
-            );
-          }
-          return const SizedBox.shrink();
-        }
-        if (afterHeaderIdx == _contractItems.length) {
-          return ComponentsBuilder(
-            componentsData: _contract.componentsData,
-            showOnly: true,
-            onChange: (componentsData) {
-              _contract.componentsData = componentsData;
-            },
-          );
-        }
-        // After items: show signatures section
-        return _buildSignaturesSection(context);
-      },
-      itemCount: () {
-        return 4 + _contractItems.length + 1; // 3 headers + items + signatures
-      }(),
-      separatorBuilder: (context, idx) {
-        // Add spacing between header blocks and items
-        return const SizedBox(height: 16);
-      },
+    return ListView(
+      children: [
+        _buildSignActionCard(context),
+        const SizedBox(height: 16),
+        _buildStateCard(context),
+        const SizedBox(height: 16),
+        _buildContractInfoCard(context),
+        const SizedBox(height: 16),
+        WideCard(
+          icon: Icons.article,
+          title: 'عرض العقد',
+          subtitle: 'عرض تفاصيل العقد والتحويل إلى PDF',
+          color: CustomStyle.redDark,
+          backgroundColor: Colors.grey.withValues(alpha: 0.1),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  ContractDetailsScreen(contractId: widget.contractId),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        WideCard(
+          icon: Icons.article,
+          title: 'إضافة تقرير زيارة جديد',
+          subtitle: 'إضافة تقرير زيارة جديد',
+          color: CustomStyle.redDark,
+          backgroundColor: Colors.grey.withValues(alpha: 0.1),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  ContractDetailsScreen(contractId: widget.contractId),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        WideCard(
+          icon: Icons.article,
+          title: 'تقارير الزيارة',
+          subtitle: 'عرض تفاصيل الزيارات والتحويل إلى PDF',
+          color: CustomStyle.redDark,
+          backgroundColor: Colors.grey.withValues(alpha: 0.1),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  ContractDetailsScreen(contractId: widget.contractId),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        WideCard(
+          icon: Icons.article,
+          title: 'طلب زيارة طوارئ',
+          subtitle: 'طلب زيارة طوارئ',
+          color: CustomStyle.redDark,
+          backgroundColor: Colors.grey.withValues(alpha: 0.1),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  ContractDetailsScreen(contractId: widget.contractId),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
