@@ -4,6 +4,7 @@ import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
 import 'package:flutter/material.dart';
+import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/event.dart';
@@ -37,24 +38,30 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
   String _stateLabel(ContractState? state) {
     switch (state) {
       case ContractState.active:
-        return 'ساري';
+        if (_isContractExpired()) {
+          return S.of(context).linear_stage_expired;
+        }
+        return S.of(context).linear_stage_active;
       case ContractState.pendingClient:
-        return 'بانتظار العميل';
+        return S.of(context).contract_wait_other_client_sign_title;
       case ContractState.requestCancellation:
-        return 'طلب إلغاء';
+        return S.of(context).cancel;
       case ContractState.expired:
-        return 'منتهي';
+        return S.of(context).linear_stage_expired;
       case ContractState.cancelled:
-        return 'ملغي';
+        return S.of(context).cancelled;
       case ContractState.draft:
       default:
-        return 'مسودة';
+        return S.of(context).linear_stage_draft;
     }
   }
 
   Color _stateColor(ContractState? state) {
     switch (state) {
       case ContractState.active:
+        if (_isContractExpired()) {
+          return Colors.red;
+        }
         return Colors.green;
       case ContractState.pendingClient:
         return Colors.orange;
@@ -71,166 +78,173 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
   }
 
   Widget _buildContractInfoCard(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: Colors.grey.shade300),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header with contract number and state chip (match list style)
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      (_contract.paramContractNumber?.isNotEmpty == true)
-                          ? 'عقد رقم: ${_contract.paramContractNumber}'
-                          : (_contract.metaData.code != null
-                              ? 'عقد رقم: ${_contract.metaData.code}'
-                              : 'عقد'),
-                      style: CustomStyle.mediumTextBRed,
-                      textAlign: TextAlign.right,
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey.shade300),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header with contract number and state chip (match list style)
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    (_contract.paramContractNumber?.isNotEmpty == true)
+                        ? S.of(context).contract_number_prefix(
+                            _contract.paramContractNumber!)
+                        : (_contract.metaData.code != null
+                            ? S.of(context).contract_number_prefix(
+                                _contract.metaData.code.toString())
+                            : S.of(context).contract_label),
+                    style: CustomStyle.mediumTextBRed,
+                  ),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: _stateColor(_contract.metaData.state)
+                        .withValues(alpha: 0.1),
+                    border: Border.all(
+                      color: _stateColor(_contract.metaData.state),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    _stateLabel(_contract.metaData.state),
+                    style: CustomStyle.smallTextB.copyWith(
+                      color: _stateColor(_contract.metaData.state),
                     ),
                   ),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: _stateColor(_contract.metaData.state)
-                          .withValues(alpha: 0.1),
-                      border: Border.all(
-                        color: _stateColor(_contract.metaData.state),
-                        width: 1,
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            // Dates row
+            Row(
+              children: [
+                const Icon(Icons.calendar_month_outlined,
+                    size: 18, color: CustomStyle.redDark),
+                const SizedBox(width: 6),
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: S.of(context).period_from,
+                        style: CustomStyle.smallTextBRed,
                       ),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Text(
-                      _stateLabel(_contract.metaData.state),
-                      style: CustomStyle.smallTextB.copyWith(
-                        color: _stateColor(_contract.metaData.state),
+                      TextSpan(
+                        text: _formatDate(_contract.metaData.startDate),
+                        style: CustomStyle.smallText,
                       ),
-                    ),
+                      TextSpan(
+                        text: S.of(context).period_to,
+                        style: CustomStyle.smallTextBRed,
+                      ),
+                      TextSpan(
+                        text: _formatDate(_contract.metaData.endDate),
+                        style: CustomStyle.smallText,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              // Dates row
-              Row(
-                children: [
-                  const Icon(Icons.calendar_month_outlined,
-                      size: 18, color: CustomStyle.redDark),
-                  const SizedBox(width: 6),
-                  Text.rich(
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            // Employee
+            Row(
+              children: [
+                const Icon(Icons.person_outline,
+                    size: 18, color: CustomStyle.redDark),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text.rich(
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: 'ساري من ',
+                          text: S.of(context).employee_label,
                           style: CustomStyle.smallTextBRed,
                         ),
                         TextSpan(
-                          text: _formatDate(_contract.metaData.startDate),
-                          style: CustomStyle.smallText,
-                        ),
-                        TextSpan(
-                          text: ' إلى ',
-                          style: CustomStyle.smallTextBRed,
-                        ),
-                        TextSpan(
-                          text: _formatDate(_contract.metaData.endDate),
+                          text: _contract.metaData.employee?.info.name ?? '-',
                           style: CustomStyle.smallText,
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              // Employee
-              Row(
-                children: [
-                  const Icon(Icons.person_outline,
-                      size: 18, color: CustomStyle.redDark),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'الموظف: ',
-                            style: CustomStyle.smallTextBRed,
-                          ),
-                          TextSpan(
-                            text: _contract.metaData.employee?.info.name ?? '-',
-                            style: CustomStyle.smallText,
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.right,
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            // Client
+            Row(
+              children: [
+                const Icon(Icons.group_outlined,
+                    size: 18, color: CustomStyle.redDark),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: S.of(context).client_label,
+                          style: CustomStyle.smallTextBRed,
+                        ),
+                        TextSpan(
+                          text: _contract.metaData.client?.info.name ?? '-',
+                          style: CustomStyle.smallText,
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              // Client
-              Row(
-                children: [
-                  const Icon(Icons.group_outlined,
-                      size: 18, color: CustomStyle.redDark),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'العميل: ',
-                            style: CustomStyle.smallTextBRed,
-                          ),
-                          TextSpan(
-                            text: _contract.metaData.client?.info.name ?? '-',
-                            style: CustomStyle.smallText,
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.right,
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            // Branch
+            Row(
+              children: [
+                const Icon(Icons.apartment_outlined,
+                    size: 18, color: CustomStyle.redDark),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: S.of(context).branch_label,
+                          style: CustomStyle.smallTextBRed,
+                        ),
+                        TextSpan(
+                          text: _contract.metaData.employee?.branch.name ?? '-',
+                          style: CustomStyle.smallText,
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              // Branch
-              Row(
-                children: [
-                  const Icon(Icons.apartment_outlined,
-                      size: 18, color: CustomStyle.redDark),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: 'الفرع: ',
-                            style: CustomStyle.smallTextBRed,
-                          ),
-                          TextSpan(
-                            text:
-                                _contract.metaData.employee?.branch.name ?? '-',
-                            style: CustomStyle.smallText,
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ContractDetailsScreen(contractId: widget.contractId),
                   ),
-                ],
+                ),
+                icon: const Icon(Icons.visibility),
+                label: Text(S.of(context).view_contract),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -293,74 +307,75 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
       borderColor = CustomStyle.redLight;
       iconColor = CustomStyle.redDark;
       title = 'توقيع العميل مطلوب أولاً';
-      subtitle = 'يجب أن تقوم بالتوقيع أولاً ليكون العقد ساري. اضغط للتوقيع.';
+      subtitle = S.of(context).contract_wait_employee_sign_subtitle;
     } else if (_isPendingOtherClientSign()) {
       cardColor = Colors.orange.shade50;
       borderColor = Colors.orangeAccent;
       iconColor = Colors.orange;
-      title = 'بانتظار توقيع العميل';
-      subtitle = 'بانتظار توقيع العميل لكي يكون العقد ساري.';
+      title = S.of(context).contract_wait_other_client_sign_title;
+      subtitle = S.of(context).contract_wait_other_client_sign_subtitle;
     } else if (_contract.metaData.state == ContractState.active) {
       if (!_isContractExpired()) {
         cardColor = Colors.green.shade50;
         borderColor = Colors.greenAccent;
         iconColor = Colors.green;
-        title = 'العقد ساري';
-        subtitle = 'العقد ساري حتى ${_formatDate(_contract.metaData.endDate)}';
+        title = S.of(context).contract_active_title;
+        subtitle = S
+            .of(context)
+            .contract_active_until(_formatDate(_contract.metaData.endDate));
       } else {
         cardColor = Colors.red.shade50;
         borderColor = CustomStyle.redLight;
         iconColor = CustomStyle.redDark;
-        title = 'العقد منتهي';
-        subtitle = 'العقد منتهي منذ ${_formatDate(_contract.metaData.endDate)}';
+        title = S.of(context).contract_expired_title;
+        subtitle = S
+            .of(context)
+            .contract_expired_since(_formatDate(_contract.metaData.endDate));
       }
     }
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Card(
-        color: cardColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: borderColor, width: 1),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text(isEmployeeDraft
-                      ? 'التوقيع غير مفعّل بعد'
-                      : 'تنبيه العميل غير مفعّل بعد')),
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: iconColor,
-                        ),
+    return Card(
+      color: cardColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: borderColor, width: 1),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(isEmployeeDraft
+                    ? S.of(context).snackbar_signing_not_enabled
+                    : S.of(context).snackbar_client_notification_not_enabled)),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: iconColor,
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        style: const TextStyle(color: CustomStyle.greyDark),
-                      ),
-                      const SizedBox(height: 10),
-                      _buildLinearStateDiagram(),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(color: CustomStyle.greyDark),
+                    ),
+                    const SizedBox(height: 10),
+                    _buildLinearStateDiagram(),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -372,57 +387,56 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     final bool canClientSign = _isPendingCurrentClientSign();
     if (!canEmployeeSign && !canClientSign) return const SizedBox.shrink();
 
-    final String title = canEmployeeSign ? 'توقيع الموظف' : 'توقيع العميل';
-    const String subtitle = 'اضغط للتأكيد ثم اسحب شريط التأكيد لإتمام التوقيع.';
+    final String title = canEmployeeSign
+        ? S.of(context).signature_employee_title
+        : S.of(context).signature_client_title;
+    final String subtitle = S.of(context).signature_confirm_dialog_body;
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Card(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: CustomStyle.redLight, width: 1),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: () {
-            _showSignConfirmBottomSheet(context, title: title);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: CustomStyle.redLight.withValues(alpha: 0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.edit_document,
-                      color: CustomStyle.redDark),
+    return Card(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: const BorderSide(color: CustomStyle.redLight, width: 1),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () {
+          _showSignConfirmBottomSheet(context, title: title);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: CustomStyle.redLight.withValues(alpha: 0.2),
+                  shape: BoxShape.circle,
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: CustomStyle.mediumTextBRed,
-                        textAlign: TextAlign.right,
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(subtitle,
-                          style: TextStyle(color: CustomStyle.greyDark),
-                          textAlign: TextAlign.right),
-                    ],
-                  ),
+                child:
+                    const Icon(Icons.edit_document, color: CustomStyle.redDark),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: CustomStyle.mediumTextBRed,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(color: CustomStyle.greyDark),
+                    ),
+                  ],
                 ),
-                const Icon(Icons.keyboard_arrow_left,
-                    color: CustomStyle.greyDark),
-              ],
-            ),
+              ),
+              const Icon(Icons.keyboard_arrow_left,
+                  color: CustomStyle.greyDark),
+            ],
           ),
         ),
       ),
@@ -439,80 +453,77 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
       ),
       builder: (BuildContext ctx) {
         double progress = 0.0;
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.privacy_tip_outlined,
+                          color: CustomStyle.redDark),
+                      const SizedBox(width: 8),
+                      Text(
+                        S.of(context).signature_confirm_dialog_title(title),
+                        style: CustomStyle.mediumTextBRed,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    S.of(context).signature_confirm_dialog_body,
+                    style: const TextStyle(color: CustomStyle.greyDark),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Icon(Icons.privacy_tip_outlined,
-                            color: CustomStyle.redDark),
-                        const SizedBox(width: 8),
                         Text(
-                          'تأكيد $title',
-                          style: CustomStyle.mediumTextBRed,
+                          S.of(context).slide_to_confirm,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Slider(
+                                value: progress,
+                                min: 0.0,
+                                max: 1.0,
+                                divisions: 20,
+                                activeColor: CustomStyle.redDark,
+                                onChanged: (v) {
+                                  setState(() => progress = v);
+                                  if (v >= 0.99) {
+                                    Navigator.of(ctx).pop();
+                                    context.read<ReportsBloc>().add(
+                                          SignContractRequested(
+                                              contract: _contract),
+                                        );
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
-                    const Text(
-                      'بتأكيدك سيتم تسجيل توقيعك على هذا العقد. لا يمكن التراجع عن هذه العملية.',
-                      style: TextStyle(color: CustomStyle.greyDark),
-                    ),
-                    const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const Text(
-                            'اسحب للتأكيد',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Slider(
-                                  value: progress,
-                                  min: 0.0,
-                                  max: 1.0,
-                                  divisions: 20,
-                                  activeColor: CustomStyle.redDark,
-                                  onChanged: (v) {
-                                    setState(() => progress = v);
-                                    if (v >= 0.99) {
-                                      Navigator.of(ctx).pop();
-                                      context.read<ReportsBloc>().add(
-                                            SignContractRequested(
-                                                contract: _contract),
-                                          );
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
     );
@@ -521,10 +532,12 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
   Widget _buildLinearStateDiagram() {
     final int stage = _currentStageIndex();
     final List<String> labels = <String>[
-      'مسودة',
-      'توقيع الموظف',
-      'توقيع العميل',
-      _isContractExpired() ? 'منتهي' : 'ساري',
+      S.of(context).linear_stage_draft,
+      S.of(context).linear_stage_employee_signed,
+      S.of(context).linear_stage_client_signed,
+      _isContractExpired()
+          ? S.of(context).linear_stage_expired
+          : S.of(context).linear_stage_active,
     ];
 
     Color dotColor(int idx) {
@@ -583,9 +596,13 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                 child: Text(
                   labels[i],
                   textAlign: i == 0
-                      ? TextAlign.right
-                      : i == 3
+                      ? Directionality.of(context) == TextDirection.ltr
                           ? TextAlign.left
+                          : TextAlign.right
+                      : i == 3
+                          ? Directionality.of(context) == TextDirection.ltr
+                              ? TextAlign.right
+                              : TextAlign.left
                           : TextAlign.center,
                   style: TextStyle(
                     fontSize: 12,
@@ -634,21 +651,26 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'عرض العقد',
+      appBar: CustomAppBar(
+        title: (_contract.paramContractNumber?.isNotEmpty == true)
+            ? S
+                .of(context)
+                .contract_number_prefix(_contract.paramContractNumber!)
+            : (_contract.metaData.code != null
+                ? S
+                    .of(context)
+                    .contract_number_prefix(_contract.metaData.code.toString())
+                : S.of(context).contract_label),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: BlocBuilder<ReportsBloc, ReportsState>(
-            builder: (context, state) {
-              if (state is ReportsAuthenticated) {
-                return _buildBody(state);
-              }
-              return const Center(child: CircularProgressIndicator());
-            },
-          ),
+        child: BlocBuilder<ReportsBloc, ReportsState>(
+          builder: (context, state) {
+            if (state is ReportsAuthenticated) {
+              return _buildBody(state);
+            }
+            return const Center(child: CircularProgressIndicator());
+          },
         ),
       ),
     );
@@ -674,8 +696,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         const SizedBox(height: 16),
         WideCard(
           icon: Icons.article,
-          title: 'عرض العقد',
-          subtitle: 'عرض تفاصيل العقد والتحويل إلى PDF',
+          title: S.of(context).new_visit_report,
+          subtitle: S.of(context).new_visit_report_subtitle,
           color: CustomStyle.redDark,
           backgroundColor: Colors.grey.withValues(alpha: 0.1),
           onTap: () => Navigator.of(context).push(
@@ -688,8 +710,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         const SizedBox(height: 16),
         WideCard(
           icon: Icons.article,
-          title: 'إضافة تقرير زيارة جديد',
-          subtitle: 'إضافة تقرير زيارة جديد',
+          title: S.of(context).visit_reports,
+          subtitle: S.of(context).visit_reports_subtitle,
           color: CustomStyle.redDark,
           backgroundColor: Colors.grey.withValues(alpha: 0.1),
           onTap: () => Navigator.of(context).push(
@@ -702,22 +724,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         const SizedBox(height: 16),
         WideCard(
           icon: Icons.article,
-          title: 'تقارير الزيارة',
-          subtitle: 'عرض تفاصيل الزيارات والتحويل إلى PDF',
-          color: CustomStyle.redDark,
-          backgroundColor: Colors.grey.withValues(alpha: 0.1),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  ContractDetailsScreen(contractId: widget.contractId),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        WideCard(
-          icon: Icons.article,
-          title: 'طلب زيارة طوارئ',
-          subtitle: 'طلب زيارة طوارئ',
+          title: S.of(context).emergency_visit_request,
+          subtitle: S.of(context).emergency_visit_request_subtitle,
           color: CustomStyle.redDark,
           backgroundColor: Colors.grey.withValues(alpha: 0.1),
           onTap: () => Navigator.of(context).push(

@@ -20,6 +20,14 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
+  static String m0(date) => "Active until ${date}";
+
+  static String m1(date) => "Expired on ${date}";
+
+  static String m2(number) => "Contract No: ${number}";
+
+  static String m3(title) => "Confirm ${title}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "aborted": MessageLookupByLibrary.simpleMessage(
@@ -83,6 +91,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "branchModifyWarning": MessageLookupByLibrary.simpleMessage(
             "Please double-check the updated branch details before saving. Are you sure you want to proceed?"),
         "branchName": MessageLookupByLibrary.simpleMessage("Branch Name"),
+        "branch_label": MessageLookupByLibrary.simpleMessage("Branch: "),
         "branches": MessageLookupByLibrary.simpleMessage("Branches"),
         "branchesDescription":
             MessageLookupByLibrary.simpleMessage("Add or remove branches"),
@@ -121,6 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chooseRole":
             MessageLookupByLibrary.simpleMessage("Choose access role"),
         "client": MessageLookupByLibrary.simpleMessage("Client"),
+        "client_label": MessageLookupByLibrary.simpleMessage("Client: "),
         "clients": MessageLookupByLibrary.simpleMessage("Clients"),
         "code": MessageLookupByLibrary.simpleMessage("Code"),
         "comment": MessageLookupByLibrary.simpleMessage("Comment"),
@@ -163,6 +173,23 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Contact Information"),
         "continue_with_google":
             MessageLookupByLibrary.simpleMessage("Continue with Google"),
+        "contract_active_title":
+            MessageLookupByLibrary.simpleMessage("Contract Active"),
+        "contract_active_until": m0,
+        "contract_expired_since": m1,
+        "contract_expired_title":
+            MessageLookupByLibrary.simpleMessage("Contract Expired"),
+        "contract_label": MessageLookupByLibrary.simpleMessage("Contract"),
+        "contract_number_prefix": m2,
+        "contract_wait_employee_sign_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "You must sign first to activate the contract. Tap to sign."),
+        "contract_wait_other_client_sign_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "Waiting for the client signature to activate the contract."),
+        "contract_wait_other_client_sign_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Waiting for client signature"),
         "createdAt": MessageLookupByLibrary.simpleMessage("Created At"),
         "credential_already_in_use": MessageLookupByLibrary.simpleMessage(
             "This credential is already in use with another account. Try a different login method."),
@@ -190,7 +217,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "Your email has been successfully verified."),
         "email_already_in_use": MessageLookupByLibrary.simpleMessage(
             "An account already exists with this email address. Please login or use a different email."),
+        "emergency_visit_request":
+            MessageLookupByLibrary.simpleMessage("Request emergency visit"),
+        "emergency_visit_request_subtitle":
+            MessageLookupByLibrary.simpleMessage("Request emergency visit"),
         "employee": MessageLookupByLibrary.simpleMessage("Employee"),
+        "employee_label": MessageLookupByLibrary.simpleMessage("Employee: "),
         "employees": MessageLookupByLibrary.simpleMessage("Employees"),
         "enterBranchAddress": MessageLookupByLibrary.simpleMessage(
             "Please enter the branch address"),
@@ -266,6 +298,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "The verification code entered is invalid. Please try again."),
         "invalid_verification_id": MessageLookupByLibrary.simpleMessage(
             "The verification ID entered is invalid. Please try again."),
+        "linear_stage_active": MessageLookupByLibrary.simpleMessage("Active"),
+        "linear_stage_client_signed":
+            MessageLookupByLibrary.simpleMessage("Client Signed"),
+        "linear_stage_draft": MessageLookupByLibrary.simpleMessage("Draft"),
+        "linear_stage_employee_signed":
+            MessageLookupByLibrary.simpleMessage("Employee Signed"),
+        "linear_stage_expired": MessageLookupByLibrary.simpleMessage("Expired"),
         "logging_in_progress": MessageLookupByLibrary.simpleMessage(
             "Please wait while logging you in"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
@@ -303,6 +342,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "A network error occurred during sign-in. Please check your internet connection and try again."),
         "network_request_failed": MessageLookupByLibrary.simpleMessage(
             "A network error occurred. Please check your connection and try again."),
+        "new_visit_report":
+            MessageLookupByLibrary.simpleMessage("Add new visit report"),
+        "new_visit_report_subtitle":
+            MessageLookupByLibrary.simpleMessage("Add new visit report"),
         "noBranchesToAddBranchManager": MessageLookupByLibrary.simpleMessage(
             "There are no branches to add branch managers to. Please add a branch first."),
         "noBranchesToAddClient": MessageLookupByLibrary.simpleMessage(
@@ -346,6 +389,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Password must be at least 6 characters long"),
         "password_mismatch":
             MessageLookupByLibrary.simpleMessage("Passwords do not match"),
+        "period_from": MessageLookupByLibrary.simpleMessage("Active from "),
+        "period_to": MessageLookupByLibrary.simpleMessage(" to "),
         "permission_denied": MessageLookupByLibrary.simpleMessage(
             "You do not have permission to perform this action."),
         "phone": MessageLookupByLibrary.simpleMessage("Phone Number"),
@@ -389,12 +434,25 @@ class MessageLookup extends MessageLookupByLibrary {
         "session_expired": MessageLookupByLibrary.simpleMessage(
             "The session has expired. Please log in again."),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "sign_client_required_title":
+            MessageLookupByLibrary.simpleMessage("Client signature required"),
+        "sign_employee_required_subtitle": MessageLookupByLibrary.simpleMessage(
+            "You must sign first so the client can sign. Tap to sign."),
+        "sign_employee_required_title":
+            MessageLookupByLibrary.simpleMessage("Employee signature required"),
         "sign_in_cancelled": MessageLookupByLibrary.simpleMessage(
             "The sign-in process was cancelled. Please try again if you want to continue."),
         "sign_in_failed": MessageLookupByLibrary.simpleMessage(
             "The sign-in attempt has failed. Please try again later or contact support if the issue persists."),
         "sign_in_required": MessageLookupByLibrary.simpleMessage(
             "You need to sign in to proceed. Please sign in and try again."),
+        "signature_client_title":
+            MessageLookupByLibrary.simpleMessage("Client Signature"),
+        "signature_confirm_dialog_body": MessageLookupByLibrary.simpleMessage(
+            "By confirming, your signature will be recorded on this contract. This action cannot be undone."),
+        "signature_confirm_dialog_title": m3,
+        "signature_employee_title":
+            MessageLookupByLibrary.simpleMessage("Employee Signature"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign Up"),
         "signup_in_progress": MessageLookupByLibrary.simpleMessage(
             "Please wait while creating your account"),
@@ -404,6 +462,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sign up with Facebook"),
         "signup_with_google":
             MessageLookupByLibrary.simpleMessage("Sign up with Google"),
+        "slide_to_confirm":
+            MessageLookupByLibrary.simpleMessage("Slide to confirm"),
+        "snackbar_client_notification_not_enabled":
+            MessageLookupByLibrary.simpleMessage(
+                "Client notification is not enabled yet"),
+        "snackbar_signing_not_enabled":
+            MessageLookupByLibrary.simpleMessage("Signing is not enabled yet"),
         "stepsToComplete": MessageLookupByLibrary.simpleMessage(
             "To continue using the application, please complete the following steps:"),
         "submitComplaint":
@@ -457,6 +522,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("View and Control System"),
         "viewComplaints":
             MessageLookupByLibrary.simpleMessage("View Complaints"),
+        "view_contract": MessageLookupByLibrary.simpleMessage("View Contract"),
+        "view_contract_subtitle": MessageLookupByLibrary.simpleMessage(
+            "View contract details and export to PDF"),
+        "visit_reports": MessageLookupByLibrary.simpleMessage("Visit Reports"),
+        "visit_reports_subtitle": MessageLookupByLibrary.simpleMessage(
+            "View visit details and export to PDF"),
         "visits": MessageLookupByLibrary.simpleMessage("Visits"),
         "waitDeltingBranch": MessageLookupByLibrary.simpleMessage(
             "Please wait while deleting branch"),
@@ -468,6 +539,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please wait while saving company information"),
         "wait_while_loading": MessageLookupByLibrary.simpleMessage(
             "Pleae wait while loading data ..."),
+        "waiting_employee_signature_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "Waiting for the employee signature so the client can sign."),
+        "waiting_employee_signature_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Waiting for employee signature"),
         "weak_password": MessageLookupByLibrary.simpleMessage(
             "The password entered is too weak. Use a stronger password with more characters."),
         "welcome": MessageLookupByLibrary.simpleMessage("Welcome"),

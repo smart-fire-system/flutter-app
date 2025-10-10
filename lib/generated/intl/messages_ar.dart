@@ -20,6 +20,14 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ar';
 
+  static String m0(date) => "العقد ساري حتى ${date}";
+
+  static String m1(date) => "العقد منتهي منذ ${date}";
+
+  static String m2(number) => "عقد رقم: ${number}";
+
+  static String m3(title) => "تأكيد ${title}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "aborted": MessageLookupByLibrary.simpleMessage(
@@ -76,6 +84,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "branchModifyWarning": MessageLookupByLibrary.simpleMessage(
             "يرجى التحقق من صحة تفاصيل الفرع المحدثة قبل الحفظ. هل أنت متأكد أنك تريد المتابعة؟"),
         "branchName": MessageLookupByLibrary.simpleMessage("إسم الفرع"),
+        "branch_label": MessageLookupByLibrary.simpleMessage("الفرع: "),
         "branches": MessageLookupByLibrary.simpleMessage("الفروع"),
         "branchesDescription":
             MessageLookupByLibrary.simpleMessage("إضافة أو حذف الفروع"),
@@ -113,6 +122,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chooseRole":
             MessageLookupByLibrary.simpleMessage("اختيار صلاحية الوصول"),
         "client": MessageLookupByLibrary.simpleMessage("عميل"),
+        "client_label": MessageLookupByLibrary.simpleMessage("العميل: "),
         "clients": MessageLookupByLibrary.simpleMessage("العملاء"),
         "code": MessageLookupByLibrary.simpleMessage("الكود"),
         "comment": MessageLookupByLibrary.simpleMessage("التعليقات"),
@@ -154,6 +164,22 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("بيانات التواصل"),
         "continue_with_google":
             MessageLookupByLibrary.simpleMessage("المتابعة باستخدام جوجل"),
+        "contract_active_title":
+            MessageLookupByLibrary.simpleMessage("العقد ساري"),
+        "contract_active_until": m0,
+        "contract_expired_since": m1,
+        "contract_expired_title":
+            MessageLookupByLibrary.simpleMessage("العقد منتهي"),
+        "contract_label": MessageLookupByLibrary.simpleMessage("عقد"),
+        "contract_number_prefix": m2,
+        "contract_wait_employee_sign_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "يجب أن تقوم بالتوقيع أولاً ليكون العقد ساري. اضغط للتوقيع."),
+        "contract_wait_other_client_sign_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "بانتظار توقيع العميل لكي يكون العقد ساري."),
+        "contract_wait_other_client_sign_title":
+            MessageLookupByLibrary.simpleMessage("بانتظار توقيع العميل"),
         "createdAt": MessageLookupByLibrary.simpleMessage("تاريخ الإضافة"),
         "credential_already_in_use": MessageLookupByLibrary.simpleMessage(
             "تم استخدام هذه البيانات في حساب آخر. حاول بطريقة مختلفة."),
@@ -182,7 +208,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "تم التحقق من بريدك الإلكتروني بنجاح."),
         "email_already_in_use": MessageLookupByLibrary.simpleMessage(
             "البريد الإلكتروني مستخدم بالفعل. يرجى تسجيل الدخول أو استخدام بريد آخر."),
+        "emergency_visit_request":
+            MessageLookupByLibrary.simpleMessage("طلب زيارة طوارئ"),
+        "emergency_visit_request_subtitle":
+            MessageLookupByLibrary.simpleMessage("طلب زيارة طوارئ"),
         "employee": MessageLookupByLibrary.simpleMessage("موظف"),
+        "employee_label": MessageLookupByLibrary.simpleMessage("الموظف: "),
         "employees": MessageLookupByLibrary.simpleMessage("الموظفون"),
         "enterBranchAddress":
             MessageLookupByLibrary.simpleMessage("برجاء إدخال عنوان الفرع"),
@@ -257,6 +288,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "رمز التحقق غير صحيح. يرجى المحاولة مجددًا."),
         "invalid_verification_id": MessageLookupByLibrary.simpleMessage(
             "معرف التحقق غير صالح. حاول مجددًا."),
+        "linear_stage_active": MessageLookupByLibrary.simpleMessage("ساري"),
+        "linear_stage_client_signed":
+            MessageLookupByLibrary.simpleMessage("توقيع العميل"),
+        "linear_stage_draft": MessageLookupByLibrary.simpleMessage("مسودة"),
+        "linear_stage_employee_signed":
+            MessageLookupByLibrary.simpleMessage("توقيع الموظف"),
+        "linear_stage_expired": MessageLookupByLibrary.simpleMessage("منتهي"),
         "login": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
         "login_welcome": MessageLookupByLibrary.simpleMessage(
             "مرحبًا بعودتك! يرجى تسجيل الدخول إلى حسابك للمتابعة."),
@@ -291,6 +329,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
         "network_request_failed": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ في الشبكة أثناء تسجيل الدخول. يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى."),
+        "new_visit_report":
+            MessageLookupByLibrary.simpleMessage("إضافة تقرير زيارة جديد"),
+        "new_visit_report_subtitle":
+            MessageLookupByLibrary.simpleMessage("إضافة تقرير زيارة جديد"),
         "noBranchesToAddBranchManager": MessageLookupByLibrary.simpleMessage(
             "لا توجد فروع لإضافة مديري فروع إليها. يرجى إضافة فرع أولاً."),
         "noBranchesToAddClient": MessageLookupByLibrary.simpleMessage(
@@ -335,6 +377,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل"),
         "password_mismatch":
             MessageLookupByLibrary.simpleMessage("كلمات المرور غير متطابقة"),
+        "period_from": MessageLookupByLibrary.simpleMessage("ساري من "),
+        "period_to": MessageLookupByLibrary.simpleMessage(" إلى "),
         "permission_denied": MessageLookupByLibrary.simpleMessage(
             "ليس لديك إذن لإجراء هذا العمل."),
         "phone": MessageLookupByLibrary.simpleMessage("رقم الهاتف"),
@@ -379,12 +423,25 @@ class MessageLookup extends MessageLookupByLibrary {
         "session_expired": MessageLookupByLibrary.simpleMessage(
             "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجددًا."),
         "settings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
+        "sign_client_required_title":
+            MessageLookupByLibrary.simpleMessage("توقيع العميل مطلوب أولاً"),
+        "sign_employee_required_subtitle": MessageLookupByLibrary.simpleMessage(
+            "يجب أن تقوم بالتوقيع أولاً ليتمكّن العميل من التوقيع. اضغط للتوقيع."),
+        "sign_employee_required_title":
+            MessageLookupByLibrary.simpleMessage("توقيع الموظف مطلوب أولاً"),
         "sign_in_cancelled": MessageLookupByLibrary.simpleMessage(
             "تم إلغاء عملية تسجيل الدخول. يرجى المحاولة مرة أخرى إذا كنت ترغب في المتابعة."),
         "sign_in_failed": MessageLookupByLibrary.simpleMessage(
             "فشلت محاولة تسجيل الدخول. يرجى المحاولة مرة أخرى لاحقاً أو الاتصال بالدعم إذا استمرت المشكلة."),
         "sign_in_required": MessageLookupByLibrary.simpleMessage(
             "يجب تسجيل الدخول للمتابعة. يرجى تسجيل الدخول والمحاولة مرة أخرى."),
+        "signature_client_title":
+            MessageLookupByLibrary.simpleMessage("توقيع العميل"),
+        "signature_confirm_dialog_body": MessageLookupByLibrary.simpleMessage(
+            "بتأكيدك سيتم تسجيل توقيعك على هذا العقد. لا يمكن التراجع عن هذه العملية."),
+        "signature_confirm_dialog_title": m3,
+        "signature_employee_title":
+            MessageLookupByLibrary.simpleMessage("توقيع الموظف"),
         "signup": MessageLookupByLibrary.simpleMessage("إنشاء حساب جديد"),
         "signup_in_progress": MessageLookupByLibrary.simpleMessage(
             "يرجى الانتظار أثناء إنشاء الحساب"),
@@ -394,6 +451,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("إنشاء حساب باستخدام فيسبوك"),
         "signup_with_google":
             MessageLookupByLibrary.simpleMessage("إنشاء حساب باستخدام جوجل"),
+        "slide_to_confirm":
+            MessageLookupByLibrary.simpleMessage("اسحب للتأكيد"),
+        "snackbar_client_notification_not_enabled":
+            MessageLookupByLibrary.simpleMessage("تنبيه العميل غير مفعّل بعد"),
+        "snackbar_signing_not_enabled":
+            MessageLookupByLibrary.simpleMessage("التوقيع غير مفعّل بعد"),
         "stepsToComplete": MessageLookupByLibrary.simpleMessage(
             "لمتابعة استخدام التطبيق، يرجى إكمال الخطوات التالية:"),
         "submitComplaint": MessageLookupByLibrary.simpleMessage("تقديم شكوى"),
@@ -445,6 +508,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "viewAndControlSystem":
             MessageLookupByLibrary.simpleMessage("عرض والتحكم في النظام"),
         "viewComplaints": MessageLookupByLibrary.simpleMessage("عرض الشكاوى"),
+        "view_contract": MessageLookupByLibrary.simpleMessage("عرض العقد"),
+        "view_contract_subtitle": MessageLookupByLibrary.simpleMessage(
+            "عرض تفاصيل العقد والتحويل إلى PDF"),
+        "visit_reports": MessageLookupByLibrary.simpleMessage("تقارير الزيارة"),
+        "visit_reports_subtitle": MessageLookupByLibrary.simpleMessage(
+            "عرض تفاصيل الزيارات والتحويل إلى PDF"),
         "visits": MessageLookupByLibrary.simpleMessage("الزيارات"),
         "waitDeltingBranch": MessageLookupByLibrary.simpleMessage(
             "برجاء الانتظار، جاري حذف الفرع"),
@@ -456,6 +525,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "برجاء الانتظار، جاري حفظ بيانات الشركة"),
         "wait_while_loading": MessageLookupByLibrary.simpleMessage(
             "يرجى الانتظار أثناء تحميل البيانات ..."),
+        "waiting_employee_signature_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "بانتظار توقيع الموظف لكي يتمكن العميل من التوقيع."),
+        "waiting_employee_signature_title":
+            MessageLookupByLibrary.simpleMessage("بانتظار توقيع الموظف"),
         "weak_password": MessageLookupByLibrary.simpleMessage(
             "كلمة المرور ضعيفة. يرجى استخدام كلمة مرور أقوى."),
         "welcome": MessageLookupByLibrary.simpleMessage("مرحبا"),

@@ -2669,6 +2669,396 @@ class S {
       args: [],
     );
   }
+
+  /// `You must sign first to activate the contract. Tap to sign.`
+  String get contract_wait_employee_sign_subtitle {
+    return Intl.message(
+      'You must sign first to activate the contract. Tap to sign.',
+      name: 'contract_wait_employee_sign_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for client signature`
+  String get contract_wait_other_client_sign_title {
+    return Intl.message(
+      'Waiting for client signature',
+      name: 'contract_wait_other_client_sign_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for the client signature to activate the contract.`
+  String get contract_wait_other_client_sign_subtitle {
+    return Intl.message(
+      'Waiting for the client signature to activate the contract.',
+      name: 'contract_wait_other_client_sign_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contract Active`
+  String get contract_active_title {
+    return Intl.message(
+      'Contract Active',
+      name: 'contract_active_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active until {date}`
+  String contract_active_until(Object date) {
+    return Intl.message(
+      'Active until $date',
+      name: 'contract_active_until',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Contract Expired`
+  String get contract_expired_title {
+    return Intl.message(
+      'Contract Expired',
+      name: 'contract_expired_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expired on {date}`
+  String contract_expired_since(Object date) {
+    return Intl.message(
+      'Expired on $date',
+      name: 'contract_expired_since',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Signing is not enabled yet`
+  String get snackbar_signing_not_enabled {
+    return Intl.message(
+      'Signing is not enabled yet',
+      name: 'snackbar_signing_not_enabled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Client notification is not enabled yet`
+  String get snackbar_client_notification_not_enabled {
+    return Intl.message(
+      'Client notification is not enabled yet',
+      name: 'snackbar_client_notification_not_enabled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee Signature`
+  String get signature_employee_title {
+    return Intl.message(
+      'Employee Signature',
+      name: 'signature_employee_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Client Signature`
+  String get signature_client_title {
+    return Intl.message(
+      'Client Signature',
+      name: 'signature_client_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm {title}`
+  String signature_confirm_dialog_title(Object title) {
+    return Intl.message(
+      'Confirm $title',
+      name: 'signature_confirm_dialog_title',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `By confirming, your signature will be recorded on this contract. This action cannot be undone.`
+  String get signature_confirm_dialog_body {
+    return Intl.message(
+      'By confirming, your signature will be recorded on this contract. This action cannot be undone.',
+      name: 'signature_confirm_dialog_body',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Slide to confirm`
+  String get slide_to_confirm {
+    return Intl.message(
+      'Slide to confirm',
+      name: 'slide_to_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Draft`
+  String get linear_stage_draft {
+    return Intl.message(
+      'Draft',
+      name: 'linear_stage_draft',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee Signed`
+  String get linear_stage_employee_signed {
+    return Intl.message(
+      'Employee Signed',
+      name: 'linear_stage_employee_signed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Client Signed`
+  String get linear_stage_client_signed {
+    return Intl.message(
+      'Client Signed',
+      name: 'linear_stage_client_signed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active`
+  String get linear_stage_active {
+    return Intl.message(
+      'Active',
+      name: 'linear_stage_active',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expired`
+  String get linear_stage_expired {
+    return Intl.message(
+      'Expired',
+      name: 'linear_stage_expired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contract No: {number}`
+  String contract_number_prefix(Object number) {
+    return Intl.message(
+      'Contract No: $number',
+      name: 'contract_number_prefix',
+      desc: '',
+      args: [number],
+    );
+  }
+
+  /// `Contract`
+  String get contract_label {
+    return Intl.message(
+      'Contract',
+      name: 'contract_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active from `
+  String get period_from {
+    return Intl.message(
+      'Active from ',
+      name: 'period_from',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` to `
+  String get period_to {
+    return Intl.message(
+      ' to ',
+      name: 'period_to',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee: `
+  String get employee_label {
+    return Intl.message(
+      'Employee: ',
+      name: 'employee_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Client: `
+  String get client_label {
+    return Intl.message(
+      'Client: ',
+      name: 'client_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Branch: `
+  String get branch_label {
+    return Intl.message(
+      'Branch: ',
+      name: 'branch_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Employee signature required`
+  String get sign_employee_required_title {
+    return Intl.message(
+      'Employee signature required',
+      name: 'sign_employee_required_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You must sign first so the client can sign. Tap to sign.`
+  String get sign_employee_required_subtitle {
+    return Intl.message(
+      'You must sign first so the client can sign. Tap to sign.',
+      name: 'sign_employee_required_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for employee signature`
+  String get waiting_employee_signature_title {
+    return Intl.message(
+      'Waiting for employee signature',
+      name: 'waiting_employee_signature_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for the employee signature so the client can sign.`
+  String get waiting_employee_signature_subtitle {
+    return Intl.message(
+      'Waiting for the employee signature so the client can sign.',
+      name: 'waiting_employee_signature_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Client signature required`
+  String get sign_client_required_title {
+    return Intl.message(
+      'Client signature required',
+      name: 'sign_client_required_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Contract`
+  String get view_contract {
+    return Intl.message(
+      'View Contract',
+      name: 'view_contract',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View contract details and export to PDF`
+  String get view_contract_subtitle {
+    return Intl.message(
+      'View contract details and export to PDF',
+      name: 'view_contract_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add new visit report`
+  String get new_visit_report {
+    return Intl.message(
+      'Add new visit report',
+      name: 'new_visit_report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add new visit report`
+  String get new_visit_report_subtitle {
+    return Intl.message(
+      'Add new visit report',
+      name: 'new_visit_report_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Visit Reports`
+  String get visit_reports {
+    return Intl.message(
+      'Visit Reports',
+      name: 'visit_reports',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View visit details and export to PDF`
+  String get visit_reports_subtitle {
+    return Intl.message(
+      'View visit details and export to PDF',
+      name: 'visit_reports_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request emergency visit`
+  String get emergency_visit_request {
+    return Intl.message(
+      'Request emergency visit',
+      name: 'emergency_visit_request',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request emergency visit`
+  String get emergency_visit_request_subtitle {
+    return Intl.message(
+      'Request emergency visit',
+      name: 'emergency_visit_request_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
