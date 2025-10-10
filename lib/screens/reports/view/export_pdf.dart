@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/models/contract_data.dart';
+import 'package:fire_alarm_system/models/report.dart';
 import 'package:fire_alarm_system/screens/reports/view/common.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart' as pw_colors;
@@ -364,11 +365,18 @@ class ExportPdf {
                   ...types.asMap().entries.map((entry) {
                     final i = entry.key;
                     final type = entry.value;
-                    final details = contract.componentDetails[
-                            table.categoryIndex?.toString() ?? '']?[type] ??
-                        const {};
-                    final quantity = details['quantity'] ?? '';
-                    final notes = details['notes'] ?? '';
+                    final details = contract.componentsData.categories[
+                            table.categoryIndex ?? 0].items.firstWhere(
+                        (item) => item.arName == type,
+                        orElse: () => ContractComponent(
+                            arName: type,
+                            enName: type,
+                            description: '',
+                            categoryIndex: table.categoryIndex ?? 0,
+                            quantity: 0,
+                            notes: ''));
+                    final quantity = details.quantity.toString();
+                    final notes = details.notes;
                     final rowColor = (i % 2 == 0)
                         ? pw_colors.PdfColors.grey100
                         : pw_colors.PdfColors.white;

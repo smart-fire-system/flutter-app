@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/reports/view/common.dart';
+import 'package:fire_alarm_system/screens/reports/view/components_builder.dart';
 import 'package:fire_alarm_system/screens/reports/view/export_pdf.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
@@ -303,21 +304,18 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
       title = 'بانتظار توقيع العميل';
       subtitle = 'بانتظار توقيع العميل لكي يكون العقد ساري.';
     } else if (_contract.metaData.state == ContractState.active) {
-      final DateTime today = DateTime.now();
-      final DateTime? end = _contract.metaData.endDate;
-      if (end != null &&
-          !end.isBefore(DateTime(today.year, today.month, today.day))) {
+      if (!_isContractExpired()) {
         cardColor = Colors.green.shade50;
         borderColor = Colors.greenAccent;
         iconColor = Colors.green;
         title = 'العقد ساري';
-        subtitle = 'العقد ساري حتى ${_formatDate(end)}';
+        subtitle = 'العقد ساري حتى ${_formatDate(_contract.metaData.endDate)}';
       } else {
         cardColor = Colors.red.shade50;
         borderColor = CustomStyle.redLight;
         iconColor = CustomStyle.redDark;
         title = 'العقد منتهي';
-        subtitle = 'العقد منتهي منذ ${_formatDate(end)}';
+        subtitle = 'العقد منتهي منذ ${_formatDate(_contract.metaData.endDate)}';
       }
     }
 
@@ -523,28 +521,37 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     );
   }
 
-  // Build linear diagram: Draft -> Employee Signed -> Client Signed -> Active/Expired
   Widget _buildLinearStateDiagram() {
     final int stage = _currentStageIndex();
-    final String lastLabel = _finalStageLabel();
     final List<String> labels = <String>[
       'مسودة',
       'توقيع الموظف',
       'توقيع العميل',
-      lastLabel,
+      _isContractExpired() ? 'منتهي' : 'ساري',
     ];
 
-    Color stepColor(int idx) {
-      if (idx < stage) return Colors.green; // completed
-      if (idx == stage) return CustomStyle.redDark; // current
-      return Colors.grey; // pending
+    Color dotColor(int idx) {
+      if (_isContractExpired() && idx == 3) return CustomStyle.redDark;
+      if (idx <= stage) return Colors.green;
+      return Colors.grey;
+    }
+
+    Color labelColor(int idx) {
+      if (_isContractExpired() && idx == 3) return CustomStyle.redDark;
+      return dotColor(idx);
+    }
+
+    Color connectorColor(int idx) {
+      if (idx < stage) return Colors.green;
+      if (_isContractExpired() && idx == 2) return CustomStyle.redDark;
+      return Colors.grey;
     }
 
     Widget dot(int idx) => Container(
           width: 14,
           height: 14,
           decoration: BoxDecoration(
-            color: stepColor(idx),
+            color: dotColor(idx),
             shape: BoxShape.circle,
           ),
         );
@@ -552,12 +559,12 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     Widget connector(int idx) => Expanded(
           child: Container(
             height: 2,
-            color: stepColor(idx),
+            color: connectorColor(idx),
           ),
         );
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
@@ -575,16 +582,18 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
           children: [
             for (int i = 0; i < labels.length; i++)
               Expanded(
-                child: Center(
-                  child: Text(
-                    labels[i],
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight:
-                          i == stage ? FontWeight.w700 : FontWeight.w500,
-                      color: stepColor(i),
-                    ),
+                flex: i == 0 || i == 3 ? 2 : 3,
+                child: Text(
+                  labels[i],
+                  textAlign: i == 0
+                      ? TextAlign.right
+                      : i == 3
+                          ? TextAlign.left
+                          : TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: i == stage ? FontWeight.w700 : FontWeight.w500,
+                    color: labelColor(i),
                   ),
                 ),
               ),
@@ -598,24 +607,21 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     final ContractState? s = _contract.metaData.state;
     if (s == ContractState.draft) return 0; // Draft
     if (s == ContractState.pendingClient) return 1; // Employee Signed
-    // active: client signed, then Active/Expired based on end date
     if (s == ContractState.active) {
-      // Stage index for Active/Expired is 3 (last)
       return 3;
     }
-    // Fallback
     return 0;
   }
 
-  String _finalStageLabel() {
+  bool _isContractExpired() {
     if (_contract.metaData.state == ContractState.active) {
       final DateTime today = DateTime.now();
       final DateTime? end = _contract.metaData.endDate;
       if (end != null &&
           !end.isBefore(DateTime(today.year, today.month, today.day))) {
-        return 'ساري';
+        return false;
       } else {
-        return 'منتهي';
+        return true;
       }
     }
     // For non-active states, we still show the last node label based on end date if present
@@ -623,9 +629,9 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     final DateTime? end2 = _contract.metaData.endDate;
     if (end2 != null &&
         !end2.isBefore(DateTime(today2.year, today2.month, today2.day))) {
-      return 'ساري';
+      return false;
     }
-    return 'منتهي';
+    return true;
   }
 
   Widget _buildSignatureBox({
@@ -953,110 +959,23 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                 textAlign: item.text!.align,
               ),
             );
-          } else if (item.category != null) {
-            final table = item.category;
-            final types = ContractsCommon()
-                .typesForCategory(_contract, table!.categoryIndex);
-            if (types.isEmpty) return const SizedBox.shrink();
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Table(
-                    border:
-                        TableBorder.all(color: Colors.grey.shade300, width: 1),
-                    columnWidths: const <int, TableColumnWidth>{
-                      0: FlexColumnWidth(2),
-                      1: FlexColumnWidth(1),
-                      2: FlexColumnWidth(2),
-                    },
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    children: [
-                      const TableRow(
-                        decoration: BoxDecoration(
-                          color: CustomStyle.greyDark,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(8),
-                            topRight: Radius.circular(8),
-                          ),
-                        ),
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 8),
-                            child: Text('النوع',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white)),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 8),
-                            child: Text('العدد',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white)),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 8),
-                            child: Text('ملاحظات',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white)),
-                          ),
-                        ],
-                      ),
-                      ...types.asMap().entries.map((entry) {
-                        final i = entry.key;
-                        final type = entry.value;
-                        final isEven = i % 2 == 0;
-                        final details = _contract.componentDetails[
-                                table.categoryIndex?.toString() ?? '']?[type] ??
-                            const {};
-                        final quantity = details['quantity'] ?? '';
-                        final notes = details['notes'] ?? '';
-                        return TableRow(
-                          decoration: BoxDecoration(
-                            color: isEven ? Colors.grey.shade50 : Colors.white,
-                          ),
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 8),
-                              child: Text(type, textAlign: TextAlign.center),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 8),
-                              child:
-                                  Text(quantity, textAlign: TextAlign.center),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 8),
-                              child: Text(notes, textAlign: TextAlign.center),
-                            ),
-                          ],
-                        );
-                      }),
-                    ],
-                  ),
-                ],
-              ),
-            );
           }
           return const SizedBox.shrink();
+        }
+        if (afterHeaderIdx == _contractItems.length) {
+          return ComponentsBuilder(
+            componentsData: _contract.componentsData,
+            showOnly: true,
+            onChange: (componentsData) {
+              _contract.componentsData = componentsData;
+            },
+          );
         }
         // After items: show signatures section
         return _buildSignaturesSection(context);
       },
       itemCount: () {
-        return 3 + _contractItems.length + 1; // 3 headers + items + signatures
+        return 4 + _contractItems.length + 1; // 3 headers + items + signatures
       }(),
       separatorBuilder: (context, idx) {
         // Add spacing between header blocks and items

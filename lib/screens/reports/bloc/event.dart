@@ -1,6 +1,7 @@
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/report.dart';
+import 'package:fire_alarm_system/models/visit_report_data.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/state.dart';
 
 abstract class ReportsEvent {}

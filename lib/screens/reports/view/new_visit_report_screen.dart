@@ -1,5 +1,7 @@
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/models/visit_report_data.dart';
+import 'package:fire_alarm_system/screens/reports/view/components_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -29,11 +31,6 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
   List<ContractComponent> _contractComponents = [];
   List<ContractCategory> _contractCategories = [];
   late JHijri _visitDateHijri;
-  final List<Map<String, Map<String, dynamic>>> _tableStates = [];
-  final List<Map<String, Map<String, TextEditingController>>>
-      _tableControllers = [];
-  // Local per-table selected types to avoid mutating bloc state
-  final List<List<String>> _localTableTypes = [];
   final VisitReportData _visitReportDate = VisitReportData();
   late final TextEditingController _clientNameController;
   late final TextEditingController _clientController;
@@ -168,9 +165,6 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                                     _selectedContract = null;
                                     _contractController.text = 'اختيار العقد';
                                     _clientController.text = c.info.name;
-                                    _visitReportDate.metaData.client = c;
-                                    _visitReportDate.metaData.clientId =
-                                        c.info.id;
                                   });
                                   Navigator.pop(ctx);
                                 },
@@ -341,77 +335,6 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
     final String d = date.day.toString().padLeft(2, '0');
     return '$y-$m-$d';
   }
-
-  void _updateContractComponentsFromTables({
-    required List<ContractItem> items,
-    required List<ContractComponent> allComponents,
-    required List<ContractCategory> categories,
-  }) {
-    final Map<int, List<ContractComponent>> categoryIndexToItems = {};
-    final Map<String, Map<String, Map<String, String>>> details = {};
-    for (final reportItem in items) {
-      final table = reportItem.category;
-      if (table == null) continue;
-      final int categoryIndex = table.categoryIndex ?? 0;
-      final String categoryKey = categoryIndex.toString();
-      details.putIfAbsent(categoryKey, () => {});
-
-      // Use local table types for this table index
-      final int tableIdx = items.indexOf(reportItem);
-      final List<String> localTypes =
-          (tableIdx >= 0 && tableIdx < _localTableTypes.length)
-              ? _localTableTypes[tableIdx]
-              : const [];
-
-      for (final String typeName in localTypes) {
-        // Find the component by display name used in selection
-        final ContractComponent matched = allComponents.firstWhere(
-          (c) {
-            final String name =
-                (c.arName.trim().isNotEmpty ? c.arName.trim() : c.enName.trim())
-                    .trim();
-            return name == typeName;
-          },
-          orElse: () => ContractComponent(
-            arName: typeName,
-            enName: typeName,
-            description: '',
-            categoryIndex: categoryIndex,
-          ),
-        );
-        categoryIndexToItems.putIfAbsent(categoryIndex, () => []);
-        // Avoid duplicates per category
-        if (!categoryIndexToItems[categoryIndex]!.any(
-          (it) => (it.arName == matched.arName && it.enName == matched.enName),
-        )) {
-          categoryIndexToItems[categoryIndex]!.add(matched);
-        }
-
-        // Capture quantity and notes
-        if (tableIdx >= 0 && tableIdx < _tableStates.length) {
-          final typeStates = _tableStates[tableIdx];
-          final q = typeStates[typeName]?['quantity']?.toString() ?? '';
-          final n = typeStates[typeName]?['notes']?.toString() ?? '';
-          details[categoryKey]![typeName] = {
-            'quantity': q,
-            'notes': n,
-          };
-        }
-      }
-    }
-
-    _visitReportDate.components = [
-      for (final entry in categoryIndexToItems.entries)
-        if (entry.key >= 0 && entry.key < categories.length)
-          ContractComponentsData(
-            category: categories[entry.key],
-            items: entry.value,
-          )
-    ];
-    _visitReportDate.componentDetails = details;
-  }
-
-  // Ensure parameter map for a table item contains all parameters from all cells
 
   Widget _buildMergedTable() {
     Color borderColor = Colors.grey.shade300;
@@ -640,8 +563,6 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
     _employee = state.user;
     _clients = state.clients!;
     _contracts = state.contracts!;
-    _visitReportDate.metaData.employee = _employee;
-    _visitReportDate.metaData.employeeId = _employee?.info.id;
     _contractComponents = state.contractComponents!;
     _contractCategories = state.contractCategories!;
 
@@ -732,12 +653,6 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    _updateContractComponentsFromTables(
-                      items: state.visitReportItems!,
-                      allComponents: _contractComponents,
-                      categories: _contractCategories,
-                    );
-
                     context.read<ReportsBloc>().add(SaveVisitReportRequested(
                         visitReport: _visitReportDate));
                   },
@@ -751,28 +666,19 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
     );
   }
 
-  List<Widget> _buildVisitReportItemsTable() {
-    final List<Widget> items = [];
-    /* */
-    return items;
-  }
-
   List<Widget> _buildVisitReportItems() {
     final List<Widget> items = [];
     items.add(_buildMergedTable());
-    items.addAll(_buildVisitReportItemsTable());
+    items.add(ComponentsBuilder(
+      components: _contractComponents,
+      categories: _contractCategories,
+      onChange: (data) {},
+    ));
     return items;
   }
 
   @override
   void dispose() {
-    // Dispose all table controllers
-    for (final table in _tableControllers) {
-      for (final typeMap in table.values) {
-        typeMap['quantity']?.dispose();
-        typeMap['notes']?.dispose();
-      }
-    }
     _clientAddressController.dispose();
     _contractNumberController.dispose();
     _visitDateController.dispose();

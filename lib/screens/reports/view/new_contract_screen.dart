@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/screens/reports/view/components_builder.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
@@ -28,11 +29,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
   List<ContractComponent> _contractComponents = [];
   List<ContractCategory> _contractCategories = [];
   final List<Map<String, dynamic>> _paramValues = [];
-  final List<Map<String, Map<String, dynamic>>> _tableStates = [];
-  final List<Map<String, Map<String, TextEditingController>>>
-      _tableControllers = [];
-  // Local per-table selected types to avoid mutating bloc state
-  final List<List<String>> _localTableTypes = [];
   final ContractData _contractData = ContractData();
   late final TextEditingController _startDateController;
   late final TextEditingController _endDateController;
@@ -219,75 +215,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
     }
   }
 
-  void _updateContractComponentsFromTables({
-    required List<ContractItem> items,
-    required List<ContractComponent> allComponents,
-    required List<ContractCategory> categories,
-  }) {
-    final Map<int, List<ContractComponent>> categoryIndexToItems = {};
-    final Map<String, Map<String, Map<String, String>>> details = {};
-    for (final reportItem in items) {
-      final table = reportItem.category;
-      if (table == null) continue;
-      final int categoryIndex = table.categoryIndex ?? 0;
-      final String categoryKey = categoryIndex.toString();
-      details.putIfAbsent(categoryKey, () => {});
-
-      // Use local table types for this table index
-      final int tableIdx = items.indexOf(reportItem);
-      final List<String> localTypes =
-          (tableIdx >= 0 && tableIdx < _localTableTypes.length)
-              ? _localTableTypes[tableIdx]
-              : const [];
-
-      for (final String typeName in localTypes) {
-        // Find the component by display name used in selection
-        final ContractComponent matched = allComponents.firstWhere(
-          (c) {
-            final String name =
-                (c.arName.trim().isNotEmpty ? c.arName.trim() : c.enName.trim())
-                    .trim();
-            return name == typeName;
-          },
-          orElse: () => ContractComponent(
-            arName: typeName,
-            enName: typeName,
-            description: '',
-            categoryIndex: categoryIndex,
-          ),
-        );
-        categoryIndexToItems.putIfAbsent(categoryIndex, () => []);
-        // Avoid duplicates per category
-        if (!categoryIndexToItems[categoryIndex]!.any(
-          (it) => (it.arName == matched.arName && it.enName == matched.enName),
-        )) {
-          categoryIndexToItems[categoryIndex]!.add(matched);
-        }
-
-        // Capture quantity and notes
-        if (tableIdx >= 0 && tableIdx < _tableStates.length) {
-          final typeStates = _tableStates[tableIdx];
-          final q = typeStates[typeName]?['quantity']?.toString() ?? '';
-          final n = typeStates[typeName]?['notes']?.toString() ?? '';
-          details[categoryKey]![typeName] = {
-            'quantity': q,
-            'notes': n,
-          };
-        }
-      }
-    }
-
-    _contractData.components = [
-      for (final entry in categoryIndexToItems.entries)
-        if (entry.key >= 0 && entry.key < categories.length)
-          ContractComponentsData(
-            category: categories[entry.key],
-            items: entry.value,
-          )
-    ];
-    _contractData.componentDetails = details;
-  }
-
   void _initParamValues(int idx, ReportTextItem item) {
     if (_paramValues.length > idx && _paramValues[idx].isNotEmpty) return;
     while (_paramValues.length <= idx) {
@@ -332,24 +259,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
         break;
       case 'paramContractAgreementGregorianDate':
         _contractData.paramContractAgreementGregorianDate = text;
-        break;
-      case 'paramFirstPartyName':
-        _contractData.paramFirstPartyName = text;
-        break;
-      case 'paramFirstPartyCommNumber':
-        _contractData.paramFirstPartyCommNumber = text;
-        break;
-      case 'paramFirstPartyAddress':
-        _contractData.paramFirstPartyAddress = text;
-        break;
-      case 'paramFirstPartyRep':
-        _contractData.paramFirstPartyRep = text;
-        break;
-      case 'paramFirstPartyRepIdNumber':
-        _contractData.paramFirstPartyRepIdNumber = text;
-        break;
-      case 'paramFirstPartyG':
-        _contractData.paramFirstPartyG = text;
         break;
       case 'paramSecondPartyName':
         _contractData.paramSecondPartyName = text;
@@ -623,145 +532,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
     }
   }
 
-  void _showAddComponentSheet(
-      {required int itemIndex, required ReportCategoryItem table}) {
-    final allComponents = _contractComponents;
-    final int categoryIndex = table.categoryIndex ?? 0;
-    final filtered =
-        allComponents.where((c) => c.categoryIndex == categoryIndex).toList();
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 8,
-              bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 48,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    const Expanded(
-                      child: Text(
-                        'اختر مكون لإضافته',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(ctx),
-                      icon: const Icon(Icons.close),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                if (filtered.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    child: Text('لا توجد عناصر متاحة لهذه الفئة'),
-                  )
-                else
-                  Flexible(
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      itemCount: filtered.length,
-                      separatorBuilder: (_, __) => const Divider(height: 1),
-                      itemBuilder: (ctx, i) {
-                        final comp = filtered[i];
-                        final name = (comp.arName.trim().isNotEmpty
-                                ? comp.arName.trim()
-                                : comp.enName.trim())
-                            .trim();
-                        // Ensure local table types list exists
-                        while (_localTableTypes.length <= itemIndex) {
-                          _localTableTypes.add([]);
-                        }
-                        final localTypes = _localTableTypes[itemIndex];
-                        final alreadyAdded = localTypes.contains(name);
-                        return ListTile(
-                          leading: const Icon(Icons.add_box_outlined),
-                          title: Text(
-                            name.isEmpty ? comp.enName : name,
-                            style: TextStyle(
-                              color: alreadyAdded ? Colors.grey : null,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          subtitle: comp.description.trim().isEmpty
-                              ? null
-                              : Text(
-                                  comp.description.trim(),
-                                  style: TextStyle(
-                                    color: alreadyAdded ? Colors.grey : null,
-                                  ),
-                                ),
-                          enabled: !alreadyAdded,
-                          trailing: alreadyAdded
-                              ? const Icon(Icons.check, color: Colors.grey)
-                              : const Icon(Icons.add),
-                          onTap: alreadyAdded
-                              ? null
-                              : () {
-                                  setState(() {
-                                    // Ensure table state containers exist
-                                    while (_tableStates.length <= itemIndex) {
-                                      _tableStates.add({});
-                                      _tableControllers.add({});
-                                    }
-                                    final typeStates = _tableStates[itemIndex];
-                                    final typeControllers =
-                                        _tableControllers[itemIndex];
-
-                                    // Add to local table types
-                                    localTypes.add(name);
-
-                                    // Initialize state and controllers for the new row if missing
-                                    typeStates[name] ??= {
-                                      'quantity': '',
-                                      'notes': '',
-                                    };
-                                    typeControllers[name] ??= {
-                                      'quantity': TextEditingController(
-                                          text: typeStates[name]!['quantity']),
-                                      'notes': TextEditingController(
-                                          text: typeStates[name]!['notes']),
-                                    };
-                                  });
-                                  Navigator.pop(ctx);
-                                },
-                        );
-                      },
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -793,6 +563,12 @@ class _NewContractScreenState extends State<NewContractScreen> {
     _contractData.metaData.employeeId = _employee?.info.id;
     _contractComponents = state.contractComponents!;
     _contractCategories = state.contractCategories!;
+    _contractData.paramFirstPartyName = _employee!.branch.contractFirstParty!.name;
+    _contractData.paramFirstPartyCommNumber = _employee!.branch.contractFirstParty!.commercialRecord;
+    _contractData.paramFirstPartyAddress = _employee!.branch.contractFirstParty!.address;
+    _contractData.paramFirstPartyRep = _employee!.branch.contractFirstParty!.repName;
+    _contractData.paramFirstPartyRepIdNumber = _employee!.branch.contractFirstParty!.idNumber;
+    _contractData.paramFirstPartyG = _employee!.branch.contractFirstParty!.g;
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -913,216 +689,19 @@ class _NewContractScreenState extends State<NewContractScreen> {
                         const Divider(color: CustomStyle.redLight),
                     ],
                   );
-                } else if (item.category != null) {
-                  final table = item.category!;
-                  // Initialize local lists and controllers/states for this table index
-                  if (_localTableTypes.length <= idx) {
-                    while (_localTableTypes.length <= idx) {
-                      _localTableTypes.add([]);
-                    }
-                  }
-                  if (_tableStates.length <= idx) {
-                    while (_tableStates.length <= idx) {
-                      _tableStates.add({});
-                      _tableControllers.add({});
-                    }
-                    // Initialize empty for current local types
-                    _tableStates[idx] = {
-                      for (var type in _localTableTypes[idx])
-                        type: {
-                          'quantity': '',
-                          'notes': '',
-                        }
-                    };
-                    _tableControllers[idx] = {
-                      for (var type in _localTableTypes[idx])
-                        type: {
-                          'quantity': TextEditingController(
-                              text: _tableStates[idx][type]!['quantity']),
-                          'notes': TextEditingController(
-                              text: _tableStates[idx][type]!['notes']),
-                        }
-                    };
-                  }
-                  final typeStates = _tableStates[idx];
-                  final typeControllers = _tableControllers[idx];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Table(
-                          border: TableBorder.all(
-                              color: Colors.grey.shade300, width: 1),
-                          columnWidths: const <int, TableColumnWidth>{
-                            0: FixedColumnWidth(48),
-                            1: FlexColumnWidth(2),
-                            2: FlexColumnWidth(1),
-                            3: FlexColumnWidth(2),
-                          },
-                          defaultVerticalAlignment:
-                              TableCellVerticalAlignment.middle,
-                          children: [
-                            const TableRow(
-                              decoration: BoxDecoration(
-                                color: CustomStyle.greyDark,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(8),
-                                  topRight: Radius.circular(8),
-                                ),
-                              ),
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 8),
-                                  child: Text('X',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 8),
-                                  child: Text('النوع',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 8),
-                                  child: Text('العدد',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 8),
-                                  child: Text('ملاحظات',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white)),
-                                ),
-                              ],
-                            ),
-                            ..._localTableTypes[idx]
-                                .asMap()
-                                .entries
-                                .map((entry) {
-                              final i = entry.key;
-                              final type = entry.value;
-                              final isEven = i % 2 == 0;
-                              return TableRow(
-                                decoration: BoxDecoration(
-                                  color: isEven
-                                      ? Colors.grey.shade50
-                                      : Colors.white,
-                                ),
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 4, horizontal: 4),
-                                    child: Center(
-                                      child: IconButton(
-                                        icon: const Icon(Icons.clear,
-                                            color: Colors.red),
-                                        tooltip: 'حذف',
-                                        onPressed: () {
-                                          setState(() {
-                                            final controllers =
-                                                typeControllers.remove(type);
-                                            controllers?['quantity']?.dispose();
-                                            controllers?['notes']?.dispose();
-                                            typeStates.remove(type);
-                                            _localTableTypes[idx].remove(type);
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 8),
-                                    child:
-                                        Text(type, textAlign: TextAlign.center),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 8),
-                                    child: TextField(
-                                      keyboardType: TextInputType.number,
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                        isDense: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                      ),
-                                      textAlign: TextAlign.center,
-                                      controller:
-                                          typeControllers[type]!['quantity'],
-                                      onChanged: (val) {
-                                        setState(() {
-                                          typeStates[type]!['quantity'] = val;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 8),
-                                    child: TextField(
-                                      minLines: 1,
-                                      maxLines: null,
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                        isDense: true,
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 8, horizontal: 8),
-                                      ),
-                                      textAlign: TextAlign.center,
-                                      controller:
-                                          typeControllers[type]!['notes'],
-                                      onChanged: (val) {
-                                        setState(() {
-                                          typeStates[type]!['notes'] = val;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }),
-                          ],
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: TextButton.icon(
-                            onPressed: () => _showAddComponentSheet(
-                                itemIndex: idx, table: table),
-                            icon: const Icon(Icons.add),
-                            label: const Text('إضافة'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
                 }
                 return const SizedBox.shrink();
               }),
+              ComponentsBuilder(
+                components: _contractComponents,
+                categories: _contractCategories,
+                onChange: (componentsData) {
+                  _contractData.componentsData = componentsData;
+                },
+              ),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    _updateContractComponentsFromTables(
-                      items: state.contractItems!,
-                      allComponents: _contractComponents,
-                      categories: _contractCategories,
-                    );
-
                     context
                         .read<ReportsBloc>()
                         .add(SaveContractRequested(contract: _contractData));
@@ -1139,13 +718,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
 
   @override
   void dispose() {
-    // Dispose all table controllers
-    for (final table in _tableControllers) {
-      for (final typeMap in table.values) {
-        typeMap['quantity']?.dispose();
-        typeMap['notes']?.dispose();
-      }
-    }
     _startDateController.dispose();
     _endDateController.dispose();
     _clientController.dispose();

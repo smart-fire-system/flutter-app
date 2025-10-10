@@ -2,11 +2,10 @@ import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/report.dart';
 
 class ContractsCommon {
-
   List<String> typesForCategory(ContractData contract, int? categoryIndex) {
     if (categoryIndex == null) return const [];
     final List<String> names = [];
-    for (final cat in contract.components) {
+    for (final cat in contract.componentsData.categories) {
       for (final item in cat.items) {
         if (item.categoryIndex == categoryIndex) {
           final String name = (item.arName.trim().isNotEmpty

@@ -105,11 +105,15 @@ class ContractComponent {
   final String enName;
   final String description;
   final int categoryIndex; // 0 = Other, otherwise 1-based index
+  final int quantity;
+  final String notes;
   ContractComponent({
     this.arName = '',
     this.enName = '',
     this.description = '',
     this.categoryIndex = 0,
+    this.quantity = 0,
+    this.notes = '',
   });
 }
 
@@ -126,4 +130,65 @@ class ContractComponentsData {
   ContractCategory category;
   List<ContractComponent> items;
   ContractComponentsData({required this.category, required this.items});
+}
+
+class ContractComponents {
+  ContractComponents();
+  List<ContractComponentsData> categories = [];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'componentsData': categories
+          .map((c) => {
+                'category': {
+                  'arName': c.category.arName,
+                  'enName': c.category.enName,
+                },
+                'items': c.items
+                    .map((i) => {
+                          'arName': i.arName,
+                          'enName': i.enName,
+                          'description': i.description,
+                          'categoryIndex': i.categoryIndex,
+                          'quantity': i.quantity,
+                          'notes': i.notes,
+                        })
+                    .toList(),
+              })
+          .toList()
+    };
+  }
+
+  factory ContractComponents.fromJson(Map<String, dynamic> json) {
+    final comps = json['componentsData'];
+    final ContractComponents data = ContractComponents();
+    if (comps is List) {
+      data.categories = comps.map((e) {
+        final map = (e as Map).cast<String, dynamic>();
+        final catMap = (map['category'] as Map?)?.cast<String, dynamic>() ?? {};
+        final category = ContractCategory(
+          arName: catMap['arName']?.toString() ?? '',
+          enName: catMap['enName']?.toString() ?? '',
+        );
+        final itemsList = (map['items'] as List?) ?? [];
+        final items = itemsList.map((it) {
+          final itMap = (it as Map).cast<String, dynamic>();
+          return ContractComponent(
+            arName: itMap['arName']?.toString() ?? '',
+            enName: itMap['enName']?.toString() ?? '',
+            description: itMap['description']?.toString() ?? '',
+            categoryIndex: (itMap['categoryIndex'] is int)
+                ? itMap['categoryIndex'] as int
+                : int.tryParse(itMap['categoryIndex']?.toString() ?? '') ?? 0,
+            quantity: (itMap['quantity'] is int)
+                ? itMap['quantity'] as int
+                : int.tryParse(itMap['quantity']?.toString() ?? '') ?? 0,
+            notes: itMap['notes']?.toString() ?? '',
+          );
+        }).toList();
+        return ContractComponentsData(category: category, items: items);
+      }).toList();
+    }
+    return data;
+  }
 }

@@ -283,51 +283,6 @@ class ReportsTemplate {
       ),
     ];
 
-    // Dynamically add a section (title + empty table) for each category
-    for (int i = 1; i < (contractCategories.length); i++) {
-      final cat = contractCategories[i];
-      items.add(
-        ContractItem(
-          text: ReportTextItem(
-            templateValue: '• ${cat.arName}: -',
-            paddingAfter: 0,
-            bold: true,
-            underlined: true,
-          ),
-        ),
-      );
-      items.add(
-        ContractItem(
-          category: ReportCategoryItem(
-            types: [],
-            categoryIndex: i,
-          ),
-        ),
-      );
-    }
-
-    if (contractCategories.isNotEmpty) {
-      final cat = contractCategories[0];
-      items.add(
-        ContractItem(
-          text: ReportTextItem(
-            templateValue: '• ${cat.arName}: -',
-            paddingAfter: 0,
-            bold: true,
-            underlined: true,
-          ),
-        ),
-      );
-      items.add(
-        ContractItem(
-          category: ReportCategoryItem(
-            types: [],
-            categoryIndex: 0,
-          ),
-        ),
-      );
-    }
-
     // Trailing signature and closing items
     items.addAll([
       ContractItem(
