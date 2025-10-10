@@ -1,7 +1,4 @@
-import 'package:fire_alarm_system/screens/reports/view/common.dart';
-import 'package:fire_alarm_system/screens/reports/view/components_builder.dart';
-import 'package:fire_alarm_system/screens/reports/view/export_pdf.dart';
-import 'package:fire_alarm_system/screens/reports/view/signature.dart';
+import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';

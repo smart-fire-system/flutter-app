@@ -1,5 +1,5 @@
 import 'package:fire_alarm_system/models/user.dart';
-import 'package:fire_alarm_system/screens/reports/view/contract_details_screen.dart';
+import 'package:fire_alarm_system/screens/reports/view/view.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
