@@ -128,7 +128,7 @@ class SystemScreenState extends State<SystemScreen> {
 
   Widget _buildSystem(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).system),
+      appBar: CustomAppBar(title: S.of(context).system, leading: const Icon(Icons.bar_chart_rounded)),
       body: Column(
         children: [
           Padding(

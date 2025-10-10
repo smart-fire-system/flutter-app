@@ -7,6 +7,7 @@ import 'package:fire_alarm_system/screens/profile/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/state.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
+import 'package:fire_alarm_system/generated/l10n.dart';
 
 class UsersAndBranchesScreen extends StatelessWidget {
   const UsersAndBranchesScreen({super.key});
@@ -15,7 +16,10 @@ class UsersAndBranchesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
-      appBar: const CustomAppBar(title: 'Users & Branches'),
+      appBar: CustomAppBar(
+        title: S.of(context).users_and_branches,
+        leading: const Icon(Icons.people_alt_rounded),
+      ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
           dynamic user;
@@ -37,7 +41,7 @@ class UsersAndBranchesScreen extends StatelessWidget {
                     userInfo: userInfo,
                     role: user.permissions.role != null
                         ? UserInfo.getRoleName(context, user.permissions.role)
-                        : 'No Role',
+                        : S.of(context).noRole,
                   ),
 
                 const SizedBox(height: 28),
@@ -45,8 +49,8 @@ class UsersAndBranchesScreen extends StatelessWidget {
                 // Large featured card - Users
                 LargeCard(
                   icon: Icons.account_tree_rounded,
-                  title: 'Users and Branches Hierarchy',
-                  subtitle: 'View and manage users and branches hierarchy',
+                  title: S.of(context).users_branches_hierarchy_title,
+                  subtitle: S.of(context).users_branches_hierarchy_subtitle,
                   titleColor: Colors.white,
                   subtitleColor: Colors.white,
                   gradient: const LinearGradient(
@@ -68,8 +72,8 @@ class UsersAndBranchesScreen extends StatelessWidget {
                       Expanded(
                         child: SmallCard(
                           icon: Icons.business_rounded,
-                          title: 'Branches',
-                          subtitle: 'View and manage branches',
+                          title: S.of(context).branches,
+                          subtitle: S.of(context).branches_subtitle,
                           color: const Color(0xFFE11D48),
                           onTap: () => TabNavigator
                               .usersAndBranches.currentState
@@ -80,9 +84,8 @@ class UsersAndBranchesScreen extends StatelessWidget {
                       Expanded(
                         child: SmallCard(
                           icon: Icons.apartment_rounded,
-                          title: 'Companies',
-                          subtitle:
-                              'View and manage companies',
+                          title: S.of(context).companies,
+                          subtitle: S.of(context).companies_subtitle,
                           color: const Color(0xFFF43F5E),
                           onTap: () => TabNavigator
                               .usersAndBranches.currentState
@@ -98,8 +101,8 @@ class UsersAndBranchesScreen extends StatelessWidget {
                 // Full width card - Branches
                 WideCard(
                   icon: Icons.group_rounded,
-                  title: 'Users',
-                  subtitle: 'View and manage users',
+                  title: S.of(context).users,
+                  subtitle: S.of(context).users_subtitle,
                   color: const Color(0xFFEF4444),
                   onTap: () => TabNavigator.usersAndBranches.currentState
                       ?.pushNamed('/users'),

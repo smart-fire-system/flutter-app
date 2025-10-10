@@ -88,6 +88,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "branches": MessageLookupByLibrary.simpleMessage("الفروع"),
         "branchesDescription":
             MessageLookupByLibrary.simpleMessage("إضافة أو حذف الفروع"),
+        "branches_subtitle":
+            MessageLookupByLibrary.simpleMessage("عرض وإدارة الفروع"),
         "canAddBranches":
             MessageLookupByLibrary.simpleMessage("يمكنه إضافة فروع"),
         "canAddCompanies":
@@ -131,6 +133,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("الشركات والفروع"),
         "companiesAndBranchesDescription": MessageLookupByLibrary.simpleMessage(
             "إدارة الشركات والفروع. أضف أو احذف الشركات والفروع، واطلع على تفاصيلها."),
+        "companies_subtitle":
+            MessageLookupByLibrary.simpleMessage("عرض وإدارة الشركات"),
         "company": MessageLookupByLibrary.simpleMessage("الشركة"),
         "companyAdded":
             MessageLookupByLibrary.simpleMessage("تم إضافة الشركة بنجاح."),
@@ -152,6 +156,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "complaints": MessageLookupByLibrary.simpleMessage("الشكاوى"),
         "complaintsDescription": MessageLookupByLibrary.simpleMessage(
             "عرض الشكاوى المفتوحة أو تقديم شكوى جديدة."),
+        "complaints_subtitle":
+            MessageLookupByLibrary.simpleMessage("عرض وإدارة الشكاوى"),
         "confirmChangeAccessRole": MessageLookupByLibrary.simpleMessage(
             "هل تريد المتابعة لتغيير صلاحيات وصول المستخدم؟"),
         "confirmDeleteUser": MessageLookupByLibrary.simpleMessage(
@@ -167,6 +173,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "contract_active_title":
             MessageLookupByLibrary.simpleMessage("العقد ساري"),
         "contract_active_until": m0,
+        "contract_components":
+            MessageLookupByLibrary.simpleMessage("مكونات العقد"),
+        "contract_components_subtitle":
+            MessageLookupByLibrary.simpleMessage("تحديث مكونات العقود"),
         "contract_expired_since": m1,
         "contract_expired_title":
             MessageLookupByLibrary.simpleMessage("العقد منتهي"),
@@ -328,10 +338,15 @@ class MessageLookup extends MessageLookupByLibrary {
             "معرف التحقق مفقود. حاول مرة أخرى."),
         "myProfile": MessageLookupByLibrary.simpleMessage("صفحتي"),
         "name": MessageLookupByLibrary.simpleMessage("الاسم"),
+        "network_error": MessageLookupByLibrary.simpleMessage(
+            "تم حدوث خطأ في الشبكة أثناء تسجيل الدخول. يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى."),
         "network_request_failed": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ في الشبكة أثناء تسجيل الدخول. يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى."),
+        "new_contract": MessageLookupByLibrary.simpleMessage("إضافة عقد"),
+        "new_new_contract_subtitle":
+            MessageLookupByLibrary.simpleMessage("إضافة عقد جديد"),
         "new_visit_report":
-            MessageLookupByLibrary.simpleMessage("إضافة تقرير زيارة جديد"),
+            MessageLookupByLibrary.simpleMessage("إضافة تقرير زيارة"),
         "new_visit_report_subtitle":
             MessageLookupByLibrary.simpleMessage("إضافة تقرير زيارة جديد"),
         "noBranchesToAddBranchManager": MessageLookupByLibrary.simpleMessage(
@@ -369,6 +384,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "not_found":
             MessageLookupByLibrary.simpleMessage("المورد المطلوب غير موجود."),
         "notifications": MessageLookupByLibrary.simpleMessage("الإشعارات"),
+        "offline_mode": MessageLookupByLibrary.simpleMessage("وضع عدم الاتصال"),
+        "offline_mode_subtitle": MessageLookupByLibrary.simpleMessage(
+            "عرض وإدارة النظام في وضع عدم الاتصال"),
         "ok": MessageLookupByLibrary.simpleMessage("حسناً"),
         "operation_not_allowed": MessageLookupByLibrary.simpleMessage(
             "هذه العملية غير مسموح بها. تواصل مع المسؤول للحصول على المزيد من المعلومات."),
@@ -392,6 +410,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "phoneNumberTitle":
             MessageLookupByLibrary.simpleMessage("إضافة رقم هاتف"),
         "profile": MessageLookupByLibrary.simpleMessage("الملف الشخصي"),
+        "profile_subtitle":
+            MessageLookupByLibrary.simpleMessage("عرض وتعديل الملف الشخصي"),
         "provider_already_linked":
             MessageLookupByLibrary.simpleMessage("هذا الحساب مرتبط بمزود آخر."),
         "quota_exceeded": MessageLookupByLibrary.simpleMessage(
@@ -399,6 +419,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "reports": MessageLookupByLibrary.simpleMessage("التقارير"),
         "reportsDescription": MessageLookupByLibrary.simpleMessage(
             "عرض تقارير لعقود الصيانة، الزيارات وحالة النظام."),
+        "reports_contracts_card_subtitle": MessageLookupByLibrary.simpleMessage(
+            "عرض وإدارة العقود وتقارير الزيارات، وتقديم طلبات طوارئ أو شكاوى."),
+        "reports_contracts_card_title":
+            MessageLookupByLibrary.simpleMessage("العقود والتقارير"),
+        "reports_contracts_subtitle":
+            MessageLookupByLibrary.simpleMessage("عرض وإدارة التقارير والعقود"),
+        "reports_contracts_title":
+            MessageLookupByLibrary.simpleMessage("التقارير والعقود"),
         "requires_recent_login": MessageLookupByLibrary.simpleMessage(
             "يرجى تسجيل الدخول مجددًا لأسباب أمنية."),
         "resend_verification_email": MessageLookupByLibrary.simpleMessage(
@@ -466,6 +494,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "system": MessageLookupByLibrary.simpleMessage("النظام"),
         "systemStatusAndFaults":
             MessageLookupByLibrary.simpleMessage("حالة النظام والأعطال"),
+        "system_monitoring_card_subtitle":
+            MessageLookupByLibrary.simpleMessage("عرض والتحكم بالنظام"),
         "system_monitoring_control":
             MessageLookupByLibrary.simpleMessage("مراقبة النظام والتحكم"),
         "system_monitoring_description": MessageLookupByLibrary.simpleMessage(
@@ -504,6 +534,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "users": MessageLookupByLibrary.simpleMessage("المستخدمون"),
         "usersDescription": MessageLookupByLibrary.simpleMessage(
             "عرض وإعطاء أو حذف صلاحيات للمستخدمين"),
+        "users_and_branches":
+            MessageLookupByLibrary.simpleMessage("المستخدمون والفروع"),
+        "users_and_branches_subtitle": MessageLookupByLibrary.simpleMessage(
+            "عرض وإدارة المستخدمين والفروع"),
+        "users_branches_hierarchy_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "عرض وإدارة هيكل المستخدمين والفروع"),
+        "users_branches_hierarchy_title":
+            MessageLookupByLibrary.simpleMessage("هيكل المستخدمين والفروع"),
+        "users_subtitle":
+            MessageLookupByLibrary.simpleMessage("عرض وإدارة المستخدمين"),
         "valid_email": MessageLookupByLibrary.simpleMessage(
             "يرجى إدخال عنوان بريد إلكتروني صالح"),
         "valid_phone_number":

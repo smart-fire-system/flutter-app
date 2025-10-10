@@ -448,7 +448,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         ContractSummary(contract: _contract, showViewContractButton: true),
         const SizedBox(height: 16),
         WideCard(
-          icon: Icons.article,
+          icon: Icons.assignment_add,
           title: S.of(context).new_visit_report,
           subtitle: S.of(context).new_visit_report_subtitle,
           color: CustomStyle.redDark,
@@ -462,7 +462,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         ),
         const SizedBox(height: 16),
         WideCard(
-          icon: Icons.article,
+          icon: Icons.assignment,
           title: S.of(context).visit_reports,
           subtitle: S.of(context).visit_reports_subtitle,
           color: CustomStyle.redDark,
@@ -476,7 +476,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         ),
         const SizedBox(height: 16),
         WideCard(
-          icon: Icons.article,
+          icon: Icons.emergency,
           title: S.of(context).emergency_visit_request,
           subtitle: S.of(context).emergency_visit_request_subtitle,
           color: CustomStyle.redDark,

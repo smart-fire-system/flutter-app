@@ -71,7 +71,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         _buildRoleBasedPermissionsList(permissions, _user);
 
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).profile),
+      appBar: CustomAppBar(title: S.of(context).profile, leading: const Icon(Icons.person)),
       backgroundColor: Colors.grey[100],
       body: RefreshIndicator(
         onRefresh: () async {

@@ -230,6 +230,16 @@ class S {
     );
   }
 
+  /// `View and manage profile`
+  String get profile_subtitle {
+    return Intl.message(
+      'View and manage profile',
+      name: 'profile_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Notifications`
   String get notifications {
     return Intl.message(
@@ -305,6 +315,16 @@ class S {
     return Intl.message(
       'Complaints',
       name: 'complaints',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View and manage complaints`
+  String get complaints_subtitle {
+    return Intl.message(
+      'View and manage complaints',
+      name: 'complaints_subtitle',
       desc: '',
       args: [],
     );
@@ -620,6 +640,16 @@ class S {
     );
   }
 
+  /// `View and manage system`
+  String get system_monitoring_card_subtitle {
+    return Intl.message(
+      'View and manage system',
+      name: 'system_monitoring_card_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Monitor the current state of each sensor and control sub-units. You can also perform actions like turning devices on or off directly from this interface.`
   String get system_monitoring_description {
     return Intl.message(
@@ -665,6 +695,76 @@ class S {
     return Intl.message(
       'Add or remove branches',
       name: 'branchesDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Users & Branches`
+  String get users_and_branches {
+    return Intl.message(
+      'Users & Branches',
+      name: 'users_and_branches',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View and manage users & branches`
+  String get users_and_branches_subtitle {
+    return Intl.message(
+      'View and manage users & branches',
+      name: 'users_and_branches_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Users and Branches Hierarchy`
+  String get users_branches_hierarchy_title {
+    return Intl.message(
+      'Users and Branches Hierarchy',
+      name: 'users_branches_hierarchy_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View and manage users and branches hierarchy`
+  String get users_branches_hierarchy_subtitle {
+    return Intl.message(
+      'View and manage users and branches hierarchy',
+      name: 'users_branches_hierarchy_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View and manage branches`
+  String get branches_subtitle {
+    return Intl.message(
+      'View and manage branches',
+      name: 'branches_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View and manage companies`
+  String get companies_subtitle {
+    return Intl.message(
+      'View and manage companies',
+      name: 'companies_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View and manage users`
+  String get users_subtitle {
+    return Intl.message(
+      'View and manage users',
+      name: 'users_subtitle',
       desc: '',
       args: [],
     );
@@ -3000,10 +3100,10 @@ class S {
     );
   }
 
-  /// `Add new visit report`
+  /// `Add Visit Report`
   String get new_visit_report {
     return Intl.message(
-      'Add new visit report',
+      'Add Visit Report',
       name: 'new_visit_report',
       desc: '',
       args: [],
@@ -3015,6 +3115,26 @@ class S {
     return Intl.message(
       'Add new visit report',
       name: 'new_visit_report_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Contract`
+  String get new_contract {
+    return Intl.message(
+      'Add Contract',
+      name: 'new_contract',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add new contract`
+  String get new_new_contract_subtitle {
+    return Intl.message(
+      'Add new contract',
+      name: 'new_new_contract_subtitle',
       desc: '',
       args: [],
     );
@@ -3040,10 +3160,10 @@ class S {
     );
   }
 
-  /// `Request emergency visit`
+  /// `Request Emergency Visit`
   String get emergency_visit_request {
     return Intl.message(
-      'Request emergency visit',
+      'Request Emergency Visit',
       name: 'emergency_visit_request',
       desc: '',
       args: [],
@@ -3075,6 +3195,86 @@ class S {
     return Intl.message(
       'There are no contracts yet!',
       name: 'no_contracts_yet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reports & Contracts`
+  String get reports_contracts_title {
+    return Intl.message(
+      'Reports & Contracts',
+      name: 'reports_contracts_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contracts & Reports`
+  String get reports_contracts_card_title {
+    return Intl.message(
+      'Contracts & Reports',
+      name: 'reports_contracts_card_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View and manage contracts and visit reports, submit emergency requests or complaints.`
+  String get reports_contracts_card_subtitle {
+    return Intl.message(
+      'View and manage contracts and visit reports, submit emergency requests or complaints.',
+      name: 'reports_contracts_card_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View and manage reports & contracts`
+  String get reports_contracts_subtitle {
+    return Intl.message(
+      'View and manage reports & contracts',
+      name: 'reports_contracts_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contract Components`
+  String get contract_components {
+    return Intl.message(
+      'Contract Components',
+      name: 'contract_components',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update contract components`
+  String get contract_components_subtitle {
+    return Intl.message(
+      'Update contract components',
+      name: 'contract_components_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offline Mode`
+  String get offline_mode {
+    return Intl.message(
+      'Offline Mode',
+      name: 'offline_mode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View and manage system in offline mode`
+  String get offline_mode_subtitle {
+    return Intl.message(
+      'View and manage system in offline mode',
+      name: 'offline_mode_subtitle',
       desc: '',
       args: [],
     );

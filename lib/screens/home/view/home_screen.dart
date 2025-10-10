@@ -63,7 +63,7 @@ class HomeScreenState extends State<HomeScreen> {
       TabNavigator.system.currentState?.popUntil((route) => route.isFirst);
       TabNavigator.reports.currentState?.popUntil((route) => route.isFirst);
       TabNavigator.home.currentState?.popUntil((route) => route.isFirst);
-      TabNavigator.complaints.currentState?.popUntil((route) => route.isFirst);
+      TabNavigator.profile.currentState?.popUntil((route) => route.isFirst);
       TabNavigator.usersAndBranches.currentState
           ?.popUntil((route) => route.isFirst);
       _activeTabs.clear();
@@ -100,10 +100,10 @@ class HomeScreenState extends State<HomeScreen> {
         return TabNavigator.reports;
       case AppTab.home:
         return TabNavigator.home;
-      case AppTab.complaints:
-        return TabNavigator.complaints;
       case AppTab.usersAndBranches:
         return TabNavigator.usersAndBranches;
+      case AppTab.profile:
+        return TabNavigator.profile;
     }
   }
 
@@ -193,8 +193,8 @@ class HomeScreenState extends State<HomeScreen> {
           TabNavigator(screen: AppTab.system),
           TabNavigator(screen: AppTab.reports),
           TabNavigator(screen: AppTab.home),
-          TabNavigator(screen: AppTab.complaints),
           TabNavigator(screen: AppTab.usersAndBranches),
+          TabNavigator(screen: AppTab.profile),
         ],
       ),
       bottomNavigationBar: Container(
@@ -263,12 +263,12 @@ class HomeScreenState extends State<HomeScreen> {
                 label: S.of(context).home,
               ),
               BottomNavigationBarItem(
-                icon: _buildNavIcon(Icons.support_agent_rounded, 3),
-                label: S.of(context).complaints,
+                icon: _buildNavIcon(Icons.people_alt_rounded, 3),
+                label: S.of(context).users_and_branches,
               ),
               BottomNavigationBarItem(
-                icon: _buildNavIcon(Icons.people_alt_rounded, 4),
-                label: 'Users & Branches',
+                icon: _buildNavIcon(Icons.person, 4),
+                label: S.of(context).profile,
               ),
             ],
           ),

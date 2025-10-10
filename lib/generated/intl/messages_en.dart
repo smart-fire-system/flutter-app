@@ -95,6 +95,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "branches": MessageLookupByLibrary.simpleMessage("Branches"),
         "branchesDescription":
             MessageLookupByLibrary.simpleMessage("Add or remove branches"),
+        "branches_subtitle":
+            MessageLookupByLibrary.simpleMessage("View and manage branches"),
         "canAddBranches":
             MessageLookupByLibrary.simpleMessage("Can add branches"),
         "canAddCompanies":
@@ -139,6 +141,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Companies and Branches"),
         "companiesAndBranchesDescription": MessageLookupByLibrary.simpleMessage(
             "Manage companies and their branches. Add or remove companies and branches, and view detailed information about them."),
+        "companies_subtitle":
+            MessageLookupByLibrary.simpleMessage("View and manage companies"),
         "company": MessageLookupByLibrary.simpleMessage("Company"),
         "companyAdded": MessageLookupByLibrary.simpleMessage(
             "The company has been added successfully."),
@@ -161,6 +165,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "complaints": MessageLookupByLibrary.simpleMessage("Complaints"),
         "complaintsDescription": MessageLookupByLibrary.simpleMessage(
             "Show open compaints or submit new one."),
+        "complaints_subtitle":
+            MessageLookupByLibrary.simpleMessage("View and manage complaints"),
         "confirmChangeAccessRole": MessageLookupByLibrary.simpleMessage(
             "Do you want to proceed with changing the user\'s access permissions?"),
         "confirmDeleteUser": MessageLookupByLibrary.simpleMessage(
@@ -176,6 +182,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "contract_active_title":
             MessageLookupByLibrary.simpleMessage("Contract Active"),
         "contract_active_until": m0,
+        "contract_components":
+            MessageLookupByLibrary.simpleMessage("Contract Components"),
+        "contract_components_subtitle":
+            MessageLookupByLibrary.simpleMessage("Update contract components"),
         "contract_expired_since": m1,
         "contract_expired_title":
             MessageLookupByLibrary.simpleMessage("Contract Expired"),
@@ -219,7 +229,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "email_already_in_use": MessageLookupByLibrary.simpleMessage(
             "An account already exists with this email address. Please login or use a different email."),
         "emergency_visit_request":
-            MessageLookupByLibrary.simpleMessage("Request emergency visit"),
+            MessageLookupByLibrary.simpleMessage("Request Emergency Visit"),
         "emergency_visit_request_subtitle":
             MessageLookupByLibrary.simpleMessage("Request emergency visit"),
         "employee": MessageLookupByLibrary.simpleMessage("Employee"),
@@ -343,8 +353,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "A network error occurred during sign-in. Please check your internet connection and try again."),
         "network_request_failed": MessageLookupByLibrary.simpleMessage(
             "A network error occurred. Please check your connection and try again."),
+        "new_contract": MessageLookupByLibrary.simpleMessage("Add Contract"),
+        "new_new_contract_subtitle":
+            MessageLookupByLibrary.simpleMessage("Add new contract"),
         "new_visit_report":
-            MessageLookupByLibrary.simpleMessage("Add new visit report"),
+            MessageLookupByLibrary.simpleMessage("Add Visit Report"),
         "new_visit_report_subtitle":
             MessageLookupByLibrary.simpleMessage("Add new visit report"),
         "noBranchesToAddBranchManager": MessageLookupByLibrary.simpleMessage(
@@ -381,6 +394,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "not_found": MessageLookupByLibrary.simpleMessage(
             "The requested resource was not found."),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
+        "offline_mode": MessageLookupByLibrary.simpleMessage("Offline Mode"),
+        "offline_mode_subtitle": MessageLookupByLibrary.simpleMessage(
+            "View and manage system in offline mode"),
         "ok": MessageLookupByLibrary.simpleMessage("Ok"),
         "operation_not_allowed": MessageLookupByLibrary.simpleMessage(
             "This operation is not allowed. Contact the administrator for more information."),
@@ -404,6 +420,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "phoneNumberTitle":
             MessageLookupByLibrary.simpleMessage("Add Phone Number"),
         "profile": MessageLookupByLibrary.simpleMessage("Profile"),
+        "profile_subtitle":
+            MessageLookupByLibrary.simpleMessage("View and manage profile"),
         "provider_already_linked": MessageLookupByLibrary.simpleMessage(
             "This account is already linked to another authentication provider."),
         "quota_exceeded": MessageLookupByLibrary.simpleMessage(
@@ -411,6 +429,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "reports": MessageLookupByLibrary.simpleMessage("Reports"),
         "reportsDescription": MessageLookupByLibrary.simpleMessage(
             "Show reports for maintenance contracts, visits and system status."),
+        "reports_contracts_card_subtitle": MessageLookupByLibrary.simpleMessage(
+            "View and manage contracts and visit reports, submit emergency requests or complaints."),
+        "reports_contracts_card_title":
+            MessageLookupByLibrary.simpleMessage("Contracts & Reports"),
+        "reports_contracts_subtitle": MessageLookupByLibrary.simpleMessage(
+            "View and manage reports & contracts"),
+        "reports_contracts_title":
+            MessageLookupByLibrary.simpleMessage("Reports & Contracts"),
         "requires_recent_login": MessageLookupByLibrary.simpleMessage(
             "For security purposes, please log in again to continue."),
         "resend_verification_email":
@@ -479,6 +505,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "system": MessageLookupByLibrary.simpleMessage("System"),
         "systemStatusAndFaults":
             MessageLookupByLibrary.simpleMessage("System Status and Faults"),
+        "system_monitoring_card_subtitle":
+            MessageLookupByLibrary.simpleMessage("View and manage system"),
         "system_monitoring_control": MessageLookupByLibrary.simpleMessage(
             "System Monitoring and Control"),
         "system_monitoring_description": MessageLookupByLibrary.simpleMessage(
@@ -517,6 +545,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "users": MessageLookupByLibrary.simpleMessage("Users"),
         "usersDescription": MessageLookupByLibrary.simpleMessage(
             "Show and give or remove access from users"),
+        "users_and_branches":
+            MessageLookupByLibrary.simpleMessage("Users & Branches"),
+        "users_and_branches_subtitle": MessageLookupByLibrary.simpleMessage(
+            "View and manage users & branches"),
+        "users_branches_hierarchy_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "View and manage users and branches hierarchy"),
+        "users_branches_hierarchy_title": MessageLookupByLibrary.simpleMessage(
+            "Users and Branches Hierarchy"),
+        "users_subtitle":
+            MessageLookupByLibrary.simpleMessage("View and manage users"),
         "valid_email": MessageLookupByLibrary.simpleMessage(
             "Please enter a valid email address"),
         "valid_phone_number": MessageLookupByLibrary.simpleMessage(

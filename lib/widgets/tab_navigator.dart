@@ -10,7 +10,6 @@ import 'package:fire_alarm_system/screens/users/view/users_and_branches_screen.d
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/screens/home/view/view.dart';
 import 'package:fire_alarm_system/screens/branches/view/view.dart';
-import 'package:fire_alarm_system/screens/complaints/view/view.dart';
 import 'package:fire_alarm_system/screens/system/view/view.dart';
 import 'package:fire_alarm_system/screens/offline/view/view.dart';
 
@@ -18,8 +17,8 @@ enum AppTab {
   system,
   reports,
   home,
-  complaints,
   usersAndBranches,
+  profile,
 }
 
 class TabNavigator extends StatelessWidget {
@@ -30,8 +29,7 @@ class TabNavigator extends StatelessWidget {
   static final GlobalKey<NavigatorState> reports = GlobalKey<NavigatorState>();
   static final GlobalKey<NavigatorState> usersAndBranches =
       GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> complaints =
-      GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> profile = GlobalKey<NavigatorState>();
   static final GlobalKey<NavigatorState> home = GlobalKey<NavigatorState>();
 
   @override
@@ -47,8 +45,8 @@ class TabNavigator extends StatelessWidget {
       case AppTab.usersAndBranches:
         navigatorKey = usersAndBranches;
         break;
-      case AppTab.complaints:
-        navigatorKey = complaints;
+      case AppTab.profile:
+        navigatorKey = profile;
         break;
       case AppTab.home:
         navigatorKey = home;
@@ -165,8 +163,8 @@ class TabNavigator extends StatelessWidget {
         return const ReportsAndContractsScreen();
       case AppTab.usersAndBranches:
         return const UsersAndBranchesScreen();
-      case AppTab.complaints:
-        return const ComplaintsScreen();
+      case AppTab.profile:
+        return const ProfileScreen();
       case AppTab.home:
         return const MainScreen();
     }

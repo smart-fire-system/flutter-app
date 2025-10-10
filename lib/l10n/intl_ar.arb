@@ -25,6 +25,7 @@
 
     "home": "الصفحة الرئيسية",
     "profile": "الملف الشخصي",
+    "profile_subtitle": "عرض وتعديل الملف الشخصي",
     "notifications": "الإشعارات",
     "changeLanguage": "تغيير اللغة",
     "system": "النظام",
@@ -33,6 +34,7 @@
     "viewAndControlSystem": "عرض والتحكم في النظام",
     "manageAndConfigureSystem": "إدارة وتعديل النظام",
     "complaints": "الشكاوى",
+    "complaints_subtitle": "عرض وإدارة الشكاوى",
     "viewComplaints": "عرض الشكاوى",
     "submitComplaint": "تقديم شكوى",
     "reports": "التقارير",
@@ -67,11 +69,19 @@
     "logout": "تسجيل الخروج",
 
     "system_monitoring_control": "مراقبة النظام والتحكم",
+    "system_monitoring_card_subtitle": "عرض والتحكم بالنظام",
     "system_monitoring_description": "مراقبة الحالة الحالية لكل حساس والتحكم في الوحدات الفرعية. يمكنك أيضًا تنفيذ إجراءات مثل تشغيل أو إيقاف الأجهزة مباشرةً من هذه الواجهة.",
     "reportsDescription": "عرض تقارير لعقود الصيانة، الزيارات وحالة النظام.",
     "complaintsDescription": "عرض الشكاوى المفتوحة أو تقديم شكوى جديدة.",
     "usersDescription": "عرض وإعطاء أو حذف صلاحيات للمستخدمين",
     "branchesDescription": "إضافة أو حذف الفروع",
+    "users_and_branches": "المستخدمون والفروع",
+    "users_and_branches_subtitle": "عرض وإدارة المستخدمين والفروع",
+    "users_branches_hierarchy_title": "هيكل المستخدمين والفروع",
+    "users_branches_hierarchy_subtitle": "عرض وإدارة هيكل المستخدمين والفروع",
+    "branches_subtitle": "عرض وإدارة الفروع",
+    "companies_subtitle": "عرض وإدارة الشركات",
+    "users_subtitle": "عرض وإدارة المستخدمين",
 
     "deleteUser": "حذف المستخدم",
     "changeAccessRole": "تغيير صلاحيات الوصول",
@@ -292,6 +302,7 @@
     "unauthenticated": "يجب تسجيل الدخول للقيام بهذا العمل.",
 
     "sign_in_failed": "فشلت محاولة تسجيل الدخول. يرجى المحاولة مرة أخرى لاحقاً أو الاتصال بالدعم إذا استمرت المشكلة.",
+    "network_error": "تم حدوث خطأ في الشبكة أثناء تسجيل الدخول. يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى.",
     "sign_in_cancelled": "تم إلغاء عملية تسجيل الدخول. يرجى المحاولة مرة أخرى إذا كنت ترغب في المتابعة.",
     "sign_in_required": "يجب تسجيل الدخول للمتابعة. يرجى تسجيل الدخول والمحاولة مرة أخرى.",
 
@@ -328,15 +339,23 @@
     "sign_client_required_title": "توقيع العميل مطلوب أولاً",
     "view_contract": "عرض العقد",
     "view_contract_subtitle": "عرض تفاصيل العقد والتحويل إلى PDF",
-    "new_visit_report": "إضافة تقرير زيارة جديد",
+    "new_visit_report": "إضافة تقرير زيارة",
     "new_visit_report_subtitle": "إضافة تقرير زيارة جديد",
     "visit_reports": "تقارير الزيارة",
     "visit_reports_subtitle": "عرض تفاصيل الزيارات والتحويل إلى PDF",
     "emergency_visit_request": "طلب زيارة طوارئ",
     "emergency_visit_request_subtitle": "طلب زيارة طوارئ",
     "contracts": "العقود",
-    "no_contracts_yet": "لا توجد عقود مضافة بعد!"
-
-
+    "no_contracts_yet": "لا توجد عقود مضافة بعد!",
+    "reports_contracts_title": "التقارير والعقود",
+    "reports_contracts_card_title": "العقود والتقارير",
+    "reports_contracts_card_subtitle": "عرض وإدارة العقود وتقارير الزيارات، وتقديم طلبات طوارئ أو شكاوى.",
+    "reports_contracts_subtitle": "عرض وإدارة التقارير والعقود",
+    "contract_components": "مكونات العقد",
+    "contract_components_subtitle": "تحديث مكونات العقود",
+    "new_contract": "إضافة عقد",
+    "new_new_contract_subtitle": "إضافة عقد جديد",
+    "offline_mode": "وضع عدم الاتصال",
+    "offline_mode_subtitle": "عرض وإدارة النظام في وضع عدم الاتصال"
 
 }
