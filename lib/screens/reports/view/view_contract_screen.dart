@@ -925,7 +925,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
             // Skip category title if next table has no selected types (from contract)
             if (ContractsCommon().isCategoryTitle(item.text!) &&
                 afterHeaderIdx + 1 < _contractItems.length) {
-              final table = _contractItems[afterHeaderIdx + 1].table;
+              final table = _contractItems[afterHeaderIdx + 1].category;
               final hasAny = ContractsCommon()
                   .typesForCategory(_contract, table?.categoryIndex)
                   .isNotEmpty;
@@ -953,8 +953,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                 textAlign: item.text!.align,
               ),
             );
-          } else if (item.table != null) {
-            final table = item.table;
+          } else if (item.category != null) {
+            final table = item.category;
             final types = ContractsCommon()
                 .typesForCategory(_contract, table!.categoryIndex);
             if (types.isEmpty) return const SizedBox.shrink();

@@ -4,14 +4,20 @@ import 'package:jhijri_picker/_src/_jWidgets.dart';
 
 class ContractItem {
   final ReportTextItem? text;
+  final ReportCategoryItem? category;
   final ReportTableItem? table;
-  ContractItem({this.text, this.table});
+  ContractItem({this.text, this.category, this.table});
+}
+
+class ReportCategoryItem {
+  List<String> types;
+  final int? categoryIndex;
+  ReportCategoryItem({required this.types, this.categoryIndex});
 }
 
 class ReportTableItem {
-  List<String> types;
-  final int? categoryIndex;
-  ReportTableItem({required this.types, this.categoryIndex});
+  List<List<ReportTextItem>> values;
+  ReportTableItem({required this.values});
 }
 
 class ReportTextItem {

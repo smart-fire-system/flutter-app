@@ -80,8 +80,8 @@ class ReportsAndContractsScreen extends StatelessWidget {
               end: Alignment.bottomRight,
               colors: [CustomStyle.redDark, CustomStyle.redDark],
             ),
-            onTap: () =>
-                TabNavigator.reports.currentState?.pushNamed('/reports'),
+            onTap: () => TabNavigator.reports.currentState
+                ?.pushNamed('/reports/new-visit-report'),
           ),
           const SizedBox(height: 16),
         ],

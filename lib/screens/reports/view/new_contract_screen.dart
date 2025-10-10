@@ -227,7 +227,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
     final Map<int, List<ContractComponent>> categoryIndexToItems = {};
     final Map<String, Map<String, Map<String, String>>> details = {};
     for (final reportItem in items) {
-      final table = reportItem.table;
+      final table = reportItem.category;
       if (table == null) continue;
       final int categoryIndex = table.categoryIndex ?? 0;
       final String categoryKey = categoryIndex.toString();
@@ -624,7 +624,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
   }
 
   void _showAddComponentSheet(
-      {required int itemIndex, required ReportTableItem table}) {
+      {required int itemIndex, required ReportCategoryItem table}) {
     final allComponents = _contractComponents;
     final int categoryIndex = table.categoryIndex ?? 0;
     final filtered =
@@ -913,8 +913,8 @@ class _NewContractScreenState extends State<NewContractScreen> {
                         const Divider(color: CustomStyle.redLight),
                     ],
                   );
-                } else if (item.table != null) {
-                  final table = item.table!;
+                } else if (item.category != null) {
+                  final table = item.category!;
                   // Initialize local lists and controllers/states for this table index
                   if (_localTableTypes.length <= idx) {
                     while (_localTableTypes.length <= idx) {

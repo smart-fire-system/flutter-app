@@ -14,6 +14,7 @@ class ReportsInitial extends ReportsState {}
 
 class ReportsAuthenticated extends ReportsState {
   final List<ContractItem>? contractItems;
+  final List<ContractItem>? visitReportItems;
   final List<ContractCategory>? contractCategories;
   final List<ContractComponent>? contractComponents;
   final List<ContractData>? contracts;
@@ -24,6 +25,7 @@ class ReportsAuthenticated extends ReportsState {
   final String? error;
   ReportsAuthenticated({
     required this.contractItems,
+    required this.visitReportItems,
     required this.contractCategories,
     required this.contractComponents,
     required this.contracts,

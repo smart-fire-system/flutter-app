@@ -298,7 +298,7 @@ class ReportsTemplate {
       );
       items.add(
         ContractItem(
-          table: ReportTableItem(
+          category: ReportCategoryItem(
             types: [],
             categoryIndex: i,
           ),
@@ -320,7 +320,171 @@ class ReportsTemplate {
       );
       items.add(
         ContractItem(
-          table: ReportTableItem(
+          category: ReportCategoryItem(
+            types: [],
+            categoryIndex: 0,
+          ),
+        ),
+      );
+    }
+
+    // Trailing signature and closing items
+    items.addAll([
+      ContractItem(
+        text: ReportTextItem(
+          templateValue: 'هذا وتقبلوا منا فائق التحية والتقدير',
+          paddingAfter: 24,
+          bold: true,
+          align: TextAlign.center,
+        ),
+      ),
+    ]);
+    return items;
+  }
+
+  static List<ContractItem> getVisitReportItems(
+      List<ContractCategory> contractCategories) {
+    final List<ContractItem> items = [
+      ContractItem(
+        text: ReportTextItem(
+          templateValue: 'تقرير عن حالة انظمة انذار واطفاء الحريق',
+          bold: true,
+          align: TextAlign.center,
+          color: CustomStyle.redDark,
+        ),
+      ),
+      ContractItem(
+        text: ReportTextItem(
+          templateValue: 'Fire Alarm & Firefighting Systems Maintenance Report',
+          bold: true,
+          align: TextAlign.center,
+          color: CustomStyle.redDark,
+        ),
+      ),
+      ContractItem(
+        table: ReportTableItem(
+          values: [
+            [
+              ReportTextItem(
+                templateValue: 'اسم العميل\nClient Name',
+                paddingAfter: 0,
+              ),
+              ReportTextItem(
+                templateValue: '{{paramClientName}}',
+                parameters: {
+                  'paramClientName': StringParameter,
+                },
+                paddingAfter: 0,
+              ),
+            ],
+            [
+              ReportTextItem(
+                templateValue: 'عنوان العميل\nClient Address',
+                paddingAfter: 0,
+              ),
+              ReportTextItem(
+                templateValue: '{{paramClientAddress}}',
+                parameters: {
+                  'paramClientAddress': StringParameter,
+                },
+                paddingAfter: 0,
+              ),
+            ],
+            [
+              ReportTextItem(
+                templateValue: 'رقم العقد\nContract Number',
+                paddingAfter: 0,
+              ),
+              ReportTextItem(
+                templateValue: '{{paramContractNumber}}',
+                parameters: {
+                  'paramContractNumber': StringParameter,
+                },
+                paddingAfter: 0,
+              ),
+            ],
+            [
+              ReportTextItem(
+                templateValue: 'تاريخ الزيارة\nVisit Date',
+                paddingAfter: 0,
+              ),
+              ReportTextItem(
+                templateValue: '{{paramVisitDate}}',
+                parameters: {
+                  'paramVisitDate': HijriDateParameter,
+                },
+                paddingAfter: 0,
+              ),
+            ],
+            [
+              ReportTextItem(
+                templateValue: 'حالة النظام\nSystem Status',
+                paddingAfter: 0,
+              ),
+              ReportTextItem(
+                templateValue: '{{paramSystemStatus}}',
+                parameters: {
+                  'paramSystemStatus': StringParameter,
+                },
+                paddingAfter: 0,
+              ),
+            ],
+          ],
+        ),
+      ),
+      ContractItem(
+        text: ReportTextItem(
+          templateValue:
+              'ادارة السلامة في الدفاع المدني بمنطقة المدينة المنورة المحترمين',
+          bold: true,
+        ),
+      ),
+      ContractItem(
+        text: ReportTextItem(
+          templateValue:
+              '•	قامت فرقة الصيانة بزيارة روتينية للموقع الخاص بالعميل والكشف الكامل على نظام الإنذار والإطفاء المكون من:-',
+        ),
+      ),
+    ];
+
+    // Dynamically add a section (title + empty table) for each category
+    for (int i = 1; i < (contractCategories.length); i++) {
+      final cat = contractCategories[i];
+      items.add(
+        ContractItem(
+          text: ReportTextItem(
+            templateValue: '• ${cat.arName}: -',
+            paddingAfter: 0,
+            bold: true,
+            underlined: true,
+          ),
+        ),
+      );
+      items.add(
+        ContractItem(
+          category: ReportCategoryItem(
+            types: [],
+            categoryIndex: i,
+          ),
+        ),
+      );
+    }
+
+    if (contractCategories.isNotEmpty) {
+      final cat = contractCategories[0];
+      items.add(
+        ContractItem(
+          text: ReportTextItem(
+            templateValue: '• ${cat.arName}: -',
+            paddingAfter: 0,
+            bold: true,
+            underlined: true,
+          ),
+        ),
+      );
+      items.add(
+        ContractItem(
+          category: ReportCategoryItem(
             types: [],
             categoryIndex: 0,
           ),

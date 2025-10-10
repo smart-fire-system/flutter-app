@@ -15,6 +15,8 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         emit(ReportsAuthenticated(
           contractItems: ReportsTemplate.getContractItems(
               appRepository.reportsRepository.contractCategories ?? []),
+          visitReportItems: ReportsTemplate.getVisitReportItems(
+              appRepository.reportsRepository.contractCategories ?? []),
           contractCategories:
               appRepository.reportsRepository.contractCategories,
           contractComponents:

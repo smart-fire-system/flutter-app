@@ -236,3 +236,91 @@ enum ContractState {
   expired,
   cancelled,
 }
+
+
+class VisitReportData {
+  VisitReportData();
+  ContractMetaData metaData = ContractMetaData();
+  String? paramClientName;
+  String? paramClientAddress;
+  String? paramContractNumber;
+  String? paramVisitDate;
+  String? paramSystemStatus;
+  List<ContractComponentsData> components = [];
+  // categoryIndex -> typeName -> {'quantity': String, 'notes': String}
+  Map<String, Map<String, Map<String, String>>> componentDetails = {};
+
+  Map<String, dynamic> toJson() {
+    return {
+      'metaData': metaData.toJson(),
+      'paramClientName': paramClientName,
+      'paramClientAddress': paramClientAddress,
+      'paramContractNumber': paramContractNumber,
+      'paramVisitDate': paramVisitDate,
+      'paramSystemStatus': paramSystemStatus,
+      'components': components
+          .map((c) => {
+                'category': {
+                  'arName': c.category.arName,
+                  'enName': c.category.enName,
+                },
+                'items': c.items
+                    .map((i) => {
+                          'arName': i.arName,
+                          'enName': i.enName,
+                          'description': i.description,
+                          'categoryIndex': i.categoryIndex,
+                        })
+                    .toList(),
+              })
+          .toList(),
+      'componentDetails': componentDetails,
+    };
+  }
+
+  factory VisitReportData.fromJson(Map<String, dynamic> json) {
+    final data = VisitReportData();
+    data.metaData = ContractMetaData.fromJson(
+        (json['metaData'] as Map?)?.cast<String, dynamic>() ?? {});
+    data.paramClientName = json['paramClientName']?.toString();
+    data.paramClientAddress = json['paramClientAddress']?.toString();
+    data.paramContractNumber = json['paramContractNumber']?.toString();
+    data.paramVisitDate = json['paramVisitDate']?.toString();
+    data.paramSystemStatus = json['paramSystemStatus']?.toString();
+
+    final comps = json['components'];
+    if (comps is List) {
+      data.components = comps.map((e) {
+        final map = (e as Map).cast<String, dynamic>();
+        final catMap = (map['category'] as Map?)?.cast<String, dynamic>() ?? {};
+        final category = ContractCategory(
+          arName: catMap['arName']?.toString() ?? '',
+          enName: catMap['enName']?.toString() ?? '',
+        );
+        final itemsList = (map['items'] as List?) ?? [];
+        final items = itemsList.map((it) {
+          final itMap = (it as Map).cast<String, dynamic>();
+          return ContractComponent(
+            arName: itMap['arName']?.toString() ?? '',
+            enName: itMap['enName']?.toString() ?? '',
+            description: itMap['description']?.toString() ?? '',
+            categoryIndex: (itMap['categoryIndex'] is int)
+                ? itMap['categoryIndex'] as int
+                : int.tryParse(itMap['categoryIndex']?.toString() ?? '') ?? 0,
+          );
+        }).toList();
+        return ContractComponentsData(category: category, items: items);
+      }).toList();
+    }
+    final cd = json['componentDetails'];
+    if (cd is Map) {
+      data.componentDetails = cd.map((k, v) => MapEntry(
+          k.toString(),
+          (v as Map).map((k2, v2) => MapEntry(
+              k2.toString(),
+              (v2 as Map)
+                  .map((k3, v3) => MapEntry(k3.toString(), v3.toString()))))));
+    }
+    return data;
+  }
+}
