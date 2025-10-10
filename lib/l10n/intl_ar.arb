@@ -333,7 +333,10 @@
     "visit_reports": "تقارير الزيارة",
     "visit_reports_subtitle": "عرض تفاصيل الزيارات والتحويل إلى PDF",
     "emergency_visit_request": "طلب زيارة طوارئ",
-    "emergency_visit_request_subtitle": "طلب زيارة طوارئ"
+    "emergency_visit_request_subtitle": "طلب زيارة طوارئ",
+    "contracts": "العقود",
+    "no_contracts_yet": "لا توجد عقود مضافة بعد!"
+
 
 
 }

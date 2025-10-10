@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
 import 'package:fire_alarm_system/screens/reports/view/view.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -35,221 +36,6 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     return '$y-$m-$d';
   }
 
-  String _stateLabel(ContractState? state) {
-    switch (state) {
-      case ContractState.active:
-        if (_isContractExpired()) {
-          return S.of(context).linear_stage_expired;
-        }
-        return S.of(context).linear_stage_active;
-      case ContractState.pendingClient:
-        return S.of(context).contract_wait_other_client_sign_title;
-      case ContractState.requestCancellation:
-        return S.of(context).cancel;
-      case ContractState.expired:
-        return S.of(context).linear_stage_expired;
-      case ContractState.cancelled:
-        return S.of(context).cancelled;
-      case ContractState.draft:
-      default:
-        return S.of(context).linear_stage_draft;
-    }
-  }
-
-  Color _stateColor(ContractState? state) {
-    switch (state) {
-      case ContractState.active:
-        if (_isContractExpired()) {
-          return Colors.red;
-        }
-        return Colors.green;
-      case ContractState.pendingClient:
-        return Colors.orange;
-      case ContractState.requestCancellation:
-        return Colors.deepOrange;
-      case ContractState.expired:
-        return Colors.grey;
-      case ContractState.cancelled:
-        return Colors.red;
-      case ContractState.draft:
-      default:
-        return Colors.blueGrey;
-    }
-  }
-
-  Widget _buildContractInfoCard(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey.shade300),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header with contract number and state chip (match list style)
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    (_contract.paramContractNumber?.isNotEmpty == true)
-                        ? S.of(context).contract_number_prefix(
-                            _contract.paramContractNumber!)
-                        : (_contract.metaData.code != null
-                            ? S.of(context).contract_number_prefix(
-                                _contract.metaData.code.toString())
-                            : S.of(context).contract_label),
-                    style: CustomStyle.mediumTextBRed,
-                  ),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: _stateColor(_contract.metaData.state)
-                        .withValues(alpha: 0.1),
-                    border: Border.all(
-                      color: _stateColor(_contract.metaData.state),
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    _stateLabel(_contract.metaData.state),
-                    style: CustomStyle.smallTextB.copyWith(
-                      color: _stateColor(_contract.metaData.state),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            // Dates row
-            Row(
-              children: [
-                const Icon(Icons.calendar_month_outlined,
-                    size: 18, color: CustomStyle.redDark),
-                const SizedBox(width: 6),
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: S.of(context).period_from,
-                        style: CustomStyle.smallTextBRed,
-                      ),
-                      TextSpan(
-                        text: _formatDate(_contract.metaData.startDate),
-                        style: CustomStyle.smallText,
-                      ),
-                      TextSpan(
-                        text: S.of(context).period_to,
-                        style: CustomStyle.smallTextBRed,
-                      ),
-                      TextSpan(
-                        text: _formatDate(_contract.metaData.endDate),
-                        style: CustomStyle.smallText,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            // Employee
-            Row(
-              children: [
-                const Icon(Icons.person_outline,
-                    size: 18, color: CustomStyle.redDark),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: S.of(context).employee_label,
-                          style: CustomStyle.smallTextBRed,
-                        ),
-                        TextSpan(
-                          text: _contract.metaData.employee?.info.name ?? '-',
-                          style: CustomStyle.smallText,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            // Client
-            Row(
-              children: [
-                const Icon(Icons.group_outlined,
-                    size: 18, color: CustomStyle.redDark),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: S.of(context).client_label,
-                          style: CustomStyle.smallTextBRed,
-                        ),
-                        TextSpan(
-                          text: _contract.metaData.client?.info.name ?? '-',
-                          style: CustomStyle.smallText,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            // Branch
-            Row(
-              children: [
-                const Icon(Icons.apartment_outlined,
-                    size: 18, color: CustomStyle.redDark),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: S.of(context).branch_label,
-                          style: CustomStyle.smallTextBRed,
-                        ),
-                        TextSpan(
-                          text: _contract.metaData.employee?.branch.name ?? '-',
-                          style: CustomStyle.smallText,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ContractDetailsScreen(contractId: widget.contractId),
-                  ),
-                ),
-                icon: const Icon(Icons.visibility),
-                label: Text(S.of(context).view_contract),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   bool _isPendingCurrentEmployeeSign() {
     if (_user is! Employee) return false;
     final String currentId = (_user as Employee).info.id;
@@ -282,8 +68,6 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         isEmployeeDraft ? Colors.red.shade50 : Colors.blue.shade50;
     Color borderColor =
         isEmployeeDraft ? CustomStyle.redLight : CustomStyle.greyLight;
-    Color iconColor =
-        isEmployeeDraft ? CustomStyle.redDark : CustomStyle.greyDark;
     String title =
         isEmployeeDraft ? 'توقيع الموظف مطلوب أولاً' : 'بانتظار توقيع العميل';
     String subtitle = isEmployeeDraft
@@ -292,33 +76,28 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     if (_isPendingCurrentEmployeeSign()) {
       cardColor = Colors.red.shade50;
       borderColor = CustomStyle.redLight;
-      iconColor = CustomStyle.redDark;
       title = 'توقيع الموظف مطلوب أولاً';
       subtitle =
           'يجب أن تقوم بالتوقيع أولاً ليتمكّن العميل من التوقيع. اضغط للتوقيع.';
     } else if (_isPendingOtherEmployeeSign()) {
       cardColor = Colors.orange.shade50;
       borderColor = Colors.orangeAccent;
-      iconColor = Colors.orange;
       title = 'بانتظار توقيع الموظف';
       subtitle = 'بانتظار توقيع الموظف لكي يتمكن العميل من التوقيع.';
     } else if (_isPendingCurrentClientSign()) {
       cardColor = Colors.red.shade50;
       borderColor = CustomStyle.redLight;
-      iconColor = CustomStyle.redDark;
       title = 'توقيع العميل مطلوب أولاً';
       subtitle = S.of(context).contract_wait_employee_sign_subtitle;
     } else if (_isPendingOtherClientSign()) {
       cardColor = Colors.orange.shade50;
       borderColor = Colors.orangeAccent;
-      iconColor = Colors.orange;
       title = S.of(context).contract_wait_other_client_sign_title;
       subtitle = S.of(context).contract_wait_other_client_sign_subtitle;
     } else if (_contract.metaData.state == ContractState.active) {
-      if (!_isContractExpired()) {
+      if (!ContractsCommon.isContractExpired(_contract)) {
         cardColor = Colors.green.shade50;
         borderColor = Colors.greenAccent;
-        iconColor = Colors.green;
         title = S.of(context).contract_active_title;
         subtitle = S
             .of(context)
@@ -326,7 +105,6 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
       } else {
         cardColor = Colors.red.shade50;
         borderColor = CustomStyle.redLight;
-        iconColor = CustomStyle.redDark;
         title = S.of(context).contract_expired_title;
         subtitle = S
             .of(context)
@@ -360,15 +138,12 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                   children: [
                     Text(
                       title,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: iconColor,
-                      ),
+                      style: CustomStyle.mediumTextBRed,
                     ),
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: const TextStyle(color: CustomStyle.greyDark),
+                      style: CustomStyle.smallText,
                     ),
                     const SizedBox(height: 10),
                     _buildLinearStateDiagram(),
@@ -535,25 +310,34 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
       S.of(context).linear_stage_draft,
       S.of(context).linear_stage_employee_signed,
       S.of(context).linear_stage_client_signed,
-      _isContractExpired()
+      ContractsCommon.isContractExpired(_contract)
           ? S.of(context).linear_stage_expired
           : S.of(context).linear_stage_active,
     ];
 
     Color dotColor(int idx) {
-      if (_isContractExpired() && idx == 3) return CustomStyle.redDark;
+      if (ContractsCommon.isContractExpired(_contract) && idx == 3)
+      {
+        return CustomStyle.redDark;
+      }
       if (idx <= stage) return Colors.green;
       return Colors.grey;
     }
 
     Color labelColor(int idx) {
-      if (_isContractExpired() && idx == 3) return CustomStyle.redDark;
+      if (ContractsCommon.isContractExpired(_contract) && idx == 3)
+      {
+        return CustomStyle.redDark;
+      }
       return dotColor(idx);
     }
 
     Color connectorColor(int idx) {
       if (idx < stage) return Colors.green;
-      if (_isContractExpired() && idx == 2) return CustomStyle.redDark;
+      if (ContractsCommon.isContractExpired(_contract) && idx == 2)
+      {
+        return CustomStyle.redDark;
+      }
       return Colors.grey;
     }
 
@@ -604,9 +388,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                               ? TextAlign.right
                               : TextAlign.left
                           : TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: i == stage ? FontWeight.w700 : FontWeight.w500,
+                  style: CustomStyle.smallText.copyWith(
                     color: labelColor(i),
                   ),
                 ),
@@ -627,40 +409,11 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     return 0;
   }
 
-  bool _isContractExpired() {
-    if (_contract.metaData.state == ContractState.active) {
-      final DateTime today = DateTime.now();
-      final DateTime? end = _contract.metaData.endDate;
-      if (end != null &&
-          !end.isBefore(DateTime(today.year, today.month, today.day))) {
-        return false;
-      } else {
-        return true;
-      }
-    }
-    // For non-active states, we still show the last node label based on end date if present
-    final DateTime today2 = DateTime.now();
-    final DateTime? end2 = _contract.metaData.endDate;
-    if (end2 != null &&
-        !end2.isBefore(DateTime(today2.year, today2.month, today2.day))) {
-      return false;
-    }
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: (_contract.paramContractNumber?.isNotEmpty == true)
-            ? S
-                .of(context)
-                .contract_number_prefix(_contract.paramContractNumber!)
-            : (_contract.metaData.code != null
-                ? S
-                    .of(context)
-                    .contract_number_prefix(_contract.metaData.code.toString())
-                : S.of(context).contract_label),
+        title: S.of(context).view_contract,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -692,7 +445,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         const SizedBox(height: 16),
         _buildStateCard(context),
         const SizedBox(height: 16),
-        _buildContractInfoCard(context),
+        ContractSummary(contract: _contract, showViewContractButton: true),
         const SizedBox(height: 16),
         WideCard(
           icon: Icons.article,

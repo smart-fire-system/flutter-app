@@ -38,6 +38,8 @@ class _MainScreenState extends State<MainScreen> {
               icon: Icons.bar_chart_rounded,
               title: 'System Monitoring & Control',
               subtitle: 'View and manage system',
+              titleColor: Colors.white,
+              subtitleColor: Colors.white,
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -111,6 +113,8 @@ class _MainScreenState extends State<MainScreen> {
               icon: Icons.wifi_off_rounded,
               title: 'Offline Mode',
               subtitle: 'View and manage system in offline mode',
+              titleColor: Colors.white,
+              subtitleColor: Colors.white,
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,

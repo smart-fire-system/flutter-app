@@ -180,6 +180,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "بانتظار توقيع العميل لكي يكون العقد ساري."),
         "contract_wait_other_client_sign_title":
             MessageLookupByLibrary.simpleMessage("بانتظار توقيع العميل"),
+        "contracts": MessageLookupByLibrary.simpleMessage("العقود"),
         "createdAt": MessageLookupByLibrary.simpleMessage("تاريخ الإضافة"),
         "credential_already_in_use": MessageLookupByLibrary.simpleMessage(
             "تم استخدام هذه البيانات في حساب آخر. حاول بطريقة مختلفة."),
@@ -357,6 +358,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("لا يوجد مستخدمين تم تحديدهم"),
         "noUsersToView":
             MessageLookupByLibrary.simpleMessage("لا يوجد مستخدمون للعرض."),
+        "no_contracts_yet":
+            MessageLookupByLibrary.simpleMessage("لا توجد عقود مضافة بعد!"),
         "no_signed_in_user": MessageLookupByLibrary.simpleMessage(
             "لا يوجد مستخدم مسجل الدخول. يرجى تسجيل الدخول."),
         "no_such_provider": MessageLookupByLibrary.simpleMessage(

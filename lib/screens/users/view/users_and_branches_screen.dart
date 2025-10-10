@@ -47,6 +47,8 @@ class UsersAndBranchesScreen extends StatelessWidget {
                   icon: Icons.account_tree_rounded,
                   title: 'Users and Branches Hierarchy',
                   subtitle: 'View and manage users and branches hierarchy',
+                  titleColor: Colors.white,
+                  subtitleColor: Colors.white,
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,

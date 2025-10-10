@@ -3059,6 +3059,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Contracts`
+  String get contracts {
+    return Intl.message(
+      'Contracts',
+      name: 'contracts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `There are no contracts yet!`
+  String get no_contracts_yet {
+    return Intl.message(
+      'There are no contracts yet!',
+      name: 'no_contracts_yet',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

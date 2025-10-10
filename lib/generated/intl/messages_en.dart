@@ -190,6 +190,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "contract_wait_other_client_sign_title":
             MessageLookupByLibrary.simpleMessage(
                 "Waiting for client signature"),
+        "contracts": MessageLookupByLibrary.simpleMessage("Contracts"),
         "createdAt": MessageLookupByLibrary.simpleMessage("Created At"),
         "credential_already_in_use": MessageLookupByLibrary.simpleMessage(
             "This credential is already in use with another account. Try a different login method."),
@@ -369,6 +370,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No users selected"),
         "noUsersToView":
             MessageLookupByLibrary.simpleMessage("No users to view."),
+        "no_contracts_yet":
+            MessageLookupByLibrary.simpleMessage("There are no contracts yet!"),
         "no_signed_in_user": MessageLookupByLibrary.simpleMessage(
             "No user is signed in. Please log in to continue."),
         "no_such_provider": MessageLookupByLibrary.simpleMessage(

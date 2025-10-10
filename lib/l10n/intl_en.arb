@@ -334,6 +334,8 @@
     "visit_reports": "Visit Reports",
     "visit_reports_subtitle": "View visit details and export to PDF",
     "emergency_visit_request": "Request emergency visit",
-    "emergency_visit_request_subtitle": "Request emergency visit"
+    "emergency_visit_request_subtitle": "Request emergency visit",
+    "contracts": "Contracts",
+    "no_contracts_yet": "There are no contracts yet!"
 
 }

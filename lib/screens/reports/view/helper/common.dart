@@ -79,4 +79,25 @@ class ContractsCommon {
     }
     return result;
   }
+
+  static bool isContractExpired(ContractData contract) {
+    if (contract.metaData.state == ContractState.active) {
+      final DateTime today = DateTime.now();
+      final DateTime? end = contract.metaData.endDate;
+      if (end != null &&
+          !end.isBefore(DateTime(today.year, today.month, today.day))) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    // For non-active states, we still show the last node label based on end date if present
+    final DateTime today2 = DateTime.now();
+    final DateTime? end2 = contract.metaData.endDate;
+    if (end2 != null &&
+        !end2.isBefore(DateTime(today2.year, today2.month, today2.day))) {
+      return false;
+    }
+    return true;
+  }
 }

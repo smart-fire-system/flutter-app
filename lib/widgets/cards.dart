@@ -54,11 +54,7 @@ class CurrentUserCard extends StatelessWidget {
                       userInfo.name.isNotEmpty
                           ? userInfo.name[0].toUpperCase()
                           : 'U',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
+                      style: CustomStyle.mediumTextBRed.copyWith(color: Colors.white),
                     ),
                   ),
                 ),
@@ -69,23 +65,14 @@ class CurrentUserCard extends StatelessWidget {
                     children: [
                       Text(
                         userInfo.name,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF1F2937),
-                          letterSpacing: -0.3,
-                        ),
+                        style: CustomStyle.mediumTextBRed,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 3),
                       Text(
                         userInfo.email,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w400,
-                        ),
+                        style: CustomStyle.smallText,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -99,11 +86,7 @@ class CurrentUserCard extends StatelessWidget {
                         ),
                         child: Text(
                           role,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFFDC2626),
-                          ),
+                          style: CustomStyle.smallTextBRed,
                         ),
                       ),
                     ],
@@ -124,6 +107,8 @@ class LargeCard extends StatelessWidget {
   final String subtitle;
   final Gradient gradient;
   final VoidCallback onTap;
+  final Color? titleColor;
+  final Color? subtitleColor;
 
   const LargeCard({
     super.key,
@@ -132,6 +117,8 @@ class LargeCard extends StatelessWidget {
     required this.subtitle,
     required this.gradient,
     required this.onTap,
+    this.titleColor,
+    this.subtitleColor,
   });
 
   @override
@@ -165,16 +152,14 @@ class LargeCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          letterSpacing: -0.5,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Text(
+                          title,
+                          style: CustomStyle.largeTextBRed.copyWith(color: titleColor),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     Icon(
@@ -187,12 +172,7 @@ class LargeCard extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   subtitle,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.white.withValues(alpha: 0.9),
-                    fontWeight: FontWeight.w400,
-                    height: 1.4,
-                  ),
+                  style: CustomStyle.smallText.copyWith(color: subtitleColor),
                 ),
               ],
             ),
@@ -209,6 +189,8 @@ class SmallCard extends StatelessWidget {
   final String subtitle;
   final Color color;
   final VoidCallback onTap;
+  final Color? titleColor;
+  final Color? subtitleColor;
 
   const SmallCard({
     super.key,
@@ -217,6 +199,8 @@ class SmallCard extends StatelessWidget {
     required this.subtitle,
     required this.color,
     required this.onTap,
+    this.titleColor,
+    this.subtitleColor,
   });
 
   @override
@@ -265,22 +249,12 @@ class SmallCard extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF1F2937),
-                    letterSpacing: -0.3,
-                  ),
+                  style: CustomStyle.mediumTextBRed.copyWith(color: titleColor),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   subtitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w400,
-                    height: 1.4,
-                  ),
+                  style: CustomStyle.smallText.copyWith(color: subtitleColor),
                   maxLines: 5,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -300,7 +274,8 @@ class WideCard extends StatelessWidget {
   final Color color;
   final VoidCallback onTap;
   final Color backgroundColor;
-
+  final Color? titleColor;
+  final Color? subtitleColor;
   const WideCard({
     super.key,
     required this.icon,
@@ -309,6 +284,8 @@ class WideCard extends StatelessWidget {
     required this.color,
     this.backgroundColor = Colors.white,
     required this.onTap,
+    this.titleColor,
+    this.subtitleColor,
   });
 
   @override
@@ -349,22 +326,12 @@ class WideCard extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF1F2937),
-                          letterSpacing: -0.3,
-                        ),
+                        style: CustomStyle.mediumTextBRed.copyWith(color: titleColor),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         subtitle,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w400,
-                          height: 1.4,
-                        ),
+                        style: CustomStyle.smallText.copyWith(color: subtitleColor),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),

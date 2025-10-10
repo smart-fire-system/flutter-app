@@ -38,8 +38,10 @@ class ReportsAndContractsScreen extends StatelessWidget {
         children: [
           LargeCard(
             icon: Icons.assignment,
-            title: 'Contracts',
-            subtitle: 'View and manage contracts',
+            title: 'Contracts & Reports',
+            subtitle: 'View and manage all contracts and visit reports, submit emergency visit requests or complaints.',
+            titleColor: Colors.white,
+            subtitleColor: Colors.white,
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,

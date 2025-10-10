@@ -24,6 +24,9 @@ class CustomStyle {
   static final TextStyle largeText30B = GoogleFonts.cairo(
       fontSize: 30, color: Colors.black, fontWeight: FontWeight.w700);
 
+  static final TextStyle largeTextBRed = GoogleFonts.cairo(
+      fontSize: 30, color: redDark, fontWeight: FontWeight.w700);
+
   static final TextStyle largeText25 = GoogleFonts.cairo(
       fontSize: 25, color: Colors.black, fontWeight: FontWeight.w500);
   static final TextStyle largeText25B = GoogleFonts.cairo(
