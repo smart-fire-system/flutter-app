@@ -36,3 +36,9 @@ class FirstPartyInformationUpateRequested extends ReportsEvent {
   final ContractFirstParty firstParty;
   FirstPartyInformationUpateRequested({required this.firstParty});
 }
+
+class SharedWithUpdateRequested extends ReportsEvent {
+  final String contractId;
+  final List<String> sharedWith;
+  SharedWithUpdateRequested({required this.contractId, required this.sharedWith});
+}

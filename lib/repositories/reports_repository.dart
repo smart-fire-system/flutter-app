@@ -276,10 +276,6 @@ class ReportsRepository {
             .firstWhere((c) => c.info.id == contract.metaData.employeeId);
         contract.metaData.client = appRepository.users.clients
             .firstWhere((c) => c.info.id == contract.metaData.clientId);
-        contract.sharedWith = [
-          contract.metaData.employee?.info.id ?? '',
-          contract.metaData.client?.info.id ?? ''
-        ];
         try {
           contract.metaData.employeeSignature = _signatures.firstWhere(
               (s) => s.id == contract.metaData.employeeSignature.id);
@@ -291,6 +287,19 @@ class ReportsRepository {
               .firstWhere((s) => s.id == contract.metaData.clientSignature.id);
         } catch (_) {
           contract.metaData.clientSignature = SignatureData();
+        }
+        contract.sharedWithClients = [];
+        contract.sharedWithEmployees = [];
+        for (var sharedWith in contract.sharedWith) {
+          try {
+            contract.sharedWithEmployees.add(appRepository.users.employees
+                .firstWhere((e) => e.info.id == sharedWith));
+          } catch (_) {
+            try {
+              contract.sharedWithClients.add(appRepository.users.clients
+                  .firstWhere((e) => e.info.id == sharedWith));
+            } catch (_) {}
+          }
         }
       } catch (_) {}
       contract.metaData.id ??= doc.id;
@@ -310,8 +319,7 @@ class ReportsRepository {
           visitReport.id ??= doc.id;
           try {
             visitReport.contractMetaData = _contracts!
-                .firstWhere(
-                    (c) => c.metaData.id == visitReport.contractId)
+                .firstWhere((c) => c.metaData.id == visitReport.contractId)
                 .metaData;
             return visitReport;
           } catch (_) {
@@ -332,6 +340,43 @@ class ReportsRepository {
           .collection('branches')
           .doc(appRepository.userRole.branch.id)
           .update(firstParty.toMap());
+    } catch (e) {
+      if (e is FirebaseException) {
+        throw Exception(e.code);
+      } else {
+        throw Exception(e.toString());
+      }
+    }
+  }
+
+  Future<void> setSharedWith(String contractId, List<String> sharedWith) async {
+    try {
+      final contracts = _firestore.collection('contracts');
+
+      await _firestore.runTransaction((txn) async {
+        final contractRef = contracts.doc(contractId);
+
+        final existingReports = <DocumentSnapshot>[];
+        for (final ref in _visitReportsSnapshot!.docs) {
+          if ((ref.data()! as Map<String, dynamic>)['contractId']?.toString() ==
+              contractId) {
+            existingReports.add(ref);
+          }
+        }
+
+        txn.update(contractRef, {
+          'sharedWith': sharedWith,
+          'lastUpdated': FieldValue.serverTimestamp(),
+        });
+
+        for (final snap in existingReports) {
+          if (!snap.exists) continue;
+          txn.update(snap.reference, {
+            'sharedWith': sharedWith,
+            'lastUpdated': FieldValue.serverTimestamp(),
+          });
+        }
+      });
     } catch (e) {
       if (e is FirebaseException) {
         throw Exception(e.code);

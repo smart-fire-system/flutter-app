@@ -1,6 +1,5 @@
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
-import 'package:fire_alarm_system/screens/reports/view/view.dart';
 import 'package:fire_alarm_system/screens/reports/view/visit_reports_screen.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -28,6 +27,7 @@ class ViewContractScreen extends StatefulWidget {
 class _ViewContractScreenState extends State<ViewContractScreen> {
   late ContractData _contract;
   late dynamic _user;
+  Set<String> _selectedSharedWith = {};
 
   String _formatDate(DateTime? date) {
     if (date == null) return '';
@@ -407,6 +407,121 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     return 0;
   }
 
+  void _showShareWithBottomSheet(BuildContext context,
+      {required List<Employee> employees, required List<Client> clients}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext ctx) {
+        Set<String> tempSelected = {..._selectedSharedWith};
+        return StatefulBuilder(
+          builder: (context, setState) {
+            Widget buildUserTile({
+              required String id,
+              required String name,
+              required int code,
+              required VoidCallback onTap,
+            }) {
+              final bool isSelected = tempSelected.contains(id);
+              return ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: CircleAvatar(
+                  backgroundColor: Colors.grey.shade200,
+                  child: Text(
+                    name.trim().isNotEmpty ? name.trim()[0].toUpperCase() : '?',
+                    style: const TextStyle(color: CustomStyle.redDark),
+                  ),
+                ),
+                title: Text(name),
+                subtitle: Text('Code: $code'),
+                trailing: Icon(
+                  Icons.check,
+                  color: isSelected ? Colors.green : Colors.grey,
+                ),
+                onTap: () {
+                  setState(() {
+                    if (isSelected) {
+                      tempSelected.remove(id);
+                    } else {
+                      tempSelected.add(id);
+                    }
+                  });
+                },
+              );
+            }
+
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.share, color: CustomStyle.redDark),
+                        const SizedBox(width: 8),
+                        Text('Share with', style: CustomStyle.mediumTextBRed),
+                        const Spacer(),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                            context.read<ReportsBloc>().add(
+                                  SharedWithUpdateRequested(
+                                    contractId: widget.contractId,
+                                    sharedWith: tempSelected.toList(),
+                                  ),
+                                );
+                          },
+                          child: const Text('Save'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Flexible(
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          if (clients.isNotEmpty) ...[
+                            Text('Clients', style: CustomStyle.smallTextBRed),
+                            const SizedBox(height: 6),
+                            ...clients.map((c) => buildUserTile(
+                                  id: c.info.id,
+                                  name: c.info.name,
+                                  code: c.info.code,
+                                  onTap: () {},
+                                )),
+                            const SizedBox(height: 10),
+                            const Divider(height: 1),
+                            const SizedBox(height: 10),
+                          ],
+                          if (employees.isNotEmpty) ...[
+                            Text('Employees', style: CustomStyle.smallTextBRed),
+                            const SizedBox(height: 6),
+                            ...employees.map((e) => buildUserTile(
+                                  id: e.info.id,
+                                  name: e.info.name,
+                                  code: e.info.code,
+                                  onTap: () {},
+                                )),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -418,6 +533,32 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         child: BlocBuilder<ReportsBloc, ReportsState>(
           builder: (context, state) {
             if (state is ReportsAuthenticated) {
+              if (state.message != null) {
+                switch (state.message) {
+                  case ReportsMessage.sharedWithUpdated:
+                    state.message = null;
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Contract sharing updated successfully.',
+                            style: CustomStyle.smallTextBWhite),
+                        backgroundColor: Colors.green,
+                      ));
+                    });
+                    break;
+                  case ReportsMessage.contractSigned:
+                    state.message = null;
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Contract signed successfully.',
+                            style: CustomStyle.smallTextBWhite),
+                        backgroundColor: Colors.green,
+                      ));
+                    });
+                    break;
+                  default:
+                    break;
+                }
+              }
               return _buildBody(state);
             }
             return const Center(child: CircularProgressIndicator());
@@ -437,6 +578,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     _contract = state.contracts!.firstWhere(
       (c) => c.metaData.id == widget.contractId,
     );
+    _selectedSharedWith = _contract.sharedWith.map((e) => e.toString()).toSet();
     return ListView(
       children: [
         _buildSignActionCard(context),
@@ -460,16 +602,36 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         ),
         const SizedBox(height: 16),
         WideCard(
+            icon: Icons.share,
+            title: 'Share Contract',
+            subtitle: 'Share contract with other employees or clients',
+            color: CustomStyle.redDark,
+            backgroundColor: Colors.grey.withValues(alpha: 0.1),
+            onTap: () {
+              _showShareWithBottomSheet(context,
+                  employees: state.employees ?? const [],
+                  clients: state.clients ?? const []);
+            }),
+        const SizedBox(height: 16),
+        WideCard(
           icon: Icons.emergency,
-          title: S.of(context).emergency_visit_request,
-          subtitle: S.of(context).emergency_visit_request_subtitle,
+          title: 'Emergency Visits',
+          subtitle: 'View emergency visits or request a new one',
           color: CustomStyle.redDark,
           backgroundColor: Colors.grey.withValues(alpha: 0.1),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  ContractDetailsScreen(contractId: widget.contractId),
-            ),
+          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Feature not supported yet')),
+          ),
+        ),
+        const SizedBox(height: 16),
+        WideCard(
+          icon: Icons.support_agent,
+          title: 'Complaints',
+          subtitle: 'View complaints or request a new one',
+          color: CustomStyle.redDark,
+          backgroundColor: Colors.grey.withValues(alpha: 0.1),
+          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Feature not supported yet')),
           ),
         ),
       ],

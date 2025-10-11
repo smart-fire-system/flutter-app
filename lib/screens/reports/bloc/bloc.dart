@@ -74,5 +74,12 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         add(Refresh(error: 'unauthorized'));
       }
     });
+
+    on<SharedWithUpdateRequested>((event, emit) async {
+      emit(ReportsLoading());
+      await appRepository.reportsRepository
+          .setSharedWith(event.contractId, event.sharedWith);
+      message = ReportsMessage.sharedWithUpdated;
+    });
   }
 }

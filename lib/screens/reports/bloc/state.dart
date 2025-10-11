@@ -7,6 +7,7 @@ enum ReportsMessage {
   contractComponentsSaved,
   contractSaved,
   contractSigned,
+  sharedWithUpdated,
 }
 
 abstract class ReportsState {}
@@ -22,8 +23,8 @@ class ReportsAuthenticated extends ReportsState {
   final dynamic user;
   final List<Employee>? employees;
   final List<Client>? clients;
-  final ReportsMessage? message;
-  final String? error;
+  ReportsMessage? message;
+  String? error;
   ReportsAuthenticated({
     required this.contractItems,
     required this.visitReports,

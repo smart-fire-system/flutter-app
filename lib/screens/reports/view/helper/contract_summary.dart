@@ -185,6 +185,59 @@ class _ContractSummaryState extends State<ContractSummary> {
                   ),
                 ],
               ),
+              Row(
+                children: [
+                  const Icon(Icons.visibility_outlined,
+                      size: 18, color: CustomStyle.redDark),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Builder(builder: (context) {
+                      final names = _resolveSharedWithNames();
+                      if (names.isEmpty) {
+                        return Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Shared with: ',
+                                style: CustomStyle.smallTextBRed,
+                              ),
+                              TextSpan(
+                                text: '-',
+                                style: CustomStyle.smallText,
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      final String first = names.first;
+                      final int others = names.length - 1;
+                      final String summary = others > 0
+                          ? '$first and $others other${others > 1 ? 's' : ''}'
+                          : first;
+                      return Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'Shared with: ',
+                              style: CustomStyle.smallTextBRed,
+                            ),
+                            TextSpan(
+                              text: summary,
+                              style: CustomStyle.smallText,
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.remove_red_eye_outlined,
+                        color: CustomStyle.greyDark, size: 20),
+                    onPressed: () => _showSharedWithBottomSheet(context),
+                    tooltip: 'View all',
+                  ),
+                ],
+              ),
               if (widget.showViewContractButton)
                 SizedBox(
                   width: double.infinity,
@@ -203,6 +256,113 @@ class _ContractSummaryState extends State<ContractSummary> {
           ),
         ),
       ),
+    );
+  }
+
+  List<String> _resolveSharedWithNames() {
+    List<String> names = [];
+    for (var sharedWith in widget.contract.sharedWithClients) {
+      names.add(sharedWith.info.name);
+    }
+    for (var sharedWith in widget.contract.sharedWithEmployees) {
+      names.add(sharedWith.info.name);
+    }
+    return names;
+  }
+
+  void _showSharedWithBottomSheet(BuildContext context) {
+    final clients = widget.contract.sharedWithClients;
+    final employees = widget.contract.sharedWithEmployees;
+    final bool hasAny = clients.isNotEmpty || employees.isNotEmpty;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: false,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext ctx) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.visibility_outlined,
+                      color: CustomStyle.redDark),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Shared with: ',
+                    style: CustomStyle.mediumTextBRed,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              if (!hasAny)
+                const Text(
+                  'No users',
+                  style: TextStyle(color: CustomStyle.greyDark),
+                )
+              else
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      if (clients.isNotEmpty) ...[
+                        Text(
+                          'Clients',
+                          style: CustomStyle.smallTextBRed,
+                        ),
+                        const SizedBox(height: 6),
+                        ...clients.map((c) => ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              leading: CircleAvatar(
+                                backgroundColor: Colors.grey.shade200,
+                                child: Text(
+                                  c.info.name.trim().isNotEmpty
+                                      ? c.info.name.trim()[0].toUpperCase()
+                                      : '?',
+                                  style: const TextStyle(
+                                      color: CustomStyle.redDark),
+                                ),
+                              ),
+                              title: Text(c.info.name),
+                              subtitle: Text('Code: ${c.info.code}'),
+                            )),
+                        const SizedBox(height: 10),
+                        const Divider(height: 1),
+                        const SizedBox(height: 10),
+                      ],
+                      if (employees.isNotEmpty) ...[
+                        Text(
+                          'Employees',
+                          style: CustomStyle.smallTextBRed,
+                        ),
+                        const SizedBox(height: 6),
+                        ...employees.map((e) => ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              leading: CircleAvatar(
+                                backgroundColor: Colors.grey.shade200,
+                                child: Text(
+                                  e.info.name.trim().isNotEmpty
+                                      ? e.info.name.trim()[0].toUpperCase()
+                                      : '?',
+                                  style: const TextStyle(
+                                      color: CustomStyle.redDark),
+                                ),
+                              ),
+                              title: Text(e.info.name),
+                              subtitle: Text('Code: ${e.info.code}'),
+                            )),
+                      ],
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 

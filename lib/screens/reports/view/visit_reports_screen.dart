@@ -64,8 +64,6 @@ class _VisitReportsScreenState extends State<VisitReportsScreen> {
     if (state.contracts == null || state.contractItems == null) {
       return const Center(child: CircularProgressIndicator());
     }
-    print(widget.contractId);
-    print(state.visitReports);
     _visitReports = state.visitReports!
         .where((v) => v.contractId == widget.contractId)
         .toList();

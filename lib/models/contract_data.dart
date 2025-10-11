@@ -60,6 +60,8 @@ class ContractData {
   ContractComponents componentsData = ContractComponents();
   Timestamp? createdAt;
   List<dynamic> sharedWith = [];
+  List<Client> sharedWithClients = [];
+  List<Employee> sharedWithEmployees = [];
 
   Map<String, dynamic> parametersToJson() {
     return {
