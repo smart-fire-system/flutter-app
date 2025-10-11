@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/report.dart';
 import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/models/visit_report_data.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 
@@ -13,12 +14,13 @@ class ReportsRepository {
   final _refreshController = StreamController<void>.broadcast();
   QuerySnapshot? _contractsSnapshot;
   QuerySnapshot? _signaturesSnapshot;
+  QuerySnapshot? _visitReportsSnapshot;
   QuerySnapshot? _reportsMetaDataSnapshot;
   List<ContractComponent>? _contractComponents;
   List<ContractCategory>? _contractCategories;
   List<ContractData>? _contracts;
-  List<ContractData>? _filteredContracts;
   List<SignatureData> _signatures = [];
+  List<VisitReportData> _visitReports = [];
 
   ReportsRepository({required this.appRepository})
       : _firestore = FirebaseFirestore.instance {
@@ -46,7 +48,12 @@ class ReportsRepository {
     _firestore.collection('contracts').snapshots().listen((snapshot) {
       _contractsSnapshot = snapshot;
       _contracts = [];
-      _filteredContracts = [];
+      _refresh();
+    });
+
+    _firestore.collection('visitReports').snapshots().listen((snapshot) {
+      _visitReportsSnapshot = snapshot;
+      _visitReports = [];
       _refresh();
     });
 
@@ -60,7 +67,7 @@ class ReportsRepository {
   List<ContractComponent>? get contractComponents => _contractComponents;
   List<ContractCategory>? get contractCategories => _contractCategories;
   List<ContractData>? get contracts => _contracts;
-  List<ContractData>? get filteredContracts => _filteredContracts;
+  List<VisitReportData>? get visitReports => _visitReports;
   Stream<void> get refreshStream => _refreshController.stream;
 
   Future<void> saveContractComponents(
@@ -101,9 +108,40 @@ class ReportsRepository {
         contract.metaData.code = next;
         final docRef = _firestore.collection('contracts').doc();
         contract.metaData.id = docRef.id;
-        txn.set(docRef, contract.toJson());
+        contract.sharedWith = [
+          contract.metaData.employee?.info.id ?? '',
+          contract.metaData.client?.info.id ?? ''
+        ];
+        txn.set(docRef, {
+          ...contract.toJson(),
+          'createdAt': FieldValue.serverTimestamp(),
+        });
         return docRef.id;
       });
+    } on FirebaseException catch (e) {
+      throw Exception(e.code);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<String> saveVisitReport(VisitReportData visitReport) async {
+    try {
+      final docRef = _firestore.collection('visitReports').doc();
+      visitReport.id = docRef.id;
+      visitReport.index = _contracts!
+              .where((c) => c.metaData.id == visitReport.contractMetaData.id)
+              .length +
+          1;
+      visitReport.sharedWith = [
+        visitReport.contractMetaData.employee?.info.id ?? '',
+        visitReport.contractMetaData.client?.info.id ?? ''
+      ];
+      await docRef.set({
+        ...visitReport.toJson(),
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      return docRef.id;
     } on FirebaseException catch (e) {
       throw Exception(e.code);
     } catch (e) {
@@ -172,7 +210,7 @@ class ReportsRepository {
     _getMetaData();
     _getSignatures();
     _getContracts();
-    _filterContracts();
+    _getVisitReports();
     _refreshController.add(null);
   }
 
@@ -206,8 +244,8 @@ class ReportsRepository {
               enName: (e['enName'] ?? '').toString(),
             ))
         .toList();
-    _contractCategories!.insert(
-        0, ContractCategory(arName: 'أخرى', enName: 'Other'));
+    _contractCategories!
+        .insert(0, ContractCategory(arName: 'أخرى', enName: 'Other'));
   }
 
   void _getSignatures() {
@@ -242,6 +280,10 @@ class ReportsRepository {
             .firstWhere((c) => c.info.id == contract.metaData.employeeId);
         contract.metaData.client = appRepository.users.clients
             .firstWhere((c) => c.info.id == contract.metaData.clientId);
+        contract.sharedWith = [
+          contract.metaData.employee?.info.id ?? '',
+          contract.metaData.client?.info.id ?? ''
+        ];
         try {
           contract.metaData.employeeSignature = _signatures.firstWhere(
               (s) => s.id == contract.metaData.employeeSignature.id);
@@ -260,41 +302,29 @@ class ReportsRepository {
     }).toList();
   }
 
-  void _filterContracts() {
-    if (_contracts == null) {
-      _filteredContracts = null;
+  void _getVisitReports() {
+    if (_visitReportsSnapshot == null) {
+      _visitReports = [];
       return;
     }
-    _filteredContracts = [];
-    for (final ContractData contract in _contracts ?? []) {
-      final Employee? employee = contract.metaData.employee;
-      final Client? client = contract.metaData.client;
-      bool include = true;
-      switch (appRepository.userRole) {
-        case MasterAdmin():
-        case Admin():
-          include = true;
-          break;
-        case CompanyManager():
-          include =
-              employee?.branch.company.id == appRepository.userRole.company.id;
-          break;
-        case BranchManager():
-          include = employee?.branch.id == appRepository.userRole.branch.id;
-          break;
-        case Employee():
-          include = employee?.info.id == appRepository.userRole.info.id;
-          break;
-        case Client():
-          include = client?.info.id == appRepository.userRole.info.id;
-          break;
-        default:
-          include = false;
-      }
-      if (include) {
-        _filteredContracts!.add(contract);
-      }
-    }
+    _visitReports = _visitReportsSnapshot!.docs
+        .map((doc) {
+          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          final visitReport = VisitReportData.fromJson(data);
+          visitReport.id ??= doc.id;
+          try {
+            visitReport.contractMetaData = _contracts!
+                .firstWhere(
+                    (c) => c.metaData.id == visitReport.contractMetaData.id)
+                .metaData;
+            return visitReport;
+          } catch (_) {
+            visitReport.contractMetaData = ContractMetaData();
+            return null;
+          }
+        })
+        .whereType<VisitReportData>()
+        .toList();
   }
 
   Future<void> setFirstPartyInformation(ContractFirstParty firstParty) async {

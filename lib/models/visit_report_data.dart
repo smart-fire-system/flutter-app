@@ -1,56 +1,64 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/report.dart';
 
 class VisitReportData {
   VisitReportData();
   String? id;
-  String? contractId;
   int? index;
+  ContractMetaData contractMetaData = ContractMetaData();
   String? paramClientName;
   String? paramClientAddress;
   String? paramContractNumber;
   String? paramVisitDate;
   String? paramSystemStatus;
+  String? paramNotes;
+  Timestamp? createdAt;
+  List<String> sharedWith = [];
   ContractComponents componentsData = ContractComponents();
-  // categoryIndex -> typeName -> {'quantity': String, 'notes': String}
-  Map<String, Map<String, Map<String, String>>> componentDetails = {};
+
+  Map<String, dynamic> parametersToJson() {
+    return {
+      'clientName': paramClientName,
+      'clientAddress': paramClientAddress,
+      'contractNumber': paramContractNumber,
+      'visitDate': paramVisitDate,
+      'systemStatus': paramSystemStatus,
+      'notes': paramNotes,
+    };
+  }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'contractId': contractId,
       'index': index,
-      'paramClientName': paramClientName,
-      'paramClientAddress': paramClientAddress,
-      'paramContractNumber': paramContractNumber,
-      'paramVisitDate': paramVisitDate,
-      'paramSystemStatus': paramSystemStatus,
+      'parameters': parametersToJson(),
       'componentsData': componentsData.toJson(),
+      'companyId': contractMetaData.employee?.branch.company.id,
+      'branchId': contractMetaData.employee?.branch.id,
+      'createdAt': createdAt,
+      'sharedWith': sharedWith,
     };
   }
 
   factory VisitReportData.fromJson(Map<String, dynamic> json) {
     final data = VisitReportData();
     data.id = json['id']?.toString();
-    data.contractId = json['contractId']?.toString();
+    data.contractMetaData = ContractMetaData.fromJson(
+        (json['contractMetaData'] as Map?)?.cast<String, dynamic>() ?? {});
     data.index = (json['index'] is int)
         ? json['index'] as int
         : int.tryParse(json['index']?.toString() ?? '') ?? 0;
-    data.paramClientName = json['paramClientName']?.toString();
-    data.paramClientAddress = json['paramClientAddress']?.toString();
-    data.paramContractNumber = json['paramContractNumber']?.toString();
-    data.paramVisitDate = json['paramVisitDate']?.toString();
-    data.paramSystemStatus = json['paramSystemStatus']?.toString();
+    data.paramClientName = json['parameters']['clientName']?.toString();
+    data.paramClientAddress = json['parameters']['clientAddress']?.toString();
+    data.paramContractNumber = json['parameters']['contractNumber']?.toString();
+    data.paramVisitDate = json['parameters']['visitDate']?.toString();
+    data.paramSystemStatus = json['parameters']['systemStatus']?.toString();
+    data.paramNotes = json['parameters']['notes']?.toString();
     data.componentsData = ContractComponents.fromJson(
         (json['componentsData'] as Map?)?.cast<String, dynamic>() ?? {});
-    final cd = json['componentDetails'];
-    if (cd is Map) {
-      data.componentDetails = cd.map((k, v) => MapEntry(
-          k.toString(),
-          (v as Map).map((k2, v2) => MapEntry(
-              k2.toString(),
-              (v2 as Map)
-                  .map((k3, v3) => MapEntry(k3.toString(), v3.toString()))))));
-    }
+    data.createdAt = json['createdAt'];
+    data.sharedWith = json['sharedWith'] ?? [];
     return data;
   }
 }

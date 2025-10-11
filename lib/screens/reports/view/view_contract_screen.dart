@@ -456,7 +456,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) =>
-                  ContractDetailsScreen(contractId: widget.contractId),
+                  NewVisitReportScreen(contractId: widget.contractId),
             ),
           ),
         ),

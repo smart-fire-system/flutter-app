@@ -2,6 +2,7 @@ import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/models/visit_report_data.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
+import 'package:fire_alarm_system/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -15,23 +16,22 @@ import 'package:jhijri/jHijri.dart';
 import 'package:jhijri_picker/jhijri_picker.dart';
 
 class NewVisitReportScreen extends StatefulWidget {
-  const NewVisitReportScreen({super.key});
+  final String contractId;
+  const NewVisitReportScreen({super.key, required this.contractId});
 
   @override
   State<NewVisitReportScreen> createState() => _NewVisitReportScreenState();
 }
 
 class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
-  List<Client> _clients = [];
   List<ContractData> _contracts = [];
-  Client? _selectedClient;
-  ContractData? _selectedContract;
-  //VisitReportData? _visitReportData;
+  ContractData? _contract;
   Employee? _employee;
   List<ContractComponent> _contractComponents = [];
   List<ContractCategory> _contractCategories = [];
+  ContractComponents _componentsData = ContractComponents();
   late JHijri _visitDateHijri;
-  final VisitReportData _visitReportDate = VisitReportData();
+  final VisitReportData _visitReportData = VisitReportData();
   late final TextEditingController _clientNameController;
   late final TextEditingController _clientController;
   late final TextEditingController _clientAddressController;
@@ -39,6 +39,8 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
   late final TextEditingController _visitDateController;
   late final TextEditingController _systemStatusController;
   late final TextEditingController _contractController;
+  late final TextEditingController _notesController;
+  int _systemStatusValue = 2;
 
   @override
   void initState() {
@@ -50,290 +52,9 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
     _systemStatusController = TextEditingController();
     _clientController = TextEditingController();
     _contractController = TextEditingController();
+    _notesController = TextEditingController();
     _visitDateHijri = JHijri.now();
     _visitDateController.text = _visitDateHijri.toString();
-  }
-
-  void _showSelectClientSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 12,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
-          ),
-          child: StatefulBuilder(
-            builder: (ctx, setModalState) {
-              return SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 48,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        const Expanded(
-                          child: Text(
-                            'اختيار العميل',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          icon: const Icon(Icons.close),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    if (_clients.isNotEmpty)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.grey.shade300),
-                        ),
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: _clients.length,
-                          separatorBuilder: (_, __) => Divider(
-                            height: 1,
-                            color: Colors.grey.shade300,
-                          ),
-                          itemBuilder: (ctx, i) {
-                            final c = _clients[i];
-                            final bool checked =
-                                _selectedClient?.info.id == c.info.id;
-                            return Container(
-                              color: checked
-                                  ? Colors.green.withValues(alpha: 0.1)
-                                  : null,
-                              child: ListTile(
-                                leading: const Icon(Icons.person_outline),
-                                title: Text(
-                                  c.info.name,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontWeight: checked
-                                        ? FontWeight.w600
-                                        : FontWeight.normal,
-                                  ),
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      c.info.email,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          color: Colors.black54),
-                                    ),
-                                    Text(
-                                      'Code: ${c.info.code}',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          color: Colors.black54),
-                                    ),
-                                  ],
-                                ),
-                                trailing: checked
-                                    ? const Icon(Icons.check_circle,
-                                        color: Colors.green)
-                                    : null,
-                                onTap: () {
-                                  setState(() {
-                                    _selectedClient = c;
-                                    _selectedContract = null;
-                                    _contractController.text = 'اختيار العقد';
-                                    _clientController.text = c.info.name;
-                                  });
-                                  Navigator.pop(ctx);
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                  ],
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  void _showSelectContractSheet() {
-    List<ContractData> contracts = _contracts
-        .where((c) => c.metaData.clientId == _selectedClient?.info.id)
-        .toList();
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 12,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
-          ),
-          child: StatefulBuilder(
-            builder: (ctx, setModalState) {
-              return SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 48,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        const Expanded(
-                          child: Text(
-                            'اختيار العقد',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          icon: const Icon(Icons.close),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: contracts.isEmpty
-                          ? const Center(
-                              child: Text('لا يوجد عقود لهذا العميل'))
-                          : ListView.separated(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: contracts.length,
-                              separatorBuilder: (_, __) => Divider(
-                                height: 1,
-                                color: Colors.grey.shade300,
-                              ),
-                              itemBuilder: (ctx, i) {
-                                final c = contracts[i];
-                                final bool checked =
-                                    _selectedContract?.metaData.id ==
-                                        c.metaData.id;
-                                return Container(
-                                  color: checked
-                                      ? Colors.green.withValues(alpha: 0.1)
-                                      : null,
-                                  child: ListTile(
-                                    leading: const Icon(Icons.person_outline),
-                                    title: Text(
-                                      'عقد رقم: ${c.metaData.code}',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontWeight: checked
-                                            ? FontWeight.w600
-                                            : FontWeight.normal,
-                                      ),
-                                    ),
-                                    subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          'تاريخ البدء: ${_formatDate(c.metaData.startDate!)}',
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              color: Colors.black54),
-                                        ),
-                                        Text(
-                                          'تاريخ النهاية: ${_formatDate(c.metaData.endDate!)}',
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              color: Colors.black54),
-                                        ),
-                                      ],
-                                    ),
-                                    trailing: checked
-                                        ? const Icon(Icons.check_circle,
-                                            color: Colors.green)
-                                        : null,
-                                    onTap: () {
-                                      setState(() {
-                                        _selectedContract = c;
-                                        _contractController.text =
-                                            'عقد رقم: ${c.metaData.code}';
-                                        _contractNumberController.text =
-                                            c.metaData.code.toString();
-                                        _clientNameController.text =
-                                            c.paramSecondPartyName ?? '';
-                                        _clientAddressController.text =
-                                            c.paramSecondPartyAddress ?? '';
-                                        _visitDateController.text =
-                                            JDateModel(dateTime: DateTime.now())
-                                                .jhijri
-                                                .toString();
-                                      });
-                                      Navigator.pop(ctx);
-                                    },
-                                  ),
-                                );
-                              },
-                            ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    final String y = date.year.toString().padLeft(4, '0');
-    final String m = date.month.toString().padLeft(2, '0');
-    final String d = date.day.toString().padLeft(2, '0');
-    return '$y-$m-$d';
   }
 
   Widget _buildMergedTable() {
@@ -405,7 +126,6 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
       }
     }
 
-    // Row 0: merged across 2 columns (outer top/left/right borders)
     rows.add(Row(
       children: [
         Expanded(
@@ -430,7 +150,6 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
       ],
     ));
 
-    // Row 1: merged across 2 columns (row separator on top, sides true)
     rows.add(Row(
       children: [
         Expanded(
@@ -484,7 +203,8 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                 ),
                 Expanded(
                   child: cell(
-                    child: GestureDetector(
+                    child: TextField(
+                      controller: textAndController['controller'],
                       onTap: r != 5
                           ? null
                           : () async {
@@ -502,10 +222,23 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                                 });
                               }
                             },
-                      child: Text(
-                        textAndController['controller'].text,
-                        textDirection: TextDirection.rtl,
+                      readOnly: r == 5,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 8),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.grey.shade400, width: 1.5),
+                        ),
                       ),
+                      textDirection: TextDirection.rtl,
                     ),
                     top: false,
                     bottom: false,
@@ -535,6 +268,181 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
     );
   }
 
+  Widget _buildResult() {
+    Color borderColor = Colors.grey.shade300;
+
+    Widget cell(
+        {Widget? child,
+        bool top = true,
+        bool right = true,
+        bool bottom = true,
+        bool left = true}) {
+      return Container(
+        constraints: const BoxConstraints(minHeight: 48),
+        alignment: Alignment.topLeft,
+        decoration: BoxDecoration(
+          border: Border(
+            top: top
+                ? BorderSide(color: borderColor, width: 1)
+                : BorderSide.none,
+            right: right
+                ? BorderSide(color: borderColor, width: 1)
+                : BorderSide.none,
+            bottom: bottom
+                ? BorderSide(color: borderColor, width: 1)
+                : BorderSide.none,
+            left: left
+                ? BorderSide(color: borderColor, width: 1)
+                : BorderSide.none,
+          ),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        child: child == null
+            ? const SizedBox.shrink()
+            : SizedBox(width: double.infinity, child: child),
+      );
+    }
+
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: borderColor, width: 1),
+                  bottom: BorderSide.none,
+                ),
+              ),
+              child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: cell(
+                        child: const Text('حالة الأنظمة\nSystem Status',
+                            textAlign: TextAlign.center),
+                        top: false,
+                        bottom: false,
+                        left: false,
+                        right: true,
+                      ),
+                    ),
+                    Expanded(
+                      child: cell(
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: RadioGroup(
+                                groupValue: _systemStatusValue,
+                                onChanged: (val) {
+                                  setState(() {
+                                    _systemStatusValue = val ?? 0;
+                                  });
+                                },
+                                child: const RadioListTile<int>(
+                                  dense: true,
+                                  value: 1,
+                                  title: Text('ملائم - Suitable'),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: RadioGroup(
+                                groupValue: _systemStatusValue,
+                                onChanged: (val) {
+                                  setState(() {
+                                    _systemStatusValue = val ?? 0;
+                                  });
+                                },
+                                child: const RadioListTile<int>(
+                                  dense: true,
+                                  value: 0,
+                                  title: Text('غير ملائم - Unsuitable'),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        top: false,
+                        bottom: false,
+                        left: true,
+                        right: true,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: borderColor, width: 1),
+                  bottom: BorderSide(color: borderColor, width: 1),
+                ),
+              ),
+              child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: cell(
+                        child: const Text('ملاحظات\nNotes',
+                            textAlign: TextAlign.center),
+                        top: false,
+                        bottom: false,
+                        left: false,
+                        right: true,
+                      ),
+                    ),
+                    Expanded(
+                      child: cell(
+                        child: TextField(
+                          controller: _notesController,
+                          textDirection: TextDirection.rtl,
+                          minLines: 1,
+                          maxLines: null,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 8),
+                            border: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade300),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade300),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.grey.shade400, width: 1.5),
+                            ),
+                          ),
+                        ),
+                        top: false,
+                        bottom: false,
+                        left: true,
+                        right: true,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -553,7 +461,7 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
   Widget _buildBody(ReportsAuthenticated state) {
     if (state.employees == null ||
         state.clients == null ||
-        state.visitReportItems == null ||
+        state.visitReports == null ||
         state.contractComponents == null ||
         state.contractCategories == null ||
         state.user == null ||
@@ -561,10 +469,18 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
       return const Center(child: CircularProgressIndicator());
     }
     _employee = state.user;
-    _clients = state.clients!;
     _contracts = state.contracts!;
     _contractComponents = state.contractComponents!;
     _contractCategories = state.contractCategories!;
+    _contract =
+        _contracts.firstWhere((c) => c.metaData.id == widget.contractId);
+    _clientNameController.text = _contract?.paramSecondPartyName ?? '';
+    _clientAddressController.text =
+        _contract?.paramSecondPartyAddress ?? '';
+    _contractNumberController.text = _contract?.paramContractNumber ??
+        _contract?.metaData.id ??
+        '';
+    _componentsData = _contract?.componentsData ?? ContractComponents();
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -587,7 +503,7 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'معلومات العقد',
+                          'معلومات تقرير الزيارة',
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 18,
@@ -595,10 +511,8 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
-                          enabled: false,
                           initialValue: _employee?.branch.name ?? 'غير محدد',
                           readOnly: true,
-                          onTap: _showSelectClientSheet,
                           decoration: const InputDecoration(
                             labelText: 'الفرع',
                             suffixIcon: Icon(Icons.corporate_fare),
@@ -607,10 +521,8 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
-                          enabled: false,
                           initialValue: _employee?.info.name ?? 'غير محدد',
                           readOnly: true,
-                          onTap: _showSelectClientSheet,
                           decoration: const InputDecoration(
                             labelText: 'الموظف',
                             suffixIcon: Icon(Icons.person),
@@ -619,9 +531,10 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
-                          controller: _clientController,
+                          initialValue:
+                              _contract?.metaData.client?.info.name ??
+                                  'غير محدد',
                           readOnly: true,
-                          onTap: _showSelectClientSheet,
                           decoration: const InputDecoration(
                             labelText: 'العميل',
                             hintText: 'اختيار العميل',
@@ -631,9 +544,9 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                         ),
                         const SizedBox(height: 12),
                         TextFormField(
-                          controller: _contractController,
                           readOnly: true,
-                          onTap: _showSelectContractSheet,
+                          initialValue:
+                              'عقد رقم: ${_contract?.paramContractNumber ?? 'غير محدد'}',
                           decoration: const InputDecoration(
                             labelText: 'العقد',
                             hintText: 'اختيار العقد',
@@ -648,33 +561,57 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                 );
               }),
               const SizedBox(height: 24),
-              ..._buildVisitReportItems(),
-              const SizedBox(height: 16),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.read<ReportsBloc>().add(SaveVisitReportRequested(
-                        visitReport: _visitReportDate));
-                  },
-                  child: const Text('Save'),
+              const Text(
+                'ادارة السلامة في الدفاع المدني بمنطقة المدينة المنورة المحترمين',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
                 ),
+              ),
+              const Text(
+                '•	قامت فرقة الصيانة بزيارة روتينية للموقع الخاص بالعميل والكشف الكامل على نظام الإنذار والإطفاء المكون من: -',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
+              _buildMergedTable(),
+              ComponentsBuilder(
+                components: _contractComponents,
+                categories: _contractCategories,
+                componentsData: _componentsData,
+                onChange: (data) {
+                  _componentsData = data;
+                },
+              ),
+              const SizedBox(height: 16),
+              _buildResult(),
+              CustomNormalButton(
+                label: 'حفظ التقرير',
+                fullWidth: true,
+                backgroundColor: Colors.green,
+                onPressed: () {
+                  _visitReportData.paramClientName = _clientNameController.text;
+                  _visitReportData.paramClientAddress =
+                      _clientAddressController.text;
+                  _visitReportData.paramContractNumber =
+                      _contractNumberController.text;
+                  _visitReportData.paramVisitDate = _visitDateController.text;
+                  _visitReportData.paramSystemStatus =
+                      _systemStatusController.text;
+                  _visitReportData.paramNotes = _notesController.text;
+                  _visitReportData.componentsData = _componentsData;
+                  _visitReportData.contractMetaData = _contract?.metaData ?? ContractMetaData();
+                  _visitReportData.index = 0;
+                  context.read<ReportsBloc>().add(
+                      SaveVisitReportRequested(visitReport: _visitReportData));
+                },
               ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  List<Widget> _buildVisitReportItems() {
-    final List<Widget> items = [];
-    items.add(_buildMergedTable());
-    items.add(ComponentsBuilder(
-      components: _contractComponents,
-      categories: _contractCategories,
-      onChange: (data) {},
-    ));
-    return items;
   }
 
   @override
@@ -686,6 +623,7 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
     _clientController.dispose();
     _clientNameController.dispose();
     _contractController.dispose();
+    _notesController.dispose();
     super.dispose();
   }
 }

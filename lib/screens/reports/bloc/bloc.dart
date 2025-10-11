@@ -15,13 +15,12 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         emit(ReportsAuthenticated(
           contractItems: ReportsTemplate.getContractItems(
               appRepository.reportsRepository.contractCategories ?? []),
-          visitReportItems: ReportsTemplate.getVisitReportItems(
-              appRepository.reportsRepository.contractCategories ?? []),
+          visitReports: appRepository.reportsRepository.visitReports,
           contractCategories:
               appRepository.reportsRepository.contractCategories,
           contractComponents:
               appRepository.reportsRepository.contractComponents,
-          contracts: appRepository.reportsRepository.filteredContracts,
+          contracts: appRepository.reportsRepository.contracts,
           user: appRepository.userRole,
           employees: appRepository.employees,
           clients: appRepository.clients,
@@ -40,7 +39,6 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       add(Refresh(error: error.toString()));
     });
 
-
     on<SaveContractComponentsRequested>((event, emit) async {
       emit(ReportsLoading());
       await appRepository.reportsRepository
@@ -51,6 +49,12 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     on<SaveContractRequested>((event, emit) async {
       emit(ReportsLoading());
       await appRepository.reportsRepository.saveContract(event.contract);
+      message = ReportsMessage.contractSaved;
+    });
+
+    on<SaveVisitReportRequested>((event, emit) async {
+      emit(ReportsLoading());
+      await appRepository.reportsRepository.saveVisitReport(event.visitReport);
       message = ReportsMessage.contractSaved;
     });
 

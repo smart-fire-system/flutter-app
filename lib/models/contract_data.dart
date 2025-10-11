@@ -58,31 +58,42 @@ class ContractData {
   String? paramContractPeriod;
   String? paramContractAmount;
   ContractComponents componentsData = ContractComponents();
+  Timestamp? createdAt;
+  List<dynamic> sharedWith = [];
+
+  Map<String, dynamic> parametersToJson() {
+    return {
+      'contractNumber': paramContractNumber,
+      'contractAgreementDay': paramContractAgreementDay,
+      'contractAgreementHijriDate': paramContractAgreementHijriDate,
+      'contractAgreementGregorianDate': paramContractAgreementGregorianDate,
+      'firstPartyName': paramFirstPartyName,
+      'firstPartyCommNumber': paramFirstPartyCommNumber,
+      'firstPartyAddress': paramFirstPartyAddress,
+      'firstPartyRep': paramFirstPartyRep,
+      'firstPartyRepIdNumber': paramFirstPartyRepIdNumber,
+      'firstPartyG': paramFirstPartyG,
+      'secondPartyName': paramSecondPartyName,
+      'secondPartyCommNumber': paramSecondPartyCommNumber,
+      'secondPartyAddress': paramSecondPartyAddress,
+      'secondPartyRep': paramSecondPartyRep,
+      'secondPartyRepIdNumber': paramSecondPartyRepIdNumber,
+      'secondPartyG': paramSecondPartyG,
+      'contractAddDate': paramContractAddDate,
+      'contractPeriod': paramContractPeriod,
+      'contractAmount': paramContractAmount,
+    };
+  }
 
   Map<String, dynamic> toJson() {
     return {
       'metaData': metaData.toJson(),
-      'paramContractNumber': paramContractNumber,
-      'paramContractAgreementDay': paramContractAgreementDay,
-      'paramContractAgreementHijriDate': paramContractAgreementHijriDate,
-      'paramContractAgreementGregorianDate':
-          paramContractAgreementGregorianDate,
-      'paramFirstPartyName': paramFirstPartyName,
-      'paramFirstPartyCommNumber': paramFirstPartyCommNumber,
-      'paramFirstPartyAddress': paramFirstPartyAddress,
-      'paramFirstPartyRep': paramFirstPartyRep,
-      'paramFirstPartyRepIdNumber': paramFirstPartyRepIdNumber,
-      'paramFirstPartyG': paramFirstPartyG,
-      'paramSecondPartyName': paramSecondPartyName,
-      'paramSecondPartyCommNumber': paramSecondPartyCommNumber,
-      'paramSecondPartyAddress': paramSecondPartyAddress,
-      'paramSecondPartyRep': paramSecondPartyRep,
-      'paramSecondPartyRepIdNumber': paramSecondPartyRepIdNumber,
-      'paramSecondPartyG': paramSecondPartyG,
-      'paramContractAddDate': paramContractAddDate,
-      'paramContractPeriod': paramContractPeriod,
-      'paramContractAmount': paramContractAmount,
+      'parameters': parametersToJson(),
       'componentsData': componentsData.toJson(),
+      'createdAt': createdAt,
+      'companyId': metaData.employee?.branch.company.id,
+      'branchId': metaData.employee?.branch.id,
+      'sharedWith': sharedWith,
     };
   }
 
@@ -90,34 +101,39 @@ class ContractData {
     final data = ContractData();
     data.metaData = ContractMetaData.fromJson(
         (json['metaData'] as Map?)?.cast<String, dynamic>() ?? {});
-    data.paramContractNumber = json['paramContractNumber']?.toString();
+    data.paramContractNumber = json['parameters']['contractNumber']?.toString();
     data.paramContractAgreementDay =
-        json['paramContractAgreementDay']?.toString();
+        json['parameters']['contractAgreementDay']?.toString();
     data.paramContractAgreementHijriDate =
-        json['paramContractAgreementHijriDate']?.toString();
+        json['parameters']['contractAgreementHijriDate']?.toString();
     data.paramContractAgreementGregorianDate =
-        json['paramContractAgreementGregorianDate']?.toString();
-    data.paramFirstPartyName = json['paramFirstPartyName']?.toString();
+        json['parameters']['contractAgreementGregorianDate']?.toString();
+    data.paramFirstPartyName = json['parameters']['firstPartyName']?.toString();
     data.paramFirstPartyCommNumber =
-        json['paramFirstPartyCommNumber']?.toString();
-    data.paramFirstPartyAddress = json['paramFirstPartyAddress']?.toString();
-    data.paramFirstPartyRep = json['paramFirstPartyRep']?.toString();
+        json['parameters']['firstPartyCommNumber']?.toString();
+    data.paramFirstPartyAddress = json['parameters']['firstPartyAddress']?.toString();
+    data.paramFirstPartyRep = json['parameters']['firstPartyRep']?.toString();
     data.paramFirstPartyRepIdNumber =
-        json['paramFirstPartyRepIdNumber']?.toString();
-    data.paramFirstPartyG = json['paramFirstPartyG']?.toString();
-    data.paramSecondPartyName = json['paramSecondPartyName']?.toString();
+        json['parameters']['firstPartyRepIdNumber']?.toString();
+    data.paramFirstPartyG = json['parameters']['firstPartyG']?.toString();
+    data.paramSecondPartyName =
+        json['parameters']['secondPartyName']?.toString();
     data.paramSecondPartyCommNumber =
-        json['paramSecondPartyCommNumber']?.toString();
-    data.paramSecondPartyAddress = json['paramSecondPartyAddress']?.toString();
-    data.paramSecondPartyRep = json['paramSecondPartyRep']?.toString();
+        json['parameters']['secondPartyCommNumber']?.toString();
+    data.paramSecondPartyAddress =
+        json['parameters']['secondPartyAddress']?.toString();
+    data.paramSecondPartyRep = json['parameters']['secondPartyRep']?.toString();
     data.paramSecondPartyRepIdNumber =
-        json['paramSecondPartyRepIdNumber']?.toString();
-    data.paramSecondPartyG = json['paramSecondPartyG']?.toString();
-    data.paramContractAddDate = json['paramContractAddDate']?.toString();
-    data.paramContractPeriod = json['paramContractPeriod']?.toString();
-    data.paramContractAmount = json['paramContractAmount']?.toString();
+        json['parameters']['secondPartyRepIdNumber']?.toString();
+    data.paramSecondPartyG = json['parameters']['secondPartyG']?.toString();
+    data.paramContractAddDate =
+        json['parameters']['contractAddDate']?.toString();
+    data.paramContractPeriod = json['parameters']['contractPeriod']?.toString();
+    data.paramContractAmount = json['parameters']['contractAmount']?.toString();
     data.componentsData = ContractComponents.fromJson(
         (json['componentsData'] as Map?)?.cast<String, dynamic>() ?? {});
+    data.createdAt = json['createdAt'];
+    data.sharedWith = json['sharedWith'];
     return data;
   }
 }
