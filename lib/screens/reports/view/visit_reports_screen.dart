@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/generated/l10n.dart';
-import 'package:fire_alarm_system/models/contract_data.dart';
+import 'package:fire_alarm_system/models/visit_report_data.dart';
+import 'package:fire_alarm_system/screens/reports/view/helper/visit_report_summary.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/empty.dart';
 import 'package:flutter/material.dart';
@@ -7,18 +8,18 @@ import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/bloc.dart';
 import '../bloc/state.dart';
-import 'helper/helper.dart';
 import 'view.dart';
 
-class ContractsScreen extends StatefulWidget {
-  const ContractsScreen({super.key});
+class VisitReportsScreen extends StatefulWidget {
+  final String contractId;
+  const VisitReportsScreen({super.key, required this.contractId});
 
   @override
-  State<ContractsScreen> createState() => _ContractsScreenState();
+  State<VisitReportsScreen> createState() => _VisitReportsScreenState();
 }
 
-class _ContractsScreenState extends State<ContractsScreen> {
-  List<ContractData> _contracts = [];
+class _VisitReportsScreenState extends State<VisitReportsScreen> {
+  List<VisitReportData> _visitReports = [];
 
   @override
   void initState() {
@@ -28,9 +29,9 @@ class _ContractsScreenState extends State<ContractsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).contracts),
+      appBar: CustomAppBar(title: S.of(context).visit_reports),
       floatingActionButton: FloatingActionButton.extended(
-        label: Text(S.of(context).new_contract,
+        label: Text(S.of(context).new_visit_report,
             style: CustomStyle.mediumTextWhite),
         backgroundColor: Colors.green,
         icon: const Icon(
@@ -40,7 +41,9 @@ class _ContractsScreenState extends State<ContractsScreen> {
         ),
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const NewContractScreen()),
+            MaterialPageRoute(
+                builder: (context) =>
+                    NewVisitReportScreen(contractId: widget.contractId)),
           );
         },
       ),
@@ -61,25 +64,23 @@ class _ContractsScreenState extends State<ContractsScreen> {
     if (state.contracts == null || state.contractItems == null) {
       return const Center(child: CircularProgressIndicator());
     }
-    _contracts = state.contracts!;
-    if (_contracts.isEmpty) {
+    print(widget.contractId);
+    print(state.visitReports);
+    _visitReports = state.visitReports!
+        .where((v) => v.contractId == widget.contractId)
+        .toList();
+    if (_visitReports.isEmpty) {
       return CustomEmpty(message: S.of(context).no_contracts_yet);
     }
     return ListView.separated(
       padding: const EdgeInsets.all(16),
-      itemCount: _contracts.length,
+      itemCount: _visitReports.length,
       separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (ctx, i) {
-        return ContractSummary(
-          contract: _contracts[i],
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) =>
-                    ViewContractScreen(contractId: _contracts[i].metaData.id!),
-              ),
-            );
-          },
+        return VisitReportSummary(
+          visitReport: _visitReports[i],
+          index: i,
+          onTap: () {},
         );
       },
     );

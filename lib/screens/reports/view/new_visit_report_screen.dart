@@ -475,11 +475,9 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
     _contract =
         _contracts.firstWhere((c) => c.metaData.id == widget.contractId);
     _clientNameController.text = _contract?.paramSecondPartyName ?? '';
-    _clientAddressController.text =
-        _contract?.paramSecondPartyAddress ?? '';
-    _contractNumberController.text = _contract?.paramContractNumber ??
-        _contract?.metaData.id ??
-        '';
+    _clientAddressController.text = _contract?.paramSecondPartyAddress ?? '';
+    _contractNumberController.text =
+        _contract?.paramContractNumber ?? _contract?.metaData.id ?? '';
     _componentsData = _contract?.componentsData ?? ContractComponents();
 
     return Padding(
@@ -531,9 +529,8 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                         ),
                         const SizedBox(height: 10),
                         TextFormField(
-                          initialValue:
-                              _contract?.metaData.client?.info.name ??
-                                  'غير محدد',
+                          initialValue: _contract?.metaData.client?.info.name ??
+                              'غير محدد',
                           readOnly: true,
                           decoration: const InputDecoration(
                             labelText: 'العميل',
@@ -601,8 +598,9 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                       _systemStatusController.text;
                   _visitReportData.paramNotes = _notesController.text;
                   _visitReportData.componentsData = _componentsData;
-                  _visitReportData.contractMetaData = _contract?.metaData ?? ContractMetaData();
-                  _visitReportData.index = 0;
+                  _visitReportData.contractMetaData =
+                      _contract?.metaData ?? ContractMetaData();
+                  _visitReportData.contractId = widget.contractId;
                   context.read<ReportsBloc>().add(
                       SaveVisitReportRequested(visitReport: _visitReportData));
                 },

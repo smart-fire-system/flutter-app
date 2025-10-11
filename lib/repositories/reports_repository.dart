@@ -129,10 +129,6 @@ class ReportsRepository {
     try {
       final docRef = _firestore.collection('visitReports').doc();
       visitReport.id = docRef.id;
-      visitReport.index = _contracts!
-              .where((c) => c.metaData.id == visitReport.contractMetaData.id)
-              .length +
-          1;
       visitReport.sharedWith = [
         visitReport.contractMetaData.employee?.info.id ?? '',
         visitReport.contractMetaData.client?.info.id ?? ''
@@ -315,7 +311,7 @@ class ReportsRepository {
           try {
             visitReport.contractMetaData = _contracts!
                 .firstWhere(
-                    (c) => c.metaData.id == visitReport.contractMetaData.id)
+                    (c) => c.metaData.id == visitReport.contractId)
                 .metaData;
             return visitReport;
           } catch (_) {

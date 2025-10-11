@@ -1,6 +1,7 @@
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
 import 'package:fire_alarm_system/screens/reports/view/view.dart';
+import 'package:fire_alarm_system/screens/reports/view/visit_reports_screen.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
@@ -316,8 +317,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     ];
 
     Color dotColor(int idx) {
-      if (ContractsCommon.isContractExpired(_contract) && idx == 3)
-      {
+      if (ContractsCommon.isContractExpired(_contract) && idx == 3) {
         return CustomStyle.redDark;
       }
       if (idx <= stage) return Colors.green;
@@ -325,8 +325,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     }
 
     Color labelColor(int idx) {
-      if (ContractsCommon.isContractExpired(_contract) && idx == 3)
-      {
+      if (ContractsCommon.isContractExpired(_contract) && idx == 3) {
         return CustomStyle.redDark;
       }
       return dotColor(idx);
@@ -334,8 +333,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
 
     Color connectorColor(int idx) {
       if (idx < stage) return Colors.green;
-      if (ContractsCommon.isContractExpired(_contract) && idx == 2)
-      {
+      if (ContractsCommon.isContractExpired(_contract) && idx == 2) {
         return CustomStyle.redDark;
       }
       return Colors.grey;
@@ -448,20 +446,6 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         ContractSummary(contract: _contract, showViewContractButton: true),
         const SizedBox(height: 16),
         WideCard(
-          icon: Icons.assignment_add,
-          title: S.of(context).new_visit_report,
-          subtitle: S.of(context).new_visit_report_subtitle,
-          color: CustomStyle.redDark,
-          backgroundColor: Colors.grey.withValues(alpha: 0.1),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) =>
-                  NewVisitReportScreen(contractId: widget.contractId),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        WideCard(
           icon: Icons.assignment,
           title: S.of(context).visit_reports,
           subtitle: S.of(context).visit_reports_subtitle,
@@ -470,7 +454,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) =>
-                  ContractDetailsScreen(contractId: widget.contractId),
+                  VisitReportsScreen(contractId: widget.contractId),
             ),
           ),
         ),

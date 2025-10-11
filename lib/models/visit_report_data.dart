@@ -5,8 +5,8 @@ import 'package:fire_alarm_system/models/report.dart';
 class VisitReportData {
   VisitReportData();
   String? id;
-  int? index;
   ContractMetaData contractMetaData = ContractMetaData();
+  String? contractId;
   String? paramClientName;
   String? paramClientAddress;
   String? paramContractNumber;
@@ -14,7 +14,10 @@ class VisitReportData {
   String? paramSystemStatus;
   String? paramNotes;
   Timestamp? createdAt;
-  List<String> sharedWith = [];
+  List<dynamic> sharedWith = [];
+  SignatureData employeeSignature = SignatureData();
+  SignatureData clientSignature = SignatureData();
+
   ContractComponents componentsData = ContractComponents();
 
   Map<String, dynamic> parametersToJson() {
@@ -30,25 +33,21 @@ class VisitReportData {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'index': index,
+      'contractId': contractId,
       'parameters': parametersToJson(),
       'componentsData': componentsData.toJson(),
       'companyId': contractMetaData.employee?.branch.company.id,
       'branchId': contractMetaData.employee?.branch.id,
       'createdAt': createdAt,
       'sharedWith': sharedWith,
+      'employeeSignature': employeeSignature.toJson(),
+      'clientSignature': clientSignature.toJson(),
     };
   }
 
   factory VisitReportData.fromJson(Map<String, dynamic> json) {
     final data = VisitReportData();
-    data.id = json['id']?.toString();
-    data.contractMetaData = ContractMetaData.fromJson(
-        (json['contractMetaData'] as Map?)?.cast<String, dynamic>() ?? {});
-    data.index = (json['index'] is int)
-        ? json['index'] as int
-        : int.tryParse(json['index']?.toString() ?? '') ?? 0;
+    data.contractId = json['contractId']?.toString();
     data.paramClientName = json['parameters']['clientName']?.toString();
     data.paramClientAddress = json['parameters']['clientAddress']?.toString();
     data.paramContractNumber = json['parameters']['contractNumber']?.toString();
@@ -59,6 +58,10 @@ class VisitReportData {
         (json['componentsData'] as Map?)?.cast<String, dynamic>() ?? {});
     data.createdAt = json['createdAt'];
     data.sharedWith = json['sharedWith'] ?? [];
+    data.employeeSignature = SignatureData.fromJson(
+        (json['employeeSignature'] as Map?)?.cast<String, dynamic>() ?? {});
+    data.clientSignature = SignatureData.fromJson(
+        (json['clientSignature'] as Map?)?.cast<String, dynamic>() ?? {});
     return data;
   }
 }

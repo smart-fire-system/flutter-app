@@ -58,17 +58,6 @@ class _ReportsAndContractsScreenState extends State<ReportsAndContractsScreen> {
                 ?.pushNamed('/reports/contracts'),
           ),
           const SizedBox(height: 16),
-          if (state.user is Employee) ...[
-            WideCard(
-              icon: Icons.assignment_add,
-              title: S.of(context).new_contract,
-              subtitle: S.of(context).new_new_contract_subtitle,
-              color: const Color(0xFFE11D48),
-              onTap: () => TabNavigator.reports.currentState
-                  ?.pushNamed('/reports/new-contract'),
-            ),
-            const SizedBox(height: 16),
-          ],
           if (state.user is Admin || state.user is MasterAdmin) ...[
             WideCard(
               icon: Icons.edit,

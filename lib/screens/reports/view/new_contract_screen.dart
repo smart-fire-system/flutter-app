@@ -535,7 +535,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).reports),
+      appBar: CustomAppBar(title: S.of(context).new_contract),
       body: BlocBuilder<ReportsBloc, ReportsState>(
         builder: (context, state) {
           if (state is ReportsAuthenticated) {
@@ -563,11 +563,16 @@ class _NewContractScreenState extends State<NewContractScreen> {
     _contractData.metaData.employeeId = _employee?.info.id;
     _contractComponents = state.contractComponents!;
     _contractCategories = state.contractCategories!;
-    _contractData.paramFirstPartyName = _employee!.branch.contractFirstParty!.name;
-    _contractData.paramFirstPartyCommNumber = _employee!.branch.contractFirstParty!.commercialRecord;
-    _contractData.paramFirstPartyAddress = _employee!.branch.contractFirstParty!.address;
-    _contractData.paramFirstPartyRep = _employee!.branch.contractFirstParty!.repName;
-    _contractData.paramFirstPartyRepIdNumber = _employee!.branch.contractFirstParty!.idNumber;
+    _contractData.paramFirstPartyName =
+        _employee!.branch.contractFirstParty!.name;
+    _contractData.paramFirstPartyCommNumber =
+        _employee!.branch.contractFirstParty!.commercialRecord;
+    _contractData.paramFirstPartyAddress =
+        _employee!.branch.contractFirstParty!.address;
+    _contractData.paramFirstPartyRep =
+        _employee!.branch.contractFirstParty!.repName;
+    _contractData.paramFirstPartyRepIdNumber =
+        _employee!.branch.contractFirstParty!.idNumber;
     _contractData.paramFirstPartyG = _employee!.branch.contractFirstParty!.g;
 
     return Padding(
