@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/models/contract_data.dart';
+import 'package:fire_alarm_system/models/visit_report_data.dart';
 import 'package:fire_alarm_system/utils/date.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,50 @@ class SignatureHelper {
                     title: 'الطرف الثاني',
                     subtitle: contract.metaData.client?.info.name ?? '',
                     signature: contract.metaData.clientSignature,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static Widget buildSignaturesSectionVisitReport(
+      BuildContext context, VisitReportData visitReport) {
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: Colors.grey.shade300),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildSignatureBox(
+                    context: context,
+                    title: 'إدارة العمليات – القسم الفني - الصيانة',
+                    subtitle: visitReport.contractMetaData.employee?.branch
+                            .contractFirstParty?.name ??
+                        '',
+                    signature: visitReport.employeeSignature,
+                    signatureUrl: visitReport.contractMetaData.employee?.branch
+                        .contractFirstParty?.signatureUrl,
+                  ),
+                  const SizedBox(width: 12),
+                  buildSignatureBox(
+                    context: context,
+                    title: 'إقرار العميل باستلام التقرير',
+                    subtitle: visitReport.paramClientName ?? '',
+                    signature: visitReport.clientSignature,
                   ),
                 ],
               ),

@@ -7,14 +7,13 @@ class VisitReportSummary extends StatefulWidget {
   final VisitReportData visitReport;
   final int index;
   final VoidCallback? onTap;
-  final bool showViewReportButton;
 
-  const VisitReportSummary(
-      {super.key,
-      required this.visitReport,
-      required this.index,
-      this.onTap,
-      this.showViewReportButton = false});
+  const VisitReportSummary({
+    super.key,
+    required this.visitReport,
+    required this.index,
+    this.onTap,
+  });
   @override
   State<VisitReportSummary> createState() => _VisitReportSummaryState();
 }
@@ -136,15 +135,6 @@ class _VisitReportSummaryState extends State<VisitReportSummary> {
                   ),
                 ],
               ),
-              if (widget.showViewReportButton)
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    onPressed: null,
-                    icon: const Icon(Icons.visibility),
-                    label: Text(S.of(context).view_contract),
-                  ),
-                ),
             ],
           ),
         ),

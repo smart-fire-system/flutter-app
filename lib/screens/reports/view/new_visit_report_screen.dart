@@ -557,6 +557,7 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                   ),
                 );
               }),
+              _buildMergedTable(),
               const SizedBox(height: 24),
               const Text(
                 'ادارة السلامة في الدفاع المدني بمنطقة المدينة المنورة المحترمين',
@@ -572,7 +573,6 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                   fontSize: 16,
                 ),
               ),
-              _buildMergedTable(),
               ComponentsBuilder(
                 components: _contractComponents,
                 categories: _contractCategories,

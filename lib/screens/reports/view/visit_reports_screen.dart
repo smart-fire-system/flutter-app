@@ -1,6 +1,7 @@
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/models/visit_report_data.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/visit_report_summary.dart';
+import 'package:fire_alarm_system/screens/reports/view/view_visit_report_screen.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/empty.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +79,11 @@ class _VisitReportsScreenState extends State<VisitReportsScreen> {
         return VisitReportSummary(
           visitReport: _visitReports[i],
           index: i,
-          onTap: () {},
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (context) =>
+                    ViewVisitReportScreen(visitReportId: _visitReports[i].id!)),
+          ),
         );
       },
     );
