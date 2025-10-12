@@ -306,7 +306,7 @@
     "sign_in_cancelled": "The sign-in process was cancelled. Please try again if you want to continue.",
     "sign_in_required": "You need to sign in to proceed. Please sign in and try again.",
 
-    "contract_wait_employee_sign_subtitle": "You must sign first to activate the contract. Tap to sign.",
+    "contract_wait_employee_sign_subtitle": "You must sign first to activate the contract.",
     "contract_wait_other_client_sign_title": "Waiting for client signature",
     "contract_wait_other_client_sign_subtitle": "Waiting for the client signature to activate the contract.",
     "contract_active_title": "Contract Active",
@@ -333,7 +333,7 @@
     "client_label": "Client: ",
     "branch_label": "Branch: ",
     "sign_employee_required_title": "Employee signature required",
-    "sign_employee_required_subtitle": "You must sign first so the client can sign. Tap to sign.",
+    "sign_employee_required_subtitle": "You must sign first so the client can sign.",
     "waiting_employee_signature_title": "Waiting for employee signature",
     "waiting_employee_signature_subtitle": "Waiting for the employee signature so the client can sign.",
     "sign_client_required_title": "Client signature required",
@@ -356,6 +356,23 @@
     "contract_components": "Contract Components",
     "contract_components_subtitle": "Update contract components",
     "offline_mode": "Offline Mode",
-    "offline_mode_subtitle": "View and manage system in offline mode"
+    "offline_mode_subtitle": "View and manage system in offline mode",
 
+    "share_contract": "Share Contract",
+    "share_contract_subtitle": "Share contract with other employees or clients",
+    "share_with": "Share with",
+    "no_users": "No users",
+    "contract_sharing_updated_success": "Contract sharing updated successfully.",
+    "contract_signed_success": "Contract signed successfully.",
+    "emergency_visits": "Emergency Visits",
+    "emergency_visits_subtitle": "View emergency visits or request a new one",
+    "feature_not_supported_yet": "Feature not supported yet",
+    "suitable": "Suitable",
+    "unsuitable": "Unsuitable",
+    "system_report_no": "System Report No. {number}",
+    "visit_date": "Visit Date: ",
+    "system_status": "System Status: ",
+    "signed": "Signed",
+    "not_signed": "Not Signed"
+    
 }

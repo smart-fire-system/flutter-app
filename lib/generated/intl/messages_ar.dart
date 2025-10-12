@@ -28,6 +28,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(title) => "تأكيد ${title}";
 
+  static String m4(number) => "تقرير زيارة رقم: ${number}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "aborted": MessageLookupByLibrary.simpleMessage(
@@ -182,9 +184,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("العقد منتهي"),
         "contract_label": MessageLookupByLibrary.simpleMessage("عقد"),
         "contract_number_prefix": m2,
+        "contract_sharing_updated_success":
+            MessageLookupByLibrary.simpleMessage(
+                "تم تحديث مشاركة العقد بنجاح."),
+        "contract_signed_success":
+            MessageLookupByLibrary.simpleMessage("تم توقيع العقد بنجاح."),
         "contract_wait_employee_sign_subtitle":
             MessageLookupByLibrary.simpleMessage(
-                "يجب أن تقوم بالتوقيع أولاً ليكون العقد ساري. اضغط للتوقيع."),
+                "يجب أن تقوم بالتوقيع أولاً ليكون العقد ساري."),
         "contract_wait_other_client_sign_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "بانتظار توقيع العميل لكي يكون العقد ساري."),
@@ -223,6 +230,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("طلب زيارة طوارئ"),
         "emergency_visit_request_subtitle":
             MessageLookupByLibrary.simpleMessage("طلب زيارة طوارئ"),
+        "emergency_visits":
+            MessageLookupByLibrary.simpleMessage("زيارات الطوارئ"),
+        "emergency_visits_subtitle": MessageLookupByLibrary.simpleMessage(
+            "عرض زيارات الطوارئ أو طلب زيارة جديدة"),
         "employee": MessageLookupByLibrary.simpleMessage("موظف"),
         "employee_label": MessageLookupByLibrary.simpleMessage("الموظف: "),
         "employees": MessageLookupByLibrary.simpleMessage("الموظفون"),
@@ -262,6 +273,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "رمز التفعيل انتهت صلاحيته. يرجى طلب رمز جديد."),
         "failed_precondition": MessageLookupByLibrary.simpleMessage(
             "لا يمكن تنفيذ العملية بسبب شرط مسبق غير متحقق."),
+        "feature_not_supported_yet":
+            MessageLookupByLibrary.simpleMessage("الميزة غير مدعومة بعد"),
         "forgot_password":
             MessageLookupByLibrary.simpleMessage("هل نسيت كلمة المرور؟"),
         "home": MessageLookupByLibrary.simpleMessage("الصفحة الرئيسية"),
@@ -379,10 +392,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "لا يوجد مستخدم مسجل الدخول. يرجى تسجيل الدخول."),
         "no_such_provider": MessageLookupByLibrary.simpleMessage(
             "المزود الذي تحاول استخدامه غير متاح."),
+        "no_users": MessageLookupByLibrary.simpleMessage("لا يوجد مستخدمون"),
         "not_authenticated": MessageLookupByLibrary.simpleMessage(
             "أنت غير مسجل الدخول. للوصول إلى هذه الميزة، يرجى تسجيل الدخول باستخدام حسابك."),
         "not_found":
             MessageLookupByLibrary.simpleMessage("المورد المطلوب غير موجود."),
+        "not_signed": MessageLookupByLibrary.simpleMessage("غير موقًع"),
         "notifications": MessageLookupByLibrary.simpleMessage("الإشعارات"),
         "offline_mode": MessageLookupByLibrary.simpleMessage("وضع عدم الاتصال"),
         "offline_mode_subtitle": MessageLookupByLibrary.simpleMessage(
@@ -454,10 +469,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "session_expired": MessageLookupByLibrary.simpleMessage(
             "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجددًا."),
         "settings": MessageLookupByLibrary.simpleMessage("الإعدادات"),
+        "share_contract": MessageLookupByLibrary.simpleMessage("مشاركة العقد"),
+        "share_contract_subtitle": MessageLookupByLibrary.simpleMessage(
+            "مشاركة العقد مع موظفين أو عملاء آخرين"),
+        "share_with": MessageLookupByLibrary.simpleMessage("المشاركة مع"),
         "sign_client_required_title":
             MessageLookupByLibrary.simpleMessage("توقيع العميل مطلوب أولاً"),
         "sign_employee_required_subtitle": MessageLookupByLibrary.simpleMessage(
-            "يجب أن تقوم بالتوقيع أولاً ليتمكّن العميل من التوقيع. اضغط للتوقيع."),
+            "يجب أن تقوم بالتوقيع أولاً ليتمكّن العميل من التوقيع."),
         "sign_employee_required_title":
             MessageLookupByLibrary.simpleMessage("توقيع الموظف مطلوب أولاً"),
         "sign_in_cancelled": MessageLookupByLibrary.simpleMessage(
@@ -473,6 +492,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "signature_confirm_dialog_title": m3,
         "signature_employee_title":
             MessageLookupByLibrary.simpleMessage("توقيع الموظف"),
+        "signed": MessageLookupByLibrary.simpleMessage("موقًع"),
         "signup": MessageLookupByLibrary.simpleMessage("إنشاء حساب جديد"),
         "signup_in_progress": MessageLookupByLibrary.simpleMessage(
             "يرجى الانتظار أثناء إنشاء الحساب"),
@@ -491,6 +511,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "stepsToComplete": MessageLookupByLibrary.simpleMessage(
             "لمتابعة استخدام التطبيق، يرجى إكمال الخطوات التالية:"),
         "submitComplaint": MessageLookupByLibrary.simpleMessage("تقديم شكوى"),
+        "suitable": MessageLookupByLibrary.simpleMessage("ملائم"),
         "system": MessageLookupByLibrary.simpleMessage("النظام"),
         "systemStatusAndFaults":
             MessageLookupByLibrary.simpleMessage("حالة النظام والأعطال"),
@@ -500,6 +521,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("مراقبة النظام والتحكم"),
         "system_monitoring_description": MessageLookupByLibrary.simpleMessage(
             "مراقبة الحالة الحالية لكل حساس والتحكم في الوحدات الفرعية. يمكنك أيضًا تنفيذ إجراءات مثل تشغيل أو إيقاف الأجهزة مباشرةً من هذه الواجهة."),
+        "system_report_no": m4,
+        "system_status": MessageLookupByLibrary.simpleMessage("حالة النظام: "),
         "tabToAddLogo":
             MessageLookupByLibrary.simpleMessage("إضغط لاضافة شعار للشركة"),
         "tapToSelectUser":
@@ -518,6 +541,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "لم يتم تنفيذ أو دعم هذه العملية."),
         "unknown_error": MessageLookupByLibrary.simpleMessage(
             "حدث خطأ غير معروف. حاول مرة أخرى لاحقًا."),
+        "unsuitable": MessageLookupByLibrary.simpleMessage("غير ملائم"),
         "unsupported_tenant_operation": MessageLookupByLibrary.simpleMessage(
             "هذه العملية غير مدعومة لهذا المستأجر."),
         "user": MessageLookupByLibrary.simpleMessage("المستخدم"),
@@ -555,6 +579,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_contract": MessageLookupByLibrary.simpleMessage("عرض العقد"),
         "view_contract_subtitle": MessageLookupByLibrary.simpleMessage(
             "عرض تفاصيل العقد والتحويل إلى PDF"),
+        "visit_date": MessageLookupByLibrary.simpleMessage("تاريخ الزيارة: "),
         "visit_reports": MessageLookupByLibrary.simpleMessage("تقارير الزيارة"),
         "visit_reports_subtitle": MessageLookupByLibrary.simpleMessage(
             "عرض تفاصيل الزيارات والتحويل إلى PDF"),

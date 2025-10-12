@@ -2770,10 +2770,10 @@ class S {
     );
   }
 
-  /// `You must sign first to activate the contract. Tap to sign.`
+  /// `You must sign first to activate the contract.`
   String get contract_wait_employee_sign_subtitle {
     return Intl.message(
-      'You must sign first to activate the contract. Tap to sign.',
+      'You must sign first to activate the contract.',
       name: 'contract_wait_employee_sign_subtitle',
       desc: '',
       args: [],
@@ -3040,10 +3040,10 @@ class S {
     );
   }
 
-  /// `You must sign first so the client can sign. Tap to sign.`
+  /// `You must sign first so the client can sign.`
   String get sign_employee_required_subtitle {
     return Intl.message(
-      'You must sign first so the client can sign. Tap to sign.',
+      'You must sign first so the client can sign.',
       name: 'sign_employee_required_subtitle',
       desc: '',
       args: [],
@@ -3275,6 +3275,166 @@ class S {
     return Intl.message(
       'View and manage system in offline mode',
       name: 'offline_mode_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share Contract`
+  String get share_contract {
+    return Intl.message(
+      'Share Contract',
+      name: 'share_contract',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share contract with other employees or clients`
+  String get share_contract_subtitle {
+    return Intl.message(
+      'Share contract with other employees or clients',
+      name: 'share_contract_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share with`
+  String get share_with {
+    return Intl.message(
+      'Share with',
+      name: 'share_with',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No users`
+  String get no_users {
+    return Intl.message(
+      'No users',
+      name: 'no_users',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contract sharing updated successfully.`
+  String get contract_sharing_updated_success {
+    return Intl.message(
+      'Contract sharing updated successfully.',
+      name: 'contract_sharing_updated_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contract signed successfully.`
+  String get contract_signed_success {
+    return Intl.message(
+      'Contract signed successfully.',
+      name: 'contract_signed_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Emergency Visits`
+  String get emergency_visits {
+    return Intl.message(
+      'Emergency Visits',
+      name: 'emergency_visits',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View emergency visits or request a new one`
+  String get emergency_visits_subtitle {
+    return Intl.message(
+      'View emergency visits or request a new one',
+      name: 'emergency_visits_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Feature not supported yet`
+  String get feature_not_supported_yet {
+    return Intl.message(
+      'Feature not supported yet',
+      name: 'feature_not_supported_yet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Suitable`
+  String get suitable {
+    return Intl.message(
+      'Suitable',
+      name: 'suitable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unsuitable`
+  String get unsuitable {
+    return Intl.message(
+      'Unsuitable',
+      name: 'unsuitable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `System Report No. {number}`
+  String system_report_no(Object number) {
+    return Intl.message(
+      'System Report No. $number',
+      name: 'system_report_no',
+      desc: '',
+      args: [number],
+    );
+  }
+
+  /// `Visit Date: `
+  String get visit_date {
+    return Intl.message(
+      'Visit Date: ',
+      name: 'visit_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `System Status: `
+  String get system_status {
+    return Intl.message(
+      'System Status: ',
+      name: 'system_status',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Signed`
+  String get signed {
+    return Intl.message(
+      'Signed',
+      name: 'signed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not Signed`
+  String get not_signed {
+    return Intl.message(
+      'Not Signed',
+      name: 'not_signed',
       desc: '',
       args: [],
     );

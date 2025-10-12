@@ -306,7 +306,7 @@
     "sign_in_cancelled": "تم إلغاء عملية تسجيل الدخول. يرجى المحاولة مرة أخرى إذا كنت ترغب في المتابعة.",
     "sign_in_required": "يجب تسجيل الدخول للمتابعة. يرجى تسجيل الدخول والمحاولة مرة أخرى.",
 
-    "contract_wait_employee_sign_subtitle": "يجب أن تقوم بالتوقيع أولاً ليكون العقد ساري. اضغط للتوقيع.",
+    "contract_wait_employee_sign_subtitle": "يجب أن تقوم بالتوقيع أولاً ليكون العقد ساري.",
     "contract_wait_other_client_sign_title": "بانتظار توقيع العميل",
     "contract_wait_other_client_sign_subtitle": "بانتظار توقيع العميل لكي يكون العقد ساري.",
     "contract_active_title": "العقد ساري",
@@ -333,7 +333,7 @@
     "client_label": "العميل: ",
     "branch_label": "الفرع: ",
     "sign_employee_required_title": "توقيع الموظف مطلوب أولاً",
-    "sign_employee_required_subtitle": "يجب أن تقوم بالتوقيع أولاً ليتمكّن العميل من التوقيع. اضغط للتوقيع.",
+    "sign_employee_required_subtitle": "يجب أن تقوم بالتوقيع أولاً ليتمكّن العميل من التوقيع.",
     "waiting_employee_signature_title": "بانتظار توقيع الموظف",
     "waiting_employee_signature_subtitle": "بانتظار توقيع الموظف لكي يتمكن العميل من التوقيع.",
     "sign_client_required_title": "توقيع العميل مطلوب أولاً",
@@ -356,6 +356,23 @@
     "new_contract": "إضافة عقد",
     "new_new_contract_subtitle": "إضافة عقد جديد",
     "offline_mode": "وضع عدم الاتصال",
-    "offline_mode_subtitle": "عرض وإدارة النظام في وضع عدم الاتصال"
+    "offline_mode_subtitle": "عرض وإدارة النظام في وضع عدم الاتصال",
+
+    "share_contract": "مشاركة العقد",
+    "share_contract_subtitle": "مشاركة العقد مع موظفين أو عملاء آخرين",
+    "share_with": "المشاركة مع",
+    "no_users": "لا يوجد مستخدمون",
+    "contract_sharing_updated_success": "تم تحديث مشاركة العقد بنجاح.",
+    "contract_signed_success": "تم توقيع العقد بنجاح.",
+    "emergency_visits": "زيارات الطوارئ",
+    "emergency_visits_subtitle": "عرض زيارات الطوارئ أو طلب زيارة جديدة",
+    "feature_not_supported_yet": "الميزة غير مدعومة بعد",
+    "suitable": "ملائم",
+    "unsuitable": "غير ملائم",
+    "system_report_no": "تقرير زيارة رقم: {number}",
+    "visit_date": "تاريخ الزيارة: ",
+    "system_status": "حالة النظام: ",
+    "signed": "موقًع",
+    "not_signed": "غير موقًع"
 
 }

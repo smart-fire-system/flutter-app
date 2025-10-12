@@ -28,6 +28,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(title) => "Confirm ${title}";
 
+  static String m4(number) => "System Report No. ${number}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "aborted": MessageLookupByLibrary.simpleMessage(
@@ -191,9 +193,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Contract Expired"),
         "contract_label": MessageLookupByLibrary.simpleMessage("Contract"),
         "contract_number_prefix": m2,
+        "contract_sharing_updated_success":
+            MessageLookupByLibrary.simpleMessage(
+                "Contract sharing updated successfully."),
+        "contract_signed_success": MessageLookupByLibrary.simpleMessage(
+            "Contract signed successfully."),
         "contract_wait_employee_sign_subtitle":
             MessageLookupByLibrary.simpleMessage(
-                "You must sign first to activate the contract. Tap to sign."),
+                "You must sign first to activate the contract."),
         "contract_wait_other_client_sign_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "Waiting for the client signature to activate the contract."),
@@ -232,6 +239,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Request Emergency Visit"),
         "emergency_visit_request_subtitle":
             MessageLookupByLibrary.simpleMessage("Request emergency visit"),
+        "emergency_visits":
+            MessageLookupByLibrary.simpleMessage("Emergency Visits"),
+        "emergency_visits_subtitle": MessageLookupByLibrary.simpleMessage(
+            "View emergency visits or request a new one"),
         "employee": MessageLookupByLibrary.simpleMessage("Employee"),
         "employee_label": MessageLookupByLibrary.simpleMessage("Employee: "),
         "employees": MessageLookupByLibrary.simpleMessage("Employees"),
@@ -272,6 +283,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "This action code has expired. Request a new one to proceed."),
         "failed_precondition": MessageLookupByLibrary.simpleMessage(
             "The operation cannot be performed due to failed precondition."),
+        "feature_not_supported_yet":
+            MessageLookupByLibrary.simpleMessage("Feature not supported yet"),
         "forgot_password":
             MessageLookupByLibrary.simpleMessage("Forgot your password?"),
         "home": MessageLookupByLibrary.simpleMessage("Home"),
@@ -389,10 +402,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "No user is signed in. Please log in to continue."),
         "no_such_provider": MessageLookupByLibrary.simpleMessage(
             "The provider you are trying to use is not available for this account."),
+        "no_users": MessageLookupByLibrary.simpleMessage("No users"),
         "not_authenticated": MessageLookupByLibrary.simpleMessage(
             "You are not logged in. To access this feature, please log in with your account."),
         "not_found": MessageLookupByLibrary.simpleMessage(
             "The requested resource was not found."),
+        "not_signed": MessageLookupByLibrary.simpleMessage("Not Signed"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
         "offline_mode": MessageLookupByLibrary.simpleMessage("Offline Mode"),
         "offline_mode_subtitle": MessageLookupByLibrary.simpleMessage(
@@ -463,10 +478,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "session_expired": MessageLookupByLibrary.simpleMessage(
             "The session has expired. Please log in again."),
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "share_contract":
+            MessageLookupByLibrary.simpleMessage("Share Contract"),
+        "share_contract_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Share contract with other employees or clients"),
+        "share_with": MessageLookupByLibrary.simpleMessage("Share with"),
         "sign_client_required_title":
             MessageLookupByLibrary.simpleMessage("Client signature required"),
         "sign_employee_required_subtitle": MessageLookupByLibrary.simpleMessage(
-            "You must sign first so the client can sign. Tap to sign."),
+            "You must sign first so the client can sign."),
         "sign_employee_required_title":
             MessageLookupByLibrary.simpleMessage("Employee signature required"),
         "sign_in_cancelled": MessageLookupByLibrary.simpleMessage(
@@ -482,6 +502,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "signature_confirm_dialog_title": m3,
         "signature_employee_title":
             MessageLookupByLibrary.simpleMessage("Employee Signature"),
+        "signed": MessageLookupByLibrary.simpleMessage("Signed"),
         "signup": MessageLookupByLibrary.simpleMessage("Sign Up"),
         "signup_in_progress": MessageLookupByLibrary.simpleMessage(
             "Please wait while creating your account"),
@@ -502,6 +523,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "To continue using the application, please complete the following steps:"),
         "submitComplaint":
             MessageLookupByLibrary.simpleMessage("Submit Complaint"),
+        "suitable": MessageLookupByLibrary.simpleMessage("Suitable"),
         "system": MessageLookupByLibrary.simpleMessage("System"),
         "systemStatusAndFaults":
             MessageLookupByLibrary.simpleMessage("System Status and Faults"),
@@ -511,6 +533,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "System Monitoring and Control"),
         "system_monitoring_description": MessageLookupByLibrary.simpleMessage(
             "Monitor the current state of each sensor and control sub-units. You can also perform actions like turning devices on or off directly from this interface."),
+        "system_report_no": m4,
+        "system_status":
+            MessageLookupByLibrary.simpleMessage("System Status: "),
         "tabToAddLogo":
             MessageLookupByLibrary.simpleMessage("Tab to add company logo"),
         "tapToSelectUser":
@@ -529,6 +554,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "This operation is not implemented or supported."),
         "unknown_error": MessageLookupByLibrary.simpleMessage(
             "An unknown error occurred. Please try again later."),
+        "unsuitable": MessageLookupByLibrary.simpleMessage("Unsuitable"),
         "unsupported_tenant_operation": MessageLookupByLibrary.simpleMessage(
             "This operation is not supported for this tenant."),
         "user": MessageLookupByLibrary.simpleMessage("User"),
@@ -567,6 +593,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_contract": MessageLookupByLibrary.simpleMessage("View Contract"),
         "view_contract_subtitle": MessageLookupByLibrary.simpleMessage(
             "View contract details and export to PDF"),
+        "visit_date": MessageLookupByLibrary.simpleMessage("Visit Date: "),
         "visit_reports": MessageLookupByLibrary.simpleMessage("Visit Reports"),
         "visit_reports_subtitle": MessageLookupByLibrary.simpleMessage(
             "View visit details and export to PDF"),

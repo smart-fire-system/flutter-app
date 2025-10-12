@@ -69,26 +69,22 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         isEmployeeDraft ? Colors.red.shade50 : Colors.blue.shade50;
     Color borderColor =
         isEmployeeDraft ? CustomStyle.redLight : CustomStyle.greyLight;
-    String title =
-        isEmployeeDraft ? 'توقيع الموظف مطلوب أولاً' : 'بانتظار توقيع العميل';
-    String subtitle = isEmployeeDraft
-        ? 'يجب أن تقوم بالتوقيع أولاً ليتمكّن العميل من التوقيع. اضغط للتوقيع.'
-        : 'تم توقيع الموظف. الرجاء إرسال الرابط للعميل أو تذكيره بالتوقيع.';
+    String title = '';
+    String subtitle = '';
     if (_isPendingCurrentEmployeeSign()) {
       cardColor = Colors.red.shade50;
       borderColor = CustomStyle.redLight;
-      title = 'توقيع الموظف مطلوب أولاً';
-      subtitle =
-          'يجب أن تقوم بالتوقيع أولاً ليتمكّن العميل من التوقيع. اضغط للتوقيع.';
+      title = S.of(context).sign_employee_required_title;
+      subtitle = S.of(context).sign_employee_required_subtitle;
     } else if (_isPendingOtherEmployeeSign()) {
       cardColor = Colors.orange.shade50;
       borderColor = Colors.orangeAccent;
-      title = 'بانتظار توقيع الموظف';
-      subtitle = 'بانتظار توقيع الموظف لكي يتمكن العميل من التوقيع.';
+      title = S.of(context).waiting_employee_signature_title;
+      subtitle = S.of(context).waiting_employee_signature_subtitle;
     } else if (_isPendingCurrentClientSign()) {
       cardColor = Colors.red.shade50;
       borderColor = CustomStyle.redLight;
-      title = 'توقيع العميل مطلوب أولاً';
+      title = S.of(context).sign_client_required_title;
       subtitle = S.of(context).contract_wait_employee_sign_subtitle;
     } else if (_isPendingOtherClientSign()) {
       cardColor = Colors.orange.shade50;
@@ -119,40 +115,29 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: borderColor, width: 1),
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(isEmployeeDraft
-                    ? S.of(context).snackbar_signing_not_enabled
-                    : S.of(context).snackbar_client_notification_not_enabled)),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: CustomStyle.mediumTextBRed,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: CustomStyle.smallText,
-                    ),
-                    const SizedBox(height: 10),
-                    _buildLinearStateDiagram(),
-                  ],
-                ),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: CustomStyle.mediumTextBRed,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: CustomStyle.smallText,
+                  ),
+                  const SizedBox(height: 10),
+                  _buildLinearStateDiagram(),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -465,7 +450,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                       children: [
                         const Icon(Icons.share, color: CustomStyle.redDark),
                         const SizedBox(width: 8),
-                        Text('Share with', style: CustomStyle.mediumTextBRed),
+                        Text(S.of(context).share_with,
+                            style: CustomStyle.mediumTextBRed),
                         const Spacer(),
                         TextButton(
                           onPressed: () {
@@ -477,7 +463,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                                   ),
                                 );
                           },
-                          child: const Text('Save'),
+                          child: Text(S.of(context).save_changes),
                         ),
                       ],
                     ),
@@ -487,7 +473,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                         shrinkWrap: true,
                         children: [
                           if (clients.isNotEmpty) ...[
-                            Text('Clients', style: CustomStyle.smallTextBRed),
+                            Text(S.of(context).clients,
+                                style: CustomStyle.smallTextBRed),
                             const SizedBox(height: 6),
                             ...clients.map((c) => buildUserTile(
                                   id: c.info.id,
@@ -500,7 +487,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                             const SizedBox(height: 10),
                           ],
                           if (employees.isNotEmpty) ...[
-                            Text('Employees', style: CustomStyle.smallTextBRed),
+                            Text(S.of(context).employees,
+                                style: CustomStyle.smallTextBRed),
                             const SizedBox(height: 6),
                             ...employees.map((e) => buildUserTile(
                                   id: e.info.id,
@@ -539,7 +527,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                     state.message = null;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Contract sharing updated successfully.',
+                        content: Text(
+                            S.of(context).contract_sharing_updated_success,
                             style: CustomStyle.smallTextBWhite),
                         backgroundColor: Colors.green,
                       ));
@@ -549,7 +538,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                     state.message = null;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Contract signed successfully.',
+                        content: Text(S.of(context).contract_signed_success,
                             style: CustomStyle.smallTextBWhite),
                         backgroundColor: Colors.green,
                       ));
@@ -603,8 +592,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         const SizedBox(height: 16),
         WideCard(
             icon: Icons.share,
-            title: 'Share Contract',
-            subtitle: 'Share contract with other employees or clients',
+            title: S.of(context).share_contract,
+            subtitle: S.of(context).share_contract_subtitle,
             color: CustomStyle.redDark,
             backgroundColor: Colors.grey.withValues(alpha: 0.1),
             onTap: () {
@@ -615,12 +604,12 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         const SizedBox(height: 16),
         WideCard(
           icon: Icons.emergency,
-          title: 'Emergency Visits',
-          subtitle: 'View emergency visits or request a new one',
+          title: S.of(context).emergency_visits,
+          subtitle: S.of(context).emergency_visits_subtitle,
           color: CustomStyle.redDark,
           backgroundColor: Colors.grey.withValues(alpha: 0.1),
           onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Feature not supported yet')),
+            SnackBar(content: Text(S.of(context).feature_not_supported_yet)),
           ),
         ),
         const SizedBox(height: 16),

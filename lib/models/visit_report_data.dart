@@ -12,6 +12,7 @@ class VisitReportData {
   String? paramContractNumber;
   String? paramVisitDate;
   String? paramSystemStatus;
+  String? paramSystemStatusBool;
   String? paramNotes;
   Timestamp? createdAt;
   List<dynamic> sharedWith = [];
@@ -27,6 +28,7 @@ class VisitReportData {
       'contractNumber': paramContractNumber,
       'visitDate': paramVisitDate,
       'systemStatus': paramSystemStatus,
+      'systemStatusBool': paramSystemStatusBool,
       'notes': paramNotes,
     };
   }
@@ -53,6 +55,7 @@ class VisitReportData {
     data.paramContractNumber = json['parameters']['contractNumber']?.toString();
     data.paramVisitDate = json['parameters']['visitDate']?.toString();
     data.paramSystemStatus = json['parameters']['systemStatus']?.toString();
+    data.paramSystemStatusBool = json['parameters']['systemStatusBool']?.toString();
     data.paramNotes = json['parameters']['notes']?.toString();
     data.componentsData = ContractComponents.fromJson(
         (json['componentsData'] as Map?)?.cast<String, dynamic>() ?? {});

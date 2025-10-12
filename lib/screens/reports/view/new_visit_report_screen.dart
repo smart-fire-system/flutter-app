@@ -596,6 +596,8 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                   _visitReportData.paramVisitDate = _visitDateController.text;
                   _visitReportData.paramSystemStatus =
                       _systemStatusController.text;
+                  _visitReportData.paramSystemStatusBool =
+                      _systemStatusValue.toString();
                   _visitReportData.paramNotes = _notesController.text;
                   _visitReportData.componentsData = _componentsData;
                   _visitReportData.contractMetaData =

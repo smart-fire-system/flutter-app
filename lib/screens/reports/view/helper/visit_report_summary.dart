@@ -40,7 +40,7 @@ class _VisitReportSummaryState extends State<VisitReportSummary> {
                 children: [
                   Expanded(
                     child: Text(
-                      ('Visit Report No. ${widget.index + 1}'),
+                      (S.of(context).system_report_no(widget.index + 1)),
                       style: CustomStyle.mediumTextBRed,
                     ),
                   ),
@@ -65,8 +65,8 @@ class _VisitReportSummaryState extends State<VisitReportSummary> {
                     child: Text(
                       widget.visitReport.employeeSignature.id != null &&
                               widget.visitReport.clientSignature.id != null
-                          ? 'Signed'
-                          : 'Not Signed',
+                          ? S.of(context).signed
+                          : S.of(context).not_signed,
                       style: CustomStyle.smallTextB.copyWith(
                         color: widget.visitReport.employeeSignature.id !=
                                     null &&
@@ -90,7 +90,7 @@ class _VisitReportSummaryState extends State<VisitReportSummary> {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: 'Visit Date: ',
+                            text: S.of(context).visit_date,
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
@@ -115,12 +115,20 @@ class _VisitReportSummaryState extends State<VisitReportSummary> {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: 'System Status: ',
+                            text: S.of(context).system_status,
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
-                            text: widget.visitReport.paramSystemStatus ?? '-',
-                            style: CustomStyle.smallText,
+                            text:
+                                widget.visitReport.paramSystemStatusBool == '1'
+                                    ? S.of(context).suitable
+                                    : S.of(context).unsuitable,
+                            style: CustomStyle.smallText.copyWith(
+                              color: widget.visitReport.paramSystemStatusBool ==
+                                      '1'
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
                           ),
                         ],
                       ),
