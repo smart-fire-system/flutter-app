@@ -55,7 +55,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     on<SaveVisitReportRequested>((event, emit) async {
       emit(ReportsLoading());
       await appRepository.reportsRepository.saveVisitReport(event.visitReport);
-      message = ReportsMessage.contractSaved;
+      message = ReportsMessage.visitReportSaved;
     });
 
     on<SignContractRequested>((event, emit) async {
@@ -65,11 +65,19 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       message = ReportsMessage.contractSigned;
     });
 
+    on<SignVisitReportRequested>((event, emit) async {
+      emit(ReportsLoading());
+      await appRepository.reportsRepository.signVisitReport(
+          user: appRepository.userRole, visitReport: event.visitReport);
+      message = ReportsMessage.visitReportSigned;
+    });
+
     on<FirstPartyInformationUpateRequested>((event, emit) async {
       if (appRepository.userRole is BranchManager) {
         emit(ReportsLoading());
         await appRepository.reportsRepository
             .setFirstPartyInformation(event.firstParty);
+        message = ReportsMessage.firstPartyInformationUpdated;
       } else {
         add(Refresh(error: 'unauthorized'));
       }

@@ -32,6 +32,11 @@ class SignContractRequested extends ReportsEvent {
   SignContractRequested({required this.contract});
 }
 
+class SignVisitReportRequested extends ReportsEvent {
+  final VisitReportData visitReport;
+  SignVisitReportRequested({required this.visitReport});
+}
+
 class FirstPartyInformationUpateRequested extends ReportsEvent {
   final ContractFirstParty firstParty;
   FirstPartyInformationUpateRequested({required this.firstParty});

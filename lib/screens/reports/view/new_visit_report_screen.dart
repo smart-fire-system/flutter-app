@@ -603,6 +603,7 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
                   _visitReportData.contractMetaData =
                       _contract?.metaData ?? ContractMetaData();
                   _visitReportData.contractId = widget.contractId;
+                  _visitReportData.employeeId = _employee?.info.id;
                   context.read<ReportsBloc>().add(
                       SaveVisitReportRequested(visitReport: _visitReportData));
                 },

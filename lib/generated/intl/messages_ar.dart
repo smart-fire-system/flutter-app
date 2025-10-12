@@ -489,6 +489,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("توقيع العميل"),
         "signature_confirm_dialog_body": MessageLookupByLibrary.simpleMessage(
             "بتأكيدك سيتم تسجيل توقيعك على هذا العقد. لا يمكن التراجع عن هذه العملية."),
+        "signature_confirm_dialog_body_visit_report":
+            MessageLookupByLibrary.simpleMessage(
+                "بتأكيدك سيتم تسجيل توقيعك على تقرير الزيارة هذا. لا يمكن التراجع عن هذه العملية."),
         "signature_confirm_dialog_title": m3,
         "signature_employee_title":
             MessageLookupByLibrary.simpleMessage("توقيع الموظف"),
@@ -579,7 +582,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_contract": MessageLookupByLibrary.simpleMessage("عرض العقد"),
         "view_contract_subtitle": MessageLookupByLibrary.simpleMessage(
             "عرض تفاصيل العقد والتحويل إلى PDF"),
+        "view_visit_report":
+            MessageLookupByLibrary.simpleMessage("عرض تقرير الزيارة"),
         "visit_date": MessageLookupByLibrary.simpleMessage("تاريخ الزيارة: "),
+        "visit_report_signed_success": MessageLookupByLibrary.simpleMessage(
+            "تم توقيع تقرير الزيارة بنجاح."),
+        "visit_report_wait_client_sign_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "يرجى توقيع تقرير الزيارة للمتابعة."),
+        "visit_report_wait_other_client_sign_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "بانتظار توقيع العميل لإكمال تقرير الزيارة."),
         "visit_reports": MessageLookupByLibrary.simpleMessage("تقارير الزيارة"),
         "visit_reports_subtitle": MessageLookupByLibrary.simpleMessage(
             "عرض تفاصيل الزيارات والتحويل إلى PDF"),

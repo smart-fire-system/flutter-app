@@ -7,7 +7,10 @@ enum ReportsMessage {
   contractComponentsSaved,
   contractSaved,
   contractSigned,
+  visitReportSaved,
+  visitReportSigned,
   sharedWithUpdated,
+  firstPartyInformationUpdated,
 }
 
 abstract class ReportsState {}

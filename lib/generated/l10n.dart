@@ -3439,6 +3439,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Visit report signed successfully.`
+  String get visit_report_signed_success {
+    return Intl.message(
+      'Visit report signed successfully.',
+      name: 'visit_report_signed_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View Visit Report`
+  String get view_visit_report {
+    return Intl.message(
+      'View Visit Report',
+      name: 'view_visit_report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `By confirming, your signature will be recorded on this visit report. This action cannot be undone.`
+  String get signature_confirm_dialog_body_visit_report {
+    return Intl.message(
+      'By confirming, your signature will be recorded on this visit report. This action cannot be undone.',
+      name: 'signature_confirm_dialog_body_visit_report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please sign the visit report to proceed.`
+  String get visit_report_wait_client_sign_subtitle {
+    return Intl.message(
+      'Please sign the visit report to proceed.',
+      name: 'visit_report_wait_client_sign_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for the client signature to complete the visit report.`
+  String get visit_report_wait_other_client_sign_subtitle {
+    return Intl.message(
+      'Waiting for the client signature to complete the visit report.',
+      name: 'visit_report_wait_other_client_sign_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

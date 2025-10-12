@@ -499,6 +499,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Client Signature"),
         "signature_confirm_dialog_body": MessageLookupByLibrary.simpleMessage(
             "By confirming, your signature will be recorded on this contract. This action cannot be undone."),
+        "signature_confirm_dialog_body_visit_report":
+            MessageLookupByLibrary.simpleMessage(
+                "By confirming, your signature will be recorded on this visit report. This action cannot be undone."),
         "signature_confirm_dialog_title": m3,
         "signature_employee_title":
             MessageLookupByLibrary.simpleMessage("Employee Signature"),
@@ -593,7 +596,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "view_contract": MessageLookupByLibrary.simpleMessage("View Contract"),
         "view_contract_subtitle": MessageLookupByLibrary.simpleMessage(
             "View contract details and export to PDF"),
+        "view_visit_report":
+            MessageLookupByLibrary.simpleMessage("View Visit Report"),
         "visit_date": MessageLookupByLibrary.simpleMessage("Visit Date: "),
+        "visit_report_signed_success": MessageLookupByLibrary.simpleMessage(
+            "Visit report signed successfully."),
+        "visit_report_wait_client_sign_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "Please sign the visit report to proceed."),
+        "visit_report_wait_other_client_sign_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "Waiting for the client signature to complete the visit report."),
         "visit_reports": MessageLookupByLibrary.simpleMessage("Visit Reports"),
         "visit_reports_subtitle": MessageLookupByLibrary.simpleMessage(
             "View visit details and export to PDF"),

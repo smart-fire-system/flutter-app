@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/report.dart';
+import 'package:fire_alarm_system/models/signature.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart' as pw_colors;

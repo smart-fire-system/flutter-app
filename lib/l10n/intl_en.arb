@@ -373,6 +373,12 @@
     "visit_date": "Visit Date: ",
     "system_status": "System Status: ",
     "signed": "Signed",
-    "not_signed": "Not Signed"
+    "not_signed": "Not Signed",
+    "visit_report_signed_success": "Visit report signed successfully."
+    ,
+    "view_visit_report": "View Visit Report",
+    "signature_confirm_dialog_body_visit_report": "By confirming, your signature will be recorded on this visit report. This action cannot be undone.",
+    "visit_report_wait_client_sign_subtitle": "Please sign the visit report to proceed.",
+    "visit_report_wait_other_client_sign_subtitle": "Waiting for the client signature to complete the visit report."
     
 }

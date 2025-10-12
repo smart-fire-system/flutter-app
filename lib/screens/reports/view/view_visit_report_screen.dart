@@ -1,6 +1,5 @@
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/models/visit_report_data.dart';
-import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/visit_report_details.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/visit_report_summary.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
@@ -32,38 +31,29 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
 
   bool _isPendingCurrentEmployeeSign() {
     if (_user is! Employee) return false;
-    final String currentId = (_user as Employee).info.id;
-    final String? contractEmpId = _contract.metaData.employee?.info.id;
-    return _contract.metaData.state == ContractState.draft &&
-        contractEmpId != null &&
-        contractEmpId == currentId;
+    return _visitReport.employeeSignature.id == null &&
+        _visitReport.employeeId == (_user as Employee).info.id;
   }
 
   bool _isPendingOtherEmployeeSign() {
-    return _contract.metaData.state == ContractState.draft;
+    return _visitReport.employeeSignature.id == null;
   }
 
   bool _isPendingCurrentClientSign() {
     if (_user is! Client) return false;
-    final String currentId = (_user as Client).info.id;
-    final String? contractClientId = _contract.metaData.client?.info.id;
-    return _contract.metaData.state == ContractState.pendingClient &&
-        contractClientId != null &&
-        contractClientId == currentId;
+    return _visitReport.clientSignature.id == null &&
+        _visitReport.contractMetaData.clientId == (_user as Client).info.id;
   }
 
   bool _isPendingOtherClientSign() {
-    return _contract.metaData.state == ContractState.pendingClient;
+    return _visitReport.clientSignature.id == null;
   }
 
   Widget _buildStateCard(BuildContext context) {
-    bool isEmployeeDraft = _isPendingCurrentEmployeeSign();
-    Color cardColor =
-        isEmployeeDraft ? Colors.red.shade50 : Colors.blue.shade50;
-    Color borderColor =
-        isEmployeeDraft ? CustomStyle.redLight : CustomStyle.greyLight;
-    String title = '';
-    String subtitle = '';
+    late Color cardColor;
+    late Color borderColor;
+    late String title;
+    late String subtitle;
     if (_isPendingCurrentEmployeeSign()) {
       cardColor = Colors.red.shade50;
       borderColor = CustomStyle.redLight;
@@ -78,24 +68,17 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
       cardColor = Colors.red.shade50;
       borderColor = CustomStyle.redLight;
       title = S.of(context).sign_client_required_title;
-      subtitle = S.of(context).contract_wait_employee_sign_subtitle;
+      subtitle = S.of(context).visit_report_wait_client_sign_subtitle;
     } else if (_isPendingOtherClientSign()) {
       cardColor = Colors.orange.shade50;
       borderColor = Colors.orangeAccent;
       title = S.of(context).contract_wait_other_client_sign_title;
-      subtitle = S.of(context).contract_wait_other_client_sign_subtitle;
-    } else if (_contract.metaData.state == ContractState.active) {
-      if (!ContractsCommon.isContractExpired(_contract)) {
-        cardColor = Colors.green.shade50;
-        borderColor = Colors.greenAccent;
-        title = S.of(context).contract_active_title;
-        subtitle = 'fdff';
-      } else {
-        cardColor = Colors.red.shade50;
-        borderColor = CustomStyle.redLight;
-        title = S.of(context).contract_expired_title;
-        subtitle = 'fdff';
-      }
+      subtitle = S.of(context).visit_report_wait_other_client_sign_subtitle;
+    } else {
+      cardColor = Colors.green.shade50;
+      borderColor = Colors.greenAccent;
+      title = S.of(context).visit_reports;
+      subtitle = S.of(context).signed;
     }
 
     return Card(
@@ -216,17 +199,13 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
                       const Icon(Icons.privacy_tip_outlined,
                           color: CustomStyle.redDark),
                       const SizedBox(width: 8),
-                      Text(
-                        S.of(context).signature_confirm_dialog_title(title),
-                        style: CustomStyle.mediumTextBRed,
-                      ),
+                      Text(S.of(context).signature_confirm_dialog_title(title),
+                          style: CustomStyle.mediumTextBRed),
                     ],
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    S.of(context).signature_confirm_dialog_body,
-                    style: const TextStyle(color: CustomStyle.greyDark),
-                  ),
+                  Text(S.of(context).signature_confirm_dialog_body_visit_report,
+                      style: const TextStyle(color: CustomStyle.greyDark)),
                   const SizedBox(height: 20),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -258,8 +237,8 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
                                   if (v >= 0.99) {
                                     Navigator.of(ctx).pop();
                                     context.read<ReportsBloc>().add(
-                                          SignContractRequested(
-                                              contract: _contract),
+                                          SignVisitReportRequested(
+                                              visitReport: _visitReport),
                                         );
                                   }
                                 },
@@ -284,32 +263,20 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
     final List<String> labels = <String>[
       S.of(context).linear_stage_draft,
       S.of(context).linear_stage_employee_signed,
-      S.of(context).linear_stage_client_signed,
-      ContractsCommon.isContractExpired(_contract)
-          ? S.of(context).linear_stage_expired
-          : S.of(context).linear_stage_active,
+      S.of(context).linear_stage_client_signed
     ];
 
     Color dotColor(int idx) {
-      if (ContractsCommon.isContractExpired(_contract) && idx == 3) {
-        return CustomStyle.redDark;
-      }
       if (idx <= stage) return Colors.green;
       return Colors.grey;
     }
 
     Color labelColor(int idx) {
-      if (ContractsCommon.isContractExpired(_contract) && idx == 3) {
-        return CustomStyle.redDark;
-      }
       return dotColor(idx);
     }
 
     Color connectorColor(int idx) {
       if (idx < stage) return Colors.green;
-      if (ContractsCommon.isContractExpired(_contract) && idx == 2) {
-        return CustomStyle.redDark;
-      }
       return Colors.grey;
     }
 
@@ -339,8 +306,6 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
             dot(1),
             connector(1),
             dot(2),
-            connector(2),
-            dot(3),
           ],
         ),
         const SizedBox(height: 6),
@@ -348,14 +313,14 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
           children: [
             for (int i = 0; i < labels.length; i++)
               Expanded(
-                flex: i == 0 || i == 3 ? 2 : 3,
+                flex: i == 1 ? 3 : 2,
                 child: Text(
                   labels[i],
                   textAlign: i == 0
                       ? Directionality.of(context) == TextDirection.ltr
                           ? TextAlign.left
                           : TextAlign.right
-                      : i == 3
+                      : i == 2
                           ? Directionality.of(context) == TextDirection.ltr
                               ? TextAlign.right
                               : TextAlign.left
@@ -372,21 +337,15 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
   }
 
   int _currentStageIndex() {
-    final ContractState? s = _contract.metaData.state;
-    if (s == ContractState.draft) return 0; // Draft
-    if (s == ContractState.pendingClient) return 1; // Employee Signed
-    if (s == ContractState.active) {
-      return 3;
-    }
-    return 0;
+    if (_visitReport.employeeSignature.id == null) return 0; // Draft
+    if (_visitReport.clientSignature.id == null) return 1; // Employee Signed
+    return 2;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
-        title: S.of(context).view_contract,
-      ),
+      appBar: CustomAppBar(title: S.of(context).view_visit_report),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: BlocBuilder<ReportsBloc, ReportsState>(
@@ -410,6 +369,16 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(S.of(context).contract_signed_success,
+                            style: CustomStyle.smallTextBWhite),
+                        backgroundColor: Colors.green,
+                      ));
+                    });
+                    break;
+                  case ReportsMessage.visitReportSigned:
+                    state.message = null;
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(S.of(context).visit_report_signed_success,
                             style: CustomStyle.smallTextBWhite),
                         backgroundColor: Colors.green,
                       ));
@@ -448,7 +417,6 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
         _buildStateCard(context),
         const SizedBox(height: 16),
         VisitReportSummary(visitReport: _visitReport, index: 0),
-        const SizedBox(height: 16),
         VisitReportDetails(visitReport: _visitReport, contract: _contract),
       ],
     );

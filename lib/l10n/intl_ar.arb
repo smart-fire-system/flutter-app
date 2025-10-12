@@ -373,6 +373,12 @@
     "visit_date": "تاريخ الزيارة: ",
     "system_status": "حالة النظام: ",
     "signed": "موقًع",
-    "not_signed": "غير موقًع"
+    "not_signed": "غير موقًع",
+    "visit_report_signed_success": "تم توقيع تقرير الزيارة بنجاح."
+    ,
+    "view_visit_report": "عرض تقرير الزيارة",
+    "signature_confirm_dialog_body_visit_report": "بتأكيدك سيتم تسجيل توقيعك على تقرير الزيارة هذا. لا يمكن التراجع عن هذه العملية.",
+    "visit_report_wait_client_sign_subtitle": "يرجى توقيع تقرير الزيارة للمتابعة.",
+    "visit_report_wait_other_client_sign_subtitle": "بانتظار توقيع العميل لإكمال تقرير الزيارة."
 
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/report.dart';
+import 'package:fire_alarm_system/models/signature.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/models/visit_report_data.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
@@ -127,17 +128,29 @@ class ReportsRepository {
 
   Future<String> saveVisitReport(VisitReportData visitReport) async {
     try {
-      final docRef = _firestore.collection('visitReports').doc();
-      visitReport.id = docRef.id;
-      visitReport.sharedWith = [
-        visitReport.contractMetaData.employee?.info.id ?? '',
-        visitReport.contractMetaData.client?.info.id ?? ''
-      ];
-      await docRef.set({
-        ...visitReport.toJson(),
-        'createdAt': FieldValue.serverTimestamp(),
+      return await _firestore.runTransaction((txn) async {
+        final maxRef = _firestore.collection('info').doc('maxVisitReportCode');
+        final maxSnap = await txn.get(maxRef);
+        int current = 0;
+        if (maxSnap.exists) {
+          final data = maxSnap.data() as Map<String, dynamic>;
+          current = int.tryParse((data['value'] ?? '0').toString()) ?? 0;
+        }
+        final next = current + 1;
+        txn.set(maxRef, {'value': next}, SetOptions(merge: true));
+        visitReport.code = next;
+        final docRef = _firestore.collection('visitReports').doc();
+        visitReport.id = docRef.id;
+        visitReport.sharedWith = [
+          visitReport.contractMetaData.employee?.info.id ?? '',
+          visitReport.contractMetaData.client?.info.id ?? ''
+        ];
+        txn.set(docRef, {
+          ...visitReport.toJson(),
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+        return docRef.id;
       });
-      return docRef.id;
     } on FirebaseException catch (e) {
       throw Exception(e.code);
     } catch (e) {
@@ -200,6 +213,56 @@ class ReportsRepository {
       }
     });
     return signedContract;
+  }
+
+  Future<VisitReportData> signVisitReport({
+    required dynamic user,
+    required VisitReportData visitReport,
+  }) async {
+    final bool isClient = user is Client;
+    final bool isEmployee = user is Employee;
+    VisitReportData signedVisitReport = visitReport;
+    if (!isClient && !isEmployee) {
+      throw Exception('Unsupported signer');
+    }
+    await _firestore.runTransaction((txn) async {
+      final maxRef = _firestore.collection('info').doc('maxSignatureCode');
+      final maxSnap = await txn.get(maxRef);
+      int current = 0;
+      if (maxSnap.exists) {
+        final data = maxSnap.data() as Map<String, dynamic>;
+        current = int.tryParse((data['value'] ?? '0').toString()) ?? 0;
+      }
+      final next = current + 1;
+      txn.set(maxRef, {'value': next}, SetOptions(merge: true));
+      final DateTime now = DateTime.now();
+      final String dd = now.day.toString().padLeft(2, '0');
+      final String mm = now.month.toString().padLeft(2, '0');
+      final String yyyy = now.year.toString();
+      final int userCode = appRepository.userInfo.code;
+      final String visitReportCode = (visitReport.code ?? '').toString();
+      final String prefix = isClient ? 'VC' : 'VE';
+      final String name =
+          '$prefix-$dd$mm$yyyy-$userCode-$visitReportCode-$next';
+      final sigRef = _firestore.collection('signatures').doc();
+      txn.set(sigRef, {
+        'code': next,
+        'name': name,
+        'createdAt': FieldValue.serverTimestamp(),
+        'userId': appRepository.userInfo.id,
+        'visitReportId': visitReport.id,
+      });
+      final visitReportRef =
+          _firestore.collection('visitReports').doc(visitReport.id);
+      if (isClient) {
+        txn.update(visitReportRef, {'clientSignatureId': sigRef.id});
+        signedVisitReport.clientSignature.id = sigRef.id;
+      } else {
+        txn.update(visitReportRef, {'employeeSignatureId': sigRef.id});
+        signedVisitReport.employeeSignature.id = sigRef.id;
+      }
+    });
+    return signedVisitReport;
   }
 
   void _refresh() {
@@ -317,6 +380,18 @@ class ReportsRepository {
           final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           final visitReport = VisitReportData.fromJson(data);
           visitReport.id ??= doc.id;
+          try {
+            visitReport.employeeSignature = _signatures
+                .firstWhere((s) => s.id == visitReport.employeeSignature.id);
+          } catch (_) {
+            visitReport.employeeSignature = SignatureData();
+          }
+          try {
+            visitReport.clientSignature = _signatures
+                .firstWhere((s) => s.id == visitReport.clientSignature.id);
+          } catch (_) {
+            visitReport.clientSignature = SignatureData();
+          }
           try {
             visitReport.contractMetaData = _contracts!
                 .firstWhere((c) => c.metaData.id == visitReport.contractId)
