@@ -68,6 +68,12 @@ class _VisitReportsScreenState extends State<VisitReportsScreen> {
     _visitReports = state.visitReports!
         .where((v) => v.contractId == widget.contractId)
         .toList();
+    _visitReports.sort((a, b) {
+      final String aDate = a.paramVisitDate ?? '';
+      final String bDate = b.paramVisitDate ?? '';
+      // Descending: newest (lexicographically larger) first
+      return bDate.compareTo(aDate);
+    });
     if (_visitReports.isEmpty) {
       return CustomEmpty(message: S.of(context).no_contracts_yet);
     }
