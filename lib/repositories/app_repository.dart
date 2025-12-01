@@ -6,6 +6,7 @@ import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/repositories/branch_repository.dart';
+import 'package:fire_alarm_system/repositories/notifications_repository.dart';
 import 'package:fire_alarm_system/repositories/reports_repository.dart';
 import 'package:fire_alarm_system/repositories/system_repository.dart';
 import 'package:fire_alarm_system/repositories/user_repository.dart';
@@ -19,12 +20,14 @@ class AppRepository {
   late final UserRepository _userRepository;
   late final SystemRepository _systemRepository;
   late final ReportsRepository _reportsRepository;
+  late final NotificationsRepository _notificationsRepository;
   AuthChangeResult _authChangeStatus = AuthChangeResult.generalError;
   BranchesAndCompanies _branchesAndCompanies =
       BranchesAndCompanies(branches: [], companies: []);
   Users _users = Users();
   final _usersController = StreamController<void>.broadcast();
   final _branchesAndCompaniesController = StreamController<void>.broadcast();
+  final _notificationsController = StreamController<void>.broadcast();
 
   AppRepository() : _firestore = FirebaseFirestore.instance {
     _userRepository = UserRepository(appRepository: this);
@@ -32,6 +35,7 @@ class AppRepository {
     _branchRepository = BranchRepository(appRepository: this);
     _systemRepository = SystemRepository();
     _reportsRepository = ReportsRepository(appRepository: this);
+    _notificationsRepository = NotificationsRepository(appRepository: this);
     _authRepository.authStateChanges.listen((status) async {
       _authChangeStatus = status;
       if (isUserReady()) {
@@ -39,6 +43,9 @@ class AppRepository {
         _branchesAndCompaniesController.add(null);
         _users = _userRepository.getAllUsers();
         _usersController.add(null);
+        await _notificationsRepository.subscribeToUserTopics();
+        _notificationsRepository.refreshNotifications();
+        _notificationsController.add(null);
       }
     }, onError: (error) {});
 
@@ -95,6 +102,11 @@ class AppRepository {
       _users = _userRepository.getAllUsers();
       _usersController.add(null);
       _authRepository.refreshUserAuth();
+    });
+    _firestore.collection('notifications').snapshots().listen((snapshot) {
+      _notificationsRepository.notificationsSnapshot = snapshot;
+      _notificationsRepository.refreshNotifications();
+      _notificationsController.add(null);
     });
   }
 

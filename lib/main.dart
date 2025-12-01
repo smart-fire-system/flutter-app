@@ -15,12 +15,57 @@ import 'package:fire_alarm_system/screens/profile/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/system/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+import 'dart:io';
+import 'package:url_launcher/url_launcher.dart';
+
+Future<void> openStorePage() async {
+  Uri url;
+
+  if (Platform.isAndroid) {
+    url = Uri.parse("market://details?id=com.hassan.firealarm");
+  } else if (Platform.isIOS) {
+    url = Uri.parse("https://apps.apple.com/app/id1234567890");
+  } else {
+    return;
+  }
+
+  // Fallback for Android
+  Uri fallback = Uri.parse(
+    "https://play.google.com/store/apps/details?id=com.hassan.firealarm",
+  );
+
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url, mode: LaunchMode.externalApplication);
+  } else {
+    await launchUrl(fallback, mode: LaunchMode.externalApplication);
+  }
+}
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  // Handle background message
+  print('Handling a background message: ${message.messageId}');
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Handling a foreground message: ${message.messageId}');
+  });
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print('🔔 onMessageOpenedApp: ${message.messageId}');
+    print('🔔 data: ${message.data}');
+    if (message.data['click_action'] == 'OPEN_PLAY_STORE') {
+      openStorePage();
+    }
+    });
   runApp(const FireAlarmApp());
 }
 

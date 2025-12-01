@@ -45,6 +45,7 @@ class AuthRepository {
   AuthStatus get authStatus => _userAuth.authStatus;
   UserInfo get userInfo => _userAuth.userRole.info as UserInfo;
   dynamic get userRole => _userAuth.userRole;
+  firebase.User? get firebaseUser => _firebaseAuth.currentUser;
   Stream<AuthChangeResult> get authStateChanges =>
       _authStateChangesController.stream;
 
