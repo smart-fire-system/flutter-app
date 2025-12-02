@@ -2,6 +2,7 @@ import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/message.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'event.dart';
@@ -9,6 +10,8 @@ import 'state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final AppRepository appRepository;
+  bool _openNotifications = false;
+  bool _initialMessage = false;
 
   HomeBloc({required this.appRepository}) : super(HomeInitial()) {
     Future<HomeState> getHomeState({AppMessage? message, String? error}) async {
@@ -27,9 +30,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             error: error,
           );
         } else {
+          RemoteMessage? initialMessage =
+              await FirebaseMessaging.instance.getInitialMessage();
+          if (initialMessage != null && _initialMessage == false) {
+            _initialMessage = true;
+            _openNotifications = true;
+          }
           return HomeAuthenticated(
             user: appRepository.userRole,
             notifications: appRepository.notificationsRepository.notifications,
+            openNotifications: _openNotifications,
             message: message,
             error: error,
           );
@@ -45,6 +55,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       add(AuthChanged(error: status));
     }, onError: (error) {
       add(AuthChanged(error: AuthChangeResult.generalError));
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _openNotifications = true;
+      add(AuthChanged(error: AuthChangeResult.noError));
     });
 
     on<AuthChanged>((event, emit) async {

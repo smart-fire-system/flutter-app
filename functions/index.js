@@ -253,13 +253,13 @@ exports.onMasterAdminsChange = functions.firestore
 
 exports.onNewVersionNotifications = functions.firestore
   .document("androidVersions/{versionId}")
-  .onCreate(async (change, context) => {
+  .onWrite(async (change, context) => {
     const versionId = context.params.versionId;
     const message = {
       topic: 'android_users',
       notification: {
         title: 'New Version Available',
-        body: `Version ${versionId} is now available.`,
+        body: `Version ${versionId} is now available. Click to update.`,
       },
       data: {
         click_action: "OPEN_PLAY_STORE",
@@ -277,6 +277,52 @@ exports.onNewVersionNotifications = functions.firestore
         body: message.notification.body,
         topics: [message.topic],
         click_action: message.data.click_action,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      return null;
+    } catch (error) {
+      console.error('Error sending topic message:', error);
+      return null;
+    }
+
+  });
+
+function topicsToCondition(topics) {
+  if (!Array.isArray(topics) || topics.length === 0) {
+    throw new Error("topics must be a non-empty array");
+  }
+  return topics
+    .map(t => `'${t}' in topics`)
+    .join(' || ');
+}
+
+exports.onSendNotification = functions.firestore
+  .document("sendNotification/{id}")
+  .onWrite(async (change, context) => {
+    const id = context.params.id;
+    const doc = change.after.data();
+    const message = {
+      condition: topicsToCondition(doc.topics),
+      notification: {
+        title: doc.title,
+        body: doc.body,
+      },
+      data: {
+        click_action: doc.click_action,
+      },
+    };
+    try {
+      const response = await admin.messaging().send(message);
+      console.log('Successfully sent topic message:', response);
+
+      // Add a document to notifications collection
+      const notifRef = db.collection("notifications").doc();
+      await notifRef.set({
+        id: notifRef.id,
+        title: doc.title,
+        body: doc.body,
+        topics: doc.topics,
+        click_action: doc.click_action,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
       return null;

@@ -3,6 +3,7 @@ import 'package:fire_alarm_system/screens/home/view/add_phone_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/error_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/login_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/not_authorized_screen.dart';
+import 'package:fire_alarm_system/screens/home/view/notifications_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/signup_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/welcome_screen.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
@@ -152,6 +153,16 @@ class HomeScreenState extends State<HomeScreen> {
             state.isEmailVerified,
           );
         } else if (state is HomeAuthenticated) {
+          if (state.openNotifications) {
+            state.openNotifications = false;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const NotificationsScreen()),
+              );
+            });
+          }
           _showAlert(
             context: context,
             message: state.message,

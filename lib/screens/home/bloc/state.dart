@@ -10,11 +10,13 @@ class HomeLoading extends HomeState {}
 
 class HomeAuthenticated extends HomeState {
   final dynamic user;
+  bool openNotifications;
   AppMessage? message;
   String? error;
   List<NotificationItem> notifications;
   HomeAuthenticated({
     required this.user,
+    this.openNotifications = false,
     this.message,
     this.error,
     required this.notifications,

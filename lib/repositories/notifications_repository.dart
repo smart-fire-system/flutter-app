@@ -46,11 +46,13 @@ class NotificationsRepository {
   }
 
   Future<bool> requestNotificationPermission() async {
+    print('🔔 requestNotificationPermission');
     NotificationSettings settings = await _messaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
+    print('🔔 settings: ${settings.authorizationStatus}');
     if (settings.authorizationStatus == AuthorizationStatus.denied) {
       return false;
     }
