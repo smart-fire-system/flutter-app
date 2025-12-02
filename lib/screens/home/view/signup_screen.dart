@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/data_validator_util.dart';
@@ -201,7 +203,7 @@ class SignUpScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Text(appVersion, style: CustomStyle.smallTextGrey),
+                    Text(Platform.isAndroid ? androidAppVersion : iosAppVersion, style: CustomStyle.smallTextGrey),
                   ],
                 ),
               ),

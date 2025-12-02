@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -93,7 +95,7 @@ class ErrorScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  appVersion,
+                  Platform.isAndroid ? androidAppVersion : iosAppVersion,
                   style: CustomStyle.smallTextGrey,
                 ),
               ],
