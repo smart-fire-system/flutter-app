@@ -226,11 +226,20 @@ class NotificationsScreenState extends State<NotificationsScreen> {
     final diff = now.difference(createdAt);
     if (!diff.isNegative && diff.inMinutes < 60) {
       final mins = diff.inMinutes.clamp(0, 59);
-      return '$mins mins ago';
+      if (mins == 1) {
+        return '1 min ago';
+      } else {
+        return '$mins mins ago';
+      }
     }
     if (!diff.isNegative && diff.inHours < 24) {
       final hours = diff.inHours;
-      return '$hours hours ago';
+      if (hours == 1)
+      {
+        return '1 hour ago';
+      } else {
+        return '$hours hours ago';
+      }
     }
     final local = createdAt.toLocal();
     return DateFormat('dd-MM-yyyy\nhh:mm a').format(local);
