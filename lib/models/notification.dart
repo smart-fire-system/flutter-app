@@ -22,7 +22,7 @@ class NotificationItem {
       'title': title,
       'body': body,
       'topics': topics,
-      'clickAction': clickAction,
+      'click_action': clickAction,
       'createdAt': createdAt ?? FieldValue.serverTimestamp(),
     };
   }
@@ -33,7 +33,7 @@ class NotificationItem {
       title: map['title'],
       body: map['body'],
       topics: List<String>.from(map['topics']),
-      clickAction: map['clickAction'],
+      clickAction: map['click_action'],
       createdAt: map['createdAt'],
     );
   }
