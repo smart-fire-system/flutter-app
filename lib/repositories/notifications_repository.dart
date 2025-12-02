@@ -1,53 +1,19 @@
 import 'dart:io';
+import 'package:fire_alarm_system/models/notification.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-class NotificationItem {
-  String id;
-  String title;
-  String body;
-  List<String> topics;
-  String? clickAction;
-  Timestamp? createdAt;
-  NotificationItem({
-    required this.id,
-    required this.title,
-    required this.body,
-    required this.topics,
-    this.clickAction,
-    this.createdAt,
-  });
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'title': title,
-      'body': body,
-      'topics': topics,
-      'clickAction': clickAction,
-      'createdAt': createdAt ?? FieldValue.serverTimestamp(),
-    };
-  }
-
-  factory NotificationItem.fromMap(Map<String, dynamic> map) {
-    return NotificationItem(
-      id: map['id'],
-      title: map['title'],
-      body: map['body'],
-      topics: List<String>.from(map['topics']),
-      clickAction: map['clickAction'],
-      createdAt: map['createdAt'],
-    );
-  }
-}
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationsRepository {
   final FirebaseMessaging _messaging;
   final AppRepository appRepository;
   List<NotificationItem> notifications = [];
-  List<String> subscribedTopics = [];
+  List<String> userTopics = [];
+  bool isSubscribed = false;
   QuerySnapshot? notificationsSnapshot;
+  bool _isSubscribing = false;
   NotificationsRepository({required this.appRepository})
       : _messaging = FirebaseMessaging.instance;
 
@@ -60,8 +26,7 @@ class NotificationsRepository {
     for (var doc in notificationsSnapshot!.docs) {
       final notification =
           NotificationItem.fromMap(doc.data() as Map<String, dynamic>);
-      if (subscribedTopics
-          .any((element) => notification.topics.contains(element))) {
+      if (userTopics.any((element) => notification.topics.contains(element))) {
         notifications.add(notification);
       }
     }
@@ -123,88 +88,97 @@ class NotificationsRepository {
     return true;
   }
 
-  Future<bool> subscribeToUserTopics() async {
+  Future<void> updateUserTopics() async {
     final user = appRepository.authRepository.userRole;
-    if (user == null || !await isNotificationPermissionGranted()) {
-      return false;
+    if (user == null) {
+      return;
     }
-    try {
-      subscribedTopics.add('user_${user.info.id}');
-      subscribedTopics.add('all_users');
-      if (Platform.isAndroid) {
-        subscribedTopics.add('android_users');
-      } else if (Platform.isIOS) {
-        subscribedTopics.add('ios_users');
-      }
-      if (user is MasterAdmin) {
-        subscribedTopics.add('masterAdmins');
-      } else if (user is Admin) {
-        subscribedTopics.add('admins');
-      } else if (user is CompanyManager) {
-        subscribedTopics.add('companyManagers');
-        subscribedTopics.add('companyManagers_${user.company.id}');
-        subscribedTopics.add('company_${user.company.id}');
-      } else if (user is BranchManager) {
-        subscribedTopics.add('branchManagers');
-        subscribedTopics.add('branchManagers_${user.branch.id}');
-        subscribedTopics.add('branch_${user.branch.id}');
-        subscribedTopics.add('company_${user.branch.company.id}');
-      } else if (user is Employee) {
-        subscribedTopics.add('employees');
-        subscribedTopics.add('employees_${user.branch.id}');
-        subscribedTopics.add('branch_${user.branch.id}');
-        subscribedTopics.add('company_${user.branch.company.id}');
-      } else if (user is Client) {
-        subscribedTopics.add('clients');
-        subscribedTopics.add('clients_${user.branch.id}');
-        subscribedTopics.add('branch_${user.branch.id}');
-        subscribedTopics.add('company_${user.branch.company.id}');
-      }
-      if (await isNotificationPermissionGranted()) {
-        for (var topic in subscribedTopics) {
-          await _messaging.subscribeToTopic(topic);
-        }
-      }
-      return true;
-    } catch (e) {
-      subscribedTopics.clear();
-      return false;
+    userTopics.clear();
+    userTopics.add('user_${user.info.id}');
+    userTopics.add('all_users');
+    if (Platform.isAndroid) {
+      userTopics.add('android_users');
+    } else if (Platform.isIOS) {
+      userTopics.add('ios_users');
     }
+    if (user is MasterAdmin) {
+      userTopics.add('masterAdmins');
+    } else if (user is Admin) {
+      userTopics.add('admins');
+    } else if (user is CompanyManager) {
+      userTopics.add('companyManagers');
+      userTopics.add('companyManagers_${user.company.id}');
+      userTopics.add('company_${user.company.id}');
+    } else if (user is BranchManager) {
+      userTopics.add('branchManagers');
+      userTopics.add('branchManagers_${user.branch.id}');
+      userTopics.add('branch_${user.branch.id}');
+      userTopics.add('company_${user.branch.company.id}');
+    } else if (user is Employee) {
+      userTopics.add('employees');
+      userTopics.add('employees_${user.branch.id}');
+      userTopics.add('branch_${user.branch.id}');
+      userTopics.add('company_${user.branch.company.id}');
+    } else if (user is Client) {
+      userTopics.add('clients');
+      userTopics.add('clients_${user.branch.id}');
+      userTopics.add('branch_${user.branch.id}');
+      userTopics.add('company_${user.branch.company.id}');
+    }
+    subscribeToUserTopics();
+  }
+
+  Future<void> subscribeToUserTopics() async {
+    if (_isSubscribing) {
+      return;
+    }
+    _isSubscribing = true;
+    const key = 'subscribedTopics';
+    final prefs = await SharedPreferences.getInstance();
+    final subscribedTopics = prefs.getStringList(key) ?? [];
+    for (var topic in userTopics) {
+      if (!subscribedTopics.contains(topic)) {
+        await _messaging.subscribeToTopic(topic);
+        subscribedTopics.add(topic);
+        prefs.setStringList(key, subscribedTopics);
+      }
+    }
+    for (var topic in subscribedTopics) {
+      if (!userTopics.contains(topic)) {
+        await _messaging.unsubscribeFromTopic(topic);
+        subscribedTopics.remove(topic);
+        prefs.setStringList(key, subscribedTopics);
+      }
+    }
+    _isSubscribing = false;
   }
 
   Future<bool> unsubscribeFromUserTopics() async {
-    final user = appRepository.authRepository.userRole;
-    if (user == null) {
-      return false;
-    }
     try {
-      if (await isNotificationPermissionGranted()) {
-        await _messaging.unsubscribeFromTopic('user_${user.info.id}');
-        await _messaging.unsubscribeFromTopic('all_users');
-        await _messaging.unsubscribeFromTopic('android_users');
-        await _messaging.unsubscribeFromTopic('ios_users');
-        await _messaging.unsubscribeFromTopic('masterAdmins');
-        await _messaging.unsubscribeFromTopic('admins');
-        await _messaging.unsubscribeFromTopic('companyManagers');
-        await _messaging.unsubscribeFromTopic('branchManagers');
-        await _messaging.unsubscribeFromTopic('employees');
-        await _messaging.unsubscribeFromTopic('clients');
-        if (user is CompanyManager) {
-          await _messaging
-              .unsubscribeFromTopic('companyManagers_${user.company.id}');
-          await _messaging.unsubscribeFromTopic('company_${user.company.id}');
-        }
-        if (user is BranchManager || user is Employee || user is Client) {
-          await _messaging
-              .unsubscribeFromTopic('branchManagers_${user.branch.id}');
-          await _messaging.unsubscribeFromTopic('employees_${user.branch.id}');
-          await _messaging.unsubscribeFromTopic('branch_${user.branch.id}');
-          await _messaging.unsubscribeFromTopic('clients_${user.branch.id}');
-          await _messaging
-              .unsubscribeFromTopic('company_${user.branch.company.id}');
-        }
-      }
-      subscribedTopics.clear();
+      final user = appRepository.authRepository.userRole;
+      String userId = user == null ? '' : user.info.id;
+      String companyId =
+          user == null || user is! CompanyManager ? '' : user.company.id!;
+      String branchId = user == null ||
+              !(user is BranchManager || user is Employee || user is Client)
+          ? ''
+          : user.branch.id!;
+      await _messaging.unsubscribeFromTopic('user_$userId');
+      await _messaging.unsubscribeFromTopic('all_users');
+      await _messaging.unsubscribeFromTopic('android_users');
+      await _messaging.unsubscribeFromTopic('ios_users');
+      await _messaging.unsubscribeFromTopic('masterAdmins');
+      await _messaging.unsubscribeFromTopic('admins');
+      await _messaging.unsubscribeFromTopic('companyManagers');
+      await _messaging.unsubscribeFromTopic('branchManagers');
+      await _messaging.unsubscribeFromTopic('employees');
+      await _messaging.unsubscribeFromTopic('clients');
+      await _messaging.unsubscribeFromTopic('companyManagers_$companyId');
+      await _messaging.unsubscribeFromTopic('branchManagers_$branchId');
+      await _messaging.unsubscribeFromTopic('employees_$branchId');
+      await _messaging.unsubscribeFromTopic('clients_$branchId');
+      await _messaging.unsubscribeFromTopic('company_$companyId');
+      await _messaging.unsubscribeFromTopic('branch_$branchId');
       return true;
     } catch (e) {
       return false;

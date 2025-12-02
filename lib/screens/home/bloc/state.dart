@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/models/notification.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/message.dart';
 
@@ -11,10 +12,12 @@ class HomeAuthenticated extends HomeState {
   final dynamic user;
   AppMessage? message;
   String? error;
+  List<NotificationItem> notifications;
   HomeAuthenticated({
     required this.user,
     this.message,
     this.error,
+    required this.notifications,
   });
 }
 

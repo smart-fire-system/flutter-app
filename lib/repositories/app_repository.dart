@@ -43,7 +43,7 @@ class AppRepository {
         _branchesAndCompaniesController.add(null);
         _users = _userRepository.getAllUsers();
         _usersController.add(null);
-        await _notificationsRepository.subscribeToUserTopics();
+        _notificationsRepository.updateUserTopics();
         _notificationsRepository.refreshNotifications();
         _notificationsController.add(null);
       }
@@ -105,6 +105,7 @@ class AppRepository {
     });
     _firestore.collection('notifications').snapshots().listen((snapshot) {
       _notificationsRepository.notificationsSnapshot = snapshot;
+      _notificationsRepository.updateUserTopics();
       _notificationsRepository.refreshNotifications();
       _notificationsController.add(null);
     });
@@ -116,6 +117,7 @@ class AppRepository {
   Stream<void> get branchesAndCompaniesStream =>
       _branchesAndCompaniesController.stream;
   Stream<void> get usersStream => _usersController.stream;
+  Stream<void> get notificationsStream => _notificationsController.stream;
   List<Branch> get branches => _branchesAndCompanies.branches;
   List<Company> get companies => _branchesAndCompanies.companies;
   UserInfo get userInfo => _authRepository.userRole.info as UserInfo;
@@ -136,6 +138,7 @@ class AppRepository {
   AuthRepository get authRepository => _authRepository;
   SystemRepository get systemRepository => _systemRepository;
   ReportsRepository get reportsRepository => _reportsRepository;
+  NotificationsRepository get notificationsRepository => _notificationsRepository;
 
   bool isUserReady() {
     return (_authChangeStatus == AuthChangeResult.noError &&

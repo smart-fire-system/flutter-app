@@ -374,7 +374,8 @@
     "system_status": "System Status: ",
     "signed": "Signed",
     "not_signed": "Not Signed",
-    "visit_report_signed_success": "Visit report signed successfully."
+    "visit_report_signed_success": "Visit report signed successfully.",
+    "notifications_subtitle": "View notifications"
     ,
     "view_visit_report": "View Visit Report",
     "signature_confirm_dialog_body_visit_report": "By confirming, your signature will be recorded on this visit report. This action cannot be undone.",

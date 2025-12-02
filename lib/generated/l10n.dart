@@ -3450,6 +3450,16 @@ class S {
     );
   }
 
+  /// `View notifications`
+  String get notifications_subtitle {
+    return Intl.message(
+      'View notifications',
+      name: 'notifications_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `View Visit Report`
   String get view_visit_report {
     return Intl.message(

@@ -399,6 +399,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("المورد المطلوب غير موجود."),
         "not_signed": MessageLookupByLibrary.simpleMessage("غير موقًع"),
         "notifications": MessageLookupByLibrary.simpleMessage("الإشعارات"),
+        "notifications_subtitle":
+            MessageLookupByLibrary.simpleMessage("عرض الاشعارات"),
         "offline_mode": MessageLookupByLibrary.simpleMessage("وضع عدم الاتصال"),
         "offline_mode_subtitle": MessageLookupByLibrary.simpleMessage(
             "عرض وإدارة النظام في وضع عدم الاتصال"),

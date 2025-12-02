@@ -29,12 +29,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         } else {
           return HomeAuthenticated(
             user: appRepository.userRole,
+            notifications: appRepository.notificationsRepository.notifications,
             message: message,
             error: error,
           );
         }
       }
     }
+
+    appRepository.notificationsStream.listen((_) {
+      add(AuthChanged(error: AuthChangeResult.noError));
+    });
 
     appRepository.authStateStream.listen((status) {
       add(AuthChanged(error: status));

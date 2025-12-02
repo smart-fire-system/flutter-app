@@ -409,6 +409,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "The requested resource was not found."),
         "not_signed": MessageLookupByLibrary.simpleMessage("Not Signed"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
+        "notifications_subtitle":
+            MessageLookupByLibrary.simpleMessage("View notifications"),
         "offline_mode": MessageLookupByLibrary.simpleMessage("Offline Mode"),
         "offline_mode_subtitle": MessageLookupByLibrary.simpleMessage(
             "View and manage system in offline mode"),

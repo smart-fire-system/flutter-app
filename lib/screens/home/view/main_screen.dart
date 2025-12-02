@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/screens/home/view/home_screen.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/screens/home/view/notifications_screen.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
@@ -78,6 +79,17 @@ class _MainScreenState extends State<MainScreen> {
               onTap: () {
                 homeScreenKey.currentState!
                     .setCurrentTab(AppTab.usersAndBranches);
+              },
+            ),
+            const SizedBox(height: 16),
+            // Full width card - Branches
+            WideCard(
+              icon: Icons.notifications_rounded,
+              title: S.of(context).notifications,
+              subtitle: S.of(context).notifications_subtitle,
+              color: const Color(0xFFEF4444),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationsScreen()));
               },
             ),
             const SizedBox(height: 16),
