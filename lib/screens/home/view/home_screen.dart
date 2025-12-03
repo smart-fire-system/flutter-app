@@ -153,6 +153,41 @@ class HomeScreenState extends State<HomeScreen> {
             state.isEmailVerified,
           );
         } else if (state is HomeAuthenticated) {
+          if (state.notificationReceived != null) {
+            final title = state.notificationReceived!.title;
+            final body = state.notificationReceived!.body;
+            state.notificationReceived = null;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).clearMaterialBanners();
+
+              ScaffoldMessenger.of(context).showMaterialBanner(
+                MaterialBanner(
+                  content: Text('$title\n$body'),
+                  leading: const Icon(Icons.notifications),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).clearMaterialBanners();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const NotificationsScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text('VIEW'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).clearMaterialBanners();
+                      },
+                      child: const Text('DISMISS'),
+                    ),
+                  ],
+                ),
+              );
+            });
+          }
           if (state.openNotifications) {
             state.openNotifications = false;
             WidgetsBinding.instance.addPostFrameCallback((_) {

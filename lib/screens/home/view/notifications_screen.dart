@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:fire_alarm_system/models/notification.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -10,7 +11,6 @@ import 'package:fire_alarm_system/screens/home/bloc/state.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fire_alarm_system/utils/app_version.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -21,68 +21,37 @@ class NotificationsScreen extends StatefulWidget {
 
 class NotificationsScreenState extends State<NotificationsScreen> {
   List<NotificationItem> notifications = [];
-  bool isNotificationGranted = false;
-  PermissionStatus? _notificationStatus;
+  bool? isNotificationGranted;
+  Timer? _permissionCheckTimer;
 
   @override
   void initState() {
     super.initState();
-    _initPermissionState();
-  }
-
-  Future<void> _initPermissionState() async {
-    final status = await Permission.notification.status;
-    if (!mounted) return;
-    setState(() {
-      isNotificationGranted = status.isGranted;
-      _notificationStatus = status;
+    _permissionCheckTimer =
+        Timer.periodic(const Duration(milliseconds: 100), (_) async {
+      final permissionStatus = await context
+          .read<HomeBloc>()
+          .appRepository
+          .notificationsRepository
+          .isNotificationPermissionGranted();
+      if (!mounted) return;
+      setState(() {
+        isNotificationGranted = permissionStatus;
+      });
     });
-  }
-
-  Future<void> _requestPermission() async {
-    final previousStatus = _notificationStatus;
-    final status = await Permission.notification.request();
-    if (status.isGranted || status.isLimited) {
-    } else {
-      if ((previousStatus?.isDenied == true && status.isDenied) ||
-          status.isPermanentlyDenied) {
-        await _openSystemSettings();
-      }
-    }
-    if (!mounted) return;
-    setState(() {
-      isNotificationGranted = status.isGranted || status.isLimited;
-      _notificationStatus = status;
-    });
-  }
-
-  Future<void> _openSystemSettings() async {
-    final opened = await openAppSettings();
-    if (!opened && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'To enable notifications, open Settings > Apps > Fire Alarm > Notifications',
-          ),
-          duration: Duration(seconds: 4),
-        ),
-      );
-    }
   }
 
   Widget _buildPermissionBanner(BuildContext context) {
-    if (isNotificationGranted) return const SizedBox.shrink();
-    final isPermanentlyDenied =
-        _notificationStatus?.isPermanentlyDenied == true;
+    if (isNotificationGranted == true) return const SizedBox.shrink();
     return Material(
       color: const Color(0xFFFFF2F2),
       child: InkWell(
         onTap: () {
-          if (isPermanentlyDenied) {
-            _openSystemSettings();
-          } else {
-            _requestPermission();
-          }
+          context
+              .read<HomeBloc>()
+              .appRepository
+              .notificationsRepository
+              .requestNotificationPermission();
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -94,7 +63,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  isPermanentlyDenied
+                  isNotificationGranted == false
                       ? 'Notifications are disabled in system settings.'
                       : 'Notifications are disabled. Tap to enable.',
                   style: Theme.of(context)
@@ -105,14 +74,14 @@ class NotificationsScreenState extends State<NotificationsScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  if (isPermanentlyDenied) {
-                    _openSystemSettings();
-                  } else {
-                    _requestPermission();
-                  }
+                  context
+                      .read<HomeBloc>()
+                      .appRepository
+                      .notificationsRepository
+                      .requestNotificationPermission();
                 },
                 child: Text(
-                  isPermanentlyDenied ? 'Open Settings' : 'Enable',
+                  isNotificationGranted == false ? 'Open Settings' : 'Enable',
                 ),
               ),
             ],
@@ -224,29 +193,32 @@ class NotificationsScreenState extends State<NotificationsScreen> {
   String _formatNotificationTime(DateTime createdAt) {
     final now = DateTime.now();
     final diff = now.difference(createdAt);
-    if (!diff.isNegative && diff.inMinutes < 60) {
-      final mins = diff.inMinutes.clamp(0, 59);
-      if (mins == 1) {
-        return '1 min ago';
-      } else {
-        return '$mins mins ago';
-      }
+    if (diff.isNegative || diff.inMinutes == 0) {
+      return "Just now";
     }
-    if (!diff.isNegative && diff.inHours < 24) {
+    if (diff.inMinutes < 60) {
+      final mins = diff.inMinutes;
+      return "$mins min${mins == 1 ? '' : 's'} ago";
+    }
+    if (diff.inHours < 24) {
       final hours = diff.inHours;
-      if (hours == 1)
-      {
-        return '1 hour ago';
-      } else {
-        return '$hours hours ago';
-      }
+      return "$hours hour${hours == 1 ? '' : 's'} ago";
     }
-    final local = createdAt.toLocal();
-    return DateFormat('dd-MM-yyyy\nhh:mm a').format(local);
+    if (diff.inDays < 30) {
+      final days = diff.inDays;
+      return "$days day${days == 1 ? '' : 's'} ago";
+    }
+    final months = (diff.inDays / 30).floor();
+    if (months < 12) {
+      return "$months month${months == 1 ? '' : 's'} ago";
+    }
+    final years = (diff.inDays / 365).floor();
+    return "$years year${years == 1 ? '' : 's'} ago";
   }
 
   @override
   void dispose() {
+    _permissionCheckTimer?.cancel();
     super.dispose();
   }
 

@@ -4,6 +4,7 @@ import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationsRepository {
@@ -14,6 +15,7 @@ class NotificationsRepository {
   bool isSubscribed = false;
   QuerySnapshot? notificationsSnapshot;
   bool _isSubscribing = false;
+  bool? _notificationPermissionStatus;
   NotificationsRepository({required this.appRepository})
       : _messaging = FirebaseMessaging.instance;
 
@@ -40,23 +42,23 @@ class NotificationsRepository {
     });
   }
 
-  Future<bool> isNotificationPermissionGranted() async {
-    final settings = await _messaging.getNotificationSettings();
-    return settings.authorizationStatus == AuthorizationStatus.authorized;
+  Future<bool?> isNotificationPermissionGranted() async {
+    final status = await Permission.notification.status;
+    if (status.isGranted) {
+      _notificationPermissionStatus = true;
+    }
+    return _notificationPermissionStatus;
   }
 
-  Future<bool> requestNotificationPermission() async {
-    print('🔔 requestNotificationPermission');
-    NotificationSettings settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-    print('🔔 settings: ${settings.authorizationStatus}');
-    if (settings.authorizationStatus == AuthorizationStatus.denied) {
-      return false;
+  Future<void> requestNotificationPermission() async {
+    final status = await Permission.notification.request();
+    if (status.isGranted || status.isLimited) {
+      _notificationPermissionStatus = true;
+    } else if (_notificationPermissionStatus == false) {
+      openAppSettings();
+    } else {
+      _notificationPermissionStatus = false;
     }
-    return true;
   }
 
   Future<bool> setupUserToken() async {

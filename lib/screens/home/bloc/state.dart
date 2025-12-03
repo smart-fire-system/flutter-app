@@ -14,12 +14,14 @@ class HomeAuthenticated extends HomeState {
   AppMessage? message;
   String? error;
   List<NotificationItem> notifications;
+  NotificationItem? notificationReceived;
   HomeAuthenticated({
     required this.user,
     this.openNotifications = false,
     this.message,
     this.error,
     required this.notifications,
+    this.notificationReceived,
   });
 }
 

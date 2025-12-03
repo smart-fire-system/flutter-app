@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:fire_alarm_system/screens/home/view/home_screen.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/screens/home/view/notifications_screen.dart';
+import 'package:fire_alarm_system/utils/app_version.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
@@ -89,7 +92,10 @@ class _MainScreenState extends State<MainScreen> {
               subtitle: S.of(context).notifications_subtitle,
               color: const Color(0xFFEF4444),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationsScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const NotificationsScreen()));
               },
             ),
             const SizedBox(height: 16),
@@ -110,6 +116,21 @@ class _MainScreenState extends State<MainScreen> {
               onTap: () =>
                   TabNavigator.home.currentState?.pushNamed('/offline'),
             ),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: SizedBox(
+                width: double.infinity,
+                child: Text(
+                  Platform.isAndroid ? androidAppVersion : iosAppVersion,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: Colors.grey.shade600),
+                ),
+              ),
+            )
           ],
         ),
       ),
