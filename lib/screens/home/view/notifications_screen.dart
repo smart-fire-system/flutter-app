@@ -10,7 +10,6 @@ import 'package:fire_alarm_system/screens/home/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/home/bloc/state.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:fire_alarm_system/utils/app_version.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -315,19 +314,6 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                 _buildPermissionBanner(context),
                 Expanded(child: content),
               ],
-            ),
-            bottomNavigationBar: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: Text(
-                  Platform.isAndroid ? androidAppVersion : iosAppVersion,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: Colors.grey.shade600),
-                ),
-              ),
             ),
           );
         }

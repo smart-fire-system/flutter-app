@@ -38,11 +38,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             _initialMessage = true;
             _openNotifications = true;
           }
+          NotificationItem? notificationReceived = _notificationReceived;
+          bool openNotifications = _openNotifications;
+          _openNotifications = false;
+          _notificationReceived = null;
           return HomeAuthenticated(
             user: appRepository.userRole,
             notifications: appRepository.notificationsRepository.notifications,
-            openNotifications: _openNotifications,
-            notificationReceived: _notificationReceived,
+            openNotifications: openNotifications,
+            notificationReceived: notificationReceived,
             message: message,
             error: error,
           );
