@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +17,9 @@ class LocalizationUtil {
   static Future<Locale> initializeLanguage() async {
     Locale? savedLocale = await loadLanguagePreference();
     myLocale = savedLocale ?? detectDeviceLanguage();
+    try {
+      FirebaseAuth.instance.setLanguageCode(myLocale.languageCode);
+    } catch (_) {}
     return myLocale;
   }
 
@@ -23,6 +27,9 @@ class LocalizationUtil {
     await saveLanguagePreference(locale);
     myLocale = locale;
     changeMainLanguageCallback!(locale);
+    try {
+      FirebaseAuth.instance.setLanguageCode(myLocale.languageCode);
+    } catch (_) {}
   }
 
   static Future<Locale?> loadLanguagePreference() async {
@@ -63,8 +70,7 @@ class LocalizationUtil {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.language,
-                    color: Colors.blueAccent),
+                leading: const Icon(Icons.language, color: Colors.blueAccent),
                 title: Text(
                   'English',
                   style: CustomStyle.smallText,
@@ -75,8 +81,7 @@ class LocalizationUtil {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.language,
-                    color: Colors.blueAccent),
+                leading: const Icon(Icons.language, color: Colors.blueAccent),
                 title: Text(
                   'العربية',
                   style: CustomStyle.smallText,

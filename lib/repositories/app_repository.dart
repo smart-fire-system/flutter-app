@@ -138,7 +138,8 @@ class AppRepository {
   AuthRepository get authRepository => _authRepository;
   SystemRepository get systemRepository => _systemRepository;
   ReportsRepository get reportsRepository => _reportsRepository;
-  NotificationsRepository get notificationsRepository => _notificationsRepository;
+  NotificationsRepository get notificationsRepository =>
+      _notificationsRepository;
 
   bool isUserReady() {
     return (_authChangeStatus == AuthChangeResult.noError &&

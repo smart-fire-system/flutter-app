@@ -19,6 +19,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Future<HomeState> getHomeState({AppMessage? message, String? error}) async {
       if (appRepository.authStatus == AuthStatus.notAuthenticated) {
         return HomeNotAuthenticated(message: message, error: error);
+      } else if (appRepository.userRole == null) {
+        return HomeLoading();
       } else {
         UserInfo userInfo = appRepository.userInfo;
         if (appRepository.authStatus == AuthStatus.authenticatedNotVerified ||
