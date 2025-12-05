@@ -1,14 +1,19 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
+import 'package:fire_alarm_system/utils/image_compress.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
+import 'package:firebase_storage/firebase_storage.dart';
 
 class UserRepository {
   final FirebaseFirestore _firestore;
+  final FirebaseStorage _storage;
   QuerySnapshot? usersSnapshot;
   QuerySnapshot? masterAdminsSnapshot;
   QuerySnapshot? adminsSnapshot;
@@ -19,23 +24,51 @@ class UserRepository {
   final AppRepository appRepository;
   Users users = Users();
   UserRepository({required this.appRepository})
-      : _firestore = FirebaseFirestore.instance;
+      : _firestore = FirebaseFirestore.instance,
+        _storage = FirebaseStorage.instance;
 
-  Future<void> updateInformation(
-      {required String name,
-      required String countryCode,
-      required String phoneNumber}) async {
+  Future<void> updateInformation({
+    required String name,
+    required String countryCode,
+    required String phoneNumber,
+    String? signatureUrl,
+  }) async {
     firebase.User? firebaseUser = firebase.FirebaseAuth.instance.currentUser;
     Map<String, dynamic> userData = {
       'name': name,
       'phoneNumber': phoneNumber,
       'countryCode': countryCode,
+      if (signatureUrl != null) 'signatureUrl': signatureUrl,
     };
     await firebaseUser!.updateDisplayName(name);
     await FirebaseFirestore.instance
         .collection('users')
         .doc(firebaseUser.uid)
         .update(userData);
+  }
+
+  Future<String> uploadSignatureImage(File pickedFile) async {
+    try {
+      final user = appRepository.userInfo;
+      Uint8List resizedImageData =
+          await AppImage.compressAndResizeImage(pickedFile);
+      final imageRef = _storage
+          .refFromURL('gs://smart-fire-system-app.firebasestorage.app')
+          .child('users')
+          .child('signatures')
+          .child('${user.id}.jpg');
+      await imageRef.putData(
+        resizedImageData,
+        SettableMetadata(contentType: 'image/jpeg'),
+      );
+      return await imageRef.getDownloadURL();
+    } catch (e) {
+      if (e is FirebaseException) {
+        throw Exception(e.code);
+      } else {
+        throw Exception(e.toString());
+      }
+    }
   }
 
   Future<void> addUserPermissions({

@@ -27,10 +27,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ChangeInfoRequested>((event, emit) async {
       emit(ProfileLoading(updatingData: true));
       try {
+        String? signatureUrl = event.signatureFile == null
+            ? null
+            : await appRepository.userRepository
+                .uploadSignatureImage(event.signatureFile!);
         await appRepository.userRepository.updateInformation(
           name: event.name,
           countryCode: event.countryCode,
           phoneNumber: event.phoneNumber,
+          signatureUrl: signatureUrl,
         );
         await appRepository.authRepository.refreshUserAuth();
         message = AppMessage(id: AppMessageId.profileInfoUpdated);

@@ -244,11 +244,10 @@ class AuthRepository {
         .get(const GetOptions(source: Source.server))
         .timeout(const Duration(seconds: 10));
     if (documentSnapshot.exists) {
-      userInfo.name = documentSnapshot.get('name');
-      userInfo.email = documentSnapshot.get('email');
-      userInfo.countryCode = documentSnapshot.get('countryCode');
-      userInfo.phoneNumber = documentSnapshot.get('phoneNumber');
-      userInfo.createdAt = documentSnapshot.get('createdAt');
+      userInfo = UserInfo.fromMap(
+        documentSnapshot.data() as Map<String, dynamic>,
+        documentSnapshot.id,
+      );
     } else {
       userInfo.name = googleUserName ?? user.displayName ?? "";
       userInfo.email = googleUserEmail ?? user.email ?? "";

@@ -13,6 +13,7 @@ class UserInfo {
   String email;
   String phoneNumber;
   String countryCode;
+  String signatureUrl;
   Timestamp? createdAt;
 
   UserInfo({
@@ -22,6 +23,7 @@ class UserInfo {
     this.email = "",
     this.countryCode = "",
     this.phoneNumber = "",
+    this.signatureUrl = "",
     this.createdAt,
   });
 
@@ -32,6 +34,7 @@ class UserInfo {
       'countryCode': countryCode,
       'phoneNumber': phoneNumber,
       'code': code,
+      'signatureUrl': signatureUrl,
     };
   }
 
@@ -44,6 +47,7 @@ class UserInfo {
       phoneNumber: map['phoneNumber'] as String,
       createdAt: map['createdAt'] as Timestamp,
       code: map['code'] as int,
+      signatureUrl: map['signatureUrl']?.toString() ?? "",
     );
   }
 

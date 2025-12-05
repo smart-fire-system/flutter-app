@@ -71,7 +71,8 @@ class ProfileScreenState extends State<ProfileScreen> {
         _buildRoleBasedPermissionsList(permissions, _user);
 
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).profile, leading: const Icon(Icons.person)),
+      appBar: CustomAppBar(
+          title: S.of(context).profile, leading: const Icon(Icons.person)),
       backgroundColor: Colors.grey[100],
       body: RefreshIndicator(
         onRefresh: () async {
@@ -146,7 +147,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const SizedBox(height: 24),
-                                const Icon(Icons.logout, color: Colors.red, size: 36),
+                                const Icon(Icons.logout,
+                                    color: Colors.red, size: 36),
                                 const SizedBox(height: 8),
                                 Text(
                                   S.of(context).logout,
@@ -172,7 +174,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       ListTile(
-                        leading: const Icon(Icons.email, color: Colors.blueGrey),
+                        leading:
+                            const Icon(Icons.email, color: Colors.blueGrey),
                         title: Text(S.of(context).email,
                             style: CustomStyle.smallText),
                         subtitle: Text(_userInfo.email,
@@ -180,12 +183,24 @@ class ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Divider(height: 1),
                       ListTile(
-                        leading: const Icon(Icons.phone, color: Colors.blueGrey),
+                        leading:
+                            const Icon(Icons.phone, color: Colors.blueGrey),
                         title: Text(S.of(context).phone,
                             style: CustomStyle.smallText),
                         subtitle: Text(
                             '$selectedCountryCode ${_userInfo.phoneNumber}',
                             style: CustomStyle.mediumTextB),
+                      ),
+                      ListTile(
+                        leading:
+                            const Icon(Icons.phone, color: Colors.blueGrey),
+                        title: Text('Signature', style: CustomStyle.smallText),
+                        subtitle: _userInfo.signatureUrl != ""
+                            ? Image.network(
+                                _userInfo.signatureUrl,
+                                width: 150,
+                              )
+                            : const Text('No signature added yet'),
                       ),
                     ],
                   ),
@@ -246,7 +261,7 @@ class ProfileScreenState extends State<ProfileScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          TabNavigator.home.currentState?.pushNamed(
+          TabNavigator.profile.currentState?.pushNamed(
             '/profile/update',
           );
         },

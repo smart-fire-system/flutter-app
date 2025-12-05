@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:fire_alarm_system/utils/enums.dart';
+import 'package:fire_alarm_system/utils/image_compress.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/button.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
@@ -29,6 +32,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
+  File? _newSignatureFile;
   UserInfo? info;
   String _countryCode = '+966';
 
@@ -59,6 +63,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               name: _nameController.text.trim(),
               countryCode: _countryCode,
               phoneNumber: _phoneController.text.trim(),
+              signatureFile: _newSignatureFile,
             ),
           );
     }
@@ -125,68 +130,206 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       },
       child: Scaffold(
         appBar: CustomAppBar(title: S.of(context).edit_information),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () => _onSave(),
-          backgroundColor: Colors.green,
-          tooltip: S.of(context).edit_information,
-          icon: const Icon(Icons.save),
-          label: Text(S.of(context).save_changes),
+        backgroundColor: Colors.grey[100],
+        bottomNavigationBar: BlocBuilder<ProfileBloc, ProfileState>(
+          builder: (context, state) {
+            final bool isUpdating =
+                state is ProfileLoading && state.updatingData;
+            return SafeArea(
+              child: CustomNormalButton(
+                label: S.of(context).save_changes,
+                icon: Icons.save,
+                backgroundColor: Colors.green,
+                fullWidth: true,
+                onPressed: isUpdating ? null : _onSave,
+              ),
+            );
+          },
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: ListView(
               children: [
-                const SizedBox(height: 24),
-                TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: S.of(context).name,
-                    prefixIcon: const Icon(Icons.person),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                // Personal info
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  validator: (value) =>
-                      DataValidator.validateName(context, value),
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  children: [
-                    CountryCodePicker(
-                      onChanged: (code) {
-                        setState(() {
-                          _countryCode = code.dialCode ?? '+966';
-                        });
-                      },
-                      initialSelection: _countryCode,
-                      favorite: const ['+966', 'SA'],
-                      showCountryOnly: false,
-                      showOnlyCountryWhenClosed: false,
-                      alignLeft: false,
-                      textStyle: CustomStyle.smallText,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextFormField(
-                        controller: _phoneController,
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                          labelText: S.of(context).phone,
-                          prefixIcon: const Icon(Icons.phone),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Personal information',
+                          style: CustomStyle.mediumTextB,
                         ),
-                        validator: (value) =>
-                            DataValidator.validatePhone(context, value),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                          controller: _nameController,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: S.of(context).name,
+                            prefixIcon: const Icon(Icons.person),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          validator: (value) =>
+                              DataValidator.validateName(context, value),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Contact
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Contact',
+                          style: CustomStyle.mediumTextB,
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Container(
+                              height: 56,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Theme.of(context).dividerColor,
+                                ),
+                                color: Colors.white,
+                              ),
+                              child: Center(
+                                child: CountryCodePicker(
+                                  onChanged: (code) {
+                                    setState(() {
+                                      _countryCode = code.dialCode ?? '+966';
+                                    });
+                                  },
+                                  initialSelection: _countryCode,
+                                  favorite: const ['+966', 'SA'],
+                                  showCountryOnly: false,
+                                  showOnlyCountryWhenClosed: false,
+                                  alignLeft: false,
+                                  textStyle: CustomStyle.smallText,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: TextFormField(
+                                controller: _phoneController,
+                                keyboardType: TextInputType.phone,
+                                textInputAction: TextInputAction.done,
+                                decoration: InputDecoration(
+                                  labelText: S.of(context).phone,
+                                  prefixIcon: const Icon(Icons.phone),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                validator: (value) =>
+                                    DataValidator.validatePhone(context, value),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Signature
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () async {
+                      final picked = await AppImage.pickImage();
+                      if (picked != null) {
+                        setState(() {
+                          _newSignatureFile = picked;
+                        });
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.edit_document,
+                                  color: Colors.blueGrey),
+                              const SizedBox(width: 8),
+                              Text('Signature', style: CustomStyle.smallTextB),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Container(
+                            width: double.infinity,
+                            constraints: const BoxConstraints(minHeight: 80),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Theme.of(context).dividerColor,
+                              ),
+                            ),
+                            padding: const EdgeInsets.all(12),
+                            child: _newSignatureFile != null
+                                ? Image.file(_newSignatureFile!, height: 80)
+                                : (info?.signatureUrl != "")
+                                    ? Image.network(
+                                        info?.signatureUrl ?? '',
+                                        height: 80,
+                                      )
+                                    : const Text('Tap to add your signature'),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-                CustomNormalButton(
-                  label: S.of(context).change_password,
-                  onPressed: _onResetPassword,
+                const SizedBox(height: 16),
+                // Security
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 4.0),
+                    child: CustomNormalButton(
+                      label: S.of(context).change_password,
+                      icon: Icons.lock_reset,
+                      onPressed: _onResetPassword,
+                      fullWidth: true,
+                    ),
+                  ),
                 ),
+                const SizedBox(height: 8),
               ],
             ),
           ),

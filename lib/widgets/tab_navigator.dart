@@ -157,7 +157,7 @@ class TabNavigator extends StatelessWidget {
       case AppTab.system:
         return const SystemScreen();
       case AppTab.reports:
-        return const ReportsAndContractsScreen();
+        return const ContractsScreen();
       case AppTab.usersAndBranches:
         return const UsersAndBranchesScreen();
       case AppTab.profile:
