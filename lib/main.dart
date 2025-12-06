@@ -19,9 +19,10 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+    await Firebase.initializeApp(
+      name: 'smart-fire-system-app',
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   await FirebaseAppCheck.instance.activate(
     //providerAndroid: const AndroidPlayIntegrityProvider(),
     providerAndroid: const AndroidDebugProvider(),

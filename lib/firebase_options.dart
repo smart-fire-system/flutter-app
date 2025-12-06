@@ -65,7 +65,7 @@ class DefaultFirebaseOptions {
     projectId: 'smart-fire-system-app',
     storageBucket: 'smart-fire-system-app.appspot.com',
     iosClientId: '808637869294-fb328bha1l8ntl2uld7obq97itbq0lff.apps.googleusercontent.com',
-    iosBundleId: 'com.example.fireAlarmSystem',
+    iosBundleId: 'com.erdwaz.fireAlarmSystem',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -75,7 +75,7 @@ class DefaultFirebaseOptions {
     projectId: 'smart-fire-system-app',
     storageBucket: 'smart-fire-system-app.appspot.com',
     iosClientId: '808637869294-fb328bha1l8ntl2uld7obq97itbq0lff.apps.googleusercontent.com',
-    iosBundleId: 'com.example.fireAlarmSystem',
+    iosBundleId: 'com.erdwaz.fireAlarmSystem',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
