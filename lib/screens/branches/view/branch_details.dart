@@ -118,7 +118,8 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
                 title: S.of(context).companyInformation,
                 icon: Icons.business_outlined,
                 onTap: () {
-                  TabNavigator.usersAndBranches.currentState?.pushNamed('/company/details',
+                  TabNavigator.usersAndBranches.currentState?.pushNamed(
+                      '/company/details',
                       arguments: _branch!.company.id);
                 },
                 children: [
@@ -167,6 +168,47 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
                     ),
                   ],
                 ),
+              CustomInfoCard(
+                title: 'First Party Information',
+                icon: Icons.person_outline,
+                children: [
+                  CustomInfoItem(
+                    title: 'Name',
+                    value: _branch!.contractFirstParty!.name,
+                  ),
+                  CustomInfoItem(
+                    title: 'Representative Name',
+                    value: _branch!.contractFirstParty!.repName,
+                  ),
+                  CustomInfoItem(
+                    title: 'Address',
+                    value: _branch!.contractFirstParty!.address,
+                  ),
+                  CustomInfoItem(
+                    title: 'Commercial Record',
+                    value: _branch!.contractFirstParty!.commercialRecord,
+                  ),
+                  CustomInfoItem(
+                    title: 'G',
+                    value: _branch!.contractFirstParty!.g,
+                  ),
+                  CustomInfoItem(
+                    title: 'ID Number',
+                    value: _branch!.contractFirstParty!.idNumber,
+                  ),
+                  CustomInfoItem(
+                    title: 'Signature',
+                    value: _branch!.contractFirstParty!.signatureUrl == ""
+                        ? 'No signature added yet'
+                        : '',
+                  ),
+                  if (_branch!.contractFirstParty!.signatureUrl != "")
+                    Image.network(
+                      _branch!.contractFirstParty!.signatureUrl,
+                      width: 150,
+                    ),
+                ],
+              ),
             ],
           ),
         ),

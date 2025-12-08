@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:card_loading/card_loading.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
@@ -5,6 +7,7 @@ import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
+import 'package:fire_alarm_system/utils/image_compress.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/button.dart';
 import 'package:fire_alarm_system/widgets/dropdown.dart';
@@ -37,6 +40,13 @@ class EditBranchScreenState extends State<EditBranchScreen> {
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
   late TextEditingController _commentController;
+  late TextEditingController _firstPartyNameController;
+  late TextEditingController _firstPartyRepNameController;
+  late TextEditingController _firstPartyAddressController;
+  late TextEditingController _firstPartyCommercialRecordController;
+  late TextEditingController _firstPartyGController;
+  late TextEditingController _firstPartyIdNumberController;
+  File? _firstPartySignatureFile;
   AppPermissions _permissions = AppPermissions();
   bool _isFirstCall = true;
   Branch? _branch;
@@ -54,6 +64,12 @@ class EditBranchScreenState extends State<EditBranchScreen> {
     _phoneController.dispose();
     _emailController.dispose();
     _commentController.dispose();
+    _firstPartyNameController.dispose();
+    _firstPartyRepNameController.dispose();
+    _firstPartyAddressController.dispose();
+    _firstPartyCommercialRecordController.dispose();
+    _firstPartyGController.dispose();
+    _firstPartyIdNumberController.dispose();
     super.dispose();
   }
 
@@ -65,7 +81,8 @@ class EditBranchScreenState extends State<EditBranchScreen> {
           context: context,
           screen: AppScreen.editBranches,
         );
-        if (state is BranchesAuthenticated && state.user.permissions.canEditBranches) {
+        if (state is BranchesAuthenticated &&
+            state.user.permissions.canEditBranches) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (state.error != null) {
               CustomAlert.showError(
@@ -106,6 +123,18 @@ class EditBranchScreenState extends State<EditBranchScreen> {
               _emailController = TextEditingController(text: _branch!.email);
               _commentController =
                   TextEditingController(text: _branch!.comment);
+              _firstPartyNameController = TextEditingController(
+                  text: _branch!.contractFirstParty!.name);
+              _firstPartyRepNameController = TextEditingController(
+                  text: _branch!.contractFirstParty!.repName);
+              _firstPartyAddressController = TextEditingController(
+                  text: _branch!.contractFirstParty!.address);
+              _firstPartyCommercialRecordController = TextEditingController(
+                  text: _branch!.contractFirstParty!.commercialRecord);
+              _firstPartyGController =
+                  TextEditingController(text: _branch!.contractFirstParty!.g);
+              _firstPartyIdNumberController = TextEditingController(
+                  text: _branch!.contractFirstParty!.idNumber);
             }
             return _buildEditor(context);
           }
@@ -183,6 +212,90 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                 controller: _commentController,
                 maxLines: 3,
               ),
+              CustomTextField(
+                label: 'First Party Name',
+                controller: _firstPartyNameController,
+              ),
+              CustomTextField(
+                label: 'First Party Representative Name',
+                controller: _firstPartyRepNameController,
+              ),
+              CustomTextField(
+                label: 'First Party Address',
+                controller: _firstPartyAddressController,
+              ),
+              CustomTextField(
+                label: 'First Party Commercial Record',
+                controller: _firstPartyCommercialRecordController,
+              ),
+              CustomTextField(
+                label: 'First Party G',
+                controller: _firstPartyGController,
+              ),
+              CustomTextField(
+                label: 'First Party ID Number',
+                controller: _firstPartyIdNumberController,
+              ),
+              Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 16.0),
+                    child: Container(
+                      width: double.infinity,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: GestureDetector(
+                          onTap: () async {
+                            final file = await AppImage.pickImage();
+                            if (file != null) {
+                              setState(() {
+                                _firstPartySignatureFile = file;
+                              });
+                            }
+                          },
+                          child: _firstPartySignatureFile != null
+                              ? Image.file(
+                                  _firstPartySignatureFile!,
+                                  width: 150,
+                                )
+                              : _branch!.contractFirstParty!.signatureUrl != ""
+                                  ? Image.network(
+                                      _branch!.contractFirstParty!.signatureUrl,
+                                      width: 150,
+                                    )
+                                  : Center(
+                                      child: Text(
+                                        'Tap to add your signature',
+                                        style: CustomStyle.mediumTextB,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 14,
+                    top: -3,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      color: Colors.white,
+                      child: Text(
+                        'First Party Signature',
+                        style: CustomStyle.smallTextBRed,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               if (_permissions.canDeleteBranches)
                 CustomNormalButton(
                   label: S.of(context).deleteBranch,
@@ -252,6 +365,18 @@ class EditBranchScreenState extends State<EditBranchScreen> {
         title: S.of(context).waitSavingBranch,
         type: 'edit',
       );
+
+      _branch!.contractFirstParty = ContractFirstParty(
+        name: _firstPartyNameController.text,
+        repName: _firstPartyRepNameController.text,
+        address: _firstPartyAddressController.text,
+        commercialRecord: _firstPartyCommercialRecordController.text,
+        g: _firstPartyGController.text,
+        idNumber: _firstPartyIdNumberController.text,
+        signatureUrl: _branch!.contractFirstParty == null
+            ? ''
+            : _branch!.contractFirstParty!.signatureUrl,
+      );
       context.read<BranchesBloc>().add(BranchModifyRequested(
             branch: Branch(
               id: _branch!.id,
@@ -261,7 +386,9 @@ class EditBranchScreenState extends State<EditBranchScreen> {
               email: _emailController.text,
               comment: _commentController.text,
               company: _branch!.company,
+              contractFirstParty: _branch!.contractFirstParty,
             ),
+            signatureFile: _firstPartySignatureFile,
           ));
     }
   }

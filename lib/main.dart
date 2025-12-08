@@ -16,13 +16,20 @@ import 'package:fire_alarm_system/screens/system/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'dart:io';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isIOS) {
     await Firebase.initializeApp(
       name: 'smart-fire-system-app',
       options: DefaultFirebaseOptions.currentPlatform,
     );
+  } else {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
   await FirebaseAppCheck.instance.activate(
     //providerAndroid: const AndroidPlayIntegrityProvider(),
     providerAndroid: const AndroidDebugProvider(),

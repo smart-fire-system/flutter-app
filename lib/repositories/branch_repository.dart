@@ -260,9 +260,9 @@ class BranchRepository {
         Branch branch;
         try {
           branch = Branch.fromMap(
-          map: doc.data() as Map<String, dynamic>,
-          branchId: doc.id,
-          company: company,
+            map: doc.data() as Map<String, dynamic>,
+            branchId: doc.id,
+            company: company,
           );
         } catch (e) {
           continue;
@@ -384,12 +384,40 @@ class BranchRepository {
     }
   }
 
-  Future<void> modifyBranch(Branch branch) async {
+  Future<void> modifyBranch(Branch branch, File? signatureFile) async {
     try {
+      if (signatureFile != null) {
+        branch.contractFirstParty!.signatureUrl =
+            await uploadBranchSignatureImage(branch.id!, signatureFile);
+      }
       await _firestore
           .collection('branches')
           .doc(branch.id)
           .update(branch.toMap());
+    } catch (e) {
+      if (e is FirebaseException) {
+        throw Exception(e.code);
+      } else {
+        throw Exception(e.toString());
+      }
+    }
+  }
+
+  Future<String> uploadBranchSignatureImage(
+      String branchId, File pickedFile) async {
+    try {
+      Uint8List resizedImageData =
+          await AppImage.compressAndResizeImage(pickedFile);
+      final imageRef = _storage
+          .refFromURL('gs://smart-fire-system-app.firebasestorage.app')
+          .child('branches')
+          .child('signatures')
+          .child('$branchId.jpg');
+      await imageRef.putData(
+        resizedImageData,
+        SettableMetadata(contentType: 'image/jpeg'),
+      );
+      return await imageRef.getDownloadURL();
     } catch (e) {
       if (e is FirebaseException) {
         throw Exception(e.code);

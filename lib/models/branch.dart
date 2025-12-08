@@ -85,6 +85,8 @@ class Branch {
       'phoneNumber': phoneNumber,
       'email': email,
       'comment': comment,
+      if (contractFirstParty != null)
+        'contractFirstParty': contractFirstParty!.toMap(),
     };
   }
 

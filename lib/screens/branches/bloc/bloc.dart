@@ -30,7 +30,7 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<BranchModifyRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
-        await appRepository.branchRepository.modifyBranch(event.branch);
+        await appRepository.branchRepository.modifyBranch(event.branch, event.signatureFile);
         message = BranchesMessage.branchModified;
       } catch (e) {
         add(Refresh(error: e.toString()));

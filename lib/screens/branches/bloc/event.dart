@@ -14,7 +14,8 @@ class Refresh extends BranchesEvent {
 
 class BranchModifyRequested extends BranchesEvent {
   Branch branch;
-  BranchModifyRequested({required this.branch});
+  File? signatureFile;
+  BranchModifyRequested({required this.branch, this.signatureFile});
 }
 
 class BranchAddRequested extends BranchesEvent {
