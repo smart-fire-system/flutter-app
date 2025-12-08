@@ -123,8 +123,8 @@ class EditBranchScreenState extends State<EditBranchScreen> {
               _emailController = TextEditingController(text: _branch!.email);
               _commentController =
                   TextEditingController(text: _branch!.comment);
-              _firstPartyNameController = TextEditingController(
-                  text: _branch!.contractFirstParty.name);
+              _firstPartyNameController =
+                  TextEditingController(text: _branch!.contractFirstParty.name);
               _firstPartyRepNameController = TextEditingController(
                   text: _branch!.contractFirstParty.repName);
               _firstPartyAddressController = TextEditingController(
@@ -245,36 +245,36 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                   const SizedBox(height: 16),
                   _buildSectionCard(
                     context,
-                    title: 'First Party Information',
+                    title: S.of(context).firstPartyInformation,
                     icon: Icons.person_outline,
                     children: [
                       CustomTextField(
-                        label: 'First Party Name',
+                        label: S.of(context).firstPartyName,
                         controller: _firstPartyNameController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: 'First Party Representative Name',
+                        label: S.of(context).firstPartyRepresentativeName,
                         controller: _firstPartyRepNameController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: 'First Party Address',
+                        label: S.of(context).firstPartyAddress,
                         controller: _firstPartyAddressController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: 'First Party Commercial Record',
+                        label: S.of(context).firstPartyCommercialRecord,
                         controller: _firstPartyCommercialRecordController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: 'First Party G',
+                        label: S.of(context).firstPartyG,
                         controller: _firstPartyGController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: 'First Party ID Number',
+                        label: S.of(context).firstPartyIdNumber,
                         controller: _firstPartyIdNumberController,
                       ),
                     ],
@@ -282,7 +282,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                   const SizedBox(height: 16),
                   _buildSectionCard(
                     context,
-                    title: 'First Party Signature',
+                    title: S.of(context).firstPartySignature,
                     icon: Icons.edit,
                     children: [
                       Container(
@@ -311,9 +311,8 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 if (_firstPartySignatureFile == null &&
-                                    (_branch!.contractFirstParty
-                                                .signatureUrl ==
-                                            "" ))
+                                    (_branch!.contractFirstParty.signatureUrl ==
+                                        ""))
                                   const Icon(Icons.cloud_upload_outlined),
                                 const SizedBox(width: 8),
                                 Expanded(
@@ -324,14 +323,19 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                                             width: 180,
                                             fit: BoxFit.contain,
                                           )
-                                        : _branch!.contractFirstParty.signatureUrl != ''
+                                        : _branch!.contractFirstParty
+                                                    .signatureUrl !=
+                                                ''
                                             ? Image.network(
-                                                _branch!.contractFirstParty.signatureUrl,
+                                                _branch!.contractFirstParty
+                                                    .signatureUrl,
                                                 width: 180,
                                                 fit: BoxFit.contain,
                                               )
                                             : Text(
-                                                'Tap to upload signature',
+                                                S
+                                                    .of(context)
+                                                    .tapToUploadSignature,
                                                 style: CustomStyle.mediumTextB,
                                                 textAlign: TextAlign.center,
                                               ),
@@ -348,7 +352,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                     const SizedBox(height: 16),
                     _buildSectionCard(
                       context,
-                      title: 'Actions',
+                      title: S.of(context).actions,
                       icon: Icons.warning_amber_rounded,
                       children: [
                         CustomNormalButton(

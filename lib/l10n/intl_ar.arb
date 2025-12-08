@@ -380,6 +380,24 @@
     "view_visit_report": "عرض تقرير الزيارة",
     "signature_confirm_dialog_body_visit_report": "بتأكيدك سيتم تسجيل توقيعك على تقرير الزيارة هذا. لا يمكن التراجع عن هذه العملية.",
     "visit_report_wait_client_sign_subtitle": "يرجى توقيع تقرير الزيارة للمتابعة.",
-    "visit_report_wait_other_client_sign_subtitle": "بانتظار توقيع العميل لإكمال تقرير الزيارة."
+    "visit_report_wait_other_client_sign_subtitle": "بانتظار توقيع العميل لإكمال تقرير الزيارة.",
+
+    "firstPartyInformation": "بيانات الطرف الأول",
+    "firstPartyName": "اسم الطرف الأول",
+    "firstPartyRepresentativeName": "اسم ممثل الطرف الأول",
+    "firstPartyAddress": "عنوان الطرف الأول",
+    "firstPartyCommercialRecord": "السجل التجاري للطرف الأول",
+    "firstPartyG": "الرقم الضريبي للطرف الأول",
+    "firstPartyIdNumber": "رقم هوية الطرف الأول",
+    "firstPartySignature": "توقيع الطرف الأول",
+    "tapToUploadSignature": "اضغط لرفع التوقيع",
+    "actions": "إجراءات",
+
+    "representativeName": "اسم الممثل",
+    "commercialRecord": "السجل التجاري",
+    "g": "الرقم الضريبي",
+    "idNumber": "رقم الهوية",
+    "signature": "التوقيع",
+    "noSignatureAddedYet": "لا يوجد توقيع مضاف بعد"
 
 }

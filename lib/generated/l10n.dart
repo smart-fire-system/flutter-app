@@ -3499,6 +3499,166 @@ class S {
       args: [],
     );
   }
+
+  /// `First Party Information`
+  String get firstPartyInformation {
+    return Intl.message(
+      'First Party Information',
+      name: 'firstPartyInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Party Name`
+  String get firstPartyName {
+    return Intl.message(
+      'First Party Name',
+      name: 'firstPartyName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Party Representative Name`
+  String get firstPartyRepresentativeName {
+    return Intl.message(
+      'First Party Representative Name',
+      name: 'firstPartyRepresentativeName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Party Address`
+  String get firstPartyAddress {
+    return Intl.message(
+      'First Party Address',
+      name: 'firstPartyAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Party Commercial Record`
+  String get firstPartyCommercialRecord {
+    return Intl.message(
+      'First Party Commercial Record',
+      name: 'firstPartyCommercialRecord',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Party G`
+  String get firstPartyG {
+    return Intl.message(
+      'First Party G',
+      name: 'firstPartyG',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Party ID Number`
+  String get firstPartyIdNumber {
+    return Intl.message(
+      'First Party ID Number',
+      name: 'firstPartyIdNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Party Signature`
+  String get firstPartySignature {
+    return Intl.message(
+      'First Party Signature',
+      name: 'firstPartySignature',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap to upload signature`
+  String get tapToUploadSignature {
+    return Intl.message(
+      'Tap to upload signature',
+      name: 'tapToUploadSignature',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Actions`
+  String get actions {
+    return Intl.message(
+      'Actions',
+      name: 'actions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Representative Name`
+  String get representativeName {
+    return Intl.message(
+      'Representative Name',
+      name: 'representativeName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Commercial Record`
+  String get commercialRecord {
+    return Intl.message(
+      'Commercial Record',
+      name: 'commercialRecord',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `G`
+  String get g {
+    return Intl.message(
+      'G',
+      name: 'g',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ID Number`
+  String get idNumber {
+    return Intl.message(
+      'ID Number',
+      name: 'idNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Signature`
+  String get signature {
+    return Intl.message(
+      'Signature',
+      name: 'signature',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No signature added yet`
+  String get noSignatureAddedYet {
+    return Intl.message(
+      'No signature added yet',
+      name: 'noSignatureAddedYet',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

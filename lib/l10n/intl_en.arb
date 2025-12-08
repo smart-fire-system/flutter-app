@@ -380,6 +380,24 @@
     "view_visit_report": "View Visit Report",
     "signature_confirm_dialog_body_visit_report": "By confirming, your signature will be recorded on this visit report. This action cannot be undone.",
     "visit_report_wait_client_sign_subtitle": "Please sign the visit report to proceed.",
-    "visit_report_wait_other_client_sign_subtitle": "Waiting for the client signature to complete the visit report."
+    "visit_report_wait_other_client_sign_subtitle": "Waiting for the client signature to complete the visit report.",
+
+    "firstPartyInformation": "First Party Information",
+    "firstPartyName": "First Party Name",
+    "firstPartyRepresentativeName": "First Party Representative Name",
+    "firstPartyAddress": "First Party Address",
+    "firstPartyCommercialRecord": "First Party Commercial Record",
+    "firstPartyG": "First Party G",
+    "firstPartyIdNumber": "First Party ID Number",
+    "firstPartySignature": "First Party Signature",
+    "tapToUploadSignature": "Tap to upload signature",
+    "actions": "Actions",
+
+    "representativeName": "Representative Name",
+    "commercialRecord": "Commercial Record",
+    "g": "G",
+    "idNumber": "ID Number",
+    "signature": "Signature",
+    "noSignatureAddedYet": "No signature added yet"
     
 }

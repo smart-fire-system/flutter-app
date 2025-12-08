@@ -169,37 +169,37 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
                   ],
                 ),
               CustomInfoCard(
-                title: 'First Party Information',
+                title: S.of(context).firstPartyInformation,
                 icon: Icons.person_outline,
                 children: [
                   CustomInfoItem(
-                    title: 'Name',
+                    title: S.of(context).name,
                     value: _branch!.contractFirstParty.name,
                   ),
                   CustomInfoItem(
-                    title: 'Representative Name',
+                    title: S.of(context).representativeName,
                     value: _branch!.contractFirstParty.repName,
                   ),
                   CustomInfoItem(
-                    title: 'Address',
+                    title: S.of(context).address,
                     value: _branch!.contractFirstParty.address,
                   ),
                   CustomInfoItem(
-                    title: 'Commercial Record',
+                    title: S.of(context).commercialRecord,
                     value: _branch!.contractFirstParty.commercialRecord,
                   ),
                   CustomInfoItem(
-                    title: 'G',
+                    title: S.of(context).g,
                     value: _branch!.contractFirstParty.g,
                   ),
                   CustomInfoItem(
-                    title: 'ID Number',
+                    title: S.of(context).idNumber,
                     value: _branch!.contractFirstParty.idNumber,
                   ),
                   CustomInfoItem(
-                    title: 'Signature',
+                    title: S.of(context).signature,
                     value: _branch!.contractFirstParty.signatureUrl == ""
-                        ? 'No signature added yet'
+                        ? S.of(context).noSignatureAddedYet
                         : '',
                   ),
                   if (_branch!.contractFirstParty.signatureUrl != "")

@@ -49,6 +49,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "حسابك غير مُفعّل. يرجى التحقق من بريدك الإلكتروني للحصول على رابط التفعيل."),
         "account_not_verified_title":
             MessageLookupByLibrary.simpleMessage("الحساب غير مُفعّل"),
+        "actions": MessageLookupByLibrary.simpleMessage("إجراءات"),
         "add": MessageLookupByLibrary.simpleMessage("إضافة"),
         "addCompany": MessageLookupByLibrary.simpleMessage("إضافة شركة جديدة"),
         "addNewAdmin": MessageLookupByLibrary.simpleMessage("إضافة مسئول جديد"),
@@ -130,6 +131,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "clients": MessageLookupByLibrary.simpleMessage("العملاء"),
         "code": MessageLookupByLibrary.simpleMessage("الكود"),
         "comment": MessageLookupByLibrary.simpleMessage("التعليقات"),
+        "commercialRecord":
+            MessageLookupByLibrary.simpleMessage("السجل التجاري"),
         "companies": MessageLookupByLibrary.simpleMessage("الشركات"),
         "companiesAndBranches":
             MessageLookupByLibrary.simpleMessage("الشركات والفروع"),
@@ -275,9 +278,27 @@ class MessageLookup extends MessageLookupByLibrary {
             "لا يمكن تنفيذ العملية بسبب شرط مسبق غير متحقق."),
         "feature_not_supported_yet":
             MessageLookupByLibrary.simpleMessage("الميزة غير مدعومة بعد"),
+        "firstPartyAddress":
+            MessageLookupByLibrary.simpleMessage("عنوان الطرف الأول"),
+        "firstPartyCommercialRecord":
+            MessageLookupByLibrary.simpleMessage("السجل التجاري للطرف الأول"),
+        "firstPartyG":
+            MessageLookupByLibrary.simpleMessage("الرقم الضريبي للطرف الأول"),
+        "firstPartyIdNumber":
+            MessageLookupByLibrary.simpleMessage("رقم هوية الطرف الأول"),
+        "firstPartyInformation":
+            MessageLookupByLibrary.simpleMessage("بيانات الطرف الأول"),
+        "firstPartyName":
+            MessageLookupByLibrary.simpleMessage("اسم الطرف الأول"),
+        "firstPartyRepresentativeName":
+            MessageLookupByLibrary.simpleMessage("اسم ممثل الطرف الأول"),
+        "firstPartySignature":
+            MessageLookupByLibrary.simpleMessage("توقيع الطرف الأول"),
         "forgot_password":
             MessageLookupByLibrary.simpleMessage("هل نسيت كلمة المرور؟"),
+        "g": MessageLookupByLibrary.simpleMessage("الرقم الضريبي"),
         "home": MessageLookupByLibrary.simpleMessage("الصفحة الرئيسية"),
+        "idNumber": MessageLookupByLibrary.simpleMessage("رقم الهوية"),
         "info_updated":
             MessageLookupByLibrary.simpleMessage("تم تعديل البيانات بنجاح"),
         "internal": MessageLookupByLibrary.simpleMessage(
@@ -382,6 +403,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "noRole": MessageLookupByLibrary.simpleMessage("بدون صلاحية وصول"),
         "noRoleUsers":
             MessageLookupByLibrary.simpleMessage("مستخدمون بدون صلاحية وصول"),
+        "noSignatureAddedYet":
+            MessageLookupByLibrary.simpleMessage("لا يوجد توقيع مضاف بعد"),
         "noUsersSelected":
             MessageLookupByLibrary.simpleMessage("لا يوجد مستخدمين تم تحديدهم"),
         "noUsersToView":
@@ -444,6 +467,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("عرض وإدارة التقارير والعقود"),
         "reports_contracts_title":
             MessageLookupByLibrary.simpleMessage("التقارير والعقود"),
+        "representativeName":
+            MessageLookupByLibrary.simpleMessage("اسم الممثل"),
         "requires_recent_login": MessageLookupByLibrary.simpleMessage(
             "يرجى تسجيل الدخول مجددًا لأسباب أمنية."),
         "resend_verification_email": MessageLookupByLibrary.simpleMessage(
@@ -487,6 +512,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "فشلت محاولة تسجيل الدخول. يرجى المحاولة مرة أخرى لاحقاً أو الاتصال بالدعم إذا استمرت المشكلة."),
         "sign_in_required": MessageLookupByLibrary.simpleMessage(
             "يجب تسجيل الدخول للمتابعة. يرجى تسجيل الدخول والمحاولة مرة أخرى."),
+        "signature": MessageLookupByLibrary.simpleMessage("التوقيع"),
         "signature_client_title":
             MessageLookupByLibrary.simpleMessage("توقيع العميل"),
         "signature_confirm_dialog_body": MessageLookupByLibrary.simpleMessage(
@@ -532,6 +558,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("إضغط لاضافة شعار للشركة"),
         "tapToSelectUser":
             MessageLookupByLibrary.simpleMessage("اضغط لاختيار مستخدم"),
+        "tapToUploadSignature":
+            MessageLookupByLibrary.simpleMessage("اضغط لرفع التوقيع"),
         "tenant_id_mismatch":
             MessageLookupByLibrary.simpleMessage("معرف المستأجر غير متطابق."),
         "too_many_requests": MessageLookupByLibrary.simpleMessage(

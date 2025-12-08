@@ -212,36 +212,36 @@ class AddBranchScreenState extends State<AddBranchScreen> {
                   const SizedBox(height: 16),
                   _buildSectionCard(
                     context,
-                    title: 'First Party Information',
+                    title: S.of(context).firstPartyInformation,
                     icon: Icons.person_outline,
                     children: [
                       CustomTextField(
-                        label: 'First Party Name',
+                        label: S.of(context).firstPartyName,
                         controller: _firstPartyNameController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: 'First Party Representative Name',
+                        label: S.of(context).firstPartyRepresentativeName,
                         controller: _firstPartyRepNameController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: 'First Party Address',
+                        label: S.of(context).firstPartyAddress,
                         controller: _firstPartyAddressController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: 'First Party Commercial Record',
+                        label: S.of(context).firstPartyCommercialRecord,
                         controller: _firstPartyCommercialRecordController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: 'First Party G',
+                        label: S.of(context).firstPartyG,
                         controller: _firstPartyGController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: 'First Party ID Number',
+                        label: S.of(context).firstPartyIdNumber,
                         controller: _firstPartyIdNumberController,
                       ),
                     ],
@@ -249,7 +249,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
                   const SizedBox(height: 16),
                   _buildSectionCard(
                     context,
-                    title: 'First Party Signature',
+                    title: S.of(context).firstPartySignature,
                     icon: Icons.edit,
                     children: [
                       Container(
@@ -289,7 +289,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
                                             fit: BoxFit.contain,
                                           )
                                         : Text(
-                                            'Tap to upload signature',
+                                            S.of(context).tapToUploadSignature,
                                             style: CustomStyle.mediumTextB,
                                             textAlign: TextAlign.center,
                                           ),

@@ -48,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Your account is not verified. Please check your email for the verification link."),
         "account_not_verified_title":
             MessageLookupByLibrary.simpleMessage("Account Not Verified"),
+        "actions": MessageLookupByLibrary.simpleMessage("Actions"),
         "add": MessageLookupByLibrary.simpleMessage("Add"),
         "addBranch": MessageLookupByLibrary.simpleMessage("Add New Branch"),
         "addCompany": MessageLookupByLibrary.simpleMessage("Add New Company"),
@@ -138,6 +139,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "clients": MessageLookupByLibrary.simpleMessage("Clients"),
         "code": MessageLookupByLibrary.simpleMessage("Code"),
         "comment": MessageLookupByLibrary.simpleMessage("Comment"),
+        "commercialRecord":
+            MessageLookupByLibrary.simpleMessage("Commercial Record"),
         "companies": MessageLookupByLibrary.simpleMessage("Companies"),
         "companiesAndBranches":
             MessageLookupByLibrary.simpleMessage("Companies and Branches"),
@@ -285,9 +288,26 @@ class MessageLookup extends MessageLookupByLibrary {
             "The operation cannot be performed due to failed precondition."),
         "feature_not_supported_yet":
             MessageLookupByLibrary.simpleMessage("Feature not supported yet"),
+        "firstPartyAddress":
+            MessageLookupByLibrary.simpleMessage("First Party Address"),
+        "firstPartyCommercialRecord": MessageLookupByLibrary.simpleMessage(
+            "First Party Commercial Record"),
+        "firstPartyG": MessageLookupByLibrary.simpleMessage("First Party G"),
+        "firstPartyIdNumber":
+            MessageLookupByLibrary.simpleMessage("First Party ID Number"),
+        "firstPartyInformation":
+            MessageLookupByLibrary.simpleMessage("First Party Information"),
+        "firstPartyName":
+            MessageLookupByLibrary.simpleMessage("First Party Name"),
+        "firstPartyRepresentativeName": MessageLookupByLibrary.simpleMessage(
+            "First Party Representative Name"),
+        "firstPartySignature":
+            MessageLookupByLibrary.simpleMessage("First Party Signature"),
         "forgot_password":
             MessageLookupByLibrary.simpleMessage("Forgot your password?"),
+        "g": MessageLookupByLibrary.simpleMessage("G"),
         "home": MessageLookupByLibrary.simpleMessage("Home"),
+        "idNumber": MessageLookupByLibrary.simpleMessage("ID Number"),
         "info_updated": MessageLookupByLibrary.simpleMessage(
             "Profile info updated successfully"),
         "internal": MessageLookupByLibrary.simpleMessage(
@@ -392,6 +412,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("No companies to view"),
         "noRole": MessageLookupByLibrary.simpleMessage("No Role"),
         "noRoleUsers": MessageLookupByLibrary.simpleMessage("No Role Users"),
+        "noSignatureAddedYet":
+            MessageLookupByLibrary.simpleMessage("No signature added yet"),
         "noUsersSelected":
             MessageLookupByLibrary.simpleMessage("No users selected"),
         "noUsersToView":
@@ -454,6 +476,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "View and manage reports & contracts"),
         "reports_contracts_title":
             MessageLookupByLibrary.simpleMessage("Reports & Contracts"),
+        "representativeName":
+            MessageLookupByLibrary.simpleMessage("Representative Name"),
         "requires_recent_login": MessageLookupByLibrary.simpleMessage(
             "For security purposes, please log in again to continue."),
         "resend_verification_email":
@@ -497,6 +521,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "The sign-in attempt has failed. Please try again later or contact support if the issue persists."),
         "sign_in_required": MessageLookupByLibrary.simpleMessage(
             "You need to sign in to proceed. Please sign in and try again."),
+        "signature": MessageLookupByLibrary.simpleMessage("Signature"),
         "signature_client_title":
             MessageLookupByLibrary.simpleMessage("Client Signature"),
         "signature_confirm_dialog_body": MessageLookupByLibrary.simpleMessage(
@@ -545,6 +570,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Tab to add company logo"),
         "tapToSelectUser":
             MessageLookupByLibrary.simpleMessage("Tap to select a user"),
+        "tapToUploadSignature":
+            MessageLookupByLibrary.simpleMessage("Tap to upload signature"),
         "tenant_id_mismatch": MessageLookupByLibrary.simpleMessage(
             "The tenant ID does not match the expected value."),
         "too_many_requests": MessageLookupByLibrary.simpleMessage(
