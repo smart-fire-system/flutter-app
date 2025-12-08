@@ -387,7 +387,7 @@ class BranchRepository {
   Future<void> modifyBranch(Branch branch, File? signatureFile) async {
     try {
       if (signatureFile != null) {
-        branch.contractFirstParty!.signatureUrl =
+        branch.contractFirstParty.signatureUrl =
             await uploadBranchSignatureImage(branch.id!, signatureFile);
       }
       await _firestore
@@ -445,7 +445,7 @@ class BranchRepository {
     }
   }
 
-  Future<String> addBranch(Branch branch) async {
+  Future<String> addBranch(Branch branch, File? signatureFile) async {
     try {
       final docSnapshot =
           await _firestore.collection('info').doc('maxBranchCode').get();
@@ -457,6 +457,14 @@ class BranchRepository {
         'code': docSnapshot.data()?['value'] + 1,
         'createdAt': FieldValue.serverTimestamp(),
         ...branch.toMap(),
+      });
+      if (signatureFile != null) {
+        branch.contractFirstParty.signatureUrl =
+            await uploadBranchSignatureImage(branchRef.id, signatureFile);
+      }
+      await _firestore.collection('branches').doc(branchRef.id).update({
+        'contractFirstParty.signatureUrl':
+            branch.contractFirstParty.signatureUrl
       });
       return branchRef.id;
     } catch (e) {

@@ -20,7 +20,8 @@ class BranchModifyRequested extends BranchesEvent {
 
 class BranchAddRequested extends BranchesEvent {
   Branch branch;
-  BranchAddRequested({required this.branch});
+  File? signatureFile;
+  BranchAddRequested({required this.branch, this.signatureFile});
 }
 
 class BranchDeleteRequested extends BranchesEvent {

@@ -41,7 +41,7 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
       emit(BranchesLoading());
       try {
         createdId =
-            await appRepository.branchRepository.addBranch(event.branch);
+            await appRepository.branchRepository.addBranch(event.branch, event.signatureFile);
         message = BranchesMessage.branchAdded;
       } catch (e) {
         add(Refresh(error: e.toString()));

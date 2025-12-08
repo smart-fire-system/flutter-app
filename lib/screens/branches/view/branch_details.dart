@@ -174,37 +174,37 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
                 children: [
                   CustomInfoItem(
                     title: 'Name',
-                    value: _branch!.contractFirstParty!.name,
+                    value: _branch!.contractFirstParty.name,
                   ),
                   CustomInfoItem(
                     title: 'Representative Name',
-                    value: _branch!.contractFirstParty!.repName,
+                    value: _branch!.contractFirstParty.repName,
                   ),
                   CustomInfoItem(
                     title: 'Address',
-                    value: _branch!.contractFirstParty!.address,
+                    value: _branch!.contractFirstParty.address,
                   ),
                   CustomInfoItem(
                     title: 'Commercial Record',
-                    value: _branch!.contractFirstParty!.commercialRecord,
+                    value: _branch!.contractFirstParty.commercialRecord,
                   ),
                   CustomInfoItem(
                     title: 'G',
-                    value: _branch!.contractFirstParty!.g,
+                    value: _branch!.contractFirstParty.g,
                   ),
                   CustomInfoItem(
                     title: 'ID Number',
-                    value: _branch!.contractFirstParty!.idNumber,
+                    value: _branch!.contractFirstParty.idNumber,
                   ),
                   CustomInfoItem(
                     title: 'Signature',
-                    value: _branch!.contractFirstParty!.signatureUrl == ""
+                    value: _branch!.contractFirstParty.signatureUrl == ""
                         ? 'No signature added yet'
                         : '',
                   ),
-                  if (_branch!.contractFirstParty!.signatureUrl != "")
+                  if (_branch!.contractFirstParty.signatureUrl != "")
                     Image.network(
-                      _branch!.contractFirstParty!.signatureUrl,
+                      _branch!.contractFirstParty.signatureUrl,
                       width: 150,
                     ),
                 ],

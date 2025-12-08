@@ -327,22 +327,22 @@ class _NewContractScreenState extends State<NewContractScreen> {
       if (paramType == StringParameter) {
         if (paramName == 'paramFirstPartyName') {
           paramValues[paramName].value =
-              _employee!.branch.contractFirstParty!.name;
+              _employee!.branch.contractFirstParty.name;
         } else if (paramName == 'paramFirstPartyCommNumber') {
           paramValues[paramName].value =
-              _employee!.branch.contractFirstParty!.commercialRecord;
+              _employee!.branch.contractFirstParty.commercialRecord;
         } else if (paramName == 'paramFirstPartyAddress') {
           paramValues[paramName].value =
-              _employee!.branch.contractFirstParty!.address;
+              _employee!.branch.contractFirstParty.address;
         } else if (paramName == 'paramFirstPartyRep') {
           paramValues[paramName].value =
-              _employee!.branch.contractFirstParty!.repName;
+              _employee!.branch.contractFirstParty.repName;
         } else if (paramName == 'paramFirstPartyRepIdNumber') {
           paramValues[paramName].value =
-              _employee!.branch.contractFirstParty!.idNumber;
+              _employee!.branch.contractFirstParty.idNumber;
         } else if (paramName == 'paramFirstPartyG') {
           paramValues[paramName].value =
-              _employee!.branch.contractFirstParty!.g;
+              _employee!.branch.contractFirstParty.g;
         }
         widget = GrowingTextField(
           value: paramValues[paramName].text,
@@ -564,16 +564,16 @@ class _NewContractScreenState extends State<NewContractScreen> {
     _contractComponents = state.contractComponents!;
     _contractCategories = state.contractCategories!;
     _contractData.paramFirstPartyName =
-        _employee!.branch.contractFirstParty!.name;
+        _employee!.branch.contractFirstParty.name;
     _contractData.paramFirstPartyCommNumber =
-        _employee!.branch.contractFirstParty!.commercialRecord;
+        _employee!.branch.contractFirstParty.commercialRecord;
     _contractData.paramFirstPartyAddress =
-        _employee!.branch.contractFirstParty!.address;
+        _employee!.branch.contractFirstParty.address;
     _contractData.paramFirstPartyRep =
-        _employee!.branch.contractFirstParty!.repName;
+        _employee!.branch.contractFirstParty.repName;
     _contractData.paramFirstPartyRepIdNumber =
-        _employee!.branch.contractFirstParty!.idNumber;
-    _contractData.paramFirstPartyG = _employee!.branch.contractFirstParty!.g;
+        _employee!.branch.contractFirstParty.idNumber;
+    _contractData.paramFirstPartyG = _employee!.branch.contractFirstParty.g;
 
     return Padding(
       padding: const EdgeInsets.all(16.0),

@@ -224,13 +224,13 @@ class ExportPdf {
         final empCode = (contract.metaData.employee?.info.code ?? 0).toString();
         final cliCode = (contract.metaData.client?.info.code ?? 0).toString();
         final empSubtitle =
-            contract.metaData.employee?.branch.contractFirstParty?.name ?? '';
+            contract.metaData.employee?.branch.contractFirstParty.name ?? '';
         final cliSubtitle = contract.metaData.client?.info.name ?? '';
         pw.ImageProvider? empSigImage; // Omitted to keep export synchronous
         try {
           final resp = await http
               .get(Uri.parse(contract.metaData.employee?.branch
-                      .contractFirstParty?.signatureUrl ??
+                      .contractFirstParty.signatureUrl ??
                   ''))
               .timeout(const Duration(seconds: 10));
           if (resp.statusCode == 200) {

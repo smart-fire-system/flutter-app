@@ -31,15 +31,15 @@ class ContractFirstParty {
     };
   }
 
-  factory ContractFirstParty.fromMap(Map<String, dynamic> map) {
+  factory ContractFirstParty.fromMap(Map<String, dynamic>? map) {
     return ContractFirstParty(
-      name: map['name'],
-      repName: map['repName'],
-      address: map['address'],
-      commercialRecord: map['commercialRecord'],
-      g: map['g'],
-      idNumber: map['idNumber'],
-      signatureUrl: map['signatureUrl'],
+      name: map?['name'] ?? '',
+      repName: map?['repName'] ?? '',
+      address: map?['address'] ?? '',
+      commercialRecord: map?['commercialRecord'] ?? '',
+      g: map?['g'] ?? '',
+      idNumber: map?['idNumber'] ?? '',
+      signatureUrl: map?['signatureUrl'] ?? '',
     );
   }
 }
@@ -54,13 +54,13 @@ class Branch {
   String comment;
   Timestamp? createdAt;
   Company company;
-  ContractFirstParty? contractFirstParty;
+  ContractFirstParty contractFirstParty;
 
   Branch({
     this.id,
     this.code,
     this.createdAt,
-    this.contractFirstParty,
+    required this.contractFirstParty,
     required this.company,
     required this.name,
     required this.address,
@@ -85,8 +85,7 @@ class Branch {
       'phoneNumber': phoneNumber,
       'email': email,
       'comment': comment,
-      if (contractFirstParty != null)
-        'contractFirstParty': contractFirstParty!.toMap(),
+      'contractFirstParty': contractFirstParty.toMap(),
     };
   }
 
@@ -120,9 +119,7 @@ class Branch {
       email: map['email'],
       comment: map['comment'],
       createdAt: map['createdAt'],
-      contractFirstParty: map['contractFirstParty'] != null
-          ? ContractFirstParty.fromMap(map['contractFirstParty'])
-          : null,
+      contractFirstParty: ContractFirstParty.fromMap(map['contractFirstParty']),
     );
   }
 }

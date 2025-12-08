@@ -29,11 +29,11 @@ class SignatureHelper {
                     context: context,
                     title: 'الطرف الأول',
                     subtitle: contract.metaData.employee?.branch
-                            .contractFirstParty?.name ??
+                            .contractFirstParty.name ??
                         '',
                     signature: contract.metaData.employeeSignature,
                     signatureUrl: contract.metaData.employee?.branch
-                        .contractFirstParty?.signatureUrl,
+                        .contractFirstParty.signatureUrl,
                   ),
                   const SizedBox(width: 12),
                   buildSignatureBox(
@@ -73,11 +73,11 @@ class SignatureHelper {
                     context: context,
                     title: 'إدارة العمليات – القسم الفني - الصيانة',
                     subtitle: visitReport.contractMetaData.employee?.branch
-                            .contractFirstParty?.name ??
+                            .contractFirstParty.name ??
                         '',
                     signature: visitReport.employeeSignature,
                     signatureUrl: visitReport.contractMetaData.employee?.branch
-                        .contractFirstParty?.signatureUrl,
+                        .contractFirstParty.signatureUrl,
                   ),
                   const SizedBox(width: 12),
                   buildSignatureBox(

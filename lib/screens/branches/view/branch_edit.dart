@@ -124,17 +124,17 @@ class EditBranchScreenState extends State<EditBranchScreen> {
               _commentController =
                   TextEditingController(text: _branch!.comment);
               _firstPartyNameController = TextEditingController(
-                  text: _branch!.contractFirstParty!.name);
+                  text: _branch!.contractFirstParty.name);
               _firstPartyRepNameController = TextEditingController(
-                  text: _branch!.contractFirstParty!.repName);
+                  text: _branch!.contractFirstParty.repName);
               _firstPartyAddressController = TextEditingController(
-                  text: _branch!.contractFirstParty!.address);
+                  text: _branch!.contractFirstParty.address);
               _firstPartyCommercialRecordController = TextEditingController(
-                  text: _branch!.contractFirstParty!.commercialRecord);
+                  text: _branch!.contractFirstParty.commercialRecord);
               _firstPartyGController =
-                  TextEditingController(text: _branch!.contractFirstParty!.g);
+                  TextEditingController(text: _branch!.contractFirstParty.g);
               _firstPartyIdNumberController = TextEditingController(
-                  text: _branch!.contractFirstParty!.idNumber);
+                  text: _branch!.contractFirstParty.idNumber);
             }
             return _buildEditor(context);
           }
@@ -166,93 +166,137 @@ class EditBranchScreenState extends State<EditBranchScreen> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              CustomTextField(
-                label: S.of(context).branchName,
-                controller: _nameController,
-              ),
-              CustomTextField(
-                label: S.of(context).address,
-                controller: _addressController,
-              ),
-              CustomTextField(
-                label: S.of(context).phone,
-                controller: _phoneController,
-                inputType: TextInputType.phone,
-              ),
-              CustomTextField(
-                label: S.of(context).email,
-                controller: _emailController,
-                inputType: TextInputType.emailAddress,
-              ),
-              CustomDropdownSingle(
-                title: S.of(context).company,
-                subtitle: S.of(context).changeCompany,
-                initialItem: CustomDropdownItem(
-                  title: _branch!.company.name,
-                  value: _branch!.company.id!,
-                ),
-                items: _companies.map((company) {
-                  return CustomDropdownItem(
-                    title: company.name,
-                    value: company.id!,
-                  );
-                }).toList(),
-                onChanged: (newCompany) {
-                  _branch!.company = _companies
-                      .firstWhere((company) => company.id == newCompany.value);
-                },
-              ),
-              CustomTextField(
-                label: S.of(context).comment,
-                controller: _commentController,
-                maxLines: 3,
-              ),
-              CustomTextField(
-                label: 'First Party Name',
-                controller: _firstPartyNameController,
-              ),
-              CustomTextField(
-                label: 'First Party Representative Name',
-                controller: _firstPartyRepNameController,
-              ),
-              CustomTextField(
-                label: 'First Party Address',
-                controller: _firstPartyAddressController,
-              ),
-              CustomTextField(
-                label: 'First Party Commercial Record',
-                controller: _firstPartyCommercialRecordController,
-              ),
-              CustomTextField(
-                label: 'First Party G',
-                controller: _firstPartyGController,
-              ),
-              CustomTextField(
-                label: 'First Party ID Number',
-                controller: _firstPartyIdNumberController,
-              ),
-              Stack(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 900),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 16.0),
-                    child: Container(
-                      width: double.infinity,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 1.0,
-                        ),
+                  _buildSectionCard(
+                    context,
+                    title: S.of(context).branchInformation,
+                    icon: Icons.info_outline,
+                    children: [
+                      CustomTextField(
+                        label: S.of(context).branchName,
+                        controller: _nameController,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: GestureDetector(
+                      const SizedBox(height: 12),
+                      CustomTextField(
+                        label: S.of(context).address,
+                        controller: _addressController,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSectionCard(
+                    context,
+                    title: S.of(context).contactInformation,
+                    icon: Icons.contact_phone_outlined,
+                    children: [
+                      CustomTextField(
+                        label: S.of(context).phone,
+                        controller: _phoneController,
+                        inputType: TextInputType.phone,
+                      ),
+                      const SizedBox(height: 12),
+                      CustomTextField(
+                        label: S.of(context).email,
+                        controller: _emailController,
+                        inputType: TextInputType.emailAddress,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSectionCard(
+                    context,
+                    title: S.of(context).companyInformation,
+                    icon: Icons.business_outlined,
+                    children: [
+                      CustomDropdownSingle(
+                        title: S.of(context).company,
+                        subtitle: S.of(context).changeCompany,
+                        initialItem: CustomDropdownItem(
+                          title: _branch!.company.name,
+                          value: _branch!.company.id!,
+                        ),
+                        items: _companies.map((company) {
+                          return CustomDropdownItem(
+                            title: company.name,
+                            value: company.id!,
+                          );
+                        }).toList(),
+                        onChanged: (newCompany) {
+                          _branch!.company = _companies.firstWhere(
+                              (company) => company.id == newCompany.value);
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      CustomTextField(
+                        label: S.of(context).comment,
+                        controller: _commentController,
+                        maxLines: 3,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSectionCard(
+                    context,
+                    title: 'First Party Information',
+                    icon: Icons.person_outline,
+                    children: [
+                      CustomTextField(
+                        label: 'First Party Name',
+                        controller: _firstPartyNameController,
+                      ),
+                      const SizedBox(height: 12),
+                      CustomTextField(
+                        label: 'First Party Representative Name',
+                        controller: _firstPartyRepNameController,
+                      ),
+                      const SizedBox(height: 12),
+                      CustomTextField(
+                        label: 'First Party Address',
+                        controller: _firstPartyAddressController,
+                      ),
+                      const SizedBox(height: 12),
+                      CustomTextField(
+                        label: 'First Party Commercial Record',
+                        controller: _firstPartyCommercialRecordController,
+                      ),
+                      const SizedBox(height: 12),
+                      CustomTextField(
+                        label: 'First Party G',
+                        controller: _firstPartyGController,
+                      ),
+                      const SizedBox(height: 12),
+                      CustomTextField(
+                        label: 'First Party ID Number',
+                        controller: _firstPartyIdNumberController,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSectionCard(
+                    context,
+                    title: 'First Party Signature',
+                    icon: Icons.edit,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          border: Border.all(
+                            color: Colors.grey.shade400,
+                            width: 1.0,
+                          ),
+                        ),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(8.0),
                           onTap: () async {
                             final file = await AppImage.pickImage();
                             if (file != null) {
@@ -261,52 +305,99 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                               });
                             }
                           },
-                          child: _firstPartySignatureFile != null
-                              ? Image.file(
-                                  _firstPartySignatureFile!,
-                                  width: 150,
-                                )
-                              : _branch!.contractFirstParty!.signatureUrl != ""
-                                  ? Image.network(
-                                      _branch!.contractFirstParty!.signatureUrl,
-                                      width: 150,
-                                    )
-                                  : Center(
-                                      child: Text(
-                                        'Tap to add your signature',
-                                        style: CustomStyle.mediumTextB,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (_firstPartySignatureFile == null &&
+                                    (_branch!.contractFirstParty
+                                                .signatureUrl ==
+                                            "" ))
+                                  const Icon(Icons.cloud_upload_outlined),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Center(
+                                    child: _firstPartySignatureFile != null
+                                        ? Image.file(
+                                            _firstPartySignatureFile!,
+                                            width: 180,
+                                            fit: BoxFit.contain,
+                                          )
+                                        : _branch!.contractFirstParty.signatureUrl != ''
+                                            ? Image.network(
+                                                _branch!.contractFirstParty.signatureUrl,
+                                                width: 180,
+                                                fit: BoxFit.contain,
+                                              )
+                                            : Text(
+                                                'Tap to upload signature',
+                                                style: CustomStyle.mediumTextB,
+                                                textAlign: TextAlign.center,
+                                              ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                  Positioned(
-                    left: 14,
-                    top: -3,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                      color: Colors.white,
-                      child: Text(
-                        'First Party Signature',
-                        style: CustomStyle.smallTextBRed,
-                      ),
+                  if (_permissions.canDeleteBranches) ...[
+                    const SizedBox(height: 16),
+                    _buildSectionCard(
+                      context,
+                      title: 'Actions',
+                      icon: Icons.warning_amber_rounded,
+                      children: [
+                        CustomNormalButton(
+                          label: S.of(context).deleteBranch,
+                          backgroundColor: CustomStyle.redDark,
+                          fullWidth: true,
+                          onPressed: () {
+                            _deleteBranch(context);
+                          },
+                        ),
+                      ],
                     ),
-                  ),
+                  ],
+                  const SizedBox(height: 80),
                 ],
               ),
-              if (_permissions.canDeleteBranches)
-                CustomNormalButton(
-                  label: S.of(context).deleteBranch,
-                  backgroundColor: CustomStyle.redDark,
-                  fullWidth: true,
-                  onPressed: () {
-                    _deleteBranch(context);
-                  },
-                )
-            ],
+            ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionCard(
+    BuildContext context, {
+    required String title,
+    required List<Widget> children,
+    IconData? icon,
+  }) {
+    return Card(
+      elevation: 0.5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                if (icon != null) ...[
+                  Icon(icon, color: CustomStyle.redDark),
+                  const SizedBox(width: 8),
+                ],
+                Text(title, style: CustomStyle.smallTextB),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ...children,
+          ],
         ),
       ),
     );
@@ -373,9 +464,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
         commercialRecord: _firstPartyCommercialRecordController.text,
         g: _firstPartyGController.text,
         idNumber: _firstPartyIdNumberController.text,
-        signatureUrl: _branch!.contractFirstParty == null
-            ? ''
-            : _branch!.contractFirstParty!.signatureUrl,
+        signatureUrl: _branch!.contractFirstParty.signatureUrl,
       );
       context.read<BranchesBloc>().add(BranchModifyRequested(
             branch: Branch(
