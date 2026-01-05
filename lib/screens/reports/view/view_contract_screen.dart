@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
+import 'package:fire_alarm_system/screens/reports/view/emergency_visits_screen.dart';
 import 'package:fire_alarm_system/screens/reports/view/visit_reports_screen.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -608,8 +609,11 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
           subtitle: S.of(context).emergency_visits_subtitle,
           color: CustomStyle.redDark,
           backgroundColor: Colors.grey.withValues(alpha: 0.1),
-          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(S.of(context).feature_not_supported_yet)),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) =>
+                  EmergencyVisitsScreen(contractId: widget.contractId),
+            ),
           ),
         ),
         const SizedBox(height: 16),

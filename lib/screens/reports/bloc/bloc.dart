@@ -16,6 +16,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
           contractItems: ReportsTemplate.getContractItems(
               appRepository.reportsRepository.contractCategories ?? []),
           visitReports: appRepository.reportsRepository.visitReports,
+          emergencyVisits: appRepository.reportsRepository.emergencyVisits,
           contractCategories:
               appRepository.reportsRepository.contractCategories,
           contractComponents:
@@ -88,6 +89,13 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       await appRepository.reportsRepository
           .setSharedWith(event.contractId, event.sharedWith);
       message = ReportsMessage.sharedWithUpdated;
+    });
+
+    on<RequestEmergencyVisitRequested>((event, emit) async {
+      emit(ReportsLoading());
+      await appRepository.reportsRepository.requestEmergencyVisit(
+          contractId: event.contractId, comment: event.comment);
+      message = ReportsMessage.emergencyVisitRequested;
     });
   }
 }

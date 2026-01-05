@@ -29,11 +29,13 @@ class CommentData {
 
   factory CommentData.fromMap(Map<String, dynamic> map) {
     return CommentData(
-      id: map['id'],
-      userId: map['userId'],
-      emergencyVisitId: map['emergencyVisitId'],
-      comment: map['comment'],
-      createdAt: map['createdAt'],
+      id: map['id']?.toString() ?? '',
+      userId: map['userId']?.toString() ?? '',
+      emergencyVisitId: map['emergencyVisitId']?.toString() ?? '',
+      comment: map['comment']?.toString() ?? '',
+      createdAt: (map['createdAt'] is Timestamp)
+          ? map['createdAt'] as Timestamp
+          : Timestamp.now(),
     );
   }
 }
@@ -79,15 +81,28 @@ class EmergencyVisitData {
   }
 
   factory EmergencyVisitData.fromMap(Map<String, dynamic> map) {
+    final rawComments = map['comments'];
+    final List<CommentData> parsedComments = (rawComments is List)
+        ? rawComments
+            .whereType<Map>()
+            .map((c) => CommentData.fromMap(c.cast<String, dynamic>()))
+            .toList()
+        : <CommentData>[];
+
     return EmergencyVisitData(
-      id: map['id'],
-      companyId: map['companyId'],
-      branchId: map['branchId'],
-      contractId: map['contractId'],
-      requestedBy: map['requestedBy'],
-      comments: map['comments'].map((c) => CommentData.fromMap(c)).toList(),
-      status: EmergencyVisitStatus.values.firstWhere((e) => e.name == map['status']),
-      createdAt: map['createdAt'],
+      id: map['id']?.toString() ?? '',
+      companyId: map['companyId']?.toString() ?? '',
+      branchId: map['branchId']?.toString() ?? '',
+      contractId: map['contractId']?.toString() ?? '',
+      requestedBy: map['requestedBy']?.toString() ?? '',
+      comments: parsedComments,
+      status: EmergencyVisitStatus.values.firstWhere(
+        (e) => e.name == map['status']?.toString(),
+        orElse: () => EmergencyVisitStatus.pending,
+      ),
+      createdAt: (map['createdAt'] is Timestamp)
+          ? map['createdAt'] as Timestamp
+          : Timestamp.now(),
     );
   }
 }

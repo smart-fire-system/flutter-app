@@ -9,6 +9,7 @@ enum ReportsMessage {
   contractSigned,
   visitReportSaved,
   visitReportSigned,
+  emergencyVisitRequested,
   sharedWithUpdated,
   firstPartyInformationUpdated,
 }
@@ -20,6 +21,7 @@ class ReportsInitial extends ReportsState {}
 class ReportsAuthenticated extends ReportsState {
   final List<ContractItem>? contractItems;
   final List<VisitReportData>? visitReports;
+  final List<EmergencyVisitData>? emergencyVisits;
   final List<ContractCategory>? contractCategories;
   final List<ContractComponent>? contractComponents;
   final List<ContractData>? contracts;
@@ -31,6 +33,7 @@ class ReportsAuthenticated extends ReportsState {
   ReportsAuthenticated({
     required this.contractItems,
     required this.visitReports,
+    required this.emergencyVisits,
     required this.contractCategories,
     required this.contractComponents,
     required this.contracts,

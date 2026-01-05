@@ -77,6 +77,7 @@ class ReportsRepository {
   List<ContractCategory>? get contractCategories => _contractCategories;
   List<ContractData>? get contracts => _contracts;
   List<VisitReportData>? get visitReports => _visitReports;
+  List<EmergencyVisitData>? get emergencyVisits => _emergencyVisits;
   Stream<void> get refreshStream => _refreshController.stream;
 
   Future<void> saveContractComponents(
@@ -159,6 +160,49 @@ class ReportsRepository {
         });
         return docRef.id;
       });
+    } on FirebaseException catch (e) {
+      throw Exception(e.code);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<String> requestEmergencyVisit(
+      {required String contractId, required String comment}) async {
+    try {
+      final contract =
+          _contracts?.firstWhere((c) => c.metaData.id == contractId);
+      if (contract == null) {
+        throw Exception('contract_not_found');
+      }
+      final companyId = contract.metaData.employee?.branch.company.id ?? '';
+      final branchId = contract.metaData.employee?.branch.id ?? '';
+      if (companyId.isEmpty || branchId.isEmpty) {
+        throw Exception('missing_contract_company_or_branch');
+      }
+
+      final docRef = _firestore.collection('emergencyVisits').doc();
+      final now = Timestamp.now();
+      final commentId = '${docRef.id}_${DateTime.now().microsecondsSinceEpoch}';
+      await docRef.set({
+        'id': docRef.id,
+        'companyId': companyId,
+        'branchId': branchId,
+        'contractId': contractId,
+        'requestedBy': appRepository.userInfo.id,
+        'comments': [
+          {
+            'id': commentId,
+            'userId': appRepository.userInfo.id,
+            'emergencyVisitId': docRef.id,
+            'comment': comment,
+            'createdAt': now,
+          }
+        ],
+        'status': EmergencyVisitStatus.pending.name,
+        'createdAt': now,
+      });
+      return docRef.id;
     } on FirebaseException catch (e) {
       throw Exception(e.code);
     } catch (e) {
