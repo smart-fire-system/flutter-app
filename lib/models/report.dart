@@ -1,6 +1,96 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:jhijri_picker/_src/_jWidgets.dart';
+
+class CommentData {
+  String id;
+  String userId;
+  String emergencyVisitId;
+  String comment;
+  Timestamp createdAt;
+  CommentData({
+    required this.id,
+    required this.userId,
+    required this.emergencyVisitId,
+    required this.comment,
+    required this.createdAt,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'userId': userId,
+      'emergencyVisitId': emergencyVisitId,
+      'comment': comment,
+      'createdAt': createdAt,
+    };
+  }
+
+  factory CommentData.fromMap(Map<String, dynamic> map) {
+    return CommentData(
+      id: map['id'],
+      userId: map['userId'],
+      emergencyVisitId: map['emergencyVisitId'],
+      comment: map['comment'],
+      createdAt: map['createdAt'],
+    );
+  }
+}
+
+enum EmergencyVisitStatus {
+  pending,
+  accepted,
+  rejected,
+  completed,
+}
+
+class EmergencyVisitData {
+  String id;
+  String companyId;
+  String branchId;
+  String contractId;
+  String requestedBy;
+  List<CommentData> comments;
+  EmergencyVisitStatus status;
+  Timestamp createdAt;
+  EmergencyVisitData({
+    required this.id,
+    required this.companyId,
+    required this.branchId,
+    required this.contractId,
+    required this.requestedBy,
+    required this.comments,
+    required this.status,
+    required this.createdAt,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'companyId': companyId,
+      'branchId': branchId,
+      'contractId': contractId,
+      'requestedBy': requestedBy,
+      'comments': comments.map((c) => c.toMap()).toList(),
+      'status': status.name,
+      'createdAt': createdAt,
+    };
+  }
+
+  factory EmergencyVisitData.fromMap(Map<String, dynamic> map) {
+    return EmergencyVisitData(
+      id: map['id'],
+      companyId: map['companyId'],
+      branchId: map['branchId'],
+      contractId: map['contractId'],
+      requestedBy: map['requestedBy'],
+      comments: map['comments'].map((c) => CommentData.fromMap(c)).toList(),
+      status: EmergencyVisitStatus.values.firstWhere((e) => e.name == map['status']),
+      createdAt: map['createdAt'],
+    );
+  }
+}
 
 class ContractItem {
   final ReportTextItem? text;

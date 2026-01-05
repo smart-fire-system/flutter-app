@@ -17,11 +17,13 @@ class ReportsRepository {
   QuerySnapshot? _signaturesSnapshot;
   QuerySnapshot? _visitReportsSnapshot;
   QuerySnapshot? _reportsMetaDataSnapshot;
+  QuerySnapshot? _emergencyVisitsSnapshot;
   List<ContractComponent>? _contractComponents;
   List<ContractCategory>? _contractCategories;
   List<ContractData>? _contracts;
   List<SignatureData> _signatures = [];
   List<VisitReportData> _visitReports = [];
+  List<EmergencyVisitData> _emergencyVisits = [];
 
   ReportsRepository({required this.appRepository})
       : _firestore = FirebaseFirestore.instance {
@@ -61,6 +63,12 @@ class ReportsRepository {
     _firestore.collection('signatures').snapshots().listen((snapshot) {
       _signaturesSnapshot = snapshot;
       _signatures = [];
+      _refresh();
+    });
+
+    _firestore.collection('emergencyVisits').snapshots().listen((snapshot) {
+      _emergencyVisitsSnapshot = snapshot;
+      _emergencyVisits = [];
       _refresh();
     });
   }
@@ -270,6 +278,7 @@ class ReportsRepository {
     _getSignatures();
     _getContracts();
     _getVisitReports();
+    _getEmergencyVisits();
     _refreshController.add(null);
   }
 
@@ -403,6 +412,27 @@ class ReportsRepository {
           }
         })
         .whereType<VisitReportData>()
+        .toList();
+  }
+
+  void _getEmergencyVisits() {
+    if (_emergencyVisitsSnapshot == null) {
+      _emergencyVisits = [];
+      return;
+    }
+    _emergencyVisits = _emergencyVisitsSnapshot!.docs
+        .map((doc) {
+          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+          final emergencyVisit = EmergencyVisitData.fromMap(data);
+          try {
+            _contracts!
+                .firstWhere((c) => c.metaData.id == emergencyVisit.contractId);
+            return emergencyVisit;
+          } catch (_) {
+            return null;
+          }
+        })
+        .whereType<EmergencyVisitData>()
         .toList();
   }
 

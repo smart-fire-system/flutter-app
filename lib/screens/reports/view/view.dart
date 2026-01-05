@@ -5,4 +5,3 @@ export 'view_contract_screen.dart';
 export 'new_visit_report_screen.dart';
 export 'contract_details_screen.dart';
 export 'contracts_screen.dart';
-export 'first_party_screen.dart';
