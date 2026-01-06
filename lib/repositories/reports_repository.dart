@@ -221,13 +221,24 @@ class ReportsRepository {
     required String comment,
   }) async {
     try {
-      final emergencyVisit = _emergencyVisits.firstWhere((e) => e.id == emergencyVisitId);
-      await _firestore.collection('emergencyVisits').doc(emergencyVisitId).update({
-        'comments': [...emergencyVisit.comments, {
-          'userId': appRepository.userInfo.id,
-          'comment': comment,
-          'createdAt': FieldValue.serverTimestamp(),
-        }],
+      final trimmed = comment.trim();
+      if (trimmed.isEmpty) return;
+
+      final emergencyVisit =
+          _emergencyVisits.firstWhere((e) => e.id == emergencyVisitId);
+      await _firestore
+          .collection('emergencyVisits')
+          .doc(emergencyVisitId)
+          .update({
+        // Keep list as a pure List<Map<String, dynamic>> for Firestore.
+        'comments': [
+          ...emergencyVisit.comments.map((c) => c.toMap()),
+          {
+            'userId': appRepository.userInfo.id,
+            'comment': trimmed,
+            'createdAt': Timestamp.now(),
+          }
+        ],
       });
     } on FirebaseException catch (e) {
       throw Exception(e.code);

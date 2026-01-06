@@ -7,6 +7,7 @@ import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/event.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/state.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/emergency_visit_summary.dart';
+import 'package:fire_alarm_system/screens/reports/view/emergency_visit_details_screen.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/empty.dart';
@@ -208,7 +209,8 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
                           parentContext.read<ReportsBloc>().add(
                                 RequestEmergencyVisitRequested(
                                   contractId: widget.contractId,
-                                  description: descriptionController.text.trim(),
+                                  description:
+                                      descriptionController.text.trim(),
                                 ),
                               );
                         },
@@ -260,6 +262,31 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
           index: i,
           createdAtText: _formatTimestamp(visit.createdAt),
           requestedByName: requestedByName,
+          onTap: () {
+            ContractData? contract;
+            try {
+              contract = state.contracts
+                  ?.firstWhere((c) => c.metaData.id == visit.contractId);
+            } catch (_) {
+              contract = null;
+            }
+            final companyName =
+                contract?.metaData.employee?.branch.company.name ?? '';
+            final branchName = contract?.metaData.employee?.branch.name ?? '';
+            final employeeName = contract?.metaData.employee?.info.name ?? '';
+            Navigator.of(ctx).push(
+              MaterialPageRoute(
+                builder: (_) => EmergencyVisitDetailsScreen(
+                  emergencyVisitId: visit.id,
+                  contractId: visit.contractId,
+                  companyName: companyName,
+                  branchName: branchName,
+                  employeeName: employeeName,
+                  requestedByName: requestedByName,
+                ),
+              ),
+            );
+          },
         );
       },
     );

@@ -55,3 +55,12 @@ class RequestEmergencyVisitRequested extends ReportsEvent {
   RequestEmergencyVisitRequested(
       {required this.contractId, required this.description});
 }
+
+class AddEmergencyVisitCommentRequested extends ReportsEvent {
+  final String emergencyVisitId;
+  final String comment;
+  AddEmergencyVisitCommentRequested({
+    required this.emergencyVisitId,
+    required this.comment,
+  });
+}

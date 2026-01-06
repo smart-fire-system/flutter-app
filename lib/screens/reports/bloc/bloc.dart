@@ -97,5 +97,16 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
           contractId: event.contractId, description: event.description);
       message = ReportsMessage.emergencyVisitRequested;
     });
+
+    on<AddEmergencyVisitCommentRequested>((event, emit) async {
+      try {
+        await appRepository.reportsRepository.addEmergencyVisitComment(
+          emergencyVisitId: event.emergencyVisitId,
+          comment: event.comment,
+        );
+      } catch (e) {
+        add(Refresh(error: e.toString()));
+      }
+    });
   }
 }
