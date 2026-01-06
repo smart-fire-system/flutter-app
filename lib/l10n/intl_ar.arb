@@ -399,6 +399,40 @@
     "g": "الرقم الضريبي",
     "idNumber": "رقم الهوية",
     "signature": "التوقيع",
-    "noSignatureAddedYet": "لا يوجد توقيع مضاف بعد"
+    "noSignatureAddedYet": "لا يوجد توقيع مضاف بعد",
+
+    "time_now_long": "الآن",
+    "time_now_short": "الآن",
+
+    "time_min_long": "منذ {n} دقيقة",
+    "@time_min_long": { "placeholders": { "n": { "type": "int" } } },
+    "time_min_short": "{n}د",
+    "@time_min_short": { "placeholders": { "n": { "type": "int" } } },
+
+    "time_hour_long": "منذ {n} ساعة",
+    "@time_hour_long": { "placeholders": { "n": { "type": "int" } } },
+    "time_hour_short": "{n}س",
+    "@time_hour_short": { "placeholders": { "n": { "type": "int" } } },
+
+    "time_day_long": "منذ {n} يوم",
+    "@time_day_long": { "placeholders": { "n": { "type": "int" } } },
+    "time_day_short": "{n}ي",
+    "@time_day_short": { "placeholders": { "n": { "type": "int" } } },
+
+    "time_week_long": "منذ {n} أسبوع",
+    "@time_week_long": { "placeholders": { "n": { "type": "int" } } },
+    "time_week_short": "{n}أ",
+    "@time_week_short": { "placeholders": { "n": { "type": "int" } } },
+
+    "time_month_long": "منذ {n} شهر",
+    "@time_month_long": { "placeholders": { "n": { "type": "int" } } },
+    "time_month_short": "{n}ش",
+    "@time_month_short": { "placeholders": { "n": { "type": "int" } } },
+
+    "time_year_long": "منذ {n} سنة",
+    "@time_year_long": { "placeholders": { "n": { "type": "int" } } },
+    "time_year_short": "{n}س",
+    "@time_year_short": { "placeholders": { "n": { "type": "int" } } }
+
 
 }

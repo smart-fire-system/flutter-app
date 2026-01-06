@@ -1208,4 +1208,70 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noSignatureAddedYet => 'No signature added yet';
+
+  @override
+  String get time_now_long => 'just now';
+
+  @override
+  String get time_now_short => 'now';
+
+  @override
+  String time_min_long(int n) {
+    return '$n min ago';
+  }
+
+  @override
+  String time_min_short(int n) {
+    return '${n}m';
+  }
+
+  @override
+  String time_hour_long(int n) {
+    return '$n hour ago';
+  }
+
+  @override
+  String time_hour_short(int n) {
+    return '${n}h';
+  }
+
+  @override
+  String time_day_long(int n) {
+    return '$n day ago';
+  }
+
+  @override
+  String time_day_short(int n) {
+    return '${n}d';
+  }
+
+  @override
+  String time_week_long(int n) {
+    return '$n week ago';
+  }
+
+  @override
+  String time_week_short(int n) {
+    return '${n}w';
+  }
+
+  @override
+  String time_month_long(int n) {
+    return '$n month ago';
+  }
+
+  @override
+  String time_month_short(int n) {
+    return '${n}mo';
+  }
+
+  @override
+  String time_year_long(int n) {
+    return '$n year ago';
+  }
+
+  @override
+  String time_year_short(int n) {
+    return '${n}y';
+  }
 }

@@ -4,10 +4,14 @@ class CommentData {
   String userId;
   String comment;
   Timestamp createdAt;
+  EmergencyVisitStatus? oldStatus;
+  EmergencyVisitStatus? newStatus;
   CommentData({
     required this.userId,
     required this.comment,
     required this.createdAt,
+    this.oldStatus,
+    this.newStatus,
   });
 
   Map<String, dynamic> toMap() {
@@ -15,6 +19,8 @@ class CommentData {
       'userId': userId,
       'comment': comment,
       'createdAt': createdAt,
+      'oldStatus': oldStatus?.name ?? "",
+      'newStatus': newStatus?.name ?? "",
     };
   }
 
@@ -25,6 +31,18 @@ class CommentData {
       createdAt: (map['createdAt'] is Timestamp)
           ? map['createdAt'] as Timestamp
           : Timestamp.now(),
+      oldStatus: map['oldStatus']?.toString() != ""
+          ? EmergencyVisitStatus.values.firstWhere(
+              (e) => e.name == map['oldStatus'],
+              orElse: () => EmergencyVisitStatus.pending,
+            )
+          : null,
+      newStatus: map['newStatus']?.toString() != ""
+          ? EmergencyVisitStatus.values.firstWhere(
+              (e) => e.name == map['newStatus'],
+              orElse: () => EmergencyVisitStatus.pending,
+            )
+          : null,
     );
   }
 }

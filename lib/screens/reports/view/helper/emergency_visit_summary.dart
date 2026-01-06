@@ -130,7 +130,9 @@ class EmergencyVisitSummary extends StatelessWidget {
                           ),
                           TextSpan(
                             text: emergencyVisit.comments.isNotEmpty
-                                ? DateHelper.timeAgoFromTimestamp(
+                                ? TimeAgoHelper.of(
+                                    context,
+                                    format: TimeAgoFormat.long,
                                     emergencyVisit.comments.last.createdAt)
                                 : 'No updates yet',
                             style: CustomStyle.smallText,

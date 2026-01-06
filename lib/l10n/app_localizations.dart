@@ -2269,6 +2269,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No signature added yet'**
   String get noSignatureAddedYet;
+
+  /// No description provided for @time_now_long.
+  ///
+  /// In en, this message translates to:
+  /// **'just now'**
+  String get time_now_long;
+
+  /// No description provided for @time_now_short.
+  ///
+  /// In en, this message translates to:
+  /// **'now'**
+  String get time_now_short;
+
+  /// No description provided for @time_min_long.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} min ago'**
+  String time_min_long(int n);
+
+  /// No description provided for @time_min_short.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}m'**
+  String time_min_short(int n);
+
+  /// No description provided for @time_hour_long.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} hour ago'**
+  String time_hour_long(int n);
+
+  /// No description provided for @time_hour_short.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}h'**
+  String time_hour_short(int n);
+
+  /// No description provided for @time_day_long.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} day ago'**
+  String time_day_long(int n);
+
+  /// No description provided for @time_day_short.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}d'**
+  String time_day_short(int n);
+
+  /// No description provided for @time_week_long.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} week ago'**
+  String time_week_long(int n);
+
+  /// No description provided for @time_week_short.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}w'**
+  String time_week_short(int n);
+
+  /// No description provided for @time_month_long.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} month ago'**
+  String time_month_long(int n);
+
+  /// No description provided for @time_month_short.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}mo'**
+  String time_month_short(int n);
+
+  /// No description provided for @time_year_long.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} year ago'**
+  String time_year_long(int n);
+
+  /// No description provided for @time_year_short.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}y'**
+  String time_year_short(int n);
 }
 
 class _AppLocalizationsDelegate

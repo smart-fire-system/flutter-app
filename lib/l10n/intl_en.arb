@@ -399,6 +399,39 @@
     "g": "G",
     "idNumber": "ID Number",
     "signature": "Signature",
-    "noSignatureAddedYet": "No signature added yet"
+    "noSignatureAddedYet": "No signature added yet",
+
+    "time_now_long": "just now",
+    "time_now_short": "now",
+
+    "time_min_long": "{n} min ago",
+    "@time_min_long": { "placeholders": { "n": { "type": "int" } } },
+    "time_min_short": "{n}m",
+    "@time_min_short": { "placeholders": { "n": { "type": "int" } } },
+
+    "time_hour_long": "{n} hour ago",
+    "@time_hour_long": { "placeholders": { "n": { "type": "int" } } },
+    "time_hour_short": "{n}h",
+    "@time_hour_short": { "placeholders": { "n": { "type": "int" } } },
+
+    "time_day_long": "{n} day ago",
+    "@time_day_long": { "placeholders": { "n": { "type": "int" } } },
+    "time_day_short": "{n}d",
+    "@time_day_short": { "placeholders": { "n": { "type": "int" } } },
+
+    "time_week_long": "{n} week ago",
+    "@time_week_long": { "placeholders": { "n": { "type": "int" } } },
+    "time_week_short": "{n}w",
+    "@time_week_short": { "placeholders": { "n": { "type": "int" } } },
+
+    "time_month_long": "{n} month ago",
+    "@time_month_long": { "placeholders": { "n": { "type": "int" } } },
+    "time_month_short": "{n}mo",
+    "@time_month_short": { "placeholders": { "n": { "type": "int" } } },
+
+    "time_year_long": "{n} year ago",
+    "@time_year_long": { "placeholders": { "n": { "type": "int" } } },
+    "time_year_short": "{n}y",
+    "@time_year_short": { "placeholders": { "n": { "type": "int" } } }
     
 }

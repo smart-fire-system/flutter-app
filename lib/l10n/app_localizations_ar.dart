@@ -1182,4 +1182,70 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noSignatureAddedYet => 'لا يوجد توقيع مضاف بعد';
+
+  @override
+  String get time_now_long => 'الآن';
+
+  @override
+  String get time_now_short => 'الآن';
+
+  @override
+  String time_min_long(int n) {
+    return 'منذ $n دقيقة';
+  }
+
+  @override
+  String time_min_short(int n) {
+    return '$nد';
+  }
+
+  @override
+  String time_hour_long(int n) {
+    return 'منذ $n ساعة';
+  }
+
+  @override
+  String time_hour_short(int n) {
+    return '$nس';
+  }
+
+  @override
+  String time_day_long(int n) {
+    return 'منذ $n يوم';
+  }
+
+  @override
+  String time_day_short(int n) {
+    return '$nي';
+  }
+
+  @override
+  String time_week_long(int n) {
+    return 'منذ $n أسبوع';
+  }
+
+  @override
+  String time_week_short(int n) {
+    return '$nأ';
+  }
+
+  @override
+  String time_month_long(int n) {
+    return 'منذ $n شهر';
+  }
+
+  @override
+  String time_month_short(int n) {
+    return '$nش';
+  }
+
+  @override
+  String time_year_long(int n) {
+    return 'منذ $n سنة';
+  }
+
+  @override
+  String time_year_short(int n) {
+    return '$nس';
+  }
 }
