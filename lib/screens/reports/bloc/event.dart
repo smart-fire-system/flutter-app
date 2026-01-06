@@ -51,7 +51,7 @@ class SharedWithUpdateRequested extends ReportsEvent {
 
 class RequestEmergencyVisitRequested extends ReportsEvent {
   final String contractId;
-  final String comment;
+  final String description;
   RequestEmergencyVisitRequested(
-      {required this.contractId, required this.comment});
+      {required this.contractId, required this.description});
 }

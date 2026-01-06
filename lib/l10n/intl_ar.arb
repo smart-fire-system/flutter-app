@@ -370,6 +370,7 @@
     "suitable": "ملائم",
     "unsuitable": "غير ملائم",
     "system_report_no": "تقرير زيارة رقم: {number}",
+    "emergency_visit_request_no": "'طلب' رقم: {number}",
     "visit_date": "تاريخ الزيارة: ",
     "system_status": "حالة النظام: ",
     "signed": "موقًع",

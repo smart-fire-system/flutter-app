@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/models/contract_data.dart';
+import 'package:fire_alarm_system/models/emergency_visit.dart';
 import 'package:fire_alarm_system/models/report.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/models/visit_report_data.dart';

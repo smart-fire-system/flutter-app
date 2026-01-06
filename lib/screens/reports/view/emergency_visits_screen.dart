@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
-import 'package:fire_alarm_system/models/report.dart';
+import 'package:fire_alarm_system/models/emergency_visit.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/event.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/state.dart';
+import 'package:fire_alarm_system/screens/reports/view/helper/emergency_visit_summary.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/empty.dart';
@@ -110,7 +111,7 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
             final currentUserName = _currentUserName(state.user);
 
             final formKey = GlobalKey<FormState>();
-            final commentController = TextEditingController();
+            final descriptionController = TextEditingController();
 
             Widget rowItem(String label, String value) {
               return Padding(
@@ -173,18 +174,18 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
                       rowItem('Requested by', currentUserName),
                       const SizedBox(height: 8),
                       TextFormField(
-                        controller: commentController,
+                        controller: descriptionController,
                         minLines: 3,
                         maxLines: 6,
                         decoration: InputDecoration(
-                          labelText: '${S.of(context).comment} *',
+                          labelText: 'Description *',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         validator: (v) {
                           if (v == null || v.trim().isEmpty) {
-                            return 'Comment is required';
+                            return 'Description is required';
                           }
                           return null;
                         },
@@ -207,7 +208,7 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
                           parentContext.read<ReportsBloc>().add(
                                 RequestEmergencyVisitRequested(
                                   contractId: widget.contractId,
-                                  comment: commentController.text.trim(),
+                                  description: descriptionController.text.trim(),
                                 ),
                               );
                         },
@@ -254,44 +255,11 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
         final visit = emergencyVisits[i];
         final requestedByName =
             _findUserName(visit.requestedBy, state.employees, state.clients);
-        final shortId =
-            visit.id.length >= 6 ? visit.id.substring(0, 6) : visit.id;
-        return Card(
-          elevation: 0,
-          color: Colors.white,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          child: ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            leading: _buildStatusChip(context, visit.status),
-            title: Text(
-              '${S.of(context).emergency_visits} #$shortId',
-              style: CustomStyle.mediumTextB,
-            ),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${S.of(context).createdAt}: ${_formatTimestamp(visit.createdAt)}',
-                    style: CustomStyle.smallText,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Requested by: $requestedByName',
-                    style: CustomStyle.smallText,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${S.of(context).comment}: ${visit.comments.length}',
-                    style: CustomStyle.smallText,
-                  ),
-                ],
-              ),
-            ),
-          ),
+        return EmergencyVisitSummary(
+          emergencyVisit: visit,
+          index: i,
+          createdAtText: _formatTimestamp(visit.createdAt),
+          requestedByName: requestedByName,
         );
       },
     );
@@ -317,37 +285,5 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
     return userId;
   }
 
-  Widget _buildStatusChip(BuildContext context, EmergencyVisitStatus status) {
-    final Color color;
-    switch (status) {
-      case EmergencyVisitStatus.pending:
-        color = Colors.orange;
-        break;
-      case EmergencyVisitStatus.accepted:
-        color = Colors.blue;
-        break;
-      case EmergencyVisitStatus.rejected:
-        color = Colors.red;
-        break;
-      case EmergencyVisitStatus.completed:
-        color = Colors.green;
-        break;
-    }
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withValues(alpha: 0.35)),
-      ),
-      child: Text(
-        status.name,
-        style: TextStyle(
-          color: color,
-          fontWeight: FontWeight.w700,
-          fontSize: 12,
-        ),
-      ),
-    );
-  }
+  // Status chip UI moved into EmergencyVisitSummary to match VisitReportSummary style.
 }

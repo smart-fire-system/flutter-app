@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/firebase_options.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
@@ -113,6 +114,7 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
             Locale('ar', ''),
           ],
           localizationsDelegates: const [
+            AppLocalizations.delegate,
             S.delegate,
             CountryLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,

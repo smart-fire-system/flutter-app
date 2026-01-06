@@ -370,6 +370,7 @@
     "suitable": "Suitable",
     "unsuitable": "Unsuitable",
     "system_report_no": "System Report No. {number}",
+    "emergency_visit_request_no": "Request No. {number}",
     "visit_date": "Visit Date: ",
     "system_status": "System Status: ",
     "signed": "Signed",

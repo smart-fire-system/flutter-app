@@ -8,6 +8,7 @@ import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/models/visit_report_data.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
+import 'package:fire_alarm_system/models/emergency_visit.dart';
 
 class ReportsRepository {
   final FirebaseFirestore _firestore;
@@ -168,7 +169,7 @@ class ReportsRepository {
   }
 
   Future<String> requestEmergencyVisit(
-      {required String contractId, required String comment}) async {
+      {required String contractId, required String description}) async {
     try {
       final contract =
           _contracts?.firstWhere((c) => c.metaData.id == contractId);
@@ -180,29 +181,54 @@ class ReportsRepository {
       if (companyId.isEmpty || branchId.isEmpty) {
         throw Exception('missing_contract_company_or_branch');
       }
-
-      final docRef = _firestore.collection('emergencyVisits').doc();
-      final now = Timestamp.now();
-      final commentId = '${docRef.id}_${DateTime.now().microsecondsSinceEpoch}';
-      await docRef.set({
-        'id': docRef.id,
-        'companyId': companyId,
-        'branchId': branchId,
-        'contractId': contractId,
-        'requestedBy': appRepository.userInfo.id,
-        'comments': [
-          {
-            'id': commentId,
-            'userId': appRepository.userInfo.id,
-            'emergencyVisitId': docRef.id,
-            'comment': comment,
-            'createdAt': now,
-          }
-        ],
-        'status': EmergencyVisitStatus.pending.name,
-        'createdAt': now,
+      return await _firestore.runTransaction((txn) async {
+        final maxRef =
+            _firestore.collection('info').doc('maxEmergencyVisitCode');
+        final maxSnap = await txn.get(maxRef);
+        int current = 0;
+        if (maxSnap.exists) {
+          final data = maxSnap.data() as Map<String, dynamic>;
+          current = int.tryParse((data['value'] ?? '0').toString()) ?? 0;
+        }
+        final next = current + 1;
+        txn.set(maxRef, {'value': next}, SetOptions(merge: true));
+        final docRef = _firestore.collection('emergencyVisits').doc();
+        final id = docRef.id;
+        final now = Timestamp.now();
+        txn.set(docRef, {
+          'id': id,
+          'code': next,
+          'companyId': companyId,
+          'branchId': branchId,
+          'contractId': contractId,
+          'requestedBy': appRepository.userInfo.id,
+          'description': description,
+          'comments': [],
+          'status': EmergencyVisitStatus.pending.name,
+          'createdAt': now,
+        });
+        return docRef.id;
       });
-      return docRef.id;
+    } on FirebaseException catch (e) {
+      throw Exception(e.code);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> addEmergencyVisitComment({
+    required String emergencyVisitId,
+    required String comment,
+  }) async {
+    try {
+      final emergencyVisit = _emergencyVisits.firstWhere((e) => e.id == emergencyVisitId);
+      await _firestore.collection('emergencyVisits').doc(emergencyVisitId).update({
+        'comments': [...emergencyVisit.comments, {
+          'userId': appRepository.userInfo.id,
+          'comment': comment,
+          'createdAt': FieldValue.serverTimestamp(),
+        }],
+      });
     } on FirebaseException catch (e) {
       throw Exception(e.code);
     } catch (e) {
