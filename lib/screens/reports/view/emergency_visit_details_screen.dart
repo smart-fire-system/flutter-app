@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/emergency_visit.dart';
 import 'package:fire_alarm_system/models/user.dart';
@@ -124,6 +125,21 @@ class _EmergencyVisitDetailsScreenState
   }
 
   Widget _buildHeader(BuildContext context, EmergencyVisitData visit) {
+    String pretty(EmergencyVisitStatus s) {
+      switch (s) {
+        case EmergencyVisitStatus.pending:
+          return AppLocalizations.of(context)!.status_pending;
+        case EmergencyVisitStatus.approved:
+          return AppLocalizations.of(context)!.status_approved;
+        case EmergencyVisitStatus.rejected:
+          return AppLocalizations.of(context)!.status_rejected;
+        case EmergencyVisitStatus.completed:
+          return AppLocalizations.of(context)!.status_completed;
+        case EmergencyVisitStatus.cancelled:
+          return AppLocalizations.of(context)!.status_canceled;
+      }
+    }
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
@@ -150,7 +166,7 @@ class _EmergencyVisitDetailsScreenState
                   Border.all(color: CustomStyle.redDark.withValues(alpha: 0.2)),
             ),
             child: Text(
-              visit.status.name,
+              pretty(visit.status),
               style:
                   CustomStyle.smallTextB.copyWith(color: CustomStyle.redDark),
             ),
@@ -226,19 +242,18 @@ class _EmergencyVisitDetailsScreenState
           String pretty(EmergencyVisitStatus s) {
             switch (s) {
               case EmergencyVisitStatus.pending:
-                return 'Created';
-              case EmergencyVisitStatus.accepted:
-                return 'Accepted';
+                return AppLocalizations.of(context)!.status_created;
+              case EmergencyVisitStatus.approved:
+                return AppLocalizations.of(context)!.status_approved;
               case EmergencyVisitStatus.rejected:
-                return 'Rejected';
+                return AppLocalizations.of(context)!.status_rejected;
               case EmergencyVisitStatus.completed:
-                return 'Completed';
+                return AppLocalizations.of(context)!.status_completed;
               case EmergencyVisitStatus.cancelled:
-                return 'Canceled';
+                return AppLocalizations.of(context)!.status_canceled;
             }
           }
 
-          final oldText = pretty(c.oldStatus);
           final newText = pretty(c.newStatus);
           final dateText = _formatTimestamp(c.createdAt);
 
@@ -255,7 +270,7 @@ class _EmergencyVisitDetailsScreenState
                   border: Border.all(color: Colors.grey.shade300),
                 ),
                 child: Text(
-                  '$dateText\n$userName changed status from $oldText to $newText',
+                  '$dateText\n$userName changed status to ($newText)',
                   textAlign: TextAlign.center,
                   style: CustomStyle.smallText.copyWith(
                     fontSize: 12,
@@ -449,10 +464,10 @@ class _EmergencyVisitDetailsScreenState
     // (2) Employee rules (contract employee OR employee in sharedWith)
     if (isEmployeeAllowed) {
       if (current == EmergencyVisitStatus.pending) {
-        out.add(EmergencyVisitStatus.accepted);
+        out.add(EmergencyVisitStatus.approved);
         out.add(EmergencyVisitStatus.rejected);
       }
-      if (current == EmergencyVisitStatus.accepted) {
+      if (current == EmergencyVisitStatus.approved) {
         out.add(EmergencyVisitStatus.completed);
       }
     }
@@ -469,6 +484,21 @@ class _EmergencyVisitDetailsScreenState
     required List<EmergencyVisitStatus> options,
   }) async {
     EmergencyVisitStatus? selected;
+
+    String pretty(EmergencyVisitStatus s) {
+      switch (s) {
+        case EmergencyVisitStatus.pending:
+          return AppLocalizations.of(context)!.status_pending;
+        case EmergencyVisitStatus.approved:
+          return AppLocalizations.of(context)!.status_approved;
+        case EmergencyVisitStatus.rejected:
+          return AppLocalizations.of(context)!.status_rejected;
+        case EmergencyVisitStatus.completed:
+          return AppLocalizations.of(context)!.status_completed;
+        case EmergencyVisitStatus.cancelled:
+          return AppLocalizations.of(context)!.status_canceled;
+      }
+    }
 
     final result = await showModalBottomSheet<EmergencyVisitStatus?>(
       context: context,
@@ -515,7 +545,7 @@ class _EmergencyVisitDetailsScreenState
                         children: [
                           Text('Current:', style: CustomStyle.smallTextBRed),
                           const SizedBox(width: 8),
-                          Text(currentStatus.name,
+                          Text(pretty(currentStatus),
                               style: CustomStyle.smallText),
                         ],
                       ),
@@ -605,15 +635,15 @@ class _EmergencyVisitDetailsScreenState
     String pretty(EmergencyVisitStatus s) {
       switch (s) {
         case EmergencyVisitStatus.pending:
-          return 'Created';
-        case EmergencyVisitStatus.accepted:
-          return 'Accepted';
+          return AppLocalizations.of(context)!.status_created;
+        case EmergencyVisitStatus.approved:
+          return AppLocalizations.of(context)!.status_approved;
         case EmergencyVisitStatus.rejected:
-          return 'Rejected';
+          return AppLocalizations.of(context)!.status_rejected;
         case EmergencyVisitStatus.completed:
-          return 'Completed';
+          return AppLocalizations.of(context)!.status_completed;
         case EmergencyVisitStatus.cancelled:
-          return 'Canceled';
+          return AppLocalizations.of(context)!.status_canceled;
       }
     }
 
@@ -628,7 +658,7 @@ class _EmergencyVisitDetailsScreenState
       final first = changes.first;
       if (first.newStatus != EmergencyVisitStatus.pending) {
         final isIntermediate =
-            first.newStatus == EmergencyVisitStatus.accepted ||
+            first.newStatus == EmergencyVisitStatus.approved ||
                 first.newStatus == EmergencyVisitStatus.rejected;
 
         if (isIntermediate) {

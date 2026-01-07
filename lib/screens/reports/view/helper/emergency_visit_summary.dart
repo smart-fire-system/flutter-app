@@ -24,6 +24,21 @@ class EmergencyVisitSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _StatusTheme statusTheme = _statusTheme(emergencyVisit.status);
+    String pretty(EmergencyVisitStatus s) {
+      switch (s) {
+        case EmergencyVisitStatus.pending:
+          return AppLocalizations.of(context)!.status_pending;
+        case EmergencyVisitStatus.approved:
+          return AppLocalizations.of(context)!.status_approved;
+        case EmergencyVisitStatus.rejected:
+          return AppLocalizations.of(context)!.status_rejected;
+        case EmergencyVisitStatus.completed:
+          return AppLocalizations.of(context)!.status_completed;
+        case EmergencyVisitStatus.cancelled:
+          return AppLocalizations.of(context)!.status_canceled;
+      }
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: Card(
@@ -55,7 +70,7 @@ class EmergencyVisitSummary extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Text(
-                      emergencyVisit.status.name,
+                      pretty(emergencyVisit.status),
                       style: CustomStyle.smallTextB.copyWith(
                         color: statusTheme.fg,
                       ),
@@ -154,7 +169,7 @@ class EmergencyVisitSummary extends StatelessWidget {
     switch (status) {
       case EmergencyVisitStatus.pending:
         return _StatusTheme(bg: Colors.orange.shade50, fg: Colors.orange);
-      case EmergencyVisitStatus.accepted:
+      case EmergencyVisitStatus.approved:
         return _StatusTheme(bg: Colors.blue.shade50, fg: Colors.blue);
       case EmergencyVisitStatus.rejected:
         return _StatusTheme(bg: Colors.red.shade50, fg: Colors.red);

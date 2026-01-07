@@ -386,7 +386,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get valid_email => 'يرجى إدخال عنوان بريد إلكتروني صالح';
 
   @override
-  String get logging_in_progress => 'Please wait while logging you in';
+  String get logging_in_progress => 'برجاء الانتظار، جاري تسجيل الدخول';
 
   @override
   String get signup_in_progress => 'يرجى الانتظار أثناء إنشاء الحساب';
@@ -455,17 +455,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get comment => 'التعليقات';
 
   @override
-  String get addBranch => 'Add New Branch';
+  String get addBranch => 'إضافة فرع جديد';
 
   @override
-  String get branchModified =>
-      'The branch details have been updated successfully.';
+  String get branchModified => 'تم تعديل بيانات الفرع بنجاح';
 
   @override
-  String get branchAdded => 'The branch has been added successfully.';
+  String get branchAdded => 'تم إضافة فرع جديد بنجاح';
 
   @override
-  String get branchDeleted => 'The branch has been deleted successfully.';
+  String get branchDeleted => 'تم حذف الفرع بنجاح';
 
   @override
   String get branchName => 'إسم الفرع';
@@ -1248,4 +1247,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String time_year_short(int n) {
     return '$nس';
   }
+
+  @override
+  String get status_created => 'تم إنشاء الطلب';
+
+  @override
+  String get status_pending => 'قيد الانتظار';
+
+  @override
+  String get status_approved => 'تمت الموافقة على الزيارة';
+
+  @override
+  String get status_rejected => 'تم رفض الزيارة';
+
+  @override
+  String get status_canceled => 'تم إلغاء الطلب';
+
+  @override
+  String get status_completed => 'الطلب مكتمل';
 }

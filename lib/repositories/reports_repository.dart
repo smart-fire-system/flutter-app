@@ -310,9 +310,9 @@ class ReportsRepository {
         // (2) Employee transitions (contract employee OR employee in sharedWith)
         if (!allowed && (isContractEmployee || isSharedEmployee)) {
           allowed = (oldStatus == EmergencyVisitStatus.pending &&
-                  (newStatus == EmergencyVisitStatus.accepted ||
+                  (newStatus == EmergencyVisitStatus.approved ||
                       newStatus == EmergencyVisitStatus.rejected)) ||
-              (oldStatus == EmergencyVisitStatus.accepted &&
+              (oldStatus == EmergencyVisitStatus.approved &&
                   newStatus == EmergencyVisitStatus.completed);
         }
 

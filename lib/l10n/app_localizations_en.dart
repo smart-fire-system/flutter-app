@@ -1274,4 +1274,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String time_year_short(int n) {
     return '${n}y';
   }
+
+  @override
+  String get status_created => 'Request created';
+
+  @override
+  String get status_pending => 'Awaiting confirmation';
+
+  @override
+  String get status_approved => 'Visit approved';
+
+  @override
+  String get status_rejected => 'Visit rejected';
+
+  @override
+  String get status_canceled => 'Request canceled';
+
+  @override
+  String get status_completed => 'Request completed';
 }

@@ -237,6 +237,10 @@
     "canAddBranches": "يمكنه إضافة فروع",
     "canEditBranches": "يمكنه تعديل الفروع",
     "canDeleteBranches": "يمكنه حذف الفروع",
+    "addBranch": "إضافة فرع جديد",
+    "branchModified": "تم تعديل بيانات الفرع بنجاح",
+    "branchAdded": "تم إضافة فرع جديد بنجاح",
+    "branchDeleted": "تم حذف الفرع بنجاح",
 
     "invalid_custom_token": "رمز المصادقة المخصص غير صالح. يرجى التحقق والمحاولة مجددًا.",
     "custom_token_mismatch": "الرمز المخصص غير متطابق. تأكد من صحته.",
@@ -432,7 +436,15 @@
     "time_year_long": "منذ {n} سنة",
     "@time_year_long": { "placeholders": { "n": { "type": "int" } } },
     "time_year_short": "{n}س",
-    "@time_year_short": { "placeholders": { "n": { "type": "int" } } }
+    "@time_year_short": { "placeholders": { "n": { "type": "int" } } },
 
+    "logging_in_progress": "برجاء الانتظار، جاري تسجيل الدخول",
+
+    "status_created": "تم إنشاء الطلب",
+    "status_pending": "قيد الانتظار",
+    "status_approved": "تمت الموافقة على الزيارة",
+    "status_rejected": "تم رفض الزيارة",
+    "status_canceled": "تم إلغاء الطلب",
+    "status_completed": "الطلب مكتمل"
 
 }

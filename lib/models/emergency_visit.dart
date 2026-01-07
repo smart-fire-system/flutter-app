@@ -49,7 +49,7 @@ class CommentData {
 
 enum EmergencyVisitStatus {
   pending,
-  accepted,
+  approved,
   rejected,
   completed,
   cancelled,

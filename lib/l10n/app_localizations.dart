@@ -2353,6 +2353,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{n}y'**
   String time_year_short(int n);
+
+  /// No description provided for @status_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Request created'**
+  String get status_created;
+
+  /// No description provided for @status_pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting confirmation'**
+  String get status_pending;
+
+  /// No description provided for @status_approved.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit approved'**
+  String get status_approved;
+
+  /// No description provided for @status_rejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit rejected'**
+  String get status_rejected;
+
+  /// No description provided for @status_canceled.
+  ///
+  /// In en, this message translates to:
+  /// **'Request canceled'**
+  String get status_canceled;
+
+  /// No description provided for @status_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Request completed'**
+  String get status_completed;
 }
 
 class _AppLocalizationsDelegate

@@ -432,6 +432,14 @@
     "time_year_long": "{n} year ago",
     "@time_year_long": { "placeholders": { "n": { "type": "int" } } },
     "time_year_short": "{n}y",
-    "@time_year_short": { "placeholders": { "n": { "type": "int" } } }
+    "@time_year_short": { "placeholders": { "n": { "type": "int" } } },
+
+    "status_created": "Request created",
+    "status_pending": "Awaiting confirmation",
+    "status_approved": "Visit approved",
+    "status_rejected": "Visit rejected",
+    "status_canceled": "Request canceled",
+    "status_completed": "Request completed"
+    
     
 }
