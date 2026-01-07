@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
+import 'package:fire_alarm_system/models/emergency_visit.dart';
 import 'package:fire_alarm_system/models/report.dart';
 import 'package:fire_alarm_system/models/visit_report_data.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/state.dart';
@@ -62,5 +63,14 @@ class AddEmergencyVisitCommentRequested extends ReportsEvent {
   AddEmergencyVisitCommentRequested({
     required this.emergencyVisitId,
     required this.comment,
+  });
+}
+
+class ChangeEmergencyVisitStatusRequested extends ReportsEvent {
+  final String emergencyVisitId;
+  final EmergencyVisitStatus newStatus;
+  ChangeEmergencyVisitStatusRequested({
+    required this.emergencyVisitId,
+    required this.newStatus,
   });
 }

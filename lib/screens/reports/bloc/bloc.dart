@@ -108,5 +108,16 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         add(Refresh(error: e.toString()));
       }
     });
+
+    on<ChangeEmergencyVisitStatusRequested>((event, emit) async {
+      try {
+        await appRepository.reportsRepository.changeEmergencyVisitStatus(
+          emergencyVisitId: event.emergencyVisitId,
+          newStatus: event.newStatus,
+        );
+      } catch (e) {
+        add(Refresh(error: e.toString()));
+      }
+    });
   }
 }

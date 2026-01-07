@@ -247,6 +247,96 @@ class ReportsRepository {
     }
   }
 
+  Future<void> changeEmergencyVisitStatus({
+    required String emergencyVisitId,
+    required EmergencyVisitStatus newStatus,
+  }) async {
+    final userId = appRepository.userInfo.id;
+    try {
+      final docRef =
+          _firestore.collection('emergencyVisits').doc(emergencyVisitId);
+      await _firestore.runTransaction((txn) async {
+        final snap = await txn.get(docRef);
+        if (!snap.exists) throw Exception('emergency_visit_not_found');
+        final data = snap.data() ?? <String, dynamic>{};
+
+        final statusStr =
+            data['status']?.toString() ?? EmergencyVisitStatus.pending.name;
+        final oldStatus = EmergencyVisitStatus.values.firstWhere(
+          (e) => e.name == statusStr,
+          orElse: () => EmergencyVisitStatus.pending,
+        );
+        if (oldStatus == newStatus) {
+          throw Exception('invalid_status_transition');
+        }
+
+        final requestedBy = data['requestedBy']?.toString() ?? '';
+        final contractId = data['contractId']?.toString() ?? '';
+
+        ContractData? contract;
+        try {
+          contract = _contracts?.firstWhere((c) => c.metaData.id == contractId);
+        } catch (_) {
+          contract = null;
+        }
+        final contractEmployeeId = contract?.metaData.employeeId ??
+            contract?.metaData.employee?.info.id ??
+            '';
+        final sharedWith = (contract?.sharedWith ?? const <dynamic>[])
+            .map((e) => e.toString())
+            .toList();
+
+        final bool isRequester = userId.isNotEmpty && userId == requestedBy;
+        final bool isEmployee = appRepository.userRole is Employee;
+        final bool isContractEmployee =
+            isEmployee && userId.isNotEmpty && userId == contractEmployeeId;
+        final bool isSharedEmployee =
+            isEmployee && userId.isNotEmpty && sharedWith.contains(userId);
+
+        bool allowed = false;
+
+        // (1) Requester transitions
+        if (isRequester) {
+          allowed = (oldStatus == EmergencyVisitStatus.pending &&
+                  newStatus == EmergencyVisitStatus.cancelled) ||
+              (oldStatus == EmergencyVisitStatus.rejected &&
+                  newStatus == EmergencyVisitStatus.cancelled);
+        }
+
+        // (2) Employee transitions (contract employee OR employee in sharedWith)
+        if (!allowed && (isContractEmployee || isSharedEmployee)) {
+          allowed = (oldStatus == EmergencyVisitStatus.pending &&
+                  (newStatus == EmergencyVisitStatus.accepted ||
+                      newStatus == EmergencyVisitStatus.rejected)) ||
+              (oldStatus == EmergencyVisitStatus.accepted &&
+                  newStatus == EmergencyVisitStatus.completed);
+        }
+
+        if (!allowed) {
+          throw Exception('unauthorized_status_change');
+        }
+
+        final existingComments = List.from(data['comments'] ?? const []);
+        existingComments.add({
+          'userId': userId,
+          'comment': '',
+          'createdAt': Timestamp.now(),
+          'oldStatus': oldStatus.name,
+          'newStatus': newStatus.name,
+        });
+
+        txn.update(docRef, {
+          'status': newStatus.name,
+          'comments': existingComments,
+        });
+      });
+    } on FirebaseException catch (e) {
+      throw Exception(e.code);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
   Future<ContractData> signContract({
     required dynamic user,
     required ContractData contract,

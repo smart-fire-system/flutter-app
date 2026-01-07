@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/emergency_visit.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
@@ -104,6 +105,40 @@ class _EmergencyVisitDetailsScreenState
   }
 
   Widget _buildHeader(BuildContext context, EmergencyVisitData visit) {
+    final state = context.read<ReportsBloc>().state;
+    final dynamic userRole = state is ReportsAuthenticated ? state.user : null;
+
+    ContractData? contract;
+    if (state is ReportsAuthenticated) {
+      try {
+        contract = state.contracts
+            ?.firstWhere((c) => c.metaData.id == visit.contractId);
+      } catch (_) {
+        contract = null;
+      }
+    }
+
+    final currentUserId = _currentUserId(userRole);
+    final contractEmployeeId = contract?.metaData.employeeId ??
+        contract?.metaData.employee?.info.id ??
+        '';
+    final sharedWithIds = (contract?.sharedWith ?? const <dynamic>[])
+        .map((e) => e.toString())
+        .toList();
+
+    final bool isRequester =
+        currentUserId.isNotEmpty && currentUserId == visit.requestedBy;
+    final bool isEmployee = userRole is Employee;
+    final bool isContractEmployee = isEmployee &&
+        currentUserId.isNotEmpty &&
+        currentUserId == contractEmployeeId;
+    final bool isSharedEmployee = isEmployee &&
+        currentUserId.isNotEmpty &&
+        sharedWithIds.contains(currentUserId);
+
+    final allowedNextStatuses = _allowedNextStatuses(
+        visit.status, isRequester, isContractEmployee || isSharedEmployee);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
@@ -121,6 +156,33 @@ class _EmergencyVisitDetailsScreenState
               style: CustomStyle.mediumTextBRed,
             ),
           ),
+          if (allowedNextStatuses.isNotEmpty)
+            InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: () => _openStatusBottomSheet(
+                context,
+                visitId: visit.id,
+                currentStatus: visit.status,
+                options: allowedNextStatuses,
+              ),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.grey.shade300),
+                  color: Colors.white,
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.tune, size: 18, color: Colors.black54),
+                    SizedBox(width: 6),
+                    Text('Change', style: TextStyle(color: Colors.black54)),
+                  ],
+                ),
+              ),
+            ),
+          if (allowedNextStatuses.isNotEmpty) const SizedBox(width: 10),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
@@ -206,6 +268,10 @@ class _EmergencyVisitDetailsScreenState
         final c = comments[i];
         final isMe = c.userId == currentUserId;
         final userName = _findUserName(c.userId, employees, clients);
+        final statusChangeText = (c.oldStatus != null && c.newStatus != null)
+            ? '${c.oldStatus!.name} → ${c.newStatus!.name}'
+            : '';
+        final hasTextComment = c.comment.trim().isNotEmpty;
 
         return Align(
           alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -229,13 +295,27 @@ class _EmergencyVisitDetailsScreenState
                             : CustomStyle.smallTextBRed)
                         .copyWith(fontSize: 12),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    c.comment,
-                    style: isMe
-                        ? CustomStyle.normalButtonTextSmallWhite
-                        : CustomStyle.smallText,
-                  ),
+                  if (statusChangeText.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      statusChangeText,
+                      style: (isMe
+                              ? CustomStyle.normalButtonTextSmallWhite
+                              : CustomStyle.smallText)
+                          .copyWith(
+                              fontSize: 12,
+                              color: isMe ? Colors.white70 : Colors.black54),
+                    ),
+                  ],
+                  if (hasTextComment) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      c.comment,
+                      style: isMe
+                          ? CustomStyle.normalButtonTextSmallWhite
+                          : CustomStyle.smallText,
+                    ),
+                  ],
                   const SizedBox(height: 6),
                   Text(
                     _formatTimestamp(c.createdAt),
@@ -365,5 +445,169 @@ class _EmergencyVisitDetailsScreenState
       return c.info.name;
     } catch (_) {}
     return userId;
+  }
+
+  List<EmergencyVisitStatus> _allowedNextStatuses(
+    EmergencyVisitStatus current,
+    bool isRequester,
+    bool isEmployeeAllowed,
+  ) {
+    final out = <EmergencyVisitStatus>[];
+
+    // (1) Requester rules
+    if (isRequester) {
+      if (current == EmergencyVisitStatus.pending) {
+        out.add(EmergencyVisitStatus.cancelled);
+      }
+      if (current == EmergencyVisitStatus.rejected) {
+        out.add(EmergencyVisitStatus.cancelled);
+      }
+    }
+
+    // (2) Employee rules (contract employee OR employee in sharedWith)
+    if (isEmployeeAllowed) {
+      if (current == EmergencyVisitStatus.pending) {
+        out.add(EmergencyVisitStatus.accepted);
+        out.add(EmergencyVisitStatus.rejected);
+      }
+      if (current == EmergencyVisitStatus.accepted) {
+        out.add(EmergencyVisitStatus.completed);
+      }
+    }
+
+    // de-dupe while keeping order
+    final seen = <EmergencyVisitStatus>{};
+    return out.where((s) => seen.add(s)).toList();
+  }
+
+  Future<void> _openStatusBottomSheet(
+    BuildContext context, {
+    required String visitId,
+    required EmergencyVisitStatus currentStatus,
+    required List<EmergencyVisitStatus> options,
+  }) async {
+    EmergencyVisitStatus? selected;
+
+    final result = await showModalBottomSheet<EmergencyVisitStatus?>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (ctx, setModalState) {
+            return SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.tune, color: CustomStyle.redDark),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Change Status',
+                            style: CustomStyle.mediumTextBRed,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.of(ctx).pop(null),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade200),
+                      ),
+                      child: Row(
+                        children: [
+                          Text('Current:', style: CustomStyle.smallTextBRed),
+                          const SizedBox(width: 8),
+                          Text(currentStatus.name,
+                              style: CustomStyle.smallText),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text('New status', style: CustomStyle.smallTextBRed),
+                    const SizedBox(height: 6),
+                    ...options.map((s) {
+                      final isSelected = selected == s;
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: () => setModalState(() => selected = s),
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isSelected
+                                  ? CustomStyle.redDark
+                                  : Colors.grey.shade300,
+                            ),
+                            color: isSelected
+                                ? CustomStyle.redDark.withValues(alpha: 0.06)
+                                : Colors.white,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  s.name,
+                                  style: CustomStyle.smallText,
+                                ),
+                              ),
+                              if (isSelected)
+                                const Icon(Icons.check_circle,
+                                    color: CustomStyle.redDark),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                    const SizedBox(height: 6),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: CustomStyle.redDark,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: selected == null
+                          ? null
+                          : () => Navigator.of(ctx).pop(selected),
+                      child: const Text('Save'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    if (result == null) return;
+    if (!context.mounted) return;
+    context.read<ReportsBloc>().add(
+          ChangeEmergencyVisitStatusRequested(
+            emergencyVisitId: visitId,
+            newStatus: result,
+          ),
+        );
   }
 }
