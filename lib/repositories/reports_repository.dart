@@ -195,18 +195,19 @@ class ReportsRepository {
         final docRef = _firestore.collection('emergencyVisits').doc();
         final id = docRef.id;
         final now = Timestamp.now();
-        txn.set(docRef, {
-          'id': id,
-          'code': next,
-          'companyId': companyId,
-          'branchId': branchId,
-          'contractId': contractId,
-          'requestedBy': appRepository.userInfo.id,
-          'description': description,
-          'comments': [],
-          'status': EmergencyVisitStatus.pending.name,
-          'createdAt': now,
-        });
+        final emergencyVisit = EmergencyVisitData(
+          id: id,
+          code: next,
+          companyId: companyId,
+          branchId: branchId,
+          contractId: contractId,
+          requestedBy: appRepository.userInfo.id,
+          description: description,
+          comments: [],
+          status: EmergencyVisitStatus.pending,
+          createdAt: now,
+        );
+        txn.set(docRef, emergencyVisit.toMap());
         return docRef.id;
       });
     } on FirebaseException catch (e) {
@@ -226,6 +227,13 @@ class ReportsRepository {
 
       final emergencyVisit =
           _emergencyVisits.firstWhere((e) => e.id == emergencyVisitId);
+      final newComment = CommentData(
+        userId: appRepository.userInfo.id,
+        comment: trimmed,
+        createdAt: Timestamp.now(),
+        oldStatus: emergencyVisit.status,
+        newStatus: emergencyVisit.status,
+      );
       await _firestore
           .collection('emergencyVisits')
           .doc(emergencyVisitId)
@@ -233,11 +241,7 @@ class ReportsRepository {
         // Keep list as a pure List<Map<String, dynamic>> for Firestore.
         'comments': [
           ...emergencyVisit.comments.map((c) => c.toMap()),
-          {
-            'userId': appRepository.userInfo.id,
-            'comment': trimmed,
-            'createdAt': Timestamp.now(),
-          }
+          newComment.toMap(),
         ],
       });
     } on FirebaseException catch (e) {

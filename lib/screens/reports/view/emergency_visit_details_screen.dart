@@ -81,9 +81,28 @@ class _EmergencyVisitDetailsScreenState
             final comments = [...visit.comments]
               ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
+            final allowedNextStatuses =
+                _allowedNextStatusesForVisit(state, visit);
+
             return Column(
               children: [
                 _buildHeader(context, visit),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  child: _buildStatusTrackers(
+                    createdAt: visit.createdAt,
+                    comments: visit.comments,
+                    changeOptions: allowedNextStatuses,
+                    onChangeTap: allowedNextStatuses.isEmpty
+                        ? null
+                        : () => _openStatusBottomSheet(
+                              context,
+                              visitId: visit.id,
+                              currentStatus: visit.status,
+                              options: allowedNextStatuses,
+                            ),
+                  ),
+                ),
                 _buildRequestInfo(context, visit),
                 const SizedBox(height: 8),
                 Expanded(
@@ -105,40 +124,6 @@ class _EmergencyVisitDetailsScreenState
   }
 
   Widget _buildHeader(BuildContext context, EmergencyVisitData visit) {
-    final state = context.read<ReportsBloc>().state;
-    final dynamic userRole = state is ReportsAuthenticated ? state.user : null;
-
-    ContractData? contract;
-    if (state is ReportsAuthenticated) {
-      try {
-        contract = state.contracts
-            ?.firstWhere((c) => c.metaData.id == visit.contractId);
-      } catch (_) {
-        contract = null;
-      }
-    }
-
-    final currentUserId = _currentUserId(userRole);
-    final contractEmployeeId = contract?.metaData.employeeId ??
-        contract?.metaData.employee?.info.id ??
-        '';
-    final sharedWithIds = (contract?.sharedWith ?? const <dynamic>[])
-        .map((e) => e.toString())
-        .toList();
-
-    final bool isRequester =
-        currentUserId.isNotEmpty && currentUserId == visit.requestedBy;
-    final bool isEmployee = userRole is Employee;
-    final bool isContractEmployee = isEmployee &&
-        currentUserId.isNotEmpty &&
-        currentUserId == contractEmployeeId;
-    final bool isSharedEmployee = isEmployee &&
-        currentUserId.isNotEmpty &&
-        sharedWithIds.contains(currentUserId);
-
-    final allowedNextStatuses = _allowedNextStatuses(
-        visit.status, isRequester, isContractEmployee || isSharedEmployee);
-
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
@@ -156,33 +141,6 @@ class _EmergencyVisitDetailsScreenState
               style: CustomStyle.mediumTextBRed,
             ),
           ),
-          if (allowedNextStatuses.isNotEmpty)
-            InkWell(
-              borderRadius: BorderRadius.circular(16),
-              onTap: () => _openStatusBottomSheet(
-                context,
-                visitId: visit.id,
-                currentStatus: visit.status,
-                options: allowedNextStatuses,
-              ),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.grey.shade300),
-                  color: Colors.white,
-                ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.tune, size: 18, color: Colors.black54),
-                    SizedBox(width: 6),
-                    Text('Change', style: TextStyle(color: Colors.black54)),
-                  ],
-                ),
-              ),
-            ),
-          if (allowedNextStatuses.isNotEmpty) const SizedBox(width: 10),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
@@ -230,14 +188,8 @@ class _EmergencyVisitDetailsScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          rowItem('Contract ID', widget.contractId),
-          rowItem('Company', widget.companyName),
-          rowItem('Branch', widget.branchName),
-          rowItem('Employee', widget.employeeName),
           rowItem('Requested by', widget.requestedByName),
-          rowItem('Created at', _formatTimestamp(visit.createdAt)),
           rowItem('Description', visit.description),
-          const Divider(height: 22),
           Text('Comments', style: CustomStyle.mediumTextBRed),
         ],
       ),
@@ -268,10 +220,52 @@ class _EmergencyVisitDetailsScreenState
         final c = comments[i];
         final isMe = c.userId == currentUserId;
         final userName = _findUserName(c.userId, employees, clients);
-        final statusChangeText = (c.oldStatus != null && c.newStatus != null)
-            ? '${c.oldStatus!.name} → ${c.newStatus!.name}'
-            : '';
         final hasTextComment = c.comment.trim().isNotEmpty;
+
+        if (c.oldStatus != c.newStatus) {
+          String pretty(EmergencyVisitStatus s) {
+            switch (s) {
+              case EmergencyVisitStatus.pending:
+                return 'Created';
+              case EmergencyVisitStatus.accepted:
+                return 'Accepted';
+              case EmergencyVisitStatus.rejected:
+                return 'Rejected';
+              case EmergencyVisitStatus.completed:
+                return 'Completed';
+              case EmergencyVisitStatus.cancelled:
+                return 'Canceled';
+            }
+          }
+
+          final oldText = pretty(c.oldStatus);
+          final newText = pretty(c.newStatus);
+          final dateText = _formatTimestamp(c.createdAt);
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Align(
+              alignment: Alignment.center,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Text(
+                  '$dateText\n$userName changed status from $oldText to $newText',
+                  textAlign: TextAlign.center,
+                  style: CustomStyle.smallText.copyWith(
+                    fontSize: 12,
+                    color: Colors.black54,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
 
         return Align(
           alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -295,18 +289,6 @@ class _EmergencyVisitDetailsScreenState
                             : CustomStyle.smallTextBRed)
                         .copyWith(fontSize: 12),
                   ),
-                  if (statusChangeText.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      statusChangeText,
-                      style: (isMe
-                              ? CustomStyle.normalButtonTextSmallWhite
-                              : CustomStyle.smallText)
-                          .copyWith(
-                              fontSize: 12,
-                              color: isMe ? Colors.white70 : Colors.black54),
-                    ),
-                  ],
                   if (hasTextComment) ...[
                     const SizedBox(height: 4),
                     Text(
@@ -609,5 +591,249 @@ class _EmergencyVisitDetailsScreenState
             newStatus: result,
           ),
         );
+  }
+
+  Widget _buildStatusTrackers({
+    required Timestamp createdAt,
+    required List<CommentData> comments,
+    required List<EmergencyVisitStatus> changeOptions,
+    required VoidCallback? onChangeTap,
+  }) {
+    final changes = comments.where((c) => c.newStatus != c.oldStatus).toList()
+      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
+    String pretty(EmergencyVisitStatus s) {
+      switch (s) {
+        case EmergencyVisitStatus.pending:
+          return 'Created';
+        case EmergencyVisitStatus.accepted:
+          return 'Accepted';
+        case EmergencyVisitStatus.rejected:
+          return 'Rejected';
+        case EmergencyVisitStatus.completed:
+          return 'Completed';
+        case EmergencyVisitStatus.cancelled:
+          return 'Canceled';
+      }
+    }
+
+    // Step 1 is always created.
+    final step1 = _TrackerStep(label: 'Created', date: createdAt);
+
+    // Default: no changes yet -> steps show '-'
+    _TrackerStep step2 = _TrackerStep(label: '-', date: null);
+    _TrackerStep step3 = _TrackerStep(label: '-', date: null);
+
+    if (changes.isNotEmpty) {
+      final first = changes.first;
+      if (first.newStatus != EmergencyVisitStatus.pending) {
+        final isIntermediate =
+            first.newStatus == EmergencyVisitStatus.accepted ||
+                first.newStatus == EmergencyVisitStatus.rejected;
+
+        if (isIntermediate) {
+          step2 = _TrackerStep(
+              label: pretty(first.newStatus), date: first.createdAt);
+          if (changes.length >= 2) {
+            final last = changes.last;
+            if (last.newStatus != first.newStatus) {
+              step3 = _TrackerStep(
+                  label: pretty(last.newStatus), date: last.createdAt);
+            }
+          }
+        } else {
+          // Direct final change like pending -> cancelled (or completed).
+          // Step2 should be marked done but with empty text, step3 is final status.
+          step2 = _TrackerStep(label: '', date: first.createdAt);
+          step3 = _TrackerStep(
+              label: pretty(first.newStatus), date: first.createdAt);
+        }
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            if (onChangeTap != null && changeOptions.isNotEmpty)
+              OutlinedButton.icon(
+                onPressed: onChangeTap,
+                icon: const Icon(Icons.tune, size: 18),
+                label: const Text('Change status'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: CustomStyle.redDark,
+                  side: BorderSide(color: Colors.grey.shade300),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        _StatusFlowTracker(
+          title: '',
+          steps: [step1, step2, step3],
+          formatDate: _formatTimestamp,
+        ),
+      ],
+    );
+  }
+
+  List<EmergencyVisitStatus> _allowedNextStatusesForVisit(
+    ReportsAuthenticated state,
+    EmergencyVisitData visit,
+  ) {
+    ContractData? contract;
+    try {
+      contract =
+          state.contracts?.firstWhere((c) => c.metaData.id == visit.contractId);
+    } catch (_) {
+      contract = null;
+    }
+
+    final currentUserId = _currentUserId(state.user);
+    final contractEmployeeId = contract?.metaData.employeeId ??
+        contract?.metaData.employee?.info.id ??
+        '';
+    final sharedWithIds = (contract?.sharedWith ?? const <dynamic>[])
+        .map((e) => e.toString())
+        .toList();
+
+    final bool isRequester =
+        currentUserId.isNotEmpty && currentUserId == visit.requestedBy;
+    final bool isEmployee = state.user is Employee;
+    final bool isContractEmployee = isEmployee &&
+        currentUserId.isNotEmpty &&
+        currentUserId == contractEmployeeId;
+    final bool isSharedEmployee = isEmployee &&
+        currentUserId.isNotEmpty &&
+        sharedWithIds.contains(currentUserId);
+
+    return _allowedNextStatuses(
+      visit.status,
+      isRequester,
+      isContractEmployee || isSharedEmployee,
+    );
+  }
+}
+
+class _TrackerStep {
+  final String label;
+  final Timestamp? date;
+  _TrackerStep({required this.label, required this.date});
+}
+
+class _StatusFlowTracker extends StatelessWidget {
+  final String title;
+  final List<_TrackerStep> steps;
+  final String Function(Timestamp ts) formatDate;
+
+  const _StatusFlowTracker({
+    required this.title,
+    required this.steps,
+    required this.formatDate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const activeColor = CustomStyle.redDark;
+    final inactiveColor = Colors.grey.shade300;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (title.trim().isNotEmpty) ...[
+            Text(title, style: CustomStyle.smallTextBRed),
+            const SizedBox(height: 10),
+          ],
+          Row(
+            children: [
+              for (int i = 0; i < steps.length; i++) ...[
+                _TrackerNode(
+                  label: steps[i].label,
+                  date: steps[i].date,
+                  isDone: steps[i].date != null,
+                  activeColor: activeColor,
+                  inactiveColor: inactiveColor,
+                  formatDate: formatDate,
+                ),
+                if (i != steps.length - 1)
+                  Expanded(
+                    child: Container(
+                      height: 2,
+                      color: (steps[i + 1].date != null)
+                          ? activeColor
+                          : inactiveColor,
+                    ),
+                  ),
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TrackerNode extends StatelessWidget {
+  final String label;
+  final Timestamp? date;
+  final bool isDone;
+  final Color activeColor;
+  final Color inactiveColor;
+  final String Function(Timestamp ts) formatDate;
+
+  const _TrackerNode({
+    required this.label,
+    required this.date,
+    required this.isDone,
+    required this.activeColor,
+    required this.inactiveColor,
+    required this.formatDate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final circleColor = isDone ? activeColor : inactiveColor;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          height: 18,
+          width: 18,
+          decoration: BoxDecoration(
+            color: circleColor,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(height: 6),
+        SizedBox(
+          width: 90,
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: CustomStyle.smallText.copyWith(fontSize: 12),
+          ),
+        ),
+        const SizedBox(height: 3),
+        SizedBox(
+          width: 90,
+          child: Text(
+            date != null ? formatDate(date!) : '',
+            textAlign: TextAlign.center,
+            style: CustomStyle.smallText
+                .copyWith(fontSize: 10, color: Colors.black54),
+          ),
+        ),
+      ],
+    );
   }
 }
