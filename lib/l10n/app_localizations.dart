@@ -2389,6 +2389,109 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Request completed'**
   String get status_completed;
+
+  /// No description provided for @emergency_visit_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'Not found'**
+  String get emergency_visit_not_found;
+
+  /// No description provided for @emergency_visit_request_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Request #{code}'**
+  String emergency_visit_request_number(String code);
+
+  /// No description provided for @emergency_visit_requested_by_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested by'**
+  String get emergency_visit_requested_by_label;
+
+  /// No description provided for @emergency_visit_description_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get emergency_visit_description_label;
+
+  /// No description provided for @emergency_visit_comments_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get emergency_visit_comments_title;
+
+  /// No description provided for @emergency_visit_created_at_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Created at: '**
+  String get emergency_visit_created_at_prefix;
+
+  /// No description provided for @emergency_visit_requested_by_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested by: '**
+  String get emergency_visit_requested_by_prefix;
+
+  /// No description provided for @emergency_visit_last_updated_prefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated: '**
+  String get emergency_visit_last_updated_prefix;
+
+  /// No description provided for @emergency_visit_no_updates_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No updates yet'**
+  String get emergency_visit_no_updates_yet;
+
+  /// No description provided for @emergency_visit_no_comments_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No comments yet'**
+  String get emergency_visit_no_comments_yet;
+
+  /// No description provided for @emergency_visit_write_comment_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a comment...'**
+  String get emergency_visit_write_comment_hint;
+
+  /// No description provided for @emergency_visit_change_status_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Change status'**
+  String get emergency_visit_change_status_title;
+
+  /// No description provided for @emergency_visit_change_status_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Change status'**
+  String get emergency_visit_change_status_button;
+
+  /// No description provided for @emergency_visit_current_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Current:'**
+  String get emergency_visit_current_label;
+
+  /// No description provided for @emergency_visit_new_status_label.
+  ///
+  /// In en, this message translates to:
+  /// **'New status'**
+  String get emergency_visit_new_status_label;
+
+  /// No description provided for @emergency_visit_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get emergency_visit_save;
+
+  /// No description provided for @emergency_visit_status_changed_message.
+  ///
+  /// In en, this message translates to:
+  /// **'{dateText}\n{userName} changed status to ({status})'**
+  String emergency_visit_status_changed_message(
+      String dateText, String userName, String status);
 }
 
 class _AppLocalizationsDelegate

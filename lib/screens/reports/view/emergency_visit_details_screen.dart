@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/emergency_visit.dart';
@@ -53,7 +52,8 @@ class _EmergencyVisitDetailsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).emergency_visits),
+      appBar:
+          CustomAppBar(title: AppLocalizations.of(context)!.emergency_visits),
       body: SafeArea(
         child: BlocBuilder<ReportsBloc, ReportsState>(
           builder: (context, state) {
@@ -72,7 +72,7 @@ class _EmergencyVisitDetailsScreenState
             if (visit == null) {
               return Center(
                 child: Text(
-                  'Not found',
+                  AppLocalizations.of(context)!.emergency_visit_not_found,
                   style: CustomStyle.mediumTextBRed,
                 ),
               );
@@ -153,7 +153,8 @@ class _EmergencyVisitDetailsScreenState
         children: [
           Expanded(
             child: Text(
-              'Request #${visit.code}',
+              AppLocalizations.of(context)!
+                  .emergency_visit_request_number(visit.code.toString()),
               style: CustomStyle.mediumTextBRed,
             ),
           ),
@@ -204,9 +205,18 @@ class _EmergencyVisitDetailsScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          rowItem('Requested by', widget.requestedByName),
-          rowItem('Description', visit.description),
-          Text('Comments', style: CustomStyle.mediumTextBRed),
+          rowItem(
+            AppLocalizations.of(context)!.emergency_visit_requested_by_label,
+            widget.requestedByName,
+          ),
+          rowItem(
+            AppLocalizations.of(context)!.emergency_visit_description_label,
+            visit.description,
+          ),
+          Text(
+            AppLocalizations.of(context)!.emergency_visit_comments_title,
+            style: CustomStyle.mediumTextBRed,
+          ),
         ],
       ),
     );
@@ -222,7 +232,7 @@ class _EmergencyVisitDetailsScreenState
     if (comments.isEmpty) {
       return Center(
         child: Text(
-          'No comments yet',
+          AppLocalizations.of(context)!.emergency_visit_no_comments_yet,
           style: CustomStyle.smallText,
         ),
       );
@@ -270,7 +280,12 @@ class _EmergencyVisitDetailsScreenState
                   border: Border.all(color: Colors.grey.shade300),
                 ),
                 child: Text(
-                  '$dateText\n$userName changed status to ($newText)',
+                  AppLocalizations.of(context)!
+                      .emergency_visit_status_changed_message(
+                    dateText,
+                    userName,
+                    newText,
+                  ),
                   textAlign: TextAlign.center,
                   style: CustomStyle.smallText.copyWith(
                     fontSize: 12,
@@ -353,7 +368,8 @@ class _EmergencyVisitDetailsScreenState
               maxLines: 4,
               textInputAction: TextInputAction.newline,
               decoration: InputDecoration(
-                hintText: 'Write a comment...',
+                hintText: AppLocalizations.of(context)!
+                    .emergency_visit_write_comment_hint,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),
@@ -523,7 +539,8 @@ class _EmergencyVisitDetailsScreenState
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            'Change Status',
+                            AppLocalizations.of(context)!
+                                .emergency_visit_change_status_title,
                             style: CustomStyle.mediumTextBRed,
                           ),
                         ),
@@ -543,7 +560,11 @@ class _EmergencyVisitDetailsScreenState
                       ),
                       child: Row(
                         children: [
-                          Text('Current:', style: CustomStyle.smallTextBRed),
+                          Text(
+                            AppLocalizations.of(context)!
+                                .emergency_visit_current_label,
+                            style: CustomStyle.smallTextBRed,
+                          ),
                           const SizedBox(width: 8),
                           Text(pretty(currentStatus),
                               style: CustomStyle.smallText),
@@ -551,7 +572,11 @@ class _EmergencyVisitDetailsScreenState
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Text('New status', style: CustomStyle.smallTextBRed),
+                    Text(
+                      AppLocalizations.of(context)!
+                          .emergency_visit_new_status_label,
+                      style: CustomStyle.smallTextBRed,
+                    ),
                     const SizedBox(height: 6),
                     ...options.map((s) {
                       final isSelected = selected == s;
@@ -577,7 +602,7 @@ class _EmergencyVisitDetailsScreenState
                             children: [
                               Expanded(
                                 child: Text(
-                                  s.name,
+                                  pretty(s),
                                   style: CustomStyle.smallText,
                                 ),
                               ),
@@ -602,7 +627,9 @@ class _EmergencyVisitDetailsScreenState
                       onPressed: selected == null
                           ? null
                           : () => Navigator.of(ctx).pop(selected),
-                      child: const Text('Save'),
+                      child: Text(
+                        AppLocalizations.of(context)!.emergency_visit_save,
+                      ),
                     ),
                   ],
                 ),
@@ -648,7 +675,10 @@ class _EmergencyVisitDetailsScreenState
     }
 
     // Step 1 is always created.
-    final step1 = _TrackerStep(label: 'Created', date: createdAt);
+    final step1 = _TrackerStep(
+      label: AppLocalizations.of(context)!.status_created,
+      date: createdAt,
+    );
 
     // Default: no changes yet -> steps show '-'
     _TrackerStep step2 = _TrackerStep(label: '-', date: null);
@@ -690,7 +720,10 @@ class _EmergencyVisitDetailsScreenState
               OutlinedButton.icon(
                 onPressed: onChangeTap,
                 icon: const Icon(Icons.tune, size: 18),
-                label: const Text('Change status'),
+                label: Text(
+                  AppLocalizations.of(context)!
+                      .emergency_visit_change_status_button,
+                ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: CustomStyle.redDark,
                   side: BorderSide(color: Colors.grey.shade300),

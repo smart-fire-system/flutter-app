@@ -445,6 +445,42 @@
     "status_approved": "تمت الموافقة على الزيارة",
     "status_rejected": "تم رفض الزيارة",
     "status_canceled": "تم إلغاء الطلب",
-    "status_completed": "الطلب مكتمل"
+    "status_completed": "الطلب مكتمل",
+
+    "emergency_visit_not_found": "غير موجود",
+
+    "emergency_visit_request_number": "طلب رقم: {code}",
+    "@emergency_visit_request_number": {
+        "placeholders": {
+            "code": { "type": "String" }
+        }
+    },
+
+    "emergency_visit_requested_by_label": "مقدم الطلب",
+    "emergency_visit_description_label": "الوصف",
+    "emergency_visit_comments_title": "التعليقات",
+
+    "emergency_visit_created_at_prefix": "تاريخ الإنشاء: ",
+    "emergency_visit_requested_by_prefix": "مقدم الطلب: ",
+    "emergency_visit_last_updated_prefix": "آخر تحديث: ",
+    "emergency_visit_no_updates_yet": "لا توجد تحديثات بعد",
+
+    "emergency_visit_no_comments_yet": "لا توجد تعليقات بعد",
+    "emergency_visit_write_comment_hint": "اكتب تعليقًا...",
+
+    "emergency_visit_change_status_title": "تغيير الحالة",
+    "emergency_visit_change_status_button": "تغيير الحالة",
+    "emergency_visit_current_label": "الحالية:",
+    "emergency_visit_new_status_label": "الحالة الجديدة",
+    "emergency_visit_save": "حفظ",
+
+    "emergency_visit_status_changed_message": "{dateText}\n{userName} غيّر الحالة إلى ({status})",
+    "@emergency_visit_status_changed_message": {
+        "placeholders": {
+            "dateText": { "type": "String" },
+            "userName": { "type": "String" },
+            "status": { "type": "String" }
+        }
+    }
 
 }

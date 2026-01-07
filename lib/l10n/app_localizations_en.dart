@@ -1292,4 +1292,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get status_completed => 'Request completed';
+
+  @override
+  String get emergency_visit_not_found => 'Not found';
+
+  @override
+  String emergency_visit_request_number(String code) {
+    return 'Request #$code';
+  }
+
+  @override
+  String get emergency_visit_requested_by_label => 'Requested by';
+
+  @override
+  String get emergency_visit_description_label => 'Description';
+
+  @override
+  String get emergency_visit_comments_title => 'Comments';
+
+  @override
+  String get emergency_visit_created_at_prefix => 'Created at: ';
+
+  @override
+  String get emergency_visit_requested_by_prefix => 'Requested by: ';
+
+  @override
+  String get emergency_visit_last_updated_prefix => 'Last updated: ';
+
+  @override
+  String get emergency_visit_no_updates_yet => 'No updates yet';
+
+  @override
+  String get emergency_visit_no_comments_yet => 'No comments yet';
+
+  @override
+  String get emergency_visit_write_comment_hint => 'Write a comment...';
+
+  @override
+  String get emergency_visit_change_status_title => 'Change status';
+
+  @override
+  String get emergency_visit_change_status_button => 'Change status';
+
+  @override
+  String get emergency_visit_current_label => 'Current:';
+
+  @override
+  String get emergency_visit_new_status_label => 'New status';
+
+  @override
+  String get emergency_visit_save => 'Save';
+
+  @override
+  String emergency_visit_status_changed_message(
+      String dateText, String userName, String status) {
+    return '$dateText\n$userName changed status to ($status)';
+  }
 }

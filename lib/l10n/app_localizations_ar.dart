@@ -1265,4 +1265,60 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get status_completed => 'الطلب مكتمل';
+
+  @override
+  String get emergency_visit_not_found => 'غير موجود';
+
+  @override
+  String emergency_visit_request_number(String code) {
+    return 'طلب رقم: $code';
+  }
+
+  @override
+  String get emergency_visit_requested_by_label => 'مقدم الطلب';
+
+  @override
+  String get emergency_visit_description_label => 'الوصف';
+
+  @override
+  String get emergency_visit_comments_title => 'التعليقات';
+
+  @override
+  String get emergency_visit_created_at_prefix => 'تاريخ الإنشاء: ';
+
+  @override
+  String get emergency_visit_requested_by_prefix => 'مقدم الطلب: ';
+
+  @override
+  String get emergency_visit_last_updated_prefix => 'آخر تحديث: ';
+
+  @override
+  String get emergency_visit_no_updates_yet => 'لا توجد تحديثات بعد';
+
+  @override
+  String get emergency_visit_no_comments_yet => 'لا توجد تعليقات بعد';
+
+  @override
+  String get emergency_visit_write_comment_hint => 'اكتب تعليقًا...';
+
+  @override
+  String get emergency_visit_change_status_title => 'تغيير الحالة';
+
+  @override
+  String get emergency_visit_change_status_button => 'تغيير الحالة';
+
+  @override
+  String get emergency_visit_current_label => 'الحالية:';
+
+  @override
+  String get emergency_visit_new_status_label => 'الحالة الجديدة';
+
+  @override
+  String get emergency_visit_save => 'حفظ';
+
+  @override
+  String emergency_visit_status_changed_message(
+      String dateText, String userName, String status) {
+    return '$dateText\n$userName غيّر الحالة إلى ($status)';
+  }
 }

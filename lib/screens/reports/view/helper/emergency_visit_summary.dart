@@ -1,4 +1,3 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/emergency_visit.dart';
 import 'package:fire_alarm_system/utils/date.dart';
@@ -89,7 +88,8 @@ class EmergencyVisitSummary extends StatelessWidget {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: '${S.of(context).createdAt}: ',
+                            text: AppLocalizations.of(context)!
+                                .emergency_visit_created_at_prefix,
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
@@ -114,7 +114,8 @@ class EmergencyVisitSummary extends StatelessWidget {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: 'Requested by: ',
+                            text: AppLocalizations.of(context)!
+                                .emergency_visit_requested_by_prefix,
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
@@ -140,7 +141,8 @@ class EmergencyVisitSummary extends StatelessWidget {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: 'Last updated: ',
+                            text: AppLocalizations.of(context)!
+                                .emergency_visit_last_updated_prefix,
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
@@ -149,7 +151,8 @@ class EmergencyVisitSummary extends StatelessWidget {
                                     context,
                                     format: TimeAgoFormat.long,
                                     emergencyVisit.comments.last.createdAt)
-                                : 'No updates yet',
+                                : AppLocalizations.of(context)!
+                                    .emergency_visit_no_updates_yet,
                             style: CustomStyle.smallText,
                           ),
                         ],

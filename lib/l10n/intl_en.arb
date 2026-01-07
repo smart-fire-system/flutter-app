@@ -439,7 +439,41 @@
     "status_approved": "Visit approved",
     "status_rejected": "Visit rejected",
     "status_canceled": "Request canceled",
-    "status_completed": "Request completed"
-    
-    
+    "status_completed": "Request completed",
+
+    "emergency_visit_not_found": "Not found",
+
+    "emergency_visit_request_number": "Request #{code}",
+    "@emergency_visit_request_number": {
+        "placeholders": {
+            "code": { "type": "String" }
+        }
+    },
+
+    "emergency_visit_requested_by_label": "Requested by",
+    "emergency_visit_description_label": "Description",
+    "emergency_visit_comments_title": "Comments",
+
+    "emergency_visit_created_at_prefix": "Created at: ",
+    "emergency_visit_requested_by_prefix": "Requested by: ",
+    "emergency_visit_last_updated_prefix": "Last updated: ",
+    "emergency_visit_no_updates_yet": "No updates yet",
+
+    "emergency_visit_no_comments_yet": "No comments yet",
+    "emergency_visit_write_comment_hint": "Write a comment...",
+
+    "emergency_visit_change_status_title": "Change status",
+    "emergency_visit_change_status_button": "Change status",
+    "emergency_visit_current_label": "Current:",
+    "emergency_visit_new_status_label": "New status",
+    "emergency_visit_save": "Save",
+
+    "emergency_visit_status_changed_message": "{dateText}\n{userName} changed status to ({status})",
+    "@emergency_visit_status_changed_message": {
+        "placeholders": {
+            "dateText": { "type": "String" },
+            "userName": { "type": "String" },
+            "status": { "type": "String" }
+        }
+    }
 }
