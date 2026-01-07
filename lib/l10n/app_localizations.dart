@@ -2420,6 +2420,12 @@ abstract class AppLocalizations {
   /// **'Comments'**
   String get emergency_visit_comments_title;
 
+  /// No description provided for @emergency_visit_requested_sentence.
+  ///
+  /// In en, this message translates to:
+  /// **'{userName} requested an emergency visit on {dateText}'**
+  String emergency_visit_requested_sentence(String userName, String dateText);
+
   /// No description provided for @emergency_visit_created_at_prefix.
   ///
   /// In en, this message translates to:
@@ -2485,6 +2491,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get emergency_visit_save;
+
+  /// No description provided for @sort_old_to_new.
+  ///
+  /// In en, this message translates to:
+  /// **'Old → New'**
+  String get sort_old_to_new;
+
+  /// No description provided for @sort_new_to_old.
+  ///
+  /// In en, this message translates to:
+  /// **'New → Old'**
+  String get sort_new_to_old;
 
   /// No description provided for @emergency_visit_status_changed_message.
   ///

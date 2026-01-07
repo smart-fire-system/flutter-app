@@ -374,7 +374,7 @@
     "suitable": "ملائم",
     "unsuitable": "غير ملائم",
     "system_report_no": "تقرير زيارة رقم: {number}",
-    "emergency_visit_request_no": "'طلب' رقم: {number}",
+    "emergency_visit_request_no": "طلب رقم: {number}",
     "visit_date": "تاريخ الزيارة: ",
     "system_status": "حالة النظام: ",
     "signed": "موقًع",
@@ -460,6 +460,14 @@
     "emergency_visit_description_label": "الوصف",
     "emergency_visit_comments_title": "التعليقات",
 
+    "emergency_visit_requested_sentence": "قام {userName} بطلب زيارة طوارئ بتاريخ {dateText}",
+    "@emergency_visit_requested_sentence": {
+        "placeholders": {
+            "userName": { "type": "String" },
+            "dateText": { "type": "String" }
+        }
+    },
+
     "emergency_visit_created_at_prefix": "تاريخ الإنشاء: ",
     "emergency_visit_requested_by_prefix": "مقدم الطلب: ",
     "emergency_visit_last_updated_prefix": "آخر تحديث: ",
@@ -473,6 +481,9 @@
     "emergency_visit_current_label": "الحالية:",
     "emergency_visit_new_status_label": "الحالة الجديدة",
     "emergency_visit_save": "حفظ",
+
+    "sort_old_to_new": "من الأقدم إلى الأحدث",
+    "sort_new_to_old": "من الأحدث إلى الأقدم",
 
     "emergency_visit_status_changed_message": "{dateText}\n{userName} غيّر الحالة إلى ({status})",
     "@emergency_visit_status_changed_message": {

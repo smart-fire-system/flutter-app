@@ -1098,7 +1098,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String emergency_visit_request_no(Object number) {
-    return '\'طلب\' رقم: $number';
+    return 'طلب رقم: $number';
   }
 
   @override
@@ -1284,6 +1284,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get emergency_visit_comments_title => 'التعليقات';
 
   @override
+  String emergency_visit_requested_sentence(String userName, String dateText) {
+    return 'قام $userName بطلب زيارة طوارئ بتاريخ $dateText';
+  }
+
+  @override
   String get emergency_visit_created_at_prefix => 'تاريخ الإنشاء: ';
 
   @override
@@ -1315,6 +1320,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get emergency_visit_save => 'حفظ';
+
+  @override
+  String get sort_old_to_new => 'من الأقدم إلى الأحدث';
+
+  @override
+  String get sort_new_to_old => 'من الأحدث إلى الأقدم';
 
   @override
   String emergency_visit_status_changed_message(

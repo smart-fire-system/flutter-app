@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 class EmergencyVisitSummary extends StatelessWidget {
   final EmergencyVisitData emergencyVisit;
-  final int index;
   final String createdAtText;
   final String requestedByName;
   final VoidCallback? onTap;
@@ -14,7 +13,6 @@ class EmergencyVisitSummary extends StatelessWidget {
   const EmergencyVisitSummary({
     super.key,
     required this.emergencyVisit,
-    required this.index,
     required this.createdAtText,
     required this.requestedByName,
     this.onTap,
@@ -56,7 +54,7 @@ class EmergencyVisitSummary extends StatelessWidget {
                   Expanded(
                     child: Text(
                       AppLocalizations.of(context)!
-                          .emergency_visit_request_no(index + 1),
+                          .emergency_visit_request_no(emergencyVisit.code.toString()),
                       style: CustomStyle.mediumTextBRed,
                     ),
                   ),

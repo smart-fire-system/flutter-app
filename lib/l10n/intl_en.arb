@@ -454,6 +454,14 @@
     "emergency_visit_description_label": "Description",
     "emergency_visit_comments_title": "Comments",
 
+    "emergency_visit_requested_sentence": "{userName} requested an emergency visit on {dateText}",
+    "@emergency_visit_requested_sentence": {
+        "placeholders": {
+            "userName": { "type": "String" },
+            "dateText": { "type": "String" }
+        }
+    },
+
     "emergency_visit_created_at_prefix": "Created at: ",
     "emergency_visit_requested_by_prefix": "Requested by: ",
     "emergency_visit_last_updated_prefix": "Last updated: ",
@@ -467,6 +475,9 @@
     "emergency_visit_current_label": "Current:",
     "emergency_visit_new_status_label": "New status",
     "emergency_visit_save": "Save",
+
+    "sort_old_to_new": "Old → New",
+    "sort_new_to_old": "New → Old",
 
     "emergency_visit_status_changed_message": "{dateText}\n{userName} changed status to ({status})",
     "@emergency_visit_status_changed_message": {

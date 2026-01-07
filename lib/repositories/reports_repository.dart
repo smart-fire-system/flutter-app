@@ -203,7 +203,15 @@ class ReportsRepository {
           contractId: contractId,
           requestedBy: appRepository.userInfo.id,
           description: description,
-          comments: [],
+          comments: [
+            CommentData(
+              userId: appRepository.userInfo.id,
+              comment: description,
+              createdAt: now,
+              oldStatus: EmergencyVisitStatus.pending,
+              newStatus: EmergencyVisitStatus.pending,
+            ),
+          ],
           status: EmergencyVisitStatus.pending,
           createdAt: now,
         );

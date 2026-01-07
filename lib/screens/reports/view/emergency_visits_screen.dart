@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/emergency_visit.dart';
 import 'package:fire_alarm_system/models/user.dart';
@@ -25,6 +26,7 @@ class EmergencyVisitsScreen extends StatefulWidget {
 
 class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
   final _formatter = DateFormat('dd/MM/yyyy - hh:mm a');
+  bool _sortOldToNew = true;
 
   @override
   Widget build(BuildContext context) {
@@ -243,7 +245,11 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
             const <EmergencyVisitData>[])
         .where((e) => e.contractId == widget.contractId)
         .toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      ..sort(
+        (a, b) => _sortOldToNew
+            ? a.createdAt.compareTo(b.createdAt)
+            : b.createdAt.compareTo(a.createdAt),
+      );
 
     if (emergencyVisits.isEmpty) {
       return CustomEmpty(message: S.of(context).no_contracts_yet);
@@ -251,15 +257,36 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
 
     return ListView.separated(
       padding: const EdgeInsets.all(16),
-      itemCount: emergencyVisits.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      itemCount: emergencyVisits.length + 1,
+      separatorBuilder: (_, i) =>
+          i == 0 ? const SizedBox(height: 16) : const SizedBox(height: 12),
       itemBuilder: (ctx, i) {
-        final visit = emergencyVisits[i];
+        if (i == 0) {
+          final label = _sortOldToNew
+              ? AppLocalizations.of(context)!.sort_old_to_new
+              : AppLocalizations.of(context)!.sort_new_to_old;
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton.icon(
+              onPressed: () => setState(() => _sortOldToNew = !_sortOldToNew),
+              icon: const Icon(Icons.sort, size: 18),
+              label: Text(label),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: CustomStyle.redDark,
+                side: BorderSide(color: Colors.grey.shade300),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          );
+        }
+
+        final visit = emergencyVisits[i - 1];
         final requestedByName =
             _findUserName(visit.requestedBy, state.employees, state.clients);
         return EmergencyVisitSummary(
           emergencyVisit: visit,
-          index: i,
           createdAtText: _formatTimestamp(visit.createdAt),
           requestedByName: requestedByName,
           onTap: () {

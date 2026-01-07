@@ -1311,6 +1311,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emergency_visit_comments_title => 'Comments';
 
   @override
+  String emergency_visit_requested_sentence(String userName, String dateText) {
+    return '$userName requested an emergency visit on $dateText';
+  }
+
+  @override
   String get emergency_visit_created_at_prefix => 'Created at: ';
 
   @override
@@ -1342,6 +1347,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emergency_visit_save => 'Save';
+
+  @override
+  String get sort_old_to_new => 'Old → New';
+
+  @override
+  String get sort_new_to_old => 'New → Old';
 
   @override
   String emergency_visit_status_changed_message(

@@ -40,6 +40,7 @@ class _EmergencyVisitDetailsScreenState
   final _formatter = DateFormat('dd/MM/yyyy - hh:mm a');
   final _scrollController = ScrollController();
   final _commentController = TextEditingController();
+  String _visitHeader = "Emergency Visit Request";
   bool _sending = false;
 
   @override
@@ -52,8 +53,7 @@ class _EmergencyVisitDetailsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          CustomAppBar(title: AppLocalizations.of(context)!.emergency_visits),
+      appBar: CustomAppBar(title: _visitHeader),
       body: SafeArea(
         child: BlocBuilder<ReportsBloc, ReportsState>(
           builder: (context, state) {
@@ -78,6 +78,15 @@ class _EmergencyVisitDetailsScreenState
               );
             }
 
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              if (context.mounted) {
+                setState(() {
+                  _visitHeader = AppLocalizations.of(context)!
+                      .emergency_visit_request_number(visit.code.toString());
+                });
+              }
+            });
+
             final currentUserId = _currentUserId(state.user);
             final comments = [...visit.comments]
               ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
@@ -87,12 +96,10 @@ class _EmergencyVisitDetailsScreenState
 
             return Column(
               children: [
-                _buildHeader(context, visit),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: _buildStatusTrackers(
-                    createdAt: visit.createdAt,
-                    comments: visit.comments,
+                    visit: visit,
                     changeOptions: allowedNextStatuses,
                     onChangeTap: allowedNextStatuses.isEmpty
                         ? null
@@ -124,95 +131,22 @@ class _EmergencyVisitDetailsScreenState
     );
   }
 
-  Widget _buildHeader(BuildContext context, EmergencyVisitData visit) {
-    String pretty(EmergencyVisitStatus s) {
-      switch (s) {
-        case EmergencyVisitStatus.pending:
-          return AppLocalizations.of(context)!.status_pending;
-        case EmergencyVisitStatus.approved:
-          return AppLocalizations.of(context)!.status_approved;
-        case EmergencyVisitStatus.rejected:
-          return AppLocalizations.of(context)!.status_rejected;
-        case EmergencyVisitStatus.completed:
-          return AppLocalizations.of(context)!.status_completed;
-        case EmergencyVisitStatus.cancelled:
-          return AppLocalizations.of(context)!.status_canceled;
-      }
-    }
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade200),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              AppLocalizations.of(context)!
-                  .emergency_visit_request_number(visit.code.toString()),
-              style: CustomStyle.mediumTextBRed,
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: CustomStyle.redDark.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(16),
-              border:
-                  Border.all(color: CustomStyle.redDark.withValues(alpha: 0.2)),
-            ),
-            child: Text(
-              pretty(visit.status),
-              style:
-                  CustomStyle.smallTextB.copyWith(color: CustomStyle.redDark),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildRequestInfo(BuildContext context, EmergencyVisitData visit) {
-    Widget rowItem(String label, String value) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 130,
-              child: Text(label, style: CustomStyle.smallTextBRed),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                value.isNotEmpty ? value : '-',
-                style: CustomStyle.smallText,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          rowItem(
-            AppLocalizations.of(context)!.emergency_visit_requested_by_label,
-            widget.requestedByName,
+          Text(
+            AppLocalizations.of(context)!.emergency_visit_requested_sentence(
+              widget.requestedByName.isNotEmpty
+                  ? widget.requestedByName
+                  : visit.requestedBy,
+              _formatTimestamp(visit.createdAt),
+            ),
+            style: CustomStyle.smallText,
           ),
-          rowItem(
-            AppLocalizations.of(context)!.emergency_visit_description_label,
-            visit.description,
-          ),
+          const SizedBox(height: 12),
           Text(
             AppLocalizations.of(context)!.emergency_visit_comments_title,
             style: CustomStyle.mediumTextBRed,
@@ -473,7 +407,13 @@ class _EmergencyVisitDetailsScreenState
         out.add(EmergencyVisitStatus.cancelled);
       }
       if (current == EmergencyVisitStatus.rejected) {
-        out.add(EmergencyVisitStatus.cancelled);
+        out.add(EmergencyVisitStatus.completed);
+      }
+      if (current == EmergencyVisitStatus.approved) {
+        out.add(EmergencyVisitStatus.completed);
+      }
+      if (current == EmergencyVisitStatus.cancelled) {
+        out.add(EmergencyVisitStatus.completed);
       }
     }
 
@@ -651,12 +591,13 @@ class _EmergencyVisitDetailsScreenState
   }
 
   Widget _buildStatusTrackers({
-    required Timestamp createdAt,
-    required List<CommentData> comments,
     required List<EmergencyVisitStatus> changeOptions,
+    required EmergencyVisitData visit,
     required VoidCallback? onChangeTap,
   }) {
-    final changes = comments.where((c) => c.newStatus != c.oldStatus).toList()
+    final changes = visit.comments
+        .where((c) => c.newStatus != c.oldStatus)
+        .toList()
       ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
 
     String pretty(EmergencyVisitStatus s) {
@@ -677,7 +618,7 @@ class _EmergencyVisitDetailsScreenState
     // Step 1 is always created.
     final step1 = _TrackerStep(
       label: AppLocalizations.of(context)!.status_created,
-      date: createdAt,
+      date: visit.createdAt,
     );
 
     // Default: no changes yet -> steps show '-'
@@ -687,26 +628,14 @@ class _EmergencyVisitDetailsScreenState
     if (changes.isNotEmpty) {
       final first = changes.first;
       if (first.newStatus != EmergencyVisitStatus.pending) {
-        final isIntermediate =
-            first.newStatus == EmergencyVisitStatus.approved ||
-                first.newStatus == EmergencyVisitStatus.rejected;
-
-        if (isIntermediate) {
-          step2 = _TrackerStep(
-              label: pretty(first.newStatus), date: first.createdAt);
-          if (changes.length >= 2) {
-            final last = changes.last;
-            if (last.newStatus != first.newStatus) {
-              step3 = _TrackerStep(
-                  label: pretty(last.newStatus), date: last.createdAt);
-            }
+        step2 =
+            _TrackerStep(label: pretty(first.newStatus), date: first.createdAt);
+        if (changes.length >= 2) {
+          final last = changes.last;
+          if (last.newStatus != first.newStatus) {
+            step3 = _TrackerStep(
+                label: pretty(last.newStatus), date: last.createdAt);
           }
-        } else {
-          // Direct final change like pending -> cancelled (or completed).
-          // Step2 should be marked done but with empty text, step3 is final status.
-          step2 = _TrackerStep(label: '', date: first.createdAt);
-          step3 = _TrackerStep(
-              label: pretty(first.newStatus), date: first.createdAt);
         }
       }
     }
@@ -714,24 +643,52 @@ class _EmergencyVisitDetailsScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: [
-            if (onChangeTap != null && changeOptions.isNotEmpty)
-              OutlinedButton.icon(
-                onPressed: onChangeTap,
-                icon: const Icon(Icons.tune, size: 18),
-                label: Text(
-                  AppLocalizations.of(context)!
-                      .emergency_visit_change_status_button,
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade50,
+            border: Border(
+              bottom: BorderSide(color: Colors.grey.shade200),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: CustomStyle.redDark.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                      color: CustomStyle.redDark.withValues(alpha: 0.2)),
                 ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: CustomStyle.redDark,
-                  side: BorderSide(color: Colors.grey.shade300),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                child: Text(
+                  visit.status == EmergencyVisitStatus.pending
+                      ? AppLocalizations.of(context)!.status_pending
+                      : pretty(visit.status),
+                  style: CustomStyle.smallTextB
+                      .copyWith(color: CustomStyle.redDark),
                 ),
               ),
-          ],
+              const SizedBox(width: 16),
+              if (onChangeTap != null && changeOptions.isNotEmpty)
+                OutlinedButton.icon(
+                  onPressed: onChangeTap,
+                  icon: const Icon(Icons.tune, size: 18),
+                  label: Text(
+                    AppLocalizations.of(context)!
+                        .emergency_visit_change_status_button,
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: CustomStyle.redDark,
+                    side: BorderSide(color: Colors.grey.shade300),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+            ],
+          ),
         ),
         const SizedBox(height: 8),
         _StatusFlowTracker(
