@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 enum AppMessageId {
@@ -31,13 +31,14 @@ class AppMessage {
   final AppMessageId id;
   AppMessage({required this.id});
   String getText(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     switch (id) {
       case AppMessageId.resetPasswordEmailSent:
-        return S.of(context).reset_email_sent;
+        return l10n.reset_email_sent;
       case AppMessageId.emailConfirmationSent:
-        return S.of(context).confirmEmailSent;
+        return l10n.confirmEmailSent;
       case AppMessageId.profileInfoUpdated:
-        return S.of(context).info_updated;
+        return l10n.info_updated;
       default:
         return 'This is message';
     }

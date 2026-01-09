@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +22,12 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).login),
+      appBar: CustomAppBar(title: l10n.login),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -43,7 +44,7 @@ class LoginScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(
                           left: 16.0, right: 16.0, bottom: 50.0),
                       child: Text(
-                        S.of(context).login_welcome,
+                        l10n.login_welcome,
                         style: CustomStyle.largeText30,
                         textAlign: TextAlign.center,
                       ),
@@ -55,7 +56,7 @@ class LoginScreen extends StatelessWidget {
                         controller: emailController,
                         textDirection: TextDirection.ltr,
                         decoration: InputDecoration(
-                          labelText: S.of(context).email,
+                          labelText: l10n.email,
                           icon: const Icon(Icons.email),
                           labelStyle: CustomStyle.smallText,
                           border: const OutlineInputBorder(),
@@ -71,7 +72,7 @@ class LoginScreen extends StatelessWidget {
                         textDirection: TextDirection.ltr,
                         obscureText: true,
                         decoration: InputDecoration(
-                          labelText: S.of(context).password,
+                          labelText: l10n.password,
                           icon: const Icon(Icons.key),
                           labelStyle: CustomStyle.smallText,
                           border: const OutlineInputBorder(),
@@ -91,7 +92,7 @@ class LoginScreen extends StatelessWidget {
                         },
                         style: CustomStyle.normalButton,
                         child: Text(
-                          S.of(context).login,
+                          l10n.login,
                           style: CustomStyle.normalButtonText,
                         ),
                       ),
@@ -103,7 +104,7 @@ class LoginScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: TextButton(
                               child: Text(
-                                S.of(context).forgot_password,
+                                l10n.forgot_password,
                                 style: CustomStyle.smallText,
                                 softWrap: true,
                                 overflow: TextOverflow.visible,
@@ -120,7 +121,7 @@ class LoginScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: TextButton(
                               child: Text(
-                                S.of(context).don_t_have_an_account,
+                                l10n.don_t_have_an_account,
                                 style: CustomStyle.smallText,
                                 softWrap: true,
                                 overflow: TextOverflow.visible,
@@ -143,7 +144,7 @@ class LoginScreen extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                              S.of(context).or,
+                              l10n.or,
                               style: CustomStyle.smallText,
                             ),
                           ),
@@ -161,7 +162,7 @@ class LoginScreen extends StatelessWidget {
                         icon: const Icon(FontAwesomeIcons.google,
                             color: Colors.white),
                         label: Text(
-                          S.of(context).continue_with_google,
+                          l10n.continue_with_google,
                           style: CustomStyle.normalButtonTextSmallWhite,
                         ),
                         style: ElevatedButton.styleFrom(

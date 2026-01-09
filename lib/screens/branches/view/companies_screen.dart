@@ -1,4 +1,5 @@
 import 'package:card_loading/card_loading.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
@@ -9,7 +10,6 @@ import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
@@ -95,10 +95,11 @@ class CompaniesScreenState extends State<CompaniesScreen> {
   }
 
   Widget _buildCompanies(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     AppLoading().dismiss(context: context, screen: AppScreen.viewCompanies);
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).companies),
+      appBar: CustomAppBar(title: l10n.companies),
       floatingActionButton: !_permissions.canAddCompanies
           ? null
           : FloatingActionButton.extended(
@@ -112,7 +113,7 @@ class CompaniesScreenState extends State<CompaniesScreen> {
                 size: 30,
                 color: Colors.white,
               ),
-              label: Text(S.of(context).addCompany,
+              label: Text(l10n.addCompany,
                   style: CustomStyle.mediumTextWhite),
             ),
       floatingActionButtonLocation: !_permissions.canAddCompanies
@@ -131,7 +132,7 @@ class CompaniesScreenState extends State<CompaniesScreen> {
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    labelText: S.of(context).searchByNameCode,
+                    labelText: l10n.searchByNameCode,
                     labelStyle: CustomStyle.smallTextGrey,
                     border: const OutlineInputBorder(),
                     prefixIcon:
@@ -147,7 +148,7 @@ class CompaniesScreenState extends State<CompaniesScreen> {
               ),
               _filteredCompanies.isEmpty
                   ? Text(
-                      S.of(context).noCompaniesToView,
+                      l10n.noCompaniesToView,
                       style: CustomStyle.mediumTextB,
                     )
                   : Flexible(
@@ -189,12 +190,13 @@ class CompaniesScreenState extends State<CompaniesScreen> {
   }
 
   Widget _buildLoading(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (ModalRoute.of(context)?.isCurrent ?? false) {
       AppLoading().show(context: context, screen: AppScreen.viewCompanies);
     }
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).companies),
+      appBar: CustomAppBar(title: l10n.companies),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -203,7 +205,7 @@ class CompaniesScreenState extends State<CompaniesScreen> {
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 decoration: InputDecoration(
-                  labelText: S.of(context).searchByNameCode,
+                  labelText: l10n.searchByNameCode,
                   labelStyle: CustomStyle.smallTextGrey,
                   border: const OutlineInputBorder(),
                   prefixIcon:

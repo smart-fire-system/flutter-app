@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/models/visit_report_data.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/visit_report_details.dart';
@@ -5,7 +6,6 @@ import 'package:fire_alarm_system/screens/reports/view/helper/visit_report_summa
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/event.dart';
@@ -50,6 +50,7 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
   }
 
   Widget _buildStateCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     late Color cardColor;
     late Color borderColor;
     late String title;
@@ -57,28 +58,28 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
     if (_isPendingCurrentEmployeeSign()) {
       cardColor = Colors.red.shade50;
       borderColor = CustomStyle.redLight;
-      title = S.of(context).sign_employee_required_title;
-      subtitle = S.of(context).sign_employee_required_subtitle;
+      title = l10n.sign_employee_required_title;
+      subtitle = l10n.sign_employee_required_subtitle;
     } else if (_isPendingOtherEmployeeSign()) {
       cardColor = Colors.orange.shade50;
       borderColor = Colors.orangeAccent;
-      title = S.of(context).waiting_employee_signature_title;
-      subtitle = S.of(context).waiting_employee_signature_subtitle;
+      title = l10n.waiting_employee_signature_title;
+      subtitle = l10n.waiting_employee_signature_subtitle;
     } else if (_isPendingCurrentClientSign()) {
       cardColor = Colors.red.shade50;
       borderColor = CustomStyle.redLight;
-      title = S.of(context).sign_client_required_title;
-      subtitle = S.of(context).visit_report_wait_client_sign_subtitle;
+      title = l10n.sign_client_required_title;
+      subtitle = l10n.visit_report_wait_client_sign_subtitle;
     } else if (_isPendingOtherClientSign()) {
       cardColor = Colors.orange.shade50;
       borderColor = Colors.orangeAccent;
-      title = S.of(context).contract_wait_other_client_sign_title;
-      subtitle = S.of(context).visit_report_wait_other_client_sign_subtitle;
+      title = l10n.contract_wait_other_client_sign_title;
+      subtitle = l10n.visit_report_wait_other_client_sign_subtitle;
     } else {
       cardColor = Colors.green.shade50;
       borderColor = Colors.greenAccent;
-      title = S.of(context).visit_reports;
-      subtitle = S.of(context).signed;
+      title = l10n.visit_reports;
+      subtitle = l10n.signed;
     }
 
     return Card(
@@ -116,14 +117,15 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
   }
 
   Widget _buildSignActionCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final bool canEmployeeSign = _isPendingCurrentEmployeeSign();
     final bool canClientSign = _isPendingCurrentClientSign();
     if (!canEmployeeSign && !canClientSign) return const SizedBox.shrink();
 
     final String title = canEmployeeSign
-        ? S.of(context).signature_employee_title
-        : S.of(context).signature_client_title;
-    final String subtitle = S.of(context).signature_confirm_dialog_body;
+        ? l10n.signature_employee_title
+        : l10n.signature_client_title;
+    final String subtitle = l10n.signature_confirm_dialog_body;
 
     return Card(
       color: Colors.white,
@@ -178,6 +180,7 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
 
   void _showSignConfirmBottomSheet(BuildContext context,
       {required String title}) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       isScrollControlled: false,
@@ -199,12 +202,12 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
                       const Icon(Icons.privacy_tip_outlined,
                           color: CustomStyle.redDark),
                       const SizedBox(width: 8),
-                      Text(S.of(context).signature_confirm_dialog_title(title),
+                      Text(l10n.signature_confirm_dialog_title(title),
                           style: CustomStyle.mediumTextBRed),
                     ],
                   ),
                   const SizedBox(height: 12),
-                  Text(S.of(context).signature_confirm_dialog_body_visit_report,
+                  Text(l10n.signature_confirm_dialog_body_visit_report,
                       style: const TextStyle(color: CustomStyle.greyDark)),
                   const SizedBox(height: 20),
                   Container(
@@ -219,7 +222,7 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          S.of(context).slide_to_confirm,
+                          l10n.slide_to_confirm,
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
@@ -260,10 +263,11 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
 
   Widget _buildLinearStateDiagram() {
     final int stage = _currentStageIndex();
+    final l10n = AppLocalizations.of(context)!;
     final List<String> labels = <String>[
-      S.of(context).linear_stage_draft,
-      S.of(context).linear_stage_employee_signed,
-      S.of(context).linear_stage_client_signed
+      l10n.linear_stage_draft,
+      l10n.linear_stage_employee_signed,
+      l10n.linear_stage_client_signed
     ];
 
     Color dotColor(int idx) {
@@ -344,8 +348,9 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).view_visit_report),
+      appBar: CustomAppBar(title: l10n.view_visit_report),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: BlocBuilder<ReportsBloc, ReportsState>(
@@ -358,7 +363,7 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(
-                            S.of(context).contract_sharing_updated_success,
+                            l10n.contract_sharing_updated_success,
                             style: CustomStyle.smallTextBWhite),
                         backgroundColor: Colors.green,
                       ));
@@ -368,7 +373,7 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
                     state.message = null;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(S.of(context).contract_signed_success,
+                        content: Text(l10n.contract_signed_success,
                             style: CustomStyle.smallTextBWhite),
                         backgroundColor: Colors.green,
                       ));
@@ -378,7 +383,7 @@ class _ViewVisitReportScreenState extends State<ViewVisitReportScreen> {
                     state.message = null;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(S.of(context).visit_report_signed_success,
+                        content: Text(l10n.visit_report_signed_success,
                             style: CustomStyle.smallTextBWhite),
                         backgroundColor: Colors.green,
                       ));

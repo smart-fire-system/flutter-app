@@ -1,6 +1,5 @@
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/models/user.dart';
@@ -22,12 +21,13 @@ class CustomAccessDenied extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(
           type == AccessDeniedType.accountNeedsVerification
-              ? S.of(context).account_not_verified_title
-              : S.of(context).access_denied_title,
+              ? l10n.account_not_verified_title
+              : l10n.access_denied_title,
           style: CustomStyle.appBarText,
         ),
         actions: <Widget>[
@@ -68,8 +68,8 @@ class CustomAccessDenied extends StatelessWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       type == AccessDeniedType.accountNeedsVerification
-                          ? S.of(context).account_not_verified_message
-                          : S.of(context).access_denied_message,
+                          ? l10n.account_not_verified_message
+                          : l10n.access_denied_message,
                       style: CustomStyle.largeTextB,
                       textAlign: TextAlign.center,
                     ),
@@ -85,7 +85,7 @@ class CustomAccessDenied extends StatelessWidget {
                       },
                       style: CustomStyle.normalButton,
                       child: Text(
-                        S.of(context).logout,
+                        l10n.logout,
                         style: CustomStyle.normalButtonText,
                       ),
                     ),
@@ -103,7 +103,7 @@ class CustomAccessDenied extends StatelessWidget {
                         },
                         style: CustomStyle.normalButton,
                         child: Text(
-                          S.of(context).resend_verification_email,
+                          l10n.resend_verification_email,
                           style: CustomStyle.normalButtonText,
                         ),
                       ),

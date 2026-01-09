@@ -1,8 +1,8 @@
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'dart:async';
 
@@ -65,6 +65,7 @@ class LocalizationUtil {
   }
 
   static void showEditLanguageDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -74,7 +75,7 @@ class LocalizationUtil {
           ),
           backgroundColor: Colors.white, // Custom background color
           title: Text(
-            S.of(context).select_language,
+            l10n.select_language,
             style: CustomStyle.largeTextB,
             softWrap: true,
             overflow: TextOverflow.visible,
@@ -112,7 +113,7 @@ class LocalizationUtil {
                 Navigator.of(context).pop(); // Close the dialog
               },
               child: Text(
-                S.of(context).cancel,
+                l10n.cancel,
                 style: CustomStyle.smallText,
               ),
             ),

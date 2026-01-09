@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/screens/home/view/view.dart';
 import 'package:fire_alarm_system/screens/home/bloc/bloc.dart';
@@ -115,7 +114,6 @@ class _FireAlarmAppState extends State<FireAlarmApp> {
           ],
           localizationsDelegates: const [
             AppLocalizations.delegate,
-            S.delegate,
             CountryLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,

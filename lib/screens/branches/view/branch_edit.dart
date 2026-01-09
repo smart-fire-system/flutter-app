@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:card_loading/card_loading.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
@@ -16,7 +17,6 @@ import 'package:fire_alarm_system/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
@@ -75,6 +75,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<BranchesBloc, BranchesState>(
       builder: (context, state) {
         AppLoading().dismiss(
@@ -95,7 +96,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
               state.message = null;
               CustomAlert.showSuccess(
                 context: context,
-                title: S.of(context).branchModified,
+                title: l10n.branchModified,
               ).then((_) {
                 if (context.mounted) {
                   Navigator.of(context).pop();
@@ -149,12 +150,12 @@ class EditBranchScreenState extends State<EditBranchScreen> {
   }
 
   Widget _buildEditor(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     AppLoading().dismiss(context: context, screen: AppScreen.editBranches);
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).editBranch),
+      appBar: CustomAppBar(title: l10n.editBranch),
       floatingActionButton: FloatingActionButton.extended(
-        label: Text(S.of(context).save_changes,
-            style: CustomStyle.mediumTextWhite),
+        label: Text(l10n.save_changes, style: CustomStyle.mediumTextWhite),
         backgroundColor: Colors.green,
         icon: const Icon(
           Icons.save,
@@ -177,16 +178,16 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                 children: [
                   _buildSectionCard(
                     context,
-                    title: S.of(context).branchInformation,
+                    title: l10n.branchInformation,
                     icon: Icons.info_outline,
                     children: [
                       CustomTextField(
-                        label: S.of(context).branchName,
+                        label: l10n.branchName,
                         controller: _nameController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).address,
+                        label: l10n.address,
                         controller: _addressController,
                       ),
                     ],
@@ -194,17 +195,17 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                   const SizedBox(height: 16),
                   _buildSectionCard(
                     context,
-                    title: S.of(context).contactInformation,
+                    title: l10n.contactInformation,
                     icon: Icons.contact_phone_outlined,
                     children: [
                       CustomTextField(
-                        label: S.of(context).phone,
+                        label: l10n.phone,
                         controller: _phoneController,
                         inputType: TextInputType.phone,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).email,
+                        label: l10n.email,
                         controller: _emailController,
                         inputType: TextInputType.emailAddress,
                       ),
@@ -213,12 +214,12 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                   const SizedBox(height: 16),
                   _buildSectionCard(
                     context,
-                    title: S.of(context).companyInformation,
+                    title: l10n.companyInformation,
                     icon: Icons.business_outlined,
                     children: [
                       CustomDropdownSingle(
-                        title: S.of(context).company,
-                        subtitle: S.of(context).changeCompany,
+                        title: l10n.company,
+                        subtitle: l10n.changeCompany,
                         initialItem: CustomDropdownItem(
                           title: _branch!.company.name,
                           value: _branch!.company.id!,
@@ -236,7 +237,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).comment,
+                        label: l10n.comment,
                         controller: _commentController,
                         maxLines: 3,
                       ),
@@ -245,36 +246,36 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                   const SizedBox(height: 16),
                   _buildSectionCard(
                     context,
-                    title: S.of(context).firstPartyInformation,
+                    title: l10n.firstPartyInformation,
                     icon: Icons.person_outline,
                     children: [
                       CustomTextField(
-                        label: S.of(context).firstPartyName,
+                        label: l10n.firstPartyName,
                         controller: _firstPartyNameController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).firstPartyRepresentativeName,
+                        label: l10n.firstPartyRepresentativeName,
                         controller: _firstPartyRepNameController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).firstPartyAddress,
+                        label: l10n.firstPartyAddress,
                         controller: _firstPartyAddressController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).firstPartyCommercialRecord,
+                        label: l10n.firstPartyCommercialRecord,
                         controller: _firstPartyCommercialRecordController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).firstPartyG,
+                        label: l10n.firstPartyG,
                         controller: _firstPartyGController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).firstPartyIdNumber,
+                        label: l10n.firstPartyIdNumber,
                         controller: _firstPartyIdNumberController,
                       ),
                     ],
@@ -282,7 +283,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                   const SizedBox(height: 16),
                   _buildSectionCard(
                     context,
-                    title: S.of(context).firstPartySignature,
+                    title: l10n.firstPartySignature,
                     icon: Icons.edit,
                     children: [
                       Container(
@@ -333,9 +334,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                                                 fit: BoxFit.contain,
                                               )
                                             : Text(
-                                                S
-                                                    .of(context)
-                                                    .tapToUploadSignature,
+                                                l10n.tapToUploadSignature,
                                                 style: CustomStyle.mediumTextB,
                                                 textAlign: TextAlign.center,
                                               ),
@@ -352,11 +351,11 @@ class EditBranchScreenState extends State<EditBranchScreen> {
                     const SizedBox(height: 16),
                     _buildSectionCard(
                       context,
-                      title: S.of(context).actions,
+                      title: l10n.actions,
                       icon: Icons.warning_amber_rounded,
                       children: [
                         CustomNormalButton(
-                          label: S.of(context).deleteBranch,
+                          label: l10n.deleteBranch,
                           backgroundColor: CustomStyle.redDark,
                           fullWidth: true,
                           onPressed: () {
@@ -408,45 +407,46 @@ class EditBranchScreenState extends State<EditBranchScreen> {
   }
 
   void _saveChanges(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     if (_nameController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterBranchName,
+        title: l10n.enterBranchName,
       );
       return;
     } else if (_addressController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterBranchAddress,
+        title: l10n.enterBranchAddress,
       );
       return;
     } else if (_phoneController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterBranchPhone,
+        title: l10n.enterBranchPhone,
       );
       return;
     } else if (_emailController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterBranchEmail,
+        title: l10n.enterBranchEmail,
       );
       return;
     }
 
     int? confirm = await CustomAlert.showConfirmation(
       context: context,
-      title: S.of(context).editBranch,
-      subtitle: S.of(context).branchModifyWarning,
+      title: l10n.editBranch,
+      subtitle: l10n.branchModifyWarning,
       buttons: [
         CustomAlertConfirmationButton(
-          title: S.of(context).yesSaveChanges,
+          title: l10n.yesSaveChanges,
           value: 0,
           backgroundColor: Colors.green,
           textColor: Colors.white,
         ),
         CustomAlertConfirmationButton(
-          title: S.of(context).noCancel,
+          title: l10n.noCancel,
           value: 1,
           backgroundColor: CustomStyle.greyDark,
           textColor: Colors.white,
@@ -457,7 +457,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
       AppLoading().show(
         context: context,
         screen: AppScreen.editBranches,
-        title: S.of(context).waitSavingBranch,
+        title: l10n.waitSavingBranch,
         type: 'edit',
       );
 
@@ -487,19 +487,20 @@ class EditBranchScreenState extends State<EditBranchScreen> {
   }
 
   void _deleteBranch(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     int? confirm = await CustomAlert.showConfirmation(
       context: context,
-      title: S.of(context).deleteBranch,
-      subtitle: S.of(context).branchDeleteWarning,
+      title: l10n.deleteBranch,
+      subtitle: l10n.branchDeleteWarning,
       buttons: [
         CustomAlertConfirmationButton(
-          title: S.of(context).yesDeleteBranch,
+          title: l10n.yesDeleteBranch,
           value: 0,
           backgroundColor: CustomStyle.redDark,
           textColor: Colors.white,
         ),
         CustomAlertConfirmationButton(
-          title: S.of(context).noCancel,
+          title: l10n.noCancel,
           value: 1,
           backgroundColor: CustomStyle.greyDark,
           textColor: Colors.white,
@@ -510,7 +511,7 @@ class EditBranchScreenState extends State<EditBranchScreen> {
       AppLoading().show(
         context: context,
         screen: AppScreen.editBranches,
-        title: S.of(context).waitDeltingBranch,
+        title: l10n.waitDeltingBranch,
         type: 'delete',
       );
       context.read<BranchesBloc>().add(
@@ -522,9 +523,10 @@ class EditBranchScreenState extends State<EditBranchScreen> {
   }
 
   Widget _buildLoading(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).editBranch),
+      appBar: CustomAppBar(title: l10n.editBranch),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

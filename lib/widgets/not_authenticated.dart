@@ -1,5 +1,5 @@
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
@@ -8,10 +8,11 @@ class CustomNotAuthenticated extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          S.of(context).app_name,
+          l10n.app_name,
           style: CustomStyle.appBarText,
         ),
         actions: <Widget>[
@@ -36,7 +37,7 @@ class CustomNotAuthenticated extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      S.of(context).not_authenticated,
+                      l10n.not_authenticated,
                       style: CustomStyle.largeTextB,
                       textAlign: TextAlign.center,
                     ),
@@ -50,7 +51,7 @@ class CustomNotAuthenticated extends StatelessWidget {
                       },
                       style: CustomStyle.normalButton,
                       child: Text(
-                        S.of(context).login,
+                        l10n.login,
                         style: CustomStyle.normalButtonText,
                       ),
                     ),

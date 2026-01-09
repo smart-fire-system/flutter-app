@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/utils/data_validator_util.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -35,14 +35,15 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).edit_information),
+      appBar: CustomAppBar(title: l10n.edit_information),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => widget.onSaveClick(_nameController.text, _phoneController.text, _countryCode),
         backgroundColor: Colors.green,
-        tooltip: S.of(context).edit_information,
+        tooltip: l10n.edit_information,
         icon: const Icon(Icons.save),
-        label: Text(S.of(context).save_changes),
+        label: Text(l10n.save_changes),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -54,7 +55,7 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: S.of(context).name,
+                  labelText: l10n.name,
                   prefixIcon: const Icon(Icons.person),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12)),
@@ -84,7 +85,7 @@ class _AddPhoneScreenState extends State<AddPhoneScreen> {
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
                       decoration: InputDecoration(
-                        labelText: S.of(context).phone,
+                        labelText: l10n.phone,
                         prefixIcon: const Icon(Icons.phone),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12)),

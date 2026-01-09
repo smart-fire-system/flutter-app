@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +19,10 @@ class ErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).error),
+      appBar: CustomAppBar(title: l10n.error),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -51,7 +52,7 @@ class ErrorScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  S.of(context).error,
+                  l10n.error,
                   style: CustomStyle.largeText25B,
                   textAlign: TextAlign.center,
                 ),

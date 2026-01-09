@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/notification.dart';
 import 'package:fire_alarm_system/utils/date.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
@@ -7,7 +8,6 @@ import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/screens/home/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/home/bloc/state.dart';
 import 'package:intl/intl.dart';
@@ -211,6 +211,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state is HomeAuthenticated) {
@@ -296,7 +297,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                   },
                 );
           return Scaffold(
-            appBar: CustomAppBar(title: S.of(context).notifications),
+            appBar: CustomAppBar(title: l10n.notifications),
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

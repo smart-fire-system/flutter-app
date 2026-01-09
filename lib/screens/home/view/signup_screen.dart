@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/data_validator_util.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
@@ -22,13 +22,14 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     TextEditingController nameController = TextEditingController();
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     TextEditingController confirmPasswordController = TextEditingController();
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).signup),
+      appBar: CustomAppBar(title: l10n.signup),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -45,7 +46,7 @@ class SignUpScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(
                           left: 16.0, right: 16.0, bottom: 50.0),
                       child: Text(
-                        S.of(context).signup_welcome,
+                        l10n.signup_welcome,
                         style: CustomStyle.largeText30,
                         textAlign: TextAlign.center,
                       ),
@@ -58,7 +59,7 @@ class SignUpScreen extends StatelessWidget {
                         keyboardType: TextInputType.name,
                         decoration: InputDecoration(
                           icon: const Icon(Icons.person),
-                          labelText: S.of(context).name,
+                          labelText: l10n.name,
                           labelStyle: CustomStyle.smallText,
                           border: const OutlineInputBorder(),
                         ),
@@ -74,7 +75,7 @@ class SignUpScreen extends StatelessWidget {
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
                           icon: const Icon(Icons.email),
-                          labelText: S.of(context).email,
+                          labelText: l10n.email,
                           labelStyle: CustomStyle.smallText,
                           border: const OutlineInputBorder(),
                         ),
@@ -91,7 +92,7 @@ class SignUpScreen extends StatelessWidget {
                         obscureText: true,
                         decoration: InputDecoration(
                           icon: const Icon(Icons.key),
-                          labelText: S.of(context).password,
+                          labelText: l10n.password,
                           labelStyle: CustomStyle.smallText,
                           border: const OutlineInputBorder(),
                         ),
@@ -108,7 +109,7 @@ class SignUpScreen extends StatelessWidget {
                         obscureText: true,
                         decoration: InputDecoration(
                           icon: const Icon(Icons.key),
-                          labelText: S.of(context).confirm_password,
+                          labelText: l10n.confirm_password,
                           labelStyle: CustomStyle.smallText,
                           border: const OutlineInputBorder(),
                         ),
@@ -123,24 +124,24 @@ class SignUpScreen extends StatelessWidget {
                           if (nameController.text.isEmpty) {
                             CustomAlert.showError(
                               context: context,
-                              title: S.of(context).enter_name,
+                              title: l10n.enter_name,
                             );
                           } else if (!DataValidator()
                               .isValidEmail(emailController.text)) {
                             CustomAlert.showError(
                               context: context,
-                              title: S.of(context).valid_email,
+                              title: l10n.valid_email,
                             );
                           } else if (passwordController.text.length < 6) {
                             CustomAlert.showError(
                               context: context,
-                              title: S.of(context).password_length,
+                              title: l10n.password_length,
                             );
                           } else if (passwordController.text !=
                               confirmPasswordController.text) {
                             CustomAlert.showError(
                               context: context,
-                              title: S.of(context).password_mismatch,
+                              title: l10n.password_mismatch,
                             );
                           } else {
                             onSignUpClick(
@@ -152,14 +153,14 @@ class SignUpScreen extends StatelessWidget {
                         },
                         style: CustomStyle.normalButton,
                         child: Text(
-                          S.of(context).signup,
+                          l10n.signup,
                           style: CustomStyle.normalButtonText,
                         ),
                       ),
                     ),
                     TextButton(
                       child: Text(
-                        S.of(context).already_have_an_account,
+                        l10n.already_have_an_account,
                         style: CustomStyle.smallText,
                       ),
                       onPressed: () {
@@ -175,7 +176,7 @@ class SignUpScreen extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
-                              S.of(context).or,
+                              l10n.or,
                               style: CustomStyle.smallText,
                             ),
                           ),
@@ -193,7 +194,7 @@ class SignUpScreen extends StatelessWidget {
                         icon: const FaIcon(FontAwesomeIcons.google,
                             color: Colors.white),
                         label: Text(
-                          S.of(context).continue_with_google,
+                          l10n.continue_with_google,
                           style: CustomStyle.normalButtonTextSmallWhite,
                         ),
                         style: ElevatedButton.styleFrom(

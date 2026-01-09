@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/screens/home/view/home_screen.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/screens/home/view/notifications_screen.dart';
 import 'package:fire_alarm_system/utils/app_version.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
@@ -20,10 +20,11 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: CustomAppBar(
-        title: S.of(context).app_name,
+        title: l10n.app_name,
         leading: const Icon(Icons.home),
       ),
       body: SingleChildScrollView(
@@ -41,8 +42,8 @@ class _MainScreenState extends State<MainScreen> {
             // Large featured card - Users
             LargeCard(
               icon: Icons.bar_chart_rounded,
-              title: S.of(context).system_monitoring_control,
-              subtitle: S.of(context).system_monitoring_card_subtitle,
+              title: l10n.system_monitoring_control,
+              subtitle: l10n.system_monitoring_card_subtitle,
               titleColor: Colors.white,
               subtitleColor: Colors.white,
               gradient: const LinearGradient(
@@ -58,16 +59,16 @@ class _MainScreenState extends State<MainScreen> {
             const SizedBox(height: 16),
             WideCard(
                 icon: Icons.person,
-                title: S.of(context).profile,
-                subtitle: S.of(context).profile_subtitle,
+                title: l10n.profile,
+                subtitle: l10n.profile_subtitle,
                 color: const Color(0xFFEF4444),
                 onTap: () =>
                     homeScreenKey.currentState!.setCurrentTab(AppTab.profile)),
             const SizedBox(height: 16),
             WideCard(
                 icon: Icons.assignment,
-                title: S.of(context).reports_contracts_title,
-                subtitle: S.of(context).reports_contracts_subtitle,
+                title: l10n.reports_contracts_title,
+                subtitle: l10n.reports_contracts_subtitle,
                 color: const Color(0xFFEF4444),
                 onTap: () =>
                     homeScreenKey.currentState!.setCurrentTab(AppTab.reports)),
@@ -76,8 +77,8 @@ class _MainScreenState extends State<MainScreen> {
             // Full width card - Branches
             WideCard(
               icon: Icons.group_rounded,
-              title: S.of(context).users_and_branches,
-              subtitle: S.of(context).users_and_branches_subtitle,
+              title: l10n.users_and_branches,
+              subtitle: l10n.users_and_branches_subtitle,
               color: const Color(0xFFEF4444),
               onTap: () {
                 homeScreenKey.currentState!
@@ -87,8 +88,8 @@ class _MainScreenState extends State<MainScreen> {
             const SizedBox(height: 16),
             WideCard(
               icon: Icons.qr_code_scanner,
-              title: 'Validate signature',
-              subtitle: 'Enter name or scan QR to verify',
+              title: l10n.signatures_title,
+              subtitle: l10n.signatures_enter_or_scan_hint,
               color: const Color(0xFFF43F5E),
               onTap: () => TabNavigator.home.currentState?.pushNamed(
                 '/signatures',
@@ -97,8 +98,8 @@ class _MainScreenState extends State<MainScreen> {
             const SizedBox(height: 16),
             WideCard(
               icon: Icons.notifications_rounded,
-              title: S.of(context).notifications,
-              subtitle: S.of(context).notifications_subtitle,
+              title: l10n.notifications,
+              subtitle: l10n.notifications_subtitle,
               color: const Color(0xFFEF4444),
               onTap: () {
                 Navigator.push(
@@ -110,8 +111,8 @@ class _MainScreenState extends State<MainScreen> {
             const SizedBox(height: 16),
             LargeCard(
               icon: Icons.wifi_off_rounded,
-              title: S.of(context).offline_mode,
-              subtitle: S.of(context).offline_mode_subtitle,
+              title: l10n.offline_mode,
+              subtitle: l10n.offline_mode_subtitle,
               titleColor: Colors.white,
               subtitleColor: Colors.white,
               gradient: const LinearGradient(

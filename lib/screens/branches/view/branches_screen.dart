@@ -1,4 +1,5 @@
 import 'package:card_loading/card_loading.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
@@ -11,7 +12,6 @@ import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
@@ -103,10 +103,11 @@ class BranchesScreenState extends State<BranchesScreen> {
   }
 
   Widget _buildBranches(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     AppLoading().dismiss(context: context, screen: AppScreen.viewBranches);
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).branches),
+      appBar: CustomAppBar(title: l10n.branches),
       floatingActionButton: !_permissions.canAddBranches
           ? null
           : FloatingActionButton.extended(
@@ -115,7 +116,7 @@ class BranchesScreenState extends State<BranchesScreen> {
                 if (_companies.isEmpty) {
                   CustomAlert.showError(
                     context: context,
-                    title: S.of(context).noCompaniesToAddBranch,
+                    title: l10n.noCompaniesToAddBranch,
                   );
                   return;
                 }
@@ -127,7 +128,7 @@ class BranchesScreenState extends State<BranchesScreen> {
                 size: 30,
                 color: Colors.white,
               ),
-              label: Text(S.of(context).addBranch,
+              label: Text(l10n.addBranch,
                   style: CustomStyle.mediumTextWhite),
             ),
       floatingActionButtonLocation: !_permissions.canAddBranches
@@ -142,10 +143,10 @@ class BranchesScreenState extends State<BranchesScreen> {
           child: Column(
             children: [
               CustomDropdownMulti(
-                title: S.of(context).companies,
-                subtitle: S.of(context).selectCompanies,
-                allSelectedText: S.of(context).allCompanies,
-                noSelectedText: S.of(context).noCompaniesSelected,
+                title: l10n.companies,
+                subtitle: l10n.selectCompanies,
+                allSelectedText: l10n.allCompanies,
+                noSelectedText: l10n.noCompaniesSelected,
                 items: _companies.map((company) {
                   return CustomDropdownItem(
                       title: company.name, value: company.id!);
@@ -167,7 +168,7 @@ class BranchesScreenState extends State<BranchesScreen> {
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    labelText: S.of(context).searchByNameCode,
+                    labelText: l10n.searchByNameCode,
                     labelStyle: CustomStyle.smallTextGrey,
                     border: const OutlineInputBorder(),
                     prefixIcon:
@@ -183,7 +184,7 @@ class BranchesScreenState extends State<BranchesScreen> {
               ),
               _filteredBranches.isEmpty
                   ? Text(
-                      S.of(context).noBranchesToView,
+                      l10n.noBranchesToView,
                       style: CustomStyle.mediumTextB,
                     )
                   : Flexible(
@@ -224,21 +225,22 @@ class BranchesScreenState extends State<BranchesScreen> {
   }
 
   Widget _buildLoading(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (ModalRoute.of(context)?.isCurrent ?? false) {
       AppLoading().show(context: context, screen: AppScreen.viewBranches);
     }
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).branches),
+      appBar: CustomAppBar(title: l10n.branches),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             CustomDropdownMulti(
-              title: S.of(context).companies,
-              subtitle: S.of(context).selectCompanies,
-              allSelectedText: S.of(context).allCompanies,
-              noSelectedText: S.of(context).noCompaniesSelected,
+              title: l10n.companies,
+              subtitle: l10n.selectCompanies,
+              allSelectedText: l10n.allCompanies,
+              noSelectedText: l10n.noCompaniesSelected,
               items: const [],
               icon: Icons.filter_alt,
               onChanged: (_) {},
@@ -247,7 +249,7 @@ class BranchesScreenState extends State<BranchesScreen> {
               padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
               child: TextField(
                 decoration: InputDecoration(
-                  labelText: S.of(context).searchByNameCode,
+                  labelText: l10n.searchByNameCode,
                   labelStyle: CustomStyle.smallTextGrey,
                   border: const OutlineInputBorder(),
                   prefixIcon:

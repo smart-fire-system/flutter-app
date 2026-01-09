@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +20,10 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).app_name),
+      appBar: CustomAppBar(title: l10n.app_name),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -51,7 +52,7 @@ class WelcomeScreen extends StatelessWidget {
                       },
                       style: CustomStyle.normalButton,
                       child: Text(
-                        S.of(context).login,
+                        l10n.login,
                         style: CustomStyle.normalButtonText,
                       ),
                     ),
@@ -65,7 +66,7 @@ class WelcomeScreen extends StatelessWidget {
                       },
                       style: CustomStyle.normalButton,
                       child: Text(
-                        S.of(context).signup,
+                        l10n.signup,
                         style: CustomStyle.normalButtonText,
                       ),
                     ),
@@ -79,7 +80,7 @@ class WelcomeScreen extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Text(
-                            S.of(context).or,
+                            l10n.or,
                             style: CustomStyle.smallText,
                           ),
                         ),
@@ -97,7 +98,7 @@ class WelcomeScreen extends StatelessWidget {
                       icon: const Icon(FontAwesomeIcons.google,
                           color: Colors.white),
                       label: Text(
-                        S.of(context).continue_with_google,
+                        l10n.continue_with_google,
                         style: CustomStyle.normalButtonTextSmallWhite,
                       ),
                       style: ElevatedButton.styleFrom(

@@ -29,7 +29,7 @@ class _SignaturesScreenState extends State<SignaturesScreen> {
   }
 
   Future<void> _validate([String? name]) async {
-    final s = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final trimmed = (name ?? _nameController.text).trim();
     setState(() {
       _busy = true;
@@ -40,7 +40,7 @@ class _SignaturesScreenState extends State<SignaturesScreen> {
     if (trimmed.isEmpty) {
       setState(() {
         _busy = false;
-        _error = s.signatures_empty_error;
+        _error = l10n.signatures_empty_error;
       });
       return;
     }
@@ -51,7 +51,7 @@ class _SignaturesScreenState extends State<SignaturesScreen> {
     setState(() {
       _busy = false;
       _signature = sig;
-      _error = sig == null ? s.signatures_invalid_error : null;
+      _error = sig == null ? l10n.signatures_invalid_error : null;
     });
   }
 
@@ -69,11 +69,11 @@ class _SignaturesScreenState extends State<SignaturesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final s = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: CustomAppBar(
-        title: s.signatures_title,
+        title: l10n.signatures_title,
         leading: const Icon(Icons.qr_code_scanner),
       ),
       body: SafeArea(
@@ -87,11 +87,11 @@ class _SignaturesScreenState extends State<SignaturesScreen> {
                 textInputAction: TextInputAction.search,
                 onSubmitted: (_) => _validate(),
                 decoration: InputDecoration(
-                  labelText: s.signatures_id_label,
-                  hintText: s.signatures_id_hint,
+                  labelText: l10n.signatures_id_label,
+                  hintText: l10n.signatures_id_hint,
                   border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
-                    tooltip: s.signatures_scan_qr_tooltip,
+                    tooltip: l10n.signatures_scan_qr_tooltip,
                     onPressed: _busy ? null : _scanQr,
                     icon: const Icon(Icons.qr_code_scanner),
                   ),
@@ -110,7 +110,7 @@ class _SignaturesScreenState extends State<SignaturesScreen> {
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
                           : const Icon(Icons.check_circle_outline),
-                      label: Text(s.signatures_validate_button),
+                      label: Text(l10n.signatures_validate_button),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -125,7 +125,7 @@ class _SignaturesScreenState extends State<SignaturesScreen> {
                             });
                           },
                     icon: const Icon(Icons.clear),
-                    label: Text(s.signatures_clear_button),
+                    label: Text(l10n.signatures_clear_button),
                   ),
                 ],
               ),
@@ -140,7 +140,7 @@ class _SignaturesScreenState extends State<SignaturesScreen> {
               if (_signature != null) _SignatureCard(signature: _signature!),
               if (_error == null && _signature == null)
                 _MessageBanner(
-                  message: s.signatures_enter_or_scan_hint,
+                  message: l10n.signatures_enter_or_scan_hint,
                   background: const Color(0xFFEFF6FF),
                   foreground: const Color(0xFF1D4ED8),
                   icon: Icons.info_outline,
@@ -159,16 +159,16 @@ class _SignatureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final sigName = (signature.name ?? '').trim();
     final isContractSignature = sigName.startsWith('C');
     final isVisitReportSignature = sigName.startsWith('V');
     final signerChar = sigName.length >= 2 ? sigName[1].toUpperCase() : '';
     final signerRole = signerChar == 'C'
-        ? s.signatures_role_client
+        ? l10n.signatures_role_client
         : signerChar == 'E'
-            ? s.signatures_role_employee
-            : s.signatures_role_unknown;
+            ? l10n.signatures_role_employee
+            : l10n.signatures_role_unknown;
 
     final createdAt = signature.createdAt?.toDate();
     final createdAtText =
@@ -218,78 +218,78 @@ class _SignatureCard extends StatelessWidget {
               const SizedBox(height: 12),
             ],
             _section(
-              title: s.signatures_section_signature_summary,
+              title: l10n.signatures_section_signature_summary,
               children: [
-                _kv(s.signatures_field_signature_id,
+                _kv(l10n.signatures_field_signature_id,
                     sigName.isEmpty ? '-' : sigName),
                 _kv(
-                  s.signatures_field_signature_code,
+                  l10n.signatures_field_signature_code,
                   signature.code?.toString() ?? '-',
                 ),
-                _kv(s.signatures_field_signed_at, createdAtText),
+                _kv(l10n.signatures_field_signed_at, createdAtText),
                 _kv(
-                  s.signatures_field_type,
+                  l10n.signatures_field_type,
                   isContractSignature
-                      ? s.signatures_type_contract
+                      ? l10n.signatures_type_contract
                       : isVisitReportSignature
-                          ? s.signatures_type_visit_report
-                          : s.signatures_type_unknown,
+                          ? l10n.signatures_type_visit_report
+                          : l10n.signatures_type_unknown,
                 ),
               ],
             ),
             const SizedBox(height: 12),
             _section(
-              title: s.signatures_section_user_summary,
+              title: l10n.signatures_section_user_summary,
               children: [
-                _kv(s.signatures_field_role, signerRole),
-                _kv(s.signatures_field_name, signature.user?.name ?? '-'),
+                _kv(l10n.signatures_field_role, signerRole),
+                _kv(l10n.signatures_field_name, signature.user?.name ?? '-'),
                 _kv(
-                  s.signatures_field_user_code,
+                  l10n.signatures_field_user_code,
                   signature.user?.code.toString() ?? '-',
                 ),
-                _kv(s.signatures_field_email, signature.user?.email ?? '-'),
-                _kv(s.signatures_field_phone,
+                _kv(l10n.signatures_field_email, signature.user?.email ?? '-'),
+                _kv(l10n.signatures_field_phone,
                     signature.user?.phoneNumber ?? '-'),
               ],
             ),
             const SizedBox(height: 12),
             _section(
               title: isContractSignature
-                  ? s.signatures_section_contract_summary
+                  ? l10n.signatures_section_contract_summary
                   : isVisitReportSignature
-                      ? s.signatures_section_visit_report_summary
-                      : s.signatures_section_report_summary,
+                      ? l10n.signatures_section_visit_report_summary
+                      : l10n.signatures_section_report_summary,
               children: [
                 if (isContractSignature) ...[
-                  _kv(s.signatures_field_contract_code,
+                  _kv(l10n.signatures_field_contract_code,
                       contract?.metaData.code?.toString() ?? '-'),
                   _kv(
-                    s.signatures_field_contract_state,
+                    l10n.signatures_field_contract_state,
                     contract?.metaData.state?.name ?? '-',
                   ),
                   _kv(
-                    s.signatures_field_contract_number,
+                    l10n.signatures_field_contract_number,
                     contract?.paramContractNumber ?? '-',
                   ),
-                  _kv(s.signatures_field_client,
+                  _kv(l10n.signatures_field_client,
                       contract?.metaData.client?.info.name ?? '-'),
-                  _kv(s.signatures_field_employee,
+                  _kv(l10n.signatures_field_employee,
                       contract?.metaData.employee?.info.name ?? '-'),
                 ] else if (isVisitReportSignature) ...[
-                  _kv(s.signatures_field_visit_report_code,
+                  _kv(l10n.signatures_field_visit_report_code,
                       visitReport?.code?.toString() ?? '-'),
-                  _kv(s.signatures_field_contract_code,
+                  _kv(l10n.signatures_field_contract_code,
                       visitReport?.contractMetaData.code?.toString() ?? '-'),
-                  _kv(s.signatures_field_contract_state,
+                  _kv(l10n.signatures_field_contract_state,
                       visitReport?.contractMetaData.state?.name ?? '-'),
-                  _kv(s.signatures_field_client,
+                  _kv(l10n.signatures_field_client,
                       visitReport?.paramClientName ?? '-'),
-                  _kv(s.signatures_field_visit_date,
+                  _kv(l10n.signatures_field_visit_date,
                       visitReport?.paramVisitDate ?? '-'),
                 ] else ...[
-                  _kv(s.signatures_field_contract_id,
+                  _kv(l10n.signatures_field_contract_id,
                       signature.contractId ?? '-'),
-                  _kv(s.signatures_field_visit_report_id,
+                  _kv(l10n.signatures_field_visit_report_id,
                       signature.visitReportId ?? '-'),
                 ],
               ],
@@ -410,11 +410,11 @@ class _SignatureQrScannerScreenState extends State<SignatureQrScannerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final s = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: CustomAppBar(
-        title: s.signatures_scan_title,
+        title: l10n.signatures_scan_title,
         leading: const Icon(Icons.qr_code_scanner),
       ),
       body: Stack(
@@ -448,12 +448,12 @@ class _SignatureQrScannerScreenState extends State<SignatureQrScannerScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          s.signatures_point_camera_hint,
+                          l10n.signatures_point_camera_hint,
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),
                       IconButton(
-                        tooltip: s.signatures_toggle_flash_tooltip,
+                        tooltip: l10n.signatures_toggle_flash_tooltip,
                         onPressed: () => _controller.toggleTorch(),
                         icon: const Icon(Icons.flash_on, color: Colors.white),
                       ),

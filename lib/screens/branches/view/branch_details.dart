@@ -1,4 +1,5 @@
 import 'package:card_loading/card_loading.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
@@ -9,8 +10,6 @@ import 'package:fire_alarm_system/widgets/info.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
@@ -70,6 +69,7 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
   }
 
   Widget _buildDetails(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: CustomAppBar(title: _branch!.name),
       floatingActionButton: !_permissions.canEditBranches
@@ -85,7 +85,7 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
                 size: 30,
                 color: Colors.white,
               ),
-              label: Text(S.of(context).edit_information,
+              label: Text(l10n.edit_information,
                   style: CustomStyle.mediumTextWhite),
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -97,25 +97,25 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomInfoCard(
-                title: S.of(context).branchInformation,
+                title: l10n.branchInformation,
                 icon: Icons.info_outline,
                 children: [
                   CustomInfoItem(
-                    title: S.of(context).name,
+                    title: l10n.name,
                     value: _branch!.name,
                   ),
                   CustomInfoItem(
-                    title: S.of(context).code,
+                    title: l10n.code,
                     value: _branch!.code.toString(),
                   ),
                   CustomInfoItem(
-                    title: S.of(context).createdAt,
+                    title: l10n.createdAt,
                     value: _branch!.createdAt!.toDate().toString(),
                   ),
                 ],
               ),
               CustomInfoCard(
-                title: S.of(context).companyInformation,
+                title: l10n.companyInformation,
                 icon: Icons.business_outlined,
                 onTap: () {
                   TabNavigator.usersAndBranches.currentState?.pushNamed(
@@ -136,21 +136,21 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
                 ],
               ),
               CustomInfoCard(
-                title: S.of(context).contactInformation,
+                title: l10n.contactInformation,
                 icon: Icons.contact_phone_outlined,
                 children: [
                   CustomInfoItem(
-                    title: S.of(context).phone,
+                    title: l10n.phone,
                     value: _branch!.phoneNumber,
                   ),
                   CustomInfoItem(
-                    title: S.of(context).email,
+                    title: l10n.email,
                     value: _branch!.email,
                   ),
                 ],
               ),
               CustomInfoCard(
-                title: S.of(context).address,
+                title: l10n.address,
                 icon: Icons.location_on_outlined,
                 children: [
                   CustomInfoItem(
@@ -160,7 +160,7 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
               ),
               if (_branch!.comment.isNotEmpty)
                 CustomInfoCard(
-                  title: S.of(context).comment,
+                  title: l10n.comment,
                   icon: Icons.comment_outlined,
                   children: [
                     CustomInfoItem(
@@ -169,37 +169,37 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
                   ],
                 ),
               CustomInfoCard(
-                title: S.of(context).firstPartyInformation,
+                title: l10n.firstPartyInformation,
                 icon: Icons.person_outline,
                 children: [
                   CustomInfoItem(
-                    title: S.of(context).name,
+                    title: l10n.name,
                     value: _branch!.contractFirstParty.name,
                   ),
                   CustomInfoItem(
-                    title: S.of(context).representativeName,
+                    title: l10n.representativeName,
                     value: _branch!.contractFirstParty.repName,
                   ),
                   CustomInfoItem(
-                    title: S.of(context).address,
+                    title: l10n.address,
                     value: _branch!.contractFirstParty.address,
                   ),
                   CustomInfoItem(
-                    title: S.of(context).commercialRecord,
+                    title: l10n.commercialRecord,
                     value: _branch!.contractFirstParty.commercialRecord,
                   ),
                   CustomInfoItem(
-                    title: S.of(context).g,
+                    title: l10n.g,
                     value: _branch!.contractFirstParty.g,
                   ),
                   CustomInfoItem(
-                    title: S.of(context).idNumber,
+                    title: l10n.idNumber,
                     value: _branch!.contractFirstParty.idNumber,
                   ),
                   CustomInfoItem(
-                    title: S.of(context).signature,
+                    title: l10n.signature,
                     value: _branch!.contractFirstParty.signatureUrl == ""
-                        ? S.of(context).noSignatureAddedYet
+                        ? l10n.noSignatureAddedYet
                         : '',
                   ),
                   if (_branch!.contractFirstParty.signatureUrl != "")
@@ -217,9 +217,10 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
   }
 
   Widget _buildLoading(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).branchInformation),
+      appBar: CustomAppBar(title: l10n.branchInformation),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

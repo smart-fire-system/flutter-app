@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
@@ -7,17 +8,17 @@ import 'package:fire_alarm_system/screens/profile/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/state.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 
 class UsersAndBranchesScreen extends StatelessWidget {
   const UsersAndBranchesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: CustomAppBar(
-        title: S.of(context).users_and_branches,
+        title: l10n.users_and_branches,
         leading: const Icon(Icons.people_alt_rounded),
       ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
@@ -41,7 +42,7 @@ class UsersAndBranchesScreen extends StatelessWidget {
                     userInfo: userInfo,
                     role: user.permissions.role != null
                         ? UserInfo.getRoleName(context, user.permissions.role)
-                        : S.of(context).noRole,
+                        : l10n.noRole,
                   ),
 
                 const SizedBox(height: 28),
@@ -49,8 +50,8 @@ class UsersAndBranchesScreen extends StatelessWidget {
                 // Large featured card - Users
                 LargeCard(
                   icon: Icons.account_tree_rounded,
-                  title: S.of(context).users_branches_hierarchy_title,
-                  subtitle: S.of(context).users_branches_hierarchy_subtitle,
+                  title: l10n.users_branches_hierarchy_title,
+                  subtitle: l10n.users_branches_hierarchy_subtitle,
                   titleColor: Colors.white,
                   subtitleColor: Colors.white,
                   gradient: const LinearGradient(
@@ -72,8 +73,8 @@ class UsersAndBranchesScreen extends StatelessWidget {
                       Expanded(
                         child: SmallCard(
                           icon: Icons.business_rounded,
-                          title: S.of(context).branches,
-                          subtitle: S.of(context).branches_subtitle,
+                          title: l10n.branches,
+                          subtitle: l10n.branches_subtitle,
                           color: const Color(0xFFE11D48),
                           onTap: () => TabNavigator
                               .usersAndBranches.currentState
@@ -84,8 +85,8 @@ class UsersAndBranchesScreen extends StatelessWidget {
                       Expanded(
                         child: SmallCard(
                           icon: Icons.apartment_rounded,
-                          title: S.of(context).companies,
-                          subtitle: S.of(context).companies_subtitle,
+                          title: l10n.companies,
+                          subtitle: l10n.companies_subtitle,
                           color: const Color(0xFFF43F5E),
                           onTap: () => TabNavigator
                               .usersAndBranches.currentState
@@ -101,8 +102,8 @@ class UsersAndBranchesScreen extends StatelessWidget {
                 // Full width card - Branches
                 WideCard(
                   icon: Icons.group_rounded,
-                  title: S.of(context).users,
-                  subtitle: S.of(context).users_subtitle,
+                  title: l10n.users,
+                  subtitle: l10n.users_subtitle,
                   color: const Color(0xFFEF4444),
                   onTap: () => TabNavigator.usersAndBranches.currentState
                       ?.pushNamed('/users'),

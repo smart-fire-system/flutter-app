@@ -1,9 +1,9 @@
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import '../bloc/bloc.dart';
 import '../bloc/state.dart';
@@ -14,8 +14,9 @@ class UsersHierarchyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).users),
+      appBar: CustomAppBar(title: l10n.users),
       body: BlocBuilder<UsersBloc, UsersState>(
         builder: (context, state) {
           if (state is UsersAuthenticated) {
@@ -35,6 +36,7 @@ class _HierarchyList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Widget> sections = [];
+    final l10n = AppLocalizations.of(context)!;
 
     // Master Admins
     if (state.masterAdmins.isNotEmpty) {
@@ -42,7 +44,7 @@ class _HierarchyList extends StatelessWidget {
         Card(
           child: ExpansionTile(
             leading: const Icon(Icons.security, color: Colors.redAccent),
-            title: Text(S.of(context).masterAdmin),
+            title: Text(l10n.masterAdmin),
             children: state.masterAdmins
                 .map((m) => ListTile(
                       leading: const Icon(Icons.person_outline),
@@ -67,7 +69,7 @@ class _HierarchyList extends StatelessWidget {
           child: ExpansionTile(
             leading: const Icon(Icons.admin_panel_settings_outlined,
                 color: Colors.orange),
-            title: Text(S.of(context).admin),
+            title: Text(l10n.admin),
             children: state.admins
                 .map((a) => ListTile(
                       leading: const Icon(Icons.person_outline),
@@ -147,7 +149,7 @@ class _HierarchyList extends StatelessWidget {
                   child: ExpansionTile(
                     leading: const Icon(Icons.manage_accounts_outlined,
                         color: Colors.blueGrey),
-                    title: Text(S.of(context).companyManager),
+                    title: Text(l10n.companyManager),
                     children: managers
                         .map((m) => ListTile(
                               leading: const Icon(Icons.person_outline),
@@ -197,7 +199,7 @@ class _HierarchyList extends StatelessWidget {
                           child: ExpansionTile(
                             leading: const Icon(Icons.badge_outlined,
                                 color: Colors.green),
-                            title: Text(S.of(context).branchManager),
+                            title: Text(l10n.branchManager),
                             children: branchManagers
                                 .map((bm) => ListTile(
                                       leading: const Icon(Icons.person_outline),
@@ -219,7 +221,7 @@ class _HierarchyList extends StatelessWidget {
                           child: ExpansionTile(
                             leading: const Icon(Icons.engineering_outlined,
                                 color: Colors.brown),
-                            title: Text(S.of(context).employee),
+                            title: Text(l10n.employee),
                             children: branchEmployees
                                 .map((emp) => ListTile(
                                       leading: const Icon(Icons.person_outline),
@@ -241,7 +243,7 @@ class _HierarchyList extends StatelessWidget {
                           child: ExpansionTile(
                             leading: const Icon(Icons.group_outlined,
                                 color: Colors.purple),
-                            title: Text(S.of(context).client),
+                            title: Text(l10n.client),
                             children: branchClients
                                 .map((cl) => ListTile(
                                       leading: const Icon(Icons.person_outline),

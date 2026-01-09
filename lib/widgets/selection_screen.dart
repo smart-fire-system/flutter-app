@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/user.dart';
@@ -19,8 +19,9 @@ class UserSelectionScreen extends StatelessWidget {
       {super.key, this.selectedUserId, required this.users});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _SelectionScreen<UserSelectionResult>(
-      title: S.of(context).user,
+      title: l10n.user,
       items: users
           .map((user) => _SelectionItem(
                 id: user.id,
@@ -51,8 +52,9 @@ class CompanySelectionScreen extends StatelessWidget {
       {super.key, this.selectedCompanyId, required this.companies});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _SelectionScreen<CompanySelectionResult>(
-      title: S.of(context).company,
+      title: l10n.company,
       items: companies
           .map((c) => _SelectionItem(
                 id: c.id ?? '',
@@ -87,8 +89,9 @@ class BranchSelectionScreen extends StatelessWidget {
       required this.branches});
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _SelectionScreen<BranchSelectionResult>(
-      title: S.of(context).branch,
+      title: l10n.branch,
       items: branches
           .map((b) => _SelectionItem(
                 id: b.id ?? '',
@@ -136,6 +139,7 @@ class _SelectionScreenState<T> extends State<_SelectionScreen<T>> {
   String _search = '';
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     var filtered = widget.items.where((item) {
       final q = _search.toLowerCase();
       return item.name.toLowerCase().contains(q) ||
@@ -157,7 +161,7 @@ class _SelectionScreenState<T> extends State<_SelectionScreen<T>> {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               decoration: InputDecoration(
-                labelText: S.of(context).searchBy,
+                labelText: l10n.searchBy,
                 prefixIcon: const Icon(Icons.search),
                 border: const OutlineInputBorder(),
               ),
@@ -170,7 +174,7 @@ class _SelectionScreenState<T> extends State<_SelectionScreen<T>> {
           ),
           Expanded(
             child: filtered.isEmpty
-                ? Center(child: Text(S.of(context).noUsersToView))
+                ? Center(child: Text(l10n.noUsersToView))
                 : ListView.builder(
                     itemCount: filtered.length,
                     itemBuilder: (context, index) {

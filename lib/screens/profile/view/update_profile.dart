@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/image_compress.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -8,7 +9,6 @@ import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/profile/bloc/event.dart';
@@ -75,6 +75,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocListener<ProfileBloc, ProfileState>(
       listener: (context, state) {
         if (state is ProfileAuthenticated) {
@@ -129,7 +130,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         }
       },
       child: Scaffold(
-        appBar: CustomAppBar(title: S.of(context).edit_information),
+        appBar: CustomAppBar(title: l10n.edit_information),
         backgroundColor: Colors.grey[100],
         bottomNavigationBar: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
@@ -137,7 +138,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 state is ProfileLoading && state.updatingData;
             return SafeArea(
               child: CustomNormalButton(
-                label: S.of(context).save_changes,
+                label: l10n.save_changes,
                 icon: Icons.save,
                 backgroundColor: Colors.green,
                 fullWidth: true,
@@ -173,7 +174,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           controller: _nameController,
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
-                            labelText: S.of(context).name,
+                            labelText: l10n.name,
                             prefixIcon: const Icon(Icons.person),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -239,7 +240,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                 keyboardType: TextInputType.phone,
                                 textInputAction: TextInputAction.done,
                                 decoration: InputDecoration(
-                                  labelText: S.of(context).phone,
+                                  labelText: l10n.phone,
                                   prefixIcon: const Icon(Icons.phone),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -322,7 +323,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8.0, vertical: 4.0),
                     child: CustomNormalButton(
-                      label: S.of(context).change_password,
+                      label: l10n.change_password,
                       icon: Icons.lock_reset,
                       onPressed: _onResetPassword,
                       fullWidth: true,

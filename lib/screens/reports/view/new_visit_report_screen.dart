@@ -1,10 +1,10 @@
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/models/visit_report_data.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
 import 'package:fire_alarm_system/widgets/button.dart';
 import 'package:flutter/material.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/models/report.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -445,8 +445,9 @@ class _NewVisitReportScreenState extends State<NewVisitReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).reports),
+      appBar: CustomAppBar(title: l10n.reports),
       body: BlocBuilder<ReportsBloc, ReportsState>(
         builder: (context, state) {
           if (state is ReportsAuthenticated) {

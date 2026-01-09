@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
@@ -11,7 +12,6 @@ import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/widgets/dropdown.dart';
 import 'package:fire_alarm_system/widgets/selection_screen.dart';
@@ -353,6 +353,7 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return _loading
         ? const Scaffold(body: Center(child: CircularProgressIndicator()))
         : BlocConsumer<UsersBloc, UsersState>(
@@ -403,8 +404,8 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
                         padding:
                             const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
                         child: CustomDropdownSingle(
-                          title: S.of(context).role,
-                          subtitle: S.of(context).chooseRole,
+                          title: l10n.role,
+                          subtitle: l10n.chooseRole,
                           items: roleItems,
                           initialItem: _selectedRole != null
                               ? roleItems.firstWhere(
@@ -454,11 +455,11 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
                                 readOnly: true,
                                 controller: TextEditingController(
                                   text: _selectedCompanyId == null
-                                      ? S.of(context).tapToSelectUser
+                                      ? l10n.tapToSelectUser
                                       : _selectedCompanyName ?? '',
                                 ),
                                 decoration: InputDecoration(
-                                  labelText: S.of(context).company,
+                                  labelText: l10n.company,
                                   prefixIcon: const Icon(Icons.business,
                                       color: CustomStyle.redDark),
                                   border: OutlineInputBorder(
@@ -522,11 +523,11 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
                                 readOnly: true,
                                 controller: TextEditingController(
                                   text: _selectedBranchId == null
-                                      ? S.of(context).tapToSelectUser
+                                      ? l10n.tapToSelectUser
                                       : _selectedBranchName ?? '',
                                 ),
                                 decoration: InputDecoration(
-                                  labelText: S.of(context).branch,
+                                  labelText: l10n.branch,
                                   prefixIcon: const Icon(Icons.account_tree,
                                       color: CustomStyle.redDark),
                                   border: OutlineInputBorder(

@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/empty.dart';
@@ -27,10 +27,11 @@ class _ContractsScreenState extends State<ContractsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).contracts),
+      appBar: CustomAppBar(title: l10n.contracts),
       floatingActionButton: FloatingActionButton.extended(
-        label: Text(S.of(context).new_contract,
+        label: Text(l10n.new_contract,
             style: CustomStyle.mediumTextWhite),
         backgroundColor: Colors.green,
         icon: const Icon(
@@ -58,12 +59,13 @@ class _ContractsScreenState extends State<ContractsScreen> {
   }
 
   Widget _buildBody(ReportsAuthenticated state) {
+    final l10n = AppLocalizations.of(context)!;
     if (state.contracts == null || state.contractItems == null) {
       return const Center(child: CircularProgressIndicator());
     }
     _contracts = state.contracts!;
     if (_contracts.isEmpty) {
-      return CustomEmpty(message: S.of(context).no_contracts_yet);
+      return CustomEmpty(message: l10n.no_contracts_yet);
     }
     return ListView.separated(
       padding: const EdgeInsets.all(16),

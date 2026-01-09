@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/button.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +25,7 @@ class CustomAlert {
     bool barrierDismissible = true,
     bool canPop = true,
   }) async {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog(
       context: context,
       barrierDismissible: barrierDismissible,
@@ -67,7 +68,7 @@ class CustomAlert {
                       ),
                     ),
                   CustomBasicButton(
-                    label: buttonText ?? S.of(context).ok,
+                    label: buttonText ?? l10n.ok,
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -160,6 +161,7 @@ class CustomAlert {
     bool barrierDismissible = true,
     bool canPop = true,
   }) async {
+    final l10n = AppLocalizations.of(context)!;
     return showDialog(
       context: context,
       barrierDismissible: barrierDismissible,
@@ -202,7 +204,7 @@ class CustomAlert {
                       ),
                     ),
                   CustomBasicButton(
-                    label: buttonText ?? S.of(context).ok,
+                    label: buttonText ?? l10n.ok,
                     onPressed: () {
                       Navigator.of(context).pop();
                     },

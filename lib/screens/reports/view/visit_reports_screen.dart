@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/visit_report_data.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/visit_report_summary.dart';
 import 'package:fire_alarm_system/screens/reports/view/view_visit_report_screen.dart';
@@ -29,10 +29,11 @@ class _VisitReportsScreenState extends State<VisitReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).visit_reports),
+      appBar: CustomAppBar(title: l10n.visit_reports),
       floatingActionButton: FloatingActionButton.extended(
-        label: Text(S.of(context).new_visit_report,
+        label: Text(l10n.new_visit_report,
             style: CustomStyle.mediumTextWhite),
         backgroundColor: Colors.green,
         icon: const Icon(
@@ -62,6 +63,7 @@ class _VisitReportsScreenState extends State<VisitReportsScreen> {
   }
 
   Widget _buildBody(ReportsAuthenticated state) {
+    final l10n = AppLocalizations.of(context)!;
     if (state.contracts == null || state.contractItems == null) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -75,7 +77,7 @@ class _VisitReportsScreenState extends State<VisitReportsScreen> {
       return bDate.compareTo(aDate);
     });
     if (_visitReports.isEmpty) {
-      return CustomEmpty(message: S.of(context).no_contracts_yet);
+      return CustomEmpty(message: l10n.no_contracts_yet);
     }
     return ListView.separated(
       padding: const EdgeInsets.all(16),

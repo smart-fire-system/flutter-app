@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
 import 'package:fire_alarm_system/screens/reports/view/emergency_visits_screen.dart';
@@ -6,7 +7,6 @@ import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
 import 'package:flutter/material.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/event.dart';
@@ -65,6 +65,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
   }
 
   Widget _buildStateCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     bool isEmployeeDraft = _isPendingCurrentEmployeeSign();
     Color cardColor =
         isEmployeeDraft ? Colors.red.shade50 : Colors.blue.shade50;
@@ -75,37 +76,35 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
     if (_isPendingCurrentEmployeeSign()) {
       cardColor = Colors.red.shade50;
       borderColor = CustomStyle.redLight;
-      title = S.of(context).sign_employee_required_title;
-      subtitle = S.of(context).sign_employee_required_subtitle;
+      title = l10n.sign_employee_required_title;
+      subtitle = l10n.sign_employee_required_subtitle;
     } else if (_isPendingOtherEmployeeSign()) {
       cardColor = Colors.orange.shade50;
       borderColor = Colors.orangeAccent;
-      title = S.of(context).waiting_employee_signature_title;
-      subtitle = S.of(context).waiting_employee_signature_subtitle;
+      title = l10n.waiting_employee_signature_title;
+      subtitle = l10n.waiting_employee_signature_subtitle;
     } else if (_isPendingCurrentClientSign()) {
       cardColor = Colors.red.shade50;
       borderColor = CustomStyle.redLight;
-      title = S.of(context).sign_client_required_title;
-      subtitle = S.of(context).contract_wait_employee_sign_subtitle;
+      title = l10n.sign_client_required_title;
+      subtitle = l10n.contract_wait_employee_sign_subtitle;
     } else if (_isPendingOtherClientSign()) {
       cardColor = Colors.orange.shade50;
       borderColor = Colors.orangeAccent;
-      title = S.of(context).contract_wait_other_client_sign_title;
-      subtitle = S.of(context).contract_wait_other_client_sign_subtitle;
+      title = l10n.contract_wait_other_client_sign_title;
+      subtitle = l10n.contract_wait_other_client_sign_subtitle;
     } else if (_contract.metaData.state == ContractState.active) {
       if (!ContractsCommon.isContractExpired(_contract)) {
         cardColor = Colors.green.shade50;
         borderColor = Colors.greenAccent;
-        title = S.of(context).contract_active_title;
-        subtitle = S
-            .of(context)
+        title = l10n.contract_active_title;
+        subtitle = l10n
             .contract_active_until(_formatDate(_contract.metaData.endDate));
       } else {
         cardColor = Colors.red.shade50;
         borderColor = CustomStyle.redLight;
-        title = S.of(context).contract_expired_title;
-        subtitle = S
-            .of(context)
+        title = l10n.contract_expired_title;
+        subtitle = l10n
             .contract_expired_since(_formatDate(_contract.metaData.endDate));
       }
     }
@@ -145,14 +144,15 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
   }
 
   Widget _buildSignActionCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final bool canEmployeeSign = _isPendingCurrentEmployeeSign();
     final bool canClientSign = _isPendingCurrentClientSign();
     if (!canEmployeeSign && !canClientSign) return const SizedBox.shrink();
 
     final String title = canEmployeeSign
-        ? S.of(context).signature_employee_title
-        : S.of(context).signature_client_title;
-    final String subtitle = S.of(context).signature_confirm_dialog_body;
+        ? l10n.signature_employee_title
+        : l10n.signature_client_title;
+    final String subtitle = l10n.signature_confirm_dialog_body;
 
     return Card(
       color: Colors.white,
@@ -207,6 +207,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
 
   void _showSignConfirmBottomSheet(BuildContext context,
       {required String title}) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       isScrollControlled: false,
@@ -229,14 +230,14 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                           color: CustomStyle.redDark),
                       const SizedBox(width: 8),
                       Text(
-                        S.of(context).signature_confirm_dialog_title(title),
+                        l10n.signature_confirm_dialog_title(title),
                         style: CustomStyle.mediumTextBRed,
                       ),
                     ],
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    S.of(context).signature_confirm_dialog_body,
+                    l10n.signature_confirm_dialog_body,
                     style: const TextStyle(color: CustomStyle.greyDark),
                   ),
                   const SizedBox(height: 20),
@@ -252,7 +253,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          S.of(context).slide_to_confirm,
+                          l10n.slide_to_confirm,
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
@@ -293,13 +294,14 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
 
   Widget _buildLinearStateDiagram() {
     final int stage = _currentStageIndex();
+    final l10n = AppLocalizations.of(context)!;
     final List<String> labels = <String>[
-      S.of(context).linear_stage_draft,
-      S.of(context).linear_stage_employee_signed,
-      S.of(context).linear_stage_client_signed,
+      l10n.linear_stage_draft,
+      l10n.linear_stage_employee_signed,
+      l10n.linear_stage_client_signed,
       ContractsCommon.isContractExpired(_contract)
-          ? S.of(context).linear_stage_expired
-          : S.of(context).linear_stage_active,
+          ? l10n.linear_stage_expired
+          : l10n.linear_stage_active,
     ];
 
     Color dotColor(int idx) {
@@ -395,6 +397,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
 
   void _showShareWithBottomSheet(BuildContext context,
       {required List<Employee> employees, required List<Client> clients}) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -451,7 +454,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                       children: [
                         const Icon(Icons.share, color: CustomStyle.redDark),
                         const SizedBox(width: 8),
-                        Text(S.of(context).share_with,
+                        Text(l10n.share_with,
                             style: CustomStyle.mediumTextBRed),
                         const Spacer(),
                         TextButton(
@@ -464,7 +467,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                                   ),
                                 );
                           },
-                          child: Text(S.of(context).save_changes),
+                          child: Text(l10n.save_changes),
                         ),
                       ],
                     ),
@@ -474,7 +477,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                         shrinkWrap: true,
                         children: [
                           if (clients.isNotEmpty) ...[
-                            Text(S.of(context).clients,
+                            Text(l10n.clients,
                                 style: CustomStyle.smallTextBRed),
                             const SizedBox(height: 6),
                             ...clients.map((c) => buildUserTile(
@@ -488,7 +491,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                             const SizedBox(height: 10),
                           ],
                           if (employees.isNotEmpty) ...[
-                            Text(S.of(context).employees,
+                            Text(l10n.employees,
                                 style: CustomStyle.smallTextBRed),
                             const SizedBox(height: 6),
                             ...employees.map((e) => buildUserTile(
@@ -513,9 +516,10 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: CustomAppBar(
-        title: S.of(context).view_contract,
+        title: l10n.view_contract,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -529,7 +533,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(
-                            S.of(context).contract_sharing_updated_success,
+                            l10n.contract_sharing_updated_success,
                             style: CustomStyle.smallTextBWhite),
                         backgroundColor: Colors.green,
                       ));
@@ -539,7 +543,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                     state.message = null;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(S.of(context).contract_signed_success,
+                        content: Text(l10n.contract_signed_success,
                             style: CustomStyle.smallTextBWhite),
                         backgroundColor: Colors.green,
                       ));
@@ -559,6 +563,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
   }
 
   Widget _buildBody(ReportsAuthenticated state) {
+    final l10n = AppLocalizations.of(context)!;
     if (state.contracts == null ||
         state.contractItems == null ||
         state.user == null) {
@@ -579,8 +584,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         const SizedBox(height: 16),
         WideCard(
           icon: Icons.assignment,
-          title: S.of(context).visit_reports,
-          subtitle: S.of(context).visit_reports_subtitle,
+          title: l10n.visit_reports,
+          subtitle: l10n.visit_reports_subtitle,
           color: CustomStyle.redDark,
           backgroundColor: Colors.grey.withValues(alpha: 0.1),
           onTap: () => Navigator.of(context).push(
@@ -593,8 +598,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         const SizedBox(height: 16),
         WideCard(
             icon: Icons.share,
-            title: S.of(context).share_contract,
-            subtitle: S.of(context).share_contract_subtitle,
+            title: l10n.share_contract,
+            subtitle: l10n.share_contract_subtitle,
             color: CustomStyle.redDark,
             backgroundColor: Colors.grey.withValues(alpha: 0.1),
             onTap: () {
@@ -605,8 +610,8 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         const SizedBox(height: 16),
         WideCard(
           icon: Icons.emergency,
-          title: S.of(context).emergency_visits,
-          subtitle: S.of(context).emergency_visits_subtitle,
+          title: l10n.emergency_visits,
+          subtitle: l10n.emergency_visits_subtitle,
           color: CustomStyle.redDark,
           backgroundColor: Colors.grey.withValues(alpha: 0.1),
           onTap: () => Navigator.of(context).push(

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/emergency_visit.dart';
@@ -30,11 +29,12 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).emergency_visits),
+      appBar: CustomAppBar(title: l10n.emergency_visits),
       floatingActionButton: FloatingActionButton.extended(
         label: Text(
-          S.of(context).emergency_visit_request,
+          l10n.emergency_visit_request,
           style: CustomStyle.mediumTextWhite,
         ),
         backgroundColor: Colors.red,
@@ -83,6 +83,7 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
   }
 
   void _openRequestBottomSheet(BuildContext parentContext) {
+    final l10n = AppLocalizations.of(parentContext)!;
     showModalBottomSheet(
       context: parentContext,
       isScrollControlled: true,
@@ -159,7 +160,7 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
                               color: CustomStyle.redDark),
                           const SizedBox(width: 8),
                           Text(
-                            S.of(context).emergency_visit_request,
+                            l10n.emergency_visit_request,
                             style: CustomStyle.mediumTextBRed,
                           ),
                           const Spacer(),
@@ -241,6 +242,7 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
   }
 
   Widget _buildBody(ReportsAuthenticated state) {
+    final l10n = AppLocalizations.of(context)!;
     final emergencyVisits = (state.emergencyVisits ??
             const <EmergencyVisitData>[])
         .where((e) => e.contractId == widget.contractId)
@@ -252,7 +254,7 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
       );
 
     if (emergencyVisits.isEmpty) {
-      return CustomEmpty(message: S.of(context).no_contracts_yet);
+      return CustomEmpty(message: l10n.no_contracts_yet);
     }
 
     return ListView.separated(
@@ -263,8 +265,8 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
       itemBuilder: (ctx, i) {
         if (i == 0) {
           final label = _sortOldToNew
-              ? AppLocalizations.of(context)!.sort_old_to_new
-              : AppLocalizations.of(context)!.sort_new_to_old;
+              ? l10n.sort_old_to_new
+              : l10n.sort_new_to_old;
           return Align(
             alignment: Alignment.centerLeft,
             child: OutlinedButton.icon(

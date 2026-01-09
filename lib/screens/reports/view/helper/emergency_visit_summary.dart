@@ -20,19 +20,20 @@ class EmergencyVisitSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final _StatusTheme statusTheme = _statusTheme(emergencyVisit.status);
     String pretty(EmergencyVisitStatus s) {
       switch (s) {
         case EmergencyVisitStatus.pending:
-          return AppLocalizations.of(context)!.status_pending;
+          return l10n.status_pending;
         case EmergencyVisitStatus.approved:
-          return AppLocalizations.of(context)!.status_approved;
+          return l10n.status_approved;
         case EmergencyVisitStatus.rejected:
-          return AppLocalizations.of(context)!.status_rejected;
+          return l10n.status_rejected;
         case EmergencyVisitStatus.completed:
-          return AppLocalizations.of(context)!.status_completed;
+          return l10n.status_completed;
         case EmergencyVisitStatus.cancelled:
-          return AppLocalizations.of(context)!.status_canceled;
+          return l10n.status_canceled;
       }
     }
 
@@ -53,8 +54,8 @@ class EmergencyVisitSummary extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      AppLocalizations.of(context)!
-                          .emergency_visit_request_no(emergencyVisit.code.toString()),
+                      l10n.emergency_visit_request_no(
+                          emergencyVisit.code.toString()),
                       style: CustomStyle.mediumTextBRed,
                     ),
                   ),
@@ -86,8 +87,7 @@ class EmergencyVisitSummary extends StatelessWidget {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: AppLocalizations.of(context)!
-                                .emergency_visit_created_at_prefix,
+                            text: l10n.emergency_visit_created_at_prefix,
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
@@ -112,8 +112,7 @@ class EmergencyVisitSummary extends StatelessWidget {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: AppLocalizations.of(context)!
-                                .emergency_visit_requested_by_prefix,
+                            text: l10n.emergency_visit_requested_by_prefix,
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
@@ -139,8 +138,7 @@ class EmergencyVisitSummary extends StatelessWidget {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: AppLocalizations.of(context)!
-                                .emergency_visit_last_updated_prefix,
+                            text: l10n.emergency_visit_last_updated_prefix,
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
@@ -149,8 +147,7 @@ class EmergencyVisitSummary extends StatelessWidget {
                                     context,
                                     format: TimeAgoFormat.long,
                                     emergencyVisit.comments.last.createdAt)
-                                : AppLocalizations.of(context)!
-                                    .emergency_visit_no_updates_yet,
+                                : l10n.emergency_visit_no_updates_yet,
                             style: CustomStyle.smallText,
                           ),
                         ],

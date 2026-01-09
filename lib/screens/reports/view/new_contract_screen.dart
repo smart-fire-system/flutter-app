@@ -1,9 +1,9 @@
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:jhijri_picker/jhijri_picker.dart';
 import 'package:fire_alarm_system/widgets/text_field.dart';
@@ -534,8 +534,9 @@ class _NewContractScreenState extends State<NewContractScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).new_contract),
+      appBar: CustomAppBar(title: l10n.new_contract),
       body: BlocBuilder<ReportsBloc, ReportsState>(
         builder: (context, state) {
           if (state is ReportsAuthenticated) {

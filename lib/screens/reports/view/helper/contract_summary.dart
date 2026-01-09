@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/screens/reports/view/contract_details_screen.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
@@ -23,6 +23,7 @@ class ContractSummary extends StatefulWidget {
 class _ContractSummaryState extends State<ContractSummary> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: widget.onTap,
       child: Card(
@@ -42,12 +43,12 @@ class _ContractSummaryState extends State<ContractSummary> {
                   Expanded(
                     child: Text(
                       (widget.contract.paramContractNumber?.isNotEmpty == true)
-                          ? S.of(context).contract_number_prefix(
+                          ? l10n.contract_number_prefix(
                               widget.contract.paramContractNumber!)
                           : (widget.contract.metaData.code != null
-                              ? S.of(context).contract_number_prefix(
+                              ? l10n.contract_number_prefix(
                                   widget.contract.metaData.code.toString())
-                              : S.of(context).contract_label),
+                              : l10n.contract_label),
                       style: CustomStyle.mediumTextBRed,
                     ),
                   ),
@@ -83,7 +84,7 @@ class _ContractSummaryState extends State<ContractSummary> {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: S.of(context).period_from,
+                          text: l10n.period_from,
                           style: CustomStyle.smallTextBRed,
                         ),
                         TextSpan(
@@ -92,7 +93,7 @@ class _ContractSummaryState extends State<ContractSummary> {
                           style: CustomStyle.smallText,
                         ),
                         TextSpan(
-                          text: S.of(context).period_to,
+                          text: l10n.period_to,
                           style: CustomStyle.smallTextBRed,
                         ),
                         TextSpan(
@@ -117,7 +118,7 @@ class _ContractSummaryState extends State<ContractSummary> {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: S.of(context).employee_label,
+                            text: l10n.employee_label,
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
@@ -144,7 +145,7 @@ class _ContractSummaryState extends State<ContractSummary> {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: S.of(context).client_label,
+                            text: l10n.client_label,
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
@@ -170,7 +171,7 @@ class _ContractSummaryState extends State<ContractSummary> {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: S.of(context).branch_label,
+                            text: l10n.branch_label,
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
@@ -249,7 +250,7 @@ class _ContractSummaryState extends State<ContractSummary> {
                       ),
                     ),
                     icon: const Icon(Icons.visibility),
-                    label: Text(S.of(context).view_contract),
+                    label: Text(l10n.view_contract),
                   ),
                 ),
             ],
@@ -388,23 +389,24 @@ class _ContractSummaryState extends State<ContractSummary> {
   }
 
   String _stateLabel(ContractState? state) {
+    final l10n = AppLocalizations.of(context)!;
     switch (state) {
       case ContractState.active:
         if (ContractsCommon.isContractExpired(widget.contract)) {
-          return S.of(context).linear_stage_expired;
+          return l10n.linear_stage_expired;
         }
-        return S.of(context).linear_stage_active;
+        return l10n.linear_stage_active;
       case ContractState.pendingClient:
-        return S.of(context).contract_wait_other_client_sign_title;
+        return l10n.contract_wait_other_client_sign_title;
       case ContractState.requestCancellation:
-        return S.of(context).cancel;
+        return l10n.cancel;
       case ContractState.expired:
-        return S.of(context).linear_stage_expired;
+        return l10n.linear_stage_expired;
       case ContractState.cancelled:
-        return S.of(context).cancelled;
+        return l10n.cancelled;
       case ContractState.draft:
       default:
-        return S.of(context).linear_stage_draft;
+        return l10n.linear_stage_draft;
     }
   }
 }

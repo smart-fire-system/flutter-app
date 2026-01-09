@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/state.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
@@ -20,10 +20,11 @@ class ReportsAndContractsScreen extends StatefulWidget {
 class _ReportsAndContractsScreenState extends State<ReportsAndContractsScreen> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: CustomAppBar(
-        title: S.of(context).reports_contracts_title,
+        title: l10n.reports_contracts_title,
         leading: const Icon(Icons.article),
       ),
       body: BlocBuilder<ReportsBloc, ReportsState>(
@@ -38,6 +39,7 @@ class _ReportsAndContractsScreenState extends State<ReportsAndContractsScreen> {
   }
 
   Widget _buildBody(ReportsAuthenticated state) {
+    final l10n = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -45,8 +47,8 @@ class _ReportsAndContractsScreenState extends State<ReportsAndContractsScreen> {
         children: [
           LargeCard(
             icon: Icons.assignment,
-            title: S.of(context).reports_contracts_card_title,
-            subtitle: S.of(context).reports_contracts_card_subtitle,
+            title: l10n.reports_contracts_card_title,
+            subtitle: l10n.reports_contracts_card_subtitle,
             titleColor: Colors.white,
             subtitleColor: Colors.white,
             gradient: const LinearGradient(
@@ -61,8 +63,8 @@ class _ReportsAndContractsScreenState extends State<ReportsAndContractsScreen> {
           if (state.user is Admin || state.user is MasterAdmin) ...[
             WideCard(
               icon: Icons.edit,
-              title: S.of(context).contract_components,
-              subtitle: S.of(context).contract_components_subtitle,
+              title: l10n.contract_components,
+              subtitle: l10n.contract_components_subtitle,
               color: const Color(0xFFF43F5E),
               onTap: () => TabNavigator.reports.currentState
                   ?.pushNamed('/reports/contract-components'),
@@ -71,8 +73,8 @@ class _ReportsAndContractsScreenState extends State<ReportsAndContractsScreen> {
           ],
           WideCard(
             icon: Icons.assignment_add,
-            title: S.of(context).new_visit_report,
-            subtitle: S.of(context).new_visit_report_subtitle,
+            title: l10n.new_visit_report,
+            subtitle: l10n.new_visit_report_subtitle,
             color: const Color(0xFFF43F5E),
             onTap: () => TabNavigator.reports.currentState
                 ?.pushNamed('/reports/new-visit-report'),
@@ -80,8 +82,8 @@ class _ReportsAndContractsScreenState extends State<ReportsAndContractsScreen> {
           const SizedBox(height: 16),
           WideCard(
             icon: Icons.assignment,
-            title: S.of(context).visit_reports,
-            subtitle: S.of(context).visit_reports_subtitle,
+            title: l10n.visit_reports,
+            subtitle: l10n.visit_reports_subtitle,
             color: const Color(0xFFF43F5E),
             onTap: () => ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

@@ -1,8 +1,8 @@
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
@@ -53,6 +53,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfile(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     String selectedCountryCode =
         _userInfo.countryCode == "" ? '+966' : _userInfo.countryCode;
 
@@ -72,7 +73,7 @@ class ProfileScreenState extends State<ProfileScreen> {
 
     return Scaffold(
       appBar: CustomAppBar(
-          title: S.of(context).profile, leading: const Icon(Icons.person)),
+          title: l10n.profile, leading: const Icon(Icons.person)),
       backgroundColor: Colors.grey[100],
       body: RefreshIndicator(
         onRefresh: () async {
@@ -151,7 +152,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                     color: Colors.red, size: 36),
                                 const SizedBox(height: 8),
                                 Text(
-                                  S.of(context).logout,
+                                  l10n.logout,
                                   style: CustomStyle.smallTextB
                                       .copyWith(color: Colors.red),
                                   textAlign: TextAlign.center,
@@ -176,7 +177,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       ListTile(
                         leading:
                             const Icon(Icons.email, color: Colors.blueGrey),
-                        title: Text(S.of(context).email,
+                        title: Text(l10n.email,
                             style: CustomStyle.smallText),
                         subtitle: Text(_userInfo.email,
                             style: CustomStyle.mediumTextB),
@@ -185,7 +186,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       ListTile(
                         leading:
                             const Icon(Icons.phone, color: Colors.blueGrey),
-                        title: Text(S.of(context).phone,
+                        title: Text(l10n.phone,
                             style: CustomStyle.smallText),
                         subtitle: Text(
                             '$selectedCountryCode ${_userInfo.phoneNumber}',
@@ -208,42 +209,42 @@ class ProfileScreenState extends State<ProfileScreen> {
                 // Company card
                 if (company != null) ...[
                   CustomInfoCard(
-                    title: S.of(context).company,
+                    title: l10n.company,
                     icon: Icons.business,
                     children: [
                       CustomInfoItem(
-                          title: S.of(context).name, value: company.name),
+                          title: l10n.name, value: company.name),
                       CustomInfoItem(
-                          title: S.of(context).code,
+                          title: l10n.code,
                           value: company.code?.toString() ?? ''),
                       CustomInfoItem(
-                          title: S.of(context).address, value: company.address),
+                          title: l10n.address, value: company.address),
                       CustomInfoItem(
-                          title: S.of(context).phone,
+                          title: l10n.phone,
                           value: company.phoneNumber),
                       CustomInfoItem(
-                          title: S.of(context).email, value: company.email),
+                          title: l10n.email, value: company.email),
                     ],
                   ),
                 ],
                 // Branch card
                 if (branch != null) ...[
                   CustomInfoCard(
-                    title: S.of(context).branch,
+                    title: l10n.branch,
                     icon: Icons.account_tree_outlined,
                     children: [
                       CustomInfoItem(
-                          title: S.of(context).name, value: branch.name),
+                          title: l10n.name, value: branch.name),
                       CustomInfoItem(
-                          title: S.of(context).code,
+                          title: l10n.code,
                           value: branch.code?.toString() ?? ''),
                       CustomInfoItem(
-                          title: S.of(context).address, value: branch.address),
+                          title: l10n.address, value: branch.address),
                       CustomInfoItem(
-                          title: S.of(context).phone,
+                          title: l10n.phone,
                           value: branch.phoneNumber),
                       CustomInfoItem(
-                          title: S.of(context).email, value: branch.email),
+                          title: l10n.email, value: branch.email),
                     ],
                   ),
                 ],
@@ -266,7 +267,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           );
         },
         backgroundColor: CustomStyle.redDark,
-        tooltip: S.of(context).edit_information,
+        tooltip: l10n.edit_information,
         child: const Icon(Icons.edit),
       ),
     );

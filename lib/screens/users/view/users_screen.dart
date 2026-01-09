@@ -1,4 +1,5 @@
 import 'package:card_loading/card_loading.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/users/bloc/bloc.dart';
@@ -14,7 +15,6 @@ import 'package:fire_alarm_system/widgets/user_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
@@ -51,6 +51,7 @@ class UsersScreenState extends State<UsersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<UsersBloc, UsersState>(
       builder: (context, state) {
         if (state is UsersAuthenticated) {
@@ -76,7 +77,7 @@ class UsersScreenState extends State<UsersScreen> {
           if (_roleUser is MasterAdmin) {
             _userTypesDropdown.add(
               CustomDropdownItem(
-                title: S.of(context).masterAdmins,
+                title: l10n.masterAdmins,
                 value: 'masterAdmins',
               ),
             );
@@ -84,7 +85,7 @@ class UsersScreenState extends State<UsersScreen> {
           if (_users.admins.isNotEmpty) {
             _userTypesDropdown.add(
               CustomDropdownItem(
-                title: S.of(context).admins,
+                title: l10n.admins,
                 value: 'admins',
               ),
             );
@@ -92,7 +93,7 @@ class UsersScreenState extends State<UsersScreen> {
           if (_users.companyManagers.isNotEmpty) {
             _userTypesDropdown.add(
               CustomDropdownItem(
-                title: S.of(context).companyManagers,
+                title: l10n.companyManagers,
                 value: 'companyManagers',
               ),
             );
@@ -100,7 +101,7 @@ class UsersScreenState extends State<UsersScreen> {
           if (_users.branchManagers.isNotEmpty) {
             _userTypesDropdown.add(
               CustomDropdownItem(
-                title: S.of(context).branchManagers,
+                title: l10n.branchManagers,
                 value: 'branchManagers',
               ),
             );
@@ -108,7 +109,7 @@ class UsersScreenState extends State<UsersScreen> {
           if (_users.employees.isNotEmpty) {
             _userTypesDropdown.add(
               CustomDropdownItem(
-                title: S.of(context).employees,
+                title: l10n.employees,
                 value: 'employees',
               ),
             );
@@ -116,7 +117,7 @@ class UsersScreenState extends State<UsersScreen> {
           if (_users.clients.isNotEmpty) {
             _userTypesDropdown.add(
               CustomDropdownItem(
-                title: S.of(context).clients,
+                title: l10n.clients,
                 value: 'clients',
               ),
             );
@@ -128,7 +129,7 @@ class UsersScreenState extends State<UsersScreen> {
               _permissions.canUpdateClients) {
             _userTypesDropdown.add(
               CustomDropdownItem(
-                  title: S.of(context).noRoleUsers, value: 'noRoleUsers'),
+                  title: l10n.noRoleUsers, value: 'noRoleUsers'),
             );
           }
           // Reset initial filter to include all available categories after data updates
@@ -149,11 +150,12 @@ class UsersScreenState extends State<UsersScreen> {
   }
 
   Widget _buildUsers(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     AppLoading().dismiss(context: context, screen: AppScreen.viewUsers);
     _filterUsers();
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).users),
+      appBar: CustomAppBar(title: l10n.users),
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<UsersBloc>().add(Refresh());
@@ -163,10 +165,10 @@ class UsersScreenState extends State<UsersScreen> {
           child: Column(
             children: [
               CustomDropdownMulti(
-                title: S.of(context).users,
-                subtitle: S.of(context).selectUsers,
-                allSelectedText: S.of(context).allUsers,
-                noSelectedText: S.of(context).noUsersSelected,
+                title: l10n.users,
+                subtitle: l10n.selectUsers,
+                allSelectedText: l10n.allUsers,
+                noSelectedText: l10n.noUsersSelected,
                 items: _userTypesDropdown,
                 icon: Icons.filter_alt,
                 onChanged: (filteredItems) {
@@ -180,7 +182,7 @@ class UsersScreenState extends State<UsersScreen> {
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    labelText: S.of(context).searchBy,
+                    labelText: l10n.searchBy,
                     labelStyle: CustomStyle.smallTextGrey,
                     border: const OutlineInputBorder(),
                     prefixIcon:
@@ -202,7 +204,7 @@ class UsersScreenState extends State<UsersScreen> {
                       _filteredUsers.clients.isEmpty &&
                       _filteredUsers.noRoleUsers.isEmpty
                   ? Text(
-                      S.of(context).noUsersToView,
+                      l10n.noUsersToView,
                       style: CustomStyle.mediumTextB,
                     )
                   : Container(),
@@ -216,7 +218,7 @@ class UsersScreenState extends State<UsersScreen> {
                           index: entry.key + 1,
                           code: user.info.code,
                           name: user.info.name,
-                          role: S.of(context).masterAdmin,
+                          role: l10n.masterAdmin,
                           onTap: () {
                             TabNavigator.usersAndBranches.currentState
                                 ?.pushNamed(
@@ -237,7 +239,7 @@ class UsersScreenState extends State<UsersScreen> {
                               _filteredUsers.masterAdmins.length,
                           code: user.info.code,
                           name: user.info.name,
-                          role: S.of(context).admin,
+                          role: l10n.admin,
                           onTap: () {
                             TabNavigator.usersAndBranches.currentState
                                 ?.pushNamed(
@@ -259,7 +261,7 @@ class UsersScreenState extends State<UsersScreen> {
                               _filteredUsers.admins.length,
                           code: user.info.code,
                           name: user.info.name,
-                          role: S.of(context).companyManager,
+                          role: l10n.companyManager,
                           companyName: user.company.name,
                           onTap: () {
                             TabNavigator.usersAndBranches.currentState
@@ -283,7 +285,7 @@ class UsersScreenState extends State<UsersScreen> {
                               _filteredUsers.companyManagers.length,
                           code: user.info.code,
                           name: user.info.name,
-                          role: S.of(context).branchManager,
+                          role: l10n.branchManager,
                           companyName: user.branch.company.name,
                           branchName: user.branch.name,
                           onTap: () {
@@ -309,7 +311,7 @@ class UsersScreenState extends State<UsersScreen> {
                               _filteredUsers.branchManagers.length,
                           code: user.info.code,
                           name: user.info.name,
-                          role: S.of(context).employee,
+                          role: l10n.employee,
                           companyName: user.branch.company.name,
                           branchName: user.branch.name,
                           onTap: () {
@@ -336,7 +338,7 @@ class UsersScreenState extends State<UsersScreen> {
                               _filteredUsers.employees.length,
                           code: user.info.code,
                           name: user.info.name,
-                          role: S.of(context).client,
+                          role: l10n.client,
                           companyName: user.branch.company.name,
                           branchName: user.branch.name,
                           onTap: () {
@@ -364,7 +366,7 @@ class UsersScreenState extends State<UsersScreen> {
                               _filteredUsers.clients.length,
                           code: user.info.code,
                           name: user.info.name,
-                          role: S.of(context).noRole,
+                          role: l10n.noRole,
                           onTap: () {
                             TabNavigator.usersAndBranches.currentState
                                 ?.pushNamed(
@@ -387,21 +389,22 @@ class UsersScreenState extends State<UsersScreen> {
   }
 
   Widget _buildLoading(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (ModalRoute.of(context)?.isCurrent ?? false) {
       AppLoading().show(context: context, screen: AppScreen.viewUsers);
     }
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).branches),
+      appBar: CustomAppBar(title: l10n.branches),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             CustomDropdownMulti(
-              title: S.of(context).companies,
-              subtitle: S.of(context).selectCompanies,
-              allSelectedText: S.of(context).allCompanies,
-              noSelectedText: S.of(context).noCompaniesSelected,
+              title: l10n.companies,
+              subtitle: l10n.selectCompanies,
+              allSelectedText: l10n.allCompanies,
+              noSelectedText: l10n.noCompaniesSelected,
               items: const [],
               icon: Icons.filter_alt,
               onChanged: (_) {},
@@ -410,7 +413,7 @@ class UsersScreenState extends State<UsersScreen> {
               padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
               child: TextField(
                 decoration: InputDecoration(
-                  labelText: S.of(context).searchByNameCode,
+                  labelText: l10n.searchByNameCode,
                   labelStyle: CustomStyle.smallTextGrey,
                   border: const OutlineInputBorder(),
                   prefixIcon:

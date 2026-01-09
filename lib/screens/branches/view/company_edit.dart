@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:card_loading/card_loading.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
@@ -15,7 +16,6 @@ import 'package:fire_alarm_system/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
@@ -62,6 +62,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<BranchesBloc, BranchesState>(
       builder: (context, state) {
         AppLoading().dismiss(
@@ -81,7 +82,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
               state.message = null;
               CustomAlert.showSuccess(
                 context: context,
-                title: S.of(context).companyModified,
+                title: l10n.companyModified,
               ).then((_) {
                 if (context.mounted) {
                   Navigator.of(context).pop();
@@ -123,11 +124,12 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
   }
 
   Widget _buildEditor(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     AppLoading().dismiss(context: context, screen: AppScreen.editCompanies);
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).editCompany),
+      appBar: CustomAppBar(title: l10n.editCompany),
       floatingActionButton: FloatingActionButton.extended(
-        label: Text(S.of(context).save_changes,
+        label: Text(l10n.save_changes,
             style: CustomStyle.mediumTextWhite),
         backgroundColor: Colors.green,
         icon: const Icon(
@@ -146,25 +148,25 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
           child: Column(
             children: [
               CustomTextField(
-                label: S.of(context).companyName,
+                label: l10n.companyName,
                 controller: _nameController,
               ),
               CustomTextField(
-                label: S.of(context).address,
+                label: l10n.address,
                 controller: _addressController,
               ),
               CustomTextField(
-                label: S.of(context).phone,
+                label: l10n.phone,
                 controller: _phoneController,
                 inputType: TextInputType.phone,
               ),
               CustomTextField(
-                label: S.of(context).email,
+                label: l10n.email,
                 controller: _emailController,
                 inputType: TextInputType.emailAddress,
               ),
               CustomTextField(
-                label: S.of(context).comment,
+                label: l10n.comment,
                 controller: _commentController,
                 maxLines: 3,
               ),
@@ -208,7 +210,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       color: Colors.white,
                       child: Text(
-                        S.of(context).companyLogo,
+                        l10n.companyLogo,
                         style: CustomStyle.smallTextBRed,
                       ),
                     ),
@@ -217,7 +219,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
               ),
               if (_permissions.canDeleteCompanies)
                 CustomNormalButton(
-                  label: S.of(context).deleteCompany,
+                  label: l10n.deleteCompany,
                   backgroundColor: CustomStyle.redDark,
                   fullWidth: true,
                   onPressed: () {
@@ -232,45 +234,46 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
   }
 
   void _saveChanges(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     if (_nameController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterCompanyName,
+        title: l10n.enterCompanyName,
       );
       return;
     } else if (_addressController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterCompanyAddress,
+        title: l10n.enterCompanyAddress,
       );
       return;
     } else if (_phoneController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterCompanyPhone,
+        title: l10n.enterCompanyPhone,
       );
       return;
     } else if (_emailController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterCompanyEmail,
+        title: l10n.enterCompanyEmail,
       );
       return;
     }
 
     int? confirm = await CustomAlert.showConfirmation(
       context: context,
-      title: S.of(context).editCompany,
-      subtitle: S.of(context).companyModifyWarning,
+      title: l10n.editCompany,
+      subtitle: l10n.companyModifyWarning,
       buttons: [
         CustomAlertConfirmationButton(
-          title: S.of(context).yesSaveChanges,
+          title: l10n.yesSaveChanges,
           value: 0,
           backgroundColor: Colors.green,
           textColor: Colors.white,
         ),
         CustomAlertConfirmationButton(
-          title: S.of(context).noCancel,
+          title: l10n.noCancel,
           value: 1,
           backgroundColor: CustomStyle.greyDark,
           textColor: Colors.white,
@@ -281,7 +284,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
       AppLoading().show(
         context: context,
         screen: AppScreen.editCompanies,
-        title: S.of(context).waitSavingCompany,
+        title: l10n.waitSavingCompany,
         type: 'edit',
       );
       context.read<BranchesBloc>().add(CompanyModifyRequested(
@@ -299,19 +302,20 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
   }
 
   void _deleteCompany(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     int? confirm = await CustomAlert.showConfirmation(
       context: context,
-      title: S.of(context).deleteCompany,
-      subtitle: S.of(context).companyDeleteWarning,
+      title: l10n.deleteCompany,
+      subtitle: l10n.companyDeleteWarning,
       buttons: [
         CustomAlertConfirmationButton(
-          title: S.of(context).yesDeleteCompany,
+          title: l10n.yesDeleteCompany,
           value: 0,
           backgroundColor: CustomStyle.redDark,
           textColor: Colors.white,
         ),
         CustomAlertConfirmationButton(
-          title: S.of(context).noCancel,
+          title: l10n.noCancel,
           value: 1,
           backgroundColor: CustomStyle.greyDark,
           textColor: Colors.white,
@@ -322,7 +326,7 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
       AppLoading().show(
         context: context,
         screen: AppScreen.editCompanies,
-        title: S.of(context).waitDeltingCompany,
+        title: l10n.waitDeltingCompany,
         type: 'delete',
       );
       context.read<BranchesBloc>().add(
@@ -335,9 +339,10 @@ class EditCompanyScreenState extends State<EditCompanyScreen> {
   }
 
   Widget _buildLoading(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).editCompany),
+      appBar: CustomAppBar(title: l10n.editCompany),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

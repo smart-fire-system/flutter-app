@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/visit_report_data.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +21,7 @@ class VisitReportSummary extends StatefulWidget {
 class _VisitReportSummaryState extends State<VisitReportSummary> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: widget.onTap,
       child: Card(
@@ -39,7 +40,7 @@ class _VisitReportSummaryState extends State<VisitReportSummary> {
                 children: [
                   Expanded(
                     child: Text(
-                      (S.of(context).system_report_no(widget.index + 1)),
+                      (l10n.system_report_no(widget.index + 1)),
                       style: CustomStyle.mediumTextBRed,
                     ),
                   ),
@@ -64,8 +65,8 @@ class _VisitReportSummaryState extends State<VisitReportSummary> {
                     child: Text(
                       widget.visitReport.employeeSignature.id != null &&
                               widget.visitReport.clientSignature.id != null
-                          ? S.of(context).signed
-                          : S.of(context).not_signed,
+                          ? l10n.signed
+                          : l10n.not_signed,
                       style: CustomStyle.smallTextB.copyWith(
                         color: widget.visitReport.employeeSignature.id !=
                                     null &&
@@ -89,7 +90,7 @@ class _VisitReportSummaryState extends State<VisitReportSummary> {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: S.of(context).visit_date,
+                            text: l10n.visit_date,
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
@@ -114,14 +115,14 @@ class _VisitReportSummaryState extends State<VisitReportSummary> {
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: S.of(context).system_status,
+                            text: l10n.system_status,
                             style: CustomStyle.smallTextBRed,
                           ),
                           TextSpan(
                             text:
                                 widget.visitReport.paramSystemStatusBool == '1'
-                                    ? S.of(context).suitable
-                                    : S.of(context).unsuitable,
+                                    ? l10n.suitable
+                                    : l10n.unsuitable,
                             style: CustomStyle.smallText.copyWith(
                               color: widget.visitReport.paramSystemStatusBool ==
                                       '1'

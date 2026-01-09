@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
@@ -26,6 +26,7 @@ class CustomUserCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final query = (searchQuery ?? '').toLowerCase();
     return ListTile(
       leading: Text(
@@ -40,7 +41,7 @@ class CustomUserCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                '${S.of(context).code}: ',
+                '${l10n.code}: ',
                 style: CustomStyle.smallTextB,
               ),
               Expanded(
@@ -52,7 +53,7 @@ class CustomUserCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                '${S.of(context).role}: ',
+                '${l10n.role}: ',
                 style: CustomStyle.smallTextB,
               ),
               Expanded(
@@ -69,7 +70,7 @@ class CustomUserCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '${S.of(context).company}: ',
+                  '${l10n.company}: ',
                   style: CustomStyle.smallTextB,
                 ),
                 Expanded(
@@ -86,7 +87,7 @@ class CustomUserCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '${S.of(context).branch}: ',
+                  '${l10n.branch}: ',
                   style: CustomStyle.smallTextB,
                 ),
                 Expanded(

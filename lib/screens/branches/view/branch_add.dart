@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:card_loading/card_loading.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
@@ -14,8 +15,6 @@ import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:fire_alarm_system/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
@@ -78,6 +77,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<BranchesBloc, BranchesState>(builder: (context, state) {
       AppLoading().dismiss(
         context: context,
@@ -97,7 +97,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
             state.message = null;
             CustomAlert.showSuccess(
               context: context,
-              title: S.of(context).branchAdded,
+              title: l10n.branchAdded,
             ).then((_) {
               if (context.mounted) {
                 TabNavigator.usersAndBranches.currentState?.popAndPushNamed(
@@ -120,11 +120,12 @@ class AddBranchScreenState extends State<AddBranchScreen> {
   }
 
   Widget _buildEditor(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     AppLoading().dismiss(context: context, screen: AppScreen.addBranhes);
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).addBranch),
+      appBar: CustomAppBar(title: l10n.addBranch),
       floatingActionButton: FloatingActionButton.extended(
-        label: Text(S.of(context).save_changes,
+        label: Text(l10n.save_changes,
             style: CustomStyle.mediumTextWhite),
         backgroundColor: Colors.green,
         icon: const Icon(
@@ -148,16 +149,16 @@ class AddBranchScreenState extends State<AddBranchScreen> {
                 children: [
                   _buildSectionCard(
                     context,
-                    title: S.of(context).branchInformation,
+                    title: l10n.branchInformation,
                     icon: Icons.info_outline,
                     children: [
                       CustomTextField(
-                        label: S.of(context).branchName,
+                        label: l10n.branchName,
                         controller: _nameController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).address,
+                        label: l10n.address,
                         controller: _addressController,
                       ),
                     ],
@@ -165,17 +166,17 @@ class AddBranchScreenState extends State<AddBranchScreen> {
                   const SizedBox(height: 16),
                   _buildSectionCard(
                     context,
-                    title: S.of(context).contactInformation,
+                    title: l10n.contactInformation,
                     icon: Icons.contact_phone_outlined,
                     children: [
                       CustomTextField(
-                        label: S.of(context).phone,
+                        label: l10n.phone,
                         controller: _phoneController,
                         inputType: TextInputType.phone,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).email,
+                        label: l10n.email,
                         controller: _emailController,
                         inputType: TextInputType.emailAddress,
                       ),
@@ -184,12 +185,12 @@ class AddBranchScreenState extends State<AddBranchScreen> {
                   const SizedBox(height: 16),
                   _buildSectionCard(
                     context,
-                    title: S.of(context).companyInformation,
+                    title: l10n.companyInformation,
                     icon: Icons.business_outlined,
                     children: [
                       CustomDropdownSingle(
-                        title: S.of(context).company,
-                        subtitle: S.of(context).changeCompany,
+                        title: l10n.company,
+                        subtitle: l10n.changeCompany,
                         items: _companies.map((company) {
                           return CustomDropdownItem(
                             title: company.name,
@@ -203,7 +204,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).comment,
+                        label: l10n.comment,
                         controller: _commentController,
                         maxLines: 3,
                       ),
@@ -212,36 +213,36 @@ class AddBranchScreenState extends State<AddBranchScreen> {
                   const SizedBox(height: 16),
                   _buildSectionCard(
                     context,
-                    title: S.of(context).firstPartyInformation,
+                    title: l10n.firstPartyInformation,
                     icon: Icons.person_outline,
                     children: [
                       CustomTextField(
-                        label: S.of(context).firstPartyName,
+                        label: l10n.firstPartyName,
                         controller: _firstPartyNameController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).firstPartyRepresentativeName,
+                        label: l10n.firstPartyRepresentativeName,
                         controller: _firstPartyRepNameController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).firstPartyAddress,
+                        label: l10n.firstPartyAddress,
                         controller: _firstPartyAddressController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).firstPartyCommercialRecord,
+                        label: l10n.firstPartyCommercialRecord,
                         controller: _firstPartyCommercialRecordController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).firstPartyG,
+                        label: l10n.firstPartyG,
                         controller: _firstPartyGController,
                       ),
                       const SizedBox(height: 12),
                       CustomTextField(
-                        label: S.of(context).firstPartyIdNumber,
+                        label: l10n.firstPartyIdNumber,
                         controller: _firstPartyIdNumberController,
                       ),
                     ],
@@ -249,7 +250,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
                   const SizedBox(height: 16),
                   _buildSectionCard(
                     context,
-                    title: S.of(context).firstPartySignature,
+                    title: l10n.firstPartySignature,
                     icon: Icons.edit,
                     children: [
                       Container(
@@ -289,7 +290,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
                                             fit: BoxFit.contain,
                                           )
                                         : Text(
-                                            S.of(context).tapToUploadSignature,
+                                            l10n.tapToUploadSignature,
                                             style: CustomStyle.mediumTextB,
                                             textAlign: TextAlign.center,
                                           ),
@@ -313,51 +314,52 @@ class AddBranchScreenState extends State<AddBranchScreen> {
   }
 
   void _saveChanges(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     if (_nameController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterBranchName,
+        title: l10n.enterBranchName,
       );
       return;
     } else if (_addressController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterBranchAddress,
+        title: l10n.enterBranchAddress,
       );
       return;
     } else if (_phoneController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterBranchPhone,
+        title: l10n.enterBranchPhone,
       );
       return;
     } else if (_emailController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterBranchEmail,
+        title: l10n.enterBranchEmail,
       );
       return;
     } else if (_selectedCompany == null) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterBranchCompany,
+        title: l10n.enterBranchCompany,
       );
       return;
     }
 
     int? confirm = await CustomAlert.showConfirmation(
       context: context,
-      title: S.of(context).addBranch,
-      subtitle: S.of(context).branchModifyWarning,
+      title: l10n.addBranch,
+      subtitle: l10n.branchModifyWarning,
       buttons: [
         CustomAlertConfirmationButton(
-          title: S.of(context).yesSaveChanges,
+          title: l10n.yesSaveChanges,
           value: 0,
           backgroundColor: Colors.green,
           textColor: Colors.white,
         ),
         CustomAlertConfirmationButton(
-          title: S.of(context).noCancel,
+          title: l10n.noCancel,
           value: 1,
           backgroundColor: CustomStyle.greyDark,
           textColor: Colors.white,
@@ -368,7 +370,7 @@ class AddBranchScreenState extends State<AddBranchScreen> {
       AppLoading().show(
         context: context,
         screen: AppScreen.addBranhes,
-        title: S.of(context).waitSavingBranch,
+        title: l10n.waitSavingBranch,
         type: 'add',
       );
       context.read<BranchesBloc>().add(BranchAddRequested(
@@ -426,9 +428,10 @@ class AddBranchScreenState extends State<AddBranchScreen> {
   }
 
   Widget _buildLoading(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).addBranch),
+      appBar: CustomAppBar(title: l10n.addBranch),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

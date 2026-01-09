@@ -1,146 +1,147 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:flutter/widgets.dart';
 
 class Errors {
   static String getFirebaseErrorMessage(BuildContext context, String code) {
+    final l10n = AppLocalizations.of(context)!;
     if (code.startsWith('Exception: ')) {
       code = code.replaceFirst('Exception: ', '');
     }
     switch (code) {
       case 'email-already-in-use':
-        return S.of(context).email_already_in_use;
+        return l10n.email_already_in_use;
       case 'invalid-email':
-        return S.of(context).invalid_email;
+        return l10n.invalid_email;
       case 'operation-not-allowed':
-        return S.of(context).operation_not_allowed;
+        return l10n.operation_not_allowed;
       case 'weak-password':
-        return S.of(context).weak_password;
+        return l10n.weak_password;
       case 'too-many-requests':
-        return S.of(context).too_many_requests;
+        return l10n.too_many_requests;
       case 'user-token-expired':
-        return S.of(context).user_token_expired;
+        return l10n.user_token_expired;
       case 'network-request-failed':
-        return S.of(context).network_request_failed;
+        return l10n.network_request_failed;
       case 'invalid-credential':
-        return S.of(context).invalid_credential;
+        return l10n.invalid_credential;
       case 'user-disabled':
-        return S.of(context).user_disabled;
+        return l10n.user_disabled;
       case 'wrong-password':
-        return S.of(context).wrong_password;
+        return l10n.wrong_password;
       case 'user-not-found':
-        return S.of(context).user_not_found;
+        return l10n.user_not_found;
       case 'credential-already-in-use':
-        return S.of(context).credential_already_in_use;
+        return l10n.credential_already_in_use;
       case 'custom-token-mismatch':
-        return S.of(context).custom_token_mismatch;
+        return l10n.custom_token_mismatch;
       case 'invalid-custom-token':
-        return S.of(context).invalid_custom_token;
+        return l10n.invalid_custom_token;
       case 'account-exists-with-different-credentials':
-        return S.of(context).account_exists_with_different_credentials;
+        return l10n.account_exists_with_different_credentials;
       case 'requires-recent-login':
-        return S.of(context).requires_recent_login;
+        return l10n.requires_recent_login;
       case 'provider-already-linked':
-        return S.of(context).provider_already_linked;
+        return l10n.provider_already_linked;
       case 'no-such-provider':
-        return S.of(context).no_such_provider;
+        return l10n.no_such_provider;
       case 'invalid-user-token':
-        return S.of(context).invalid_user_token;
+        return l10n.invalid_user_token;
       case 'invalid-api-key':
-        return S.of(context).invalid_api_key;
+        return l10n.invalid_api_key;
       case 'app-not-authorized':
-        return S.of(context).app_not_authorized;
+        return l10n.app_not_authorized;
       case 'expired-action-code':
-        return S.of(context).expired_action_code;
+        return l10n.expired_action_code;
       case 'invalid-action-code':
-        return S.of(context).invalid_action_code;
+        return l10n.invalid_action_code;
       case 'invalid-message-payload':
-        return S.of(context).invalid_message_payload;
+        return l10n.invalid_message_payload;
       case 'invalid-sender':
-        return S.of(context).invalid_sender;
+        return l10n.invalid_sender;
       case 'invalid-recipient-email':
-        return S.of(context).invalid_recipient_email;
+        return l10n.invalid_recipient_email;
       case 'unauthorized-domain':
-        return S.of(context).unauthorized_domain;
+        return l10n.unauthorized_domain;
       case 'invalid-continue-uri':
-        return S.of(context).invalid_continue_uri;
+        return l10n.invalid_continue_uri;
       case 'missing-continue-uri':
-        return S.of(context).missing_continue_uri;
+        return l10n.missing_continue_uri;
       case 'missing-email':
-        return S.of(context).missing_email;
+        return l10n.missing_email;
       case 'missing-phone-number':
-        return S.of(context).missing_phone_number;
+        return l10n.missing_phone_number;
       case 'invalid-phone-number':
-        return S.of(context).invalid_phone_number;
+        return l10n.invalid_phone_number;
       case 'missing-verification-code':
-        return S.of(context).missing_verification_code;
+        return l10n.missing_verification_code;
       case 'invalid-verification-code':
-        return S.of(context).invalid_verification_code;
+        return l10n.invalid_verification_code;
       case 'missing-verification-id':
-        return S.of(context).missing_verification_id;
+        return l10n.missing_verification_id;
       case 'invalid-verification-id':
-        return S.of(context).invalid_verification_id;
+        return l10n.invalid_verification_id;
       case 'session-expired':
-        return S.of(context).session_expired;
+        return l10n.session_expired;
       case 'quota-exceeded':
-        return S.of(context).quota_exceeded;
+        return l10n.quota_exceeded;
       case 'missing-app-credential':
-        return S.of(context).missing_app_credential;
+        return l10n.missing_app_credential;
       case 'invalid-app-credential':
-        return S.of(context).invalid_app_credential;
+        return l10n.invalid_app_credential;
       case 'missing-client-identifier':
-        return S.of(context).missing_client_identifier;
+        return l10n.missing_client_identifier;
       case 'tenant-id-mismatch':
-        return S.of(context).tenant_id_mismatch;
+        return l10n.tenant_id_mismatch;
       case 'unsupported-tenant-operation':
-        return S.of(context).unsupported_tenant_operation;
+        return l10n.unsupported_tenant_operation;
       case 'user-mismatch':
-        return S.of(context).user_mismatch;
+        return l10n.user_mismatch;
       case 'no-signed-in-user':
-        return S.of(context).no_signed_in_user;
+        return l10n.no_signed_in_user;
       case 'cancelled':
-        return S.of(context).cancelled;
+        return l10n.cancelled;
 
       case 'sign_in_failed':
-        return S.of(context).sign_in_failed;
+        return l10n.sign_in_failed;
       case 'network_error':
-        return S.of(context).network_request_failed;
+        return l10n.network_request_failed;
       case 'sign_in_cancelled':
-        return S.of(context).sign_in_cancelled;
+        return l10n.sign_in_cancelled;
       case 'sign_in_required':
-        return S.of(context).sign_in_required;
+        return l10n.sign_in_required;
 
       case 'invalid-argument':
-        return S.of(context).invalid_argument;
+        return l10n.invalid_argument;
       case 'deadline-exceeded':
-        return S.of(context).deadline_exceeded;
+        return l10n.deadline_exceeded;
       case 'not-found':
-        return S.of(context).not_found;
+        return l10n.not_found;
       case 'already-exists':
-        return S.of(context).already_exists;
+        return l10n.already_exists;
       case 'permission-denied':
-        return S.of(context).permission_denied;
+        return l10n.permission_denied;
       case 'resource-exhausted':
-        return S.of(context).resource_exhausted;
+        return l10n.resource_exhausted;
       case 'failed-precondition':
-        return S.of(context).failed_precondition;
+        return l10n.failed_precondition;
       case 'aborted':
-        return S.of(context).aborted;
+        return l10n.aborted;
       case 'out-of-range':
-        return S.of(context).out_of_range;
+        return l10n.out_of_range;
       case 'unimplemented':
-        return S.of(context).unimplemented;
+        return l10n.unimplemented;
       case 'internal':
-        return S.of(context).internal;
+        return l10n.internal;
       case 'unavailable':
-        return S.of(context).unavailable;
+        return l10n.unavailable;
       case 'data-loss':
-        return S.of(context).data_loss;
+        return l10n.data_loss;
       case 'popup_closed':
-        return S.of(context).cancelled;
+        return l10n.cancelled;
       case 'unauthenticated':
-        return S.of(context).unauthenticated;
+        return l10n.unauthenticated;
       default:
-        return '${S.of(context).unknown_error}\n$code';
+        return '${l10n.unknown_error}\n$code';
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:card_loading/card_loading.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
@@ -10,7 +11,6 @@ import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
@@ -69,6 +69,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
   }
 
   Widget _buildDetails(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: CustomAppBar(title: _company!.name),
       floatingActionButton: !_permissions.canEditCompanies
@@ -84,7 +85,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                 size: 30,
                 color: Colors.white,
               ),
-              label: Text(S.of(context).edit_information,
+              label: Text(l10n.edit_information,
                   style: CustomStyle.mediumTextWhite),
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -96,7 +97,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomInfoCard(
-                title: S.of(context).companyLogo,
+                title: l10n.companyLogo,
                 icon: Icons.image,
                 children: [
                   Center(
@@ -107,39 +108,39 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                 ],
               ),
               CustomInfoCard(
-                title: S.of(context).companyInformation,
+                title: l10n.companyInformation,
                 icon: Icons.info_outline,
                 children: [
                   CustomInfoItem(
-                    title: S.of(context).name,
+                    title: l10n.name,
                     value: _company!.name,
                   ),
                   CustomInfoItem(
-                    title: S.of(context).code,
+                    title: l10n.code,
                     value: _company!.code.toString(),
                   ),
                   CustomInfoItem(
-                    title: S.of(context).createdAt,
+                    title: l10n.createdAt,
                     value: _company!.createdAt!.toDate().toString(),
                   ),
                 ],
               ),
               CustomInfoCard(
-                title: S.of(context).contactInformation,
+                title: l10n.contactInformation,
                 icon: Icons.contact_phone_outlined,
                 children: [
                   CustomInfoItem(
-                    title: S.of(context).phone,
+                    title: l10n.phone,
                     value: _company!.phoneNumber,
                   ),
                   CustomInfoItem(
-                    title: S.of(context).email,
+                    title: l10n.email,
                     value: _company!.email,
                   ),
                 ],
               ),
               CustomInfoCard(
-                title: S.of(context).address,
+                title: l10n.address,
                 icon: Icons.location_on_outlined,
                 children: [
                   CustomInfoItem(
@@ -149,7 +150,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
               ),
               if (_company!.comment.isNotEmpty)
                 CustomInfoCard(
-                  title: S.of(context).comment,
+                  title: l10n.comment,
                   icon: Icons.comment_outlined,
                   children: [
                     CustomInfoItem(
@@ -159,7 +160,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                 ),
               if (_branches.isNotEmpty)
                 CustomInfoCard(
-                  title: S.of(context).branches,
+                  title: l10n.branches,
                   icon: Icons.business_outlined,
                   children: [
                     ...List.generate(_branches.length, (index) {
@@ -196,9 +197,10 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
   }
 
   Widget _buildLoading(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).companyInformation),
+      appBar: CustomAppBar(title: l10n.companyInformation),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

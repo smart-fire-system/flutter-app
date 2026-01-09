@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
@@ -28,9 +28,10 @@ class NotAuthorizedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).app_name),
+      appBar: CustomAppBar(title: l10n.app_name),
       body: RefreshIndicator(
         onRefresh: () async {
           onRefresh();
@@ -41,7 +42,7 @@ class NotAuthorizedScreen extends StatelessWidget {
             children: <Widget>[
               ListTile(
                 title: Text(
-                  S.of(context).stepsToComplete,
+                  l10n.stepsToComplete,
                   style: CustomStyle.largeTextB,
                 ),
                 leading: const Icon(Icons.refresh, size: 40),
@@ -82,13 +83,13 @@ class NotAuthorizedScreen extends StatelessWidget {
                             size: 30,
                           ),
                     title: Text(
-                      S.of(context).emailVerificationTitle,
+                      l10n.emailVerificationTitle,
                       style: CustomStyle.largeTextB,
                     ),
                     subtitle: Text(
                       isEmailVerified
-                          ? S.of(context).emailVerified
-                          : S.of(context).emailNotVerified,
+                          ? l10n.emailVerified
+                          : l10n.emailNotVerified,
                       style: CustomStyle.mediumText,
                     ),
                     onTap: isEmailVerified
@@ -118,13 +119,13 @@ class NotAuthorizedScreen extends StatelessWidget {
                             size: 30,
                           ),
                     title: Text(
-                      S.of(context).phoneNumberTitle,
+                      l10n.phoneNumberTitle,
                       style: CustomStyle.largeTextB,
                     ),
                     subtitle: Text(
                       isPhoneAdded
-                          ? S.of(context).phoneNumberAdded
-                          : S.of(context).phoneNumberNotAdded,
+                          ? l10n.phoneNumberAdded
+                          : l10n.phoneNumberNotAdded,
                       style: CustomStyle.mediumText,
                     ),
                     onTap: isPhoneAdded
@@ -154,13 +155,13 @@ class NotAuthorizedScreen extends StatelessWidget {
                             size: 30,
                           ),
                     title: Text(
-                      S.of(context).accessRoleTitle,
+                      l10n.accessRoleTitle,
                       style: CustomStyle.largeTextB,
                     ),
                     subtitle: Text(
                       role != null
-                          ? '${S.of(context).roleAssigned} [$role]'
-                          : S.of(context).roleNotAssigned,
+                          ? '${l10n.roleAssigned} [$role]'
+                          : l10n.roleNotAssigned,
                       style: CustomStyle.mediumText,
                     ),
                   ),
@@ -174,7 +175,7 @@ class NotAuthorizedScreen extends StatelessWidget {
                   },
                   icon: const Icon(Icons.logout, color: Colors.white),
                   label: Text(
-                    S.of(context).logout,
+                    l10n.logout,
                     style: CustomStyle.normalButtonTextSmallWhite,
                   ),
                   style: CustomStyle.normalButtonRed,

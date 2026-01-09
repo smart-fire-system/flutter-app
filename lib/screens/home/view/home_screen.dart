@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'dart:async';
 import 'package:fire_alarm_system/screens/home/view/add_phone_screen.dart';
@@ -13,7 +14,6 @@ import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
@@ -131,6 +131,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state is HomeNotAuthenticated) {
@@ -203,10 +204,10 @@ class HomeScreenState extends State<HomeScreen> {
           IconData icon = Icons.error_outline_rounded;
           String errorMessage = state.error.toString();
           if (state.error == AuthChangeResult.networkError) {
-            errorMessage = S.of(context).network_error;
+            errorMessage = l10n.network_error;
             icon = Icons.wifi_off_rounded;
           } else if (state.error == AuthChangeResult.generalError) {
-            errorMessage = S.of(context).unknown_error;
+            errorMessage = l10n.unknown_error;
             icon = Icons.error_outline_rounded;
           }
           return ErrorScreen(
@@ -420,6 +421,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHome(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: IndexedStack(
         index: _currentTab.index,
@@ -486,23 +488,23 @@ class HomeScreenState extends State<HomeScreen> {
             items: [
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.bar_chart_rounded, 0),
-                label: S.of(context).system,
+                label: l10n.system,
               ),
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.article_rounded, 1),
-                label: S.of(context).reports,
+                label: l10n.reports,
               ),
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.home_rounded, 2),
-                label: S.of(context).home,
+                label: l10n.home,
               ),
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.people_alt_rounded, 3),
-                label: S.of(context).users_and_branches,
+                label: l10n.users_and_branches,
               ),
               BottomNavigationBarItem(
                 icon: _buildNavIcon(Icons.person, 4),
-                label: S.of(context).profile,
+                label: l10n.profile,
               ),
             ],
           ),

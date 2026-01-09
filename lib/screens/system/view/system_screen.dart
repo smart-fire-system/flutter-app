@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/pin.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/screens/system/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/system/bloc/event.dart';
@@ -127,8 +127,9 @@ class SystemScreenState extends State<SystemScreen> {
   }
 
   Widget _buildSystem(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).system, leading: const Icon(Icons.bar_chart_rounded)),
+      appBar: CustomAppBar(title: l10n.system, leading: const Icon(Icons.bar_chart_rounded)),
       body: Column(
         children: [
           Padding(
@@ -161,7 +162,7 @@ class SystemScreenState extends State<SystemScreen> {
                             Text(
                               _selectedBranch == null
                                   ? 'Choose Branch'
-                                  : '${_selectedBranch!.name} - [${S.of(context).code}: ${_selectedBranch!.code}]',
+                                  : '${_selectedBranch!.name} - [${l10n.code}: ${_selectedBranch!.code}]',
                               style: CustomStyle.mediumText.copyWith(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,

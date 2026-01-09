@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
@@ -52,21 +52,22 @@ class UserInfo {
   }
 
   static String getRoleName(BuildContext context, UserRole? role) {
+    final l10n = AppLocalizations.of(context)!;
     switch (role) {
       case UserRole.masterAdmin:
-        return S.of(context).masterAdmin;
+        return l10n.masterAdmin;
       case UserRole.admin:
-        return S.of(context).admin;
+        return l10n.admin;
       case UserRole.companyManager:
-        return S.of(context).companyManager;
+        return l10n.companyManager;
       case UserRole.branchManager:
-        return S.of(context).branchManager;
+        return l10n.branchManager;
       case UserRole.employee:
-        return S.of(context).employee;
+        return l10n.employee;
       case UserRole.client:
-        return S.of(context).client;
+        return l10n.client;
       case null:
-        return S.of(context).noRole;
+        return l10n.noRole;
     }
   }
 

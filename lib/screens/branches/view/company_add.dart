@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:card_loading/card_loading.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
@@ -12,8 +13,6 @@ import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:fire_alarm_system/widgets/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 
 import 'package:fire_alarm_system/screens/branches/bloc/bloc.dart';
@@ -56,6 +55,7 @@ class AddCompanyScreenState extends State<AddCompanyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<BranchesBloc, BranchesState>(builder: (context, state) {
       AppLoading().dismiss(
         context: context,
@@ -75,7 +75,7 @@ class AddCompanyScreenState extends State<AddCompanyScreen> {
             state.message = null;
             CustomAlert.showSuccess(
               context: context,
-              title: S.of(context).companyAdded,
+              title: l10n.companyAdded,
             ).then((_) {
               if (context.mounted) {
                 TabNavigator.usersAndBranches.currentState?.popAndPushNamed(
@@ -97,11 +97,12 @@ class AddCompanyScreenState extends State<AddCompanyScreen> {
   }
 
   Widget _buildEditor(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     AppLoading().dismiss(context: context, screen: AppScreen.addCompanies);
     return Scaffold(
-      appBar: CustomAppBar(title: S.of(context).addCompany),
+      appBar: CustomAppBar(title: l10n.addCompany),
       floatingActionButton: FloatingActionButton.extended(
-        label: Text(S.of(context).save_changes,
+        label: Text(l10n.save_changes,
             style: CustomStyle.mediumTextWhite),
         backgroundColor: Colors.green,
         icon: const Icon(
@@ -120,25 +121,25 @@ class AddCompanyScreenState extends State<AddCompanyScreen> {
           child: Column(
             children: [
               CustomTextField(
-                label: S.of(context).companyName,
+                label: l10n.companyName,
                 controller: _nameController,
               ),
               CustomTextField(
-                label: S.of(context).address,
+                label: l10n.address,
                 controller: _addressController,
               ),
               CustomTextField(
-                label: S.of(context).phone,
+                label: l10n.phone,
                 controller: _phoneController,
                 inputType: TextInputType.phone,
               ),
               CustomTextField(
-                label: S.of(context).email,
+                label: l10n.email,
                 controller: _emailController,
                 inputType: TextInputType.emailAddress,
               ),
               CustomTextField(
-                label: S.of(context).comment,
+                label: l10n.comment,
                 controller: _commentController,
                 maxLines: 3,
               ),
@@ -172,7 +173,7 @@ class AddCompanyScreenState extends State<AddCompanyScreen> {
                                 )
                               : Center(
                                   child: Text(
-                                    S.of(context).tabToAddLogo,
+                                    l10n.tabToAddLogo,
                                     style: CustomStyle.mediumTextB,
                                     textAlign: TextAlign.center,
                                   ),
@@ -188,7 +189,7 @@ class AddCompanyScreenState extends State<AddCompanyScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       color: Colors.white,
                       child: Text(
-                        S.of(context).companyLogo,
+                        l10n.companyLogo,
                         style: CustomStyle.smallTextBRed,
                       ),
                     ),
@@ -203,51 +204,52 @@ class AddCompanyScreenState extends State<AddCompanyScreen> {
   }
 
   void _saveChanges(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     if (_nameController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterCompanyName,
+        title: l10n.enterCompanyName,
       );
       return;
     } else if (_addressController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterCompanyAddress,
+        title: l10n.enterCompanyAddress,
       );
       return;
     } else if (_phoneController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterCompanyPhone,
+        title: l10n.enterCompanyPhone,
       );
       return;
     } else if (_emailController.text.isEmpty) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterCompanyEmail,
+        title: l10n.enterCompanyEmail,
       );
       return;
     } else if (_newLogoFile == null) {
       CustomAlert.showError(
         context: context,
-        title: S.of(context).enterCompanyLogo,
+        title: l10n.enterCompanyLogo,
       );
       return;
     }
 
     int? confirm = await CustomAlert.showConfirmation(
       context: context,
-      title: S.of(context).addCompany,
-      subtitle: S.of(context).companyModifyWarning,
+      title: l10n.addCompany,
+      subtitle: l10n.companyModifyWarning,
       buttons: [
         CustomAlertConfirmationButton(
-          title: S.of(context).yesSaveChanges,
+          title: l10n.yesSaveChanges,
           value: 0,
           backgroundColor: Colors.green,
           textColor: Colors.white,
         ),
         CustomAlertConfirmationButton(
-          title: S.of(context).noCancel,
+          title: l10n.noCancel,
           value: 1,
           backgroundColor: CustomStyle.greyDark,
           textColor: Colors.white,
@@ -258,7 +260,7 @@ class AddCompanyScreenState extends State<AddCompanyScreen> {
       AppLoading().show(
         context: context,
         screen: AppScreen.addCompanies,
-        title: S.of(context).waitSavingCompany,
+        title: l10n.waitSavingCompany,
         type: 'add',
       );
       context.read<BranchesBloc>().add(CompanyAddRequested(
@@ -276,9 +278,10 @@ class AddCompanyScreenState extends State<AddCompanyScreen> {
   }
 
   Widget _buildLoading(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(title: S.of(context).addCompany),
+      appBar: CustomAppBar(title: l10n.addCompany),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

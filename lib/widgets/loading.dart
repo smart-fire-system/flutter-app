@@ -1,4 +1,4 @@
-import 'package:fire_alarm_system/generated/l10n.dart';
+import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
@@ -105,6 +105,7 @@ class AppLoading {
           barrierDismissible: false,
           builder: (BuildContext context) {
             _appScreenContexts[screen] = context;
+            final l10n = AppLocalizations.of(context)!;
             return PopScope(
               canPop: false,
               child: Center(
@@ -131,7 +132,7 @@ class AppLoading {
                       ),
                       Center(
                         child: Text(
-                          title ?? S.of(context).wait_while_loading,
+                          title ?? l10n.wait_while_loading,
                           style: CustomStyle.largeText25B,
                           textAlign: TextAlign.center,
                         ),
