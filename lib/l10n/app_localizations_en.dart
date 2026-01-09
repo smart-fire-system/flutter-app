@@ -1210,6 +1210,130 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noSignatureAddedYet => 'No signature added yet';
 
   @override
+  String get signatures_title => 'Signature validation';
+
+  @override
+  String get signatures_id_label => 'Signature ID';
+
+  @override
+  String get signatures_id_hint => 'Example: CE-01012026-123-45-6';
+
+  @override
+  String get signatures_scan_qr_tooltip => 'Scan QR';
+
+  @override
+  String get signatures_validate_button => 'Validate';
+
+  @override
+  String get signatures_clear_button => 'Clear';
+
+  @override
+  String get signatures_empty_error => 'Please enter a signature ID.';
+
+  @override
+  String get signatures_invalid_error => 'Invalid signature.';
+
+  @override
+  String get signatures_enter_or_scan_hint =>
+      'Enter a signature ID or scan a QR code to validate.';
+
+  @override
+  String get signatures_scan_title => 'Scan QR';
+
+  @override
+  String get signatures_point_camera_hint => 'Point the camera at the QR code.';
+
+  @override
+  String get signatures_toggle_flash_tooltip => 'Toggle flash';
+
+  @override
+  String get signatures_section_signature_summary => 'Signature summary';
+
+  @override
+  String get signatures_section_user_summary => 'User summary';
+
+  @override
+  String get signatures_section_contract_summary => 'Contract summary';
+
+  @override
+  String get signatures_section_visit_report_summary => 'Visit report summary';
+
+  @override
+  String get signatures_section_report_summary => 'Report summary';
+
+  @override
+  String get signatures_field_signature_id => 'Signature ID';
+
+  @override
+  String get signatures_field_signature_code => 'Signature code';
+
+  @override
+  String get signatures_field_signed_at => 'Signed at';
+
+  @override
+  String get signatures_field_type => 'Type';
+
+  @override
+  String get signatures_type_contract => 'Contract';
+
+  @override
+  String get signatures_type_visit_report => 'Visit report';
+
+  @override
+  String get signatures_type_unknown => '-';
+
+  @override
+  String get signatures_field_role => 'Role';
+
+  @override
+  String get signatures_role_client => 'Client';
+
+  @override
+  String get signatures_role_employee => 'Employee';
+
+  @override
+  String get signatures_role_unknown => '-';
+
+  @override
+  String get signatures_field_name => 'Name';
+
+  @override
+  String get signatures_field_user_code => 'User code';
+
+  @override
+  String get signatures_field_email => 'Email';
+
+  @override
+  String get signatures_field_phone => 'Phone';
+
+  @override
+  String get signatures_field_contract_code => 'Contract code';
+
+  @override
+  String get signatures_field_contract_state => 'Contract state';
+
+  @override
+  String get signatures_field_contract_number => 'Contract number';
+
+  @override
+  String get signatures_field_client => 'Client';
+
+  @override
+  String get signatures_field_employee => 'Employee';
+
+  @override
+  String get signatures_field_visit_report_code => 'Visit report code';
+
+  @override
+  String get signatures_field_visit_date => 'Visit date';
+
+  @override
+  String get signatures_field_contract_id => 'Contract ID';
+
+  @override
+  String get signatures_field_visit_report_id => 'Visit report ID';
+
+  @override
   String get time_now_long => 'just now';
 
   @override

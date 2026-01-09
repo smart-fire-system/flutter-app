@@ -401,6 +401,56 @@
     "signature": "Signature",
     "noSignatureAddedYet": "No signature added yet",
 
+    "signatures_title": "Signature validation",
+    "signatures_id_label": "Signature ID",
+    "signatures_id_hint": "Example: CE-01012026-123-45-6",
+    "signatures_scan_qr_tooltip": "Scan QR",
+    "signatures_validate_button": "Validate",
+    "signatures_clear_button": "Clear",
+    "signatures_empty_error": "Please enter a signature ID.",
+    "signatures_invalid_error": "Invalid signature.",
+    "signatures_enter_or_scan_hint": "Enter a signature ID or scan a QR code to validate.",
+
+    "signatures_scan_title": "Scan QR",
+    "signatures_point_camera_hint": "Point the camera at the QR code.",
+    "signatures_toggle_flash_tooltip": "Toggle flash",
+
+    "signatures_section_signature_summary": "Signature summary",
+    "signatures_section_user_summary": "User summary",
+    "signatures_section_contract_summary": "Contract summary",
+    "signatures_section_visit_report_summary": "Visit report summary",
+    "signatures_section_report_summary": "Report summary",
+
+    "signatures_field_signature_id": "Signature ID",
+    "signatures_field_signature_code": "Signature code",
+    "signatures_field_signed_at": "Signed at",
+    "signatures_field_type": "Type",
+    "signatures_type_contract": "Contract",
+    "signatures_type_visit_report": "Visit report",
+    "signatures_type_unknown": "-",
+
+    "signatures_field_role": "Role",
+    "signatures_role_client": "Client",
+    "signatures_role_employee": "Employee",
+    "signatures_role_unknown": "-",
+
+    "signatures_field_name": "Name",
+    "signatures_field_user_code": "User code",
+    "signatures_field_email": "Email",
+    "signatures_field_phone": "Phone",
+
+    "signatures_field_contract_code": "Contract code",
+    "signatures_field_contract_state": "Contract state",
+    "signatures_field_contract_number": "Contract number",
+    "signatures_field_client": "Client",
+    "signatures_field_employee": "Employee",
+
+    "signatures_field_visit_report_code": "Visit report code",
+    "signatures_field_visit_date": "Visit date",
+
+    "signatures_field_contract_id": "Contract ID",
+    "signatures_field_visit_report_id": "Visit report ID",
+
     "time_now_long": "just now",
     "time_now_short": "now",
 

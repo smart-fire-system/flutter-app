@@ -1183,6 +1183,130 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noSignatureAddedYet => 'لا يوجد توقيع مضاف بعد';
 
   @override
+  String get signatures_title => 'التحقق من التوقيع';
+
+  @override
+  String get signatures_id_label => 'معرّف التوقيع';
+
+  @override
+  String get signatures_id_hint => 'مثال: CE-01012026-123-45-6';
+
+  @override
+  String get signatures_scan_qr_tooltip => 'مسح QR';
+
+  @override
+  String get signatures_validate_button => 'تحقق';
+
+  @override
+  String get signatures_clear_button => 'مسح';
+
+  @override
+  String get signatures_empty_error => 'يرجى إدخال معرّف التوقيع.';
+
+  @override
+  String get signatures_invalid_error => 'توقيع غير صالح.';
+
+  @override
+  String get signatures_enter_or_scan_hint =>
+      'أدخل معرّف التوقيع أو امسح رمز QR للتحقق.';
+
+  @override
+  String get signatures_scan_title => 'مسح QR';
+
+  @override
+  String get signatures_point_camera_hint => 'وجّه الكاميرا نحو رمز QR.';
+
+  @override
+  String get signatures_toggle_flash_tooltip => 'تبديل الفلاش';
+
+  @override
+  String get signatures_section_signature_summary => 'ملخص التوقيع';
+
+  @override
+  String get signatures_section_user_summary => 'ملخص المستخدم';
+
+  @override
+  String get signatures_section_contract_summary => 'ملخص العقد';
+
+  @override
+  String get signatures_section_visit_report_summary => 'ملخص تقرير الزيارة';
+
+  @override
+  String get signatures_section_report_summary => 'ملخص التقرير';
+
+  @override
+  String get signatures_field_signature_id => 'معرّف التوقيع';
+
+  @override
+  String get signatures_field_signature_code => 'كود التوقيع';
+
+  @override
+  String get signatures_field_signed_at => 'تاريخ التوقيع';
+
+  @override
+  String get signatures_field_type => 'النوع';
+
+  @override
+  String get signatures_type_contract => 'عقد';
+
+  @override
+  String get signatures_type_visit_report => 'تقرير زيارة';
+
+  @override
+  String get signatures_type_unknown => '-';
+
+  @override
+  String get signatures_field_role => 'الصفة';
+
+  @override
+  String get signatures_role_client => 'عميل';
+
+  @override
+  String get signatures_role_employee => 'موظف';
+
+  @override
+  String get signatures_role_unknown => '-';
+
+  @override
+  String get signatures_field_name => 'الاسم';
+
+  @override
+  String get signatures_field_user_code => 'كود المستخدم';
+
+  @override
+  String get signatures_field_email => 'البريد الإلكتروني';
+
+  @override
+  String get signatures_field_phone => 'الهاتف';
+
+  @override
+  String get signatures_field_contract_code => 'كود العقد';
+
+  @override
+  String get signatures_field_contract_state => 'حالة العقد';
+
+  @override
+  String get signatures_field_contract_number => 'رقم العقد';
+
+  @override
+  String get signatures_field_client => 'العميل';
+
+  @override
+  String get signatures_field_employee => 'الموظف';
+
+  @override
+  String get signatures_field_visit_report_code => 'كود تقرير الزيارة';
+
+  @override
+  String get signatures_field_visit_date => 'تاريخ الزيارة';
+
+  @override
+  String get signatures_field_contract_id => 'معرّف العقد';
+
+  @override
+  String get signatures_field_visit_report_id => 'معرّف تقرير الزيارة';
+
+  @override
   String get time_now_long => 'الآن';
 
   @override

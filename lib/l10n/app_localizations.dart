@@ -2270,6 +2270,252 @@ abstract class AppLocalizations {
   /// **'No signature added yet'**
   String get noSignatureAddedYet;
 
+  /// No description provided for @signatures_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature validation'**
+  String get signatures_title;
+
+  /// No description provided for @signatures_id_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature ID'**
+  String get signatures_id_label;
+
+  /// No description provided for @signatures_id_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: CE-01012026-123-45-6'**
+  String get signatures_id_hint;
+
+  /// No description provided for @signatures_scan_qr_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR'**
+  String get signatures_scan_qr_tooltip;
+
+  /// No description provided for @signatures_validate_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Validate'**
+  String get signatures_validate_button;
+
+  /// No description provided for @signatures_clear_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get signatures_clear_button;
+
+  /// No description provided for @signatures_empty_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a signature ID.'**
+  String get signatures_empty_error;
+
+  /// No description provided for @signatures_invalid_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid signature.'**
+  String get signatures_invalid_error;
+
+  /// No description provided for @signatures_enter_or_scan_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a signature ID or scan a QR code to validate.'**
+  String get signatures_enter_or_scan_hint;
+
+  /// No description provided for @signatures_scan_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR'**
+  String get signatures_scan_title;
+
+  /// No description provided for @signatures_point_camera_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Point the camera at the QR code.'**
+  String get signatures_point_camera_hint;
+
+  /// No description provided for @signatures_toggle_flash_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle flash'**
+  String get signatures_toggle_flash_tooltip;
+
+  /// No description provided for @signatures_section_signature_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature summary'**
+  String get signatures_section_signature_summary;
+
+  /// No description provided for @signatures_section_user_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'User summary'**
+  String get signatures_section_user_summary;
+
+  /// No description provided for @signatures_section_contract_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract summary'**
+  String get signatures_section_contract_summary;
+
+  /// No description provided for @signatures_section_visit_report_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit report summary'**
+  String get signatures_section_visit_report_summary;
+
+  /// No description provided for @signatures_section_report_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Report summary'**
+  String get signatures_section_report_summary;
+
+  /// No description provided for @signatures_field_signature_id.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature ID'**
+  String get signatures_field_signature_id;
+
+  /// No description provided for @signatures_field_signature_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature code'**
+  String get signatures_field_signature_code;
+
+  /// No description provided for @signatures_field_signed_at.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed at'**
+  String get signatures_field_signed_at;
+
+  /// No description provided for @signatures_field_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get signatures_field_type;
+
+  /// No description provided for @signatures_type_contract.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract'**
+  String get signatures_type_contract;
+
+  /// No description provided for @signatures_type_visit_report.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit report'**
+  String get signatures_type_visit_report;
+
+  /// No description provided for @signatures_type_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'-'**
+  String get signatures_type_unknown;
+
+  /// No description provided for @signatures_field_role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get signatures_field_role;
+
+  /// No description provided for @signatures_role_client.
+  ///
+  /// In en, this message translates to:
+  /// **'Client'**
+  String get signatures_role_client;
+
+  /// No description provided for @signatures_role_employee.
+  ///
+  /// In en, this message translates to:
+  /// **'Employee'**
+  String get signatures_role_employee;
+
+  /// No description provided for @signatures_role_unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'-'**
+  String get signatures_role_unknown;
+
+  /// No description provided for @signatures_field_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get signatures_field_name;
+
+  /// No description provided for @signatures_field_user_code.
+  ///
+  /// In en, this message translates to:
+  /// **'User code'**
+  String get signatures_field_user_code;
+
+  /// No description provided for @signatures_field_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get signatures_field_email;
+
+  /// No description provided for @signatures_field_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get signatures_field_phone;
+
+  /// No description provided for @signatures_field_contract_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract code'**
+  String get signatures_field_contract_code;
+
+  /// No description provided for @signatures_field_contract_state.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract state'**
+  String get signatures_field_contract_state;
+
+  /// No description provided for @signatures_field_contract_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract number'**
+  String get signatures_field_contract_number;
+
+  /// No description provided for @signatures_field_client.
+  ///
+  /// In en, this message translates to:
+  /// **'Client'**
+  String get signatures_field_client;
+
+  /// No description provided for @signatures_field_employee.
+  ///
+  /// In en, this message translates to:
+  /// **'Employee'**
+  String get signatures_field_employee;
+
+  /// No description provided for @signatures_field_visit_report_code.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit report code'**
+  String get signatures_field_visit_report_code;
+
+  /// No description provided for @signatures_field_visit_date.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit date'**
+  String get signatures_field_visit_date;
+
+  /// No description provided for @signatures_field_contract_id.
+  ///
+  /// In en, this message translates to:
+  /// **'Contract ID'**
+  String get signatures_field_contract_id;
+
+  /// No description provided for @signatures_field_visit_report_id.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit report ID'**
+  String get signatures_field_visit_report_id;
+
   /// No description provided for @time_now_long.
   ///
   /// In en, this message translates to:

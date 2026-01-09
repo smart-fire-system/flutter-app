@@ -405,6 +405,56 @@
     "signature": "التوقيع",
     "noSignatureAddedYet": "لا يوجد توقيع مضاف بعد",
 
+    "signatures_title": "التحقق من التوقيع",
+    "signatures_id_label": "معرّف التوقيع",
+    "signatures_id_hint": "مثال: CE-01012026-123-45-6",
+    "signatures_scan_qr_tooltip": "مسح QR",
+    "signatures_validate_button": "تحقق",
+    "signatures_clear_button": "مسح",
+    "signatures_empty_error": "يرجى إدخال معرّف التوقيع.",
+    "signatures_invalid_error": "توقيع غير صالح.",
+    "signatures_enter_or_scan_hint": "أدخل معرّف التوقيع أو امسح رمز QR للتحقق.",
+
+    "signatures_scan_title": "مسح QR",
+    "signatures_point_camera_hint": "وجّه الكاميرا نحو رمز QR.",
+    "signatures_toggle_flash_tooltip": "تبديل الفلاش",
+
+    "signatures_section_signature_summary": "ملخص التوقيع",
+    "signatures_section_user_summary": "ملخص المستخدم",
+    "signatures_section_contract_summary": "ملخص العقد",
+    "signatures_section_visit_report_summary": "ملخص تقرير الزيارة",
+    "signatures_section_report_summary": "ملخص التقرير",
+
+    "signatures_field_signature_id": "معرّف التوقيع",
+    "signatures_field_signature_code": "كود التوقيع",
+    "signatures_field_signed_at": "تاريخ التوقيع",
+    "signatures_field_type": "النوع",
+    "signatures_type_contract": "عقد",
+    "signatures_type_visit_report": "تقرير زيارة",
+    "signatures_type_unknown": "-",
+
+    "signatures_field_role": "الصفة",
+    "signatures_role_client": "عميل",
+    "signatures_role_employee": "موظف",
+    "signatures_role_unknown": "-",
+
+    "signatures_field_name": "الاسم",
+    "signatures_field_user_code": "كود المستخدم",
+    "signatures_field_email": "البريد الإلكتروني",
+    "signatures_field_phone": "الهاتف",
+
+    "signatures_field_contract_code": "كود العقد",
+    "signatures_field_contract_state": "حالة العقد",
+    "signatures_field_contract_number": "رقم العقد",
+    "signatures_field_client": "العميل",
+    "signatures_field_employee": "الموظف",
+
+    "signatures_field_visit_report_code": "كود تقرير الزيارة",
+    "signatures_field_visit_date": "تاريخ الزيارة",
+
+    "signatures_field_contract_id": "معرّف العقد",
+    "signatures_field_visit_report_id": "معرّف تقرير الزيارة",
+
     "time_now_long": "الآن",
     "time_now_short": "الآن",
 
