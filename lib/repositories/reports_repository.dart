@@ -673,4 +673,28 @@ class ReportsRepository {
       }
     }
   }
+
+  SignatureData? validateSignature(String name) {
+    final signatures = _signatures.where((s) => s.name == name).toList();
+    if (signatures.length != 1) {
+      return null;
+    }
+    return signatures.first;
+  }
+
+  VisitReportData? getVisitReport(String id) {
+    try {
+      return _visitReports.firstWhere((v) => v.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  ContractData? getContract(String id) {
+    try {
+      return _contracts?.firstWhere((c) => c.metaData.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
 }

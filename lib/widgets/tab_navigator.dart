@@ -135,6 +135,9 @@ class TabNavigator extends StatelessWidget {
             case '/offline':
               page = const OfflineScreen();
               break;
+            case '/signatures':
+              page = const SignaturesScreen();
+              break;
             default:
               page = Scaffold(
                 body:

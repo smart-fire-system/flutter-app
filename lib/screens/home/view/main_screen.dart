@@ -85,7 +85,16 @@ class _MainScreenState extends State<MainScreen> {
               },
             ),
             const SizedBox(height: 16),
-            // Full width card - Branches
+            WideCard(
+              icon: Icons.qr_code_scanner,
+              title: 'Validate signature',
+              subtitle: 'Enter name or scan QR to verify',
+              color: const Color(0xFFF43F5E),
+              onTap: () => TabNavigator.home.currentState?.pushNamed(
+                '/signatures',
+              ),
+            ),
+            const SizedBox(height: 16),
             WideCard(
               icon: Icons.notifications_rounded,
               title: S.of(context).notifications,
