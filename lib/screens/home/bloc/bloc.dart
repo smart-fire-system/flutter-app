@@ -74,9 +74,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       _notificationReceived = NotificationItem(
         id: message.messageId ?? '',
-        title: message.notification?.title ?? '',
-        body: message.notification?.body ?? '',
+        enTitle: message.notification?.title ?? '',
+        enBody: message.notification?.body ?? '',
+        arTitle: message.notification?.title ?? '',
+        arBody: message.notification?.body ?? '',
         topics: [],
+        data: message.data,
         createdAt: null,
       );
       add(AuthChanged(error: AuthChangeResult.noError));

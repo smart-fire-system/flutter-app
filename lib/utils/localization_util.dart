@@ -4,11 +4,18 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fire_alarm_system/generated/l10n.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
+import 'dart:async';
 
 class LocalizationUtil {
   static Locale myLocale = const Locale('en');
   static dynamic Function(Locale)? changeMainLanguageCallback;
   static const String _languageCodeKey = 'languageCode';
+
+  static final StreamController<Locale> _languageChangedController =
+      StreamController<Locale>.broadcast();
+
+  static Stream<Locale> get languageChangedStream =>
+      _languageChangedController.stream;
 
   static void setChangeLanguageCallback(dynamic Function(Locale) callback) {
     changeMainLanguageCallback = callback;
@@ -17,6 +24,7 @@ class LocalizationUtil {
   static Future<Locale> initializeLanguage() async {
     Locale? savedLocale = await loadLanguagePreference();
     myLocale = savedLocale ?? detectDeviceLanguage();
+    _languageChangedController.add(myLocale);
     try {
       FirebaseAuth.instance.setLanguageCode(myLocale.languageCode);
     } catch (_) {}
@@ -26,10 +34,15 @@ class LocalizationUtil {
   static Future<void> changeLanguage(Locale locale) async {
     await saveLanguagePreference(locale);
     myLocale = locale;
-    changeMainLanguageCallback!(locale);
+    _languageChangedController.add(myLocale);
+    changeMainLanguageCallback?.call(locale);
     try {
       FirebaseAuth.instance.setLanguageCode(myLocale.languageCode);
     } catch (_) {}
+  }
+
+  static Future<void> dispose() async {
+    await _languageChangedController.close();
   }
 
   static Future<Locale?> loadLanguagePreference() async {

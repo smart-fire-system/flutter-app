@@ -158,8 +158,8 @@ class HomeScreenState extends State<HomeScreen> {
           );
         } else if (state is HomeAuthenticated) {
           if (state.notificationReceived != null) {
-            final title = state.notificationReceived!.title;
-            final body = state.notificationReceived!.body;
+            final title = state.notificationReceived!.enTitle;
+            final body = state.notificationReceived!.enBody;
             state.notificationReceived = null;
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).clearMaterialBanners();

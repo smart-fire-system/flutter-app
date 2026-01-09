@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:fire_alarm_system/models/notification.dart';
+import 'package:fire_alarm_system/utils/date.dart';
+import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
@@ -22,10 +24,19 @@ class NotificationsScreenState extends State<NotificationsScreen> {
   List<NotificationItem> notifications = [];
   bool? isNotificationGranted;
   Timer? _permissionCheckTimer;
+  StreamSubscription<Locale>? _languageSub;
+  bool _isArabic = false;
 
   @override
   void initState() {
     super.initState();
+    _isArabic = LocalizationUtil.myLocale.languageCode == 'ar';
+    _languageSub = LocalizationUtil.languageChangedStream.listen((locale) {
+      if (!mounted) return;
+      setState(() {
+        _isArabic = locale.languageCode == 'ar';
+      });
+    });
     _permissionCheckTimer =
         Timer.periodic(const Duration(milliseconds: 100), (_) async {
       final permissionStatus = await context
@@ -92,9 +103,11 @@ class NotificationsScreenState extends State<NotificationsScreen> {
 
   Future<void> _showNotificationDetails(NotificationItem item) async {
     final createdAt = item.createdAt?.toDate();
+    final localeCode = _isArabic ? 'ar' : 'en';
     final fullTime = createdAt == null
         ? null
-        : DateFormat('dd-MM-yyyy hh:mm a').format(createdAt.toLocal());
+        : DateFormat('dd-MM-yyyy hh:mm a', localeCode)
+            .format(createdAt.toLocal());
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -115,7 +128,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.title,
+                  _isArabic ? item.arTitle : item.enTitle,
                   style: CustomStyle.largeTextB,
                 ),
                 if (fullTime != null) ...[
@@ -126,13 +139,13 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                 ],
                 const SizedBox(height: 12),
                 Text(
-                  item.body,
+                  _isArabic ? item.arBody : item.enBody,
                   style: CustomStyle.mediumText,
                 ),
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    if (item.clickAction == 'OPEN_PLAY_STORE') ...[
+                    if (item.data['clickAction'] == 'OPEN_PLAY_STORE') ...[
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () {
@@ -189,35 +202,10 @@ class NotificationsScreenState extends State<NotificationsScreen> {
     }
   }
 
-  String _formatNotificationTime(DateTime createdAt) {
-    final now = DateTime.now();
-    final diff = now.difference(createdAt);
-    if (diff.isNegative || diff.inMinutes == 0) {
-      return "Just now";
-    }
-    if (diff.inMinutes < 60) {
-      final mins = diff.inMinutes;
-      return "$mins min${mins == 1 ? '' : 's'} ago";
-    }
-    if (diff.inHours < 24) {
-      final hours = diff.inHours;
-      return "$hours hour${hours == 1 ? '' : 's'} ago";
-    }
-    if (diff.inDays < 30) {
-      final days = diff.inDays;
-      return "$days day${days == 1 ? '' : 's'} ago";
-    }
-    final months = (diff.inDays / 30).floor();
-    if (months < 12) {
-      return "$months month${months == 1 ? '' : 's'} ago";
-    }
-    final years = (diff.inDays / 365).floor();
-    return "$years year${years == 1 ? '' : 's'} ago";
-  }
-
   @override
   void dispose() {
     _permissionCheckTimer?.cancel();
+    _languageSub?.cancel();
     super.dispose();
   }
 
@@ -263,7 +251,8 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                     final item = notifications[index];
                     final createdAt = item.createdAt?.toDate();
                     final timeLabel = createdAt != null
-                        ? _formatNotificationTime(createdAt)
+                        ? TimeAgoHelper.of(context, createdAt,
+                            format: TimeAgoFormat.long)
                         : null;
                     return Card(
                       elevation: 1,
@@ -277,11 +266,11 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                           radius: 20,
                           backgroundColor:
                               Colors.redAccent.withValues(alpha: 0.12),
-                          child: Icon(_getIcon(item.clickAction ?? ''),
+                          child: Icon(_getIcon(item.data['clickAction'] ?? ''),
                               color: Colors.redAccent),
                         ),
                         title: Text(
-                          item.title,
+                          _isArabic ? item.arTitle : item.enTitle,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
@@ -290,7 +279,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                               ?.copyWith(fontWeight: FontWeight.w600),
                         ),
                         subtitle: Text(
-                          item.body,
+                          _isArabic ? item.arBody : item.enBody,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
