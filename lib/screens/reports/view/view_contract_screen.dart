@@ -616,17 +616,6 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 16),
-        WideCard(
-          icon: Icons.support_agent,
-          title: 'Complaints',
-          subtitle: 'View complaints or request a new one',
-          color: CustomStyle.redDark,
-          backgroundColor: Colors.grey.withValues(alpha: 0.1),
-          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Feature not supported yet')),
-          ),
-        ),
       ],
     );
   }
