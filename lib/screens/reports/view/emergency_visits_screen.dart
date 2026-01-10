@@ -23,24 +23,37 @@ class EmergencyVisitsScreen extends StatefulWidget {
   State<EmergencyVisitsScreen> createState() => _EmergencyVisitsScreenState();
 }
 
+enum _EmergencyVisitStatusFilterOption {
+  all,
+  pending,
+  approved,
+  rejected,
+  completed,
+  cancelled,
+}
+
 class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
   final _formatter = DateFormat('dd/MM/yyyy - hh:mm a');
   bool _sortOldToNew = true;
+  bool _canRequestEmergencyVisit = false;
+  EmergencyVisitStatus? _statusFilter;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: CustomAppBar(title: l10n.emergency_visits),
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text(
-          l10n.emergency_visit_request,
-          style: CustomStyle.mediumTextWhite,
-        ),
-        backgroundColor: Colors.red,
-        icon: const Icon(Icons.add, size: 30, color: Colors.white),
-        onPressed: () => _openRequestBottomSheet(context),
-      ),
+      floatingActionButton: _canRequestEmergencyVisit
+          ? FloatingActionButton.extended(
+              label: Text(
+                l10n.emergency_visit_request,
+                style: CustomStyle.mediumTextWhite,
+              ),
+              backgroundColor: Colors.red,
+              icon: const Icon(Icons.add, size: 30, color: Colors.white),
+              onPressed: () => _openRequestBottomSheet(context),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: BlocBuilder<ReportsBloc, ReportsState>(
         builder: (context, state) {
@@ -74,8 +87,10 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
                 );
               });
             }
+            _canRequestEmergencyVisit = state.user is Client;
             return _buildBody(state);
           }
+          _canRequestEmergencyVisit = false;
           return const Center(child: CircularProgressIndicator());
         },
       ),
@@ -243,81 +258,208 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
 
   Widget _buildBody(ReportsAuthenticated state) {
     final l10n = AppLocalizations.of(context)!;
+    String prettyStatus(EmergencyVisitStatus s) {
+      switch (s) {
+        case EmergencyVisitStatus.pending:
+          return l10n.status_pending;
+        case EmergencyVisitStatus.approved:
+          return l10n.status_approved;
+        case EmergencyVisitStatus.rejected:
+          return l10n.status_rejected;
+        case EmergencyVisitStatus.completed:
+          return l10n.status_completed;
+        case EmergencyVisitStatus.cancelled:
+          return l10n.status_canceled;
+      }
+    }
+
+    _EmergencyVisitStatusFilterOption selectedFilterOption() {
+      switch (_statusFilter) {
+        case null:
+          return _EmergencyVisitStatusFilterOption.all;
+        case EmergencyVisitStatus.pending:
+          return _EmergencyVisitStatusFilterOption.pending;
+        case EmergencyVisitStatus.approved:
+          return _EmergencyVisitStatusFilterOption.approved;
+        case EmergencyVisitStatus.rejected:
+          return _EmergencyVisitStatusFilterOption.rejected;
+        case EmergencyVisitStatus.completed:
+          return _EmergencyVisitStatusFilterOption.completed;
+        case EmergencyVisitStatus.cancelled:
+          return _EmergencyVisitStatusFilterOption.cancelled;
+      }
+    }
+
+    EmergencyVisitStatus? optionToStatus(_EmergencyVisitStatusFilterOption o) {
+      switch (o) {
+        case _EmergencyVisitStatusFilterOption.all:
+          return null;
+        case _EmergencyVisitStatusFilterOption.pending:
+          return EmergencyVisitStatus.pending;
+        case _EmergencyVisitStatusFilterOption.approved:
+          return EmergencyVisitStatus.approved;
+        case _EmergencyVisitStatusFilterOption.rejected:
+          return EmergencyVisitStatus.rejected;
+        case _EmergencyVisitStatusFilterOption.completed:
+          return EmergencyVisitStatus.completed;
+        case _EmergencyVisitStatusFilterOption.cancelled:
+          return EmergencyVisitStatus.cancelled;
+      }
+    }
+
+    final statusLabel = _statusFilter == null
+        ? l10n.emergency_visit_filter_status_all
+        : prettyStatus(_statusFilter!);
+
     final emergencyVisits = (state.emergencyVisits ??
             const <EmergencyVisitData>[])
         .where((e) => e.contractId == widget.contractId)
+        .where((e) => _statusFilter == null || e.status == _statusFilter)
         .toList()
       ..sort(
         (a, b) => _sortOldToNew
             ? a.createdAt.compareTo(b.createdAt)
             : b.createdAt.compareTo(a.createdAt),
       );
-
-    if (emergencyVisits.isEmpty) {
-      return CustomEmpty(message: l10n.no_contracts_yet);
-    }
-
-    return ListView.separated(
+    final label = _sortOldToNew ? l10n.sort_old_to_new : l10n.sort_new_to_old;
+    return Padding(
       padding: const EdgeInsets.all(16),
-      itemCount: emergencyVisits.length + 1,
-      separatorBuilder: (_, i) =>
-          i == 0 ? const SizedBox(height: 16) : const SizedBox(height: 12),
-      itemBuilder: (ctx, i) {
-        if (i == 0) {
-          final label = _sortOldToNew
-              ? l10n.sort_old_to_new
-              : l10n.sort_new_to_old;
-          return Align(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Align(
             alignment: Alignment.centerLeft,
-            child: OutlinedButton.icon(
-              onPressed: () => setState(() => _sortOldToNew = !_sortOldToNew),
-              icon: const Icon(Icons.sort, size: 18),
-              label: Text(label),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: CustomStyle.redDark,
-                side: BorderSide(color: Colors.grey.shade300),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            child: Wrap(
+              spacing: 12,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                OutlinedButton.icon(
+                  onPressed: () =>
+                      setState(() => _sortOldToNew = !_sortOldToNew),
+                  icon: const Icon(Icons.sort, size: 18),
+                  label: Text(label),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: CustomStyle.redDark,
+                    side: BorderSide(color: Colors.grey.shade300),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                 ),
-              ),
+                PopupMenuButton<_EmergencyVisitStatusFilterOption>(
+                  initialValue: selectedFilterOption(),
+                  onSelected: (o) =>
+                      setState(() => _statusFilter = optionToStatus(o)),
+                  itemBuilder: (context) => [
+                    PopupMenuItem<_EmergencyVisitStatusFilterOption>(
+                      value: _EmergencyVisitStatusFilterOption.all,
+                      child: Text(l10n.emergency_visit_filter_status_all),
+                    ),
+                    PopupMenuItem<_EmergencyVisitStatusFilterOption>(
+                      value: _EmergencyVisitStatusFilterOption.pending,
+                      child: Text(prettyStatus(EmergencyVisitStatus.pending)),
+                    ),
+                    PopupMenuItem<_EmergencyVisitStatusFilterOption>(
+                      value: _EmergencyVisitStatusFilterOption.approved,
+                      child: Text(prettyStatus(EmergencyVisitStatus.approved)),
+                    ),
+                    PopupMenuItem<_EmergencyVisitStatusFilterOption>(
+                      value: _EmergencyVisitStatusFilterOption.rejected,
+                      child: Text(prettyStatus(EmergencyVisitStatus.rejected)),
+                    ),
+                    PopupMenuItem<_EmergencyVisitStatusFilterOption>(
+                      value: _EmergencyVisitStatusFilterOption.completed,
+                      child: Text(prettyStatus(EmergencyVisitStatus.completed)),
+                    ),
+                    PopupMenuItem<_EmergencyVisitStatusFilterOption>(
+                      value: _EmergencyVisitStatusFilterOption.cancelled,
+                      child: Text(prettyStatus(EmergencyVisitStatus.cancelled)),
+                    ),
+                  ],
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.filter_alt_outlined,
+                          size: 18,
+                          color: CustomStyle.redDark,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          '${l10n.emergency_visit_filter_status_label}: $statusLabel',
+                          style: CustomStyle.smallTextB
+                              .copyWith(color: CustomStyle.redDark),
+                        ),
+                        const SizedBox(width: 2),
+                        const Icon(
+                          Icons.arrow_drop_down,
+                          color: CustomStyle.redDark,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          );
-        }
-
-        final visit = emergencyVisits[i - 1];
-        final requestedByName =
-            _findUserName(visit.requestedBy, state.employees, state.clients);
-        return EmergencyVisitSummary(
-          emergencyVisit: visit,
-          createdAtText: _formatTimestamp(visit.createdAt),
-          requestedByName: requestedByName,
-          onTap: () {
-            ContractData? contract;
-            try {
-              contract = state.contracts
-                  ?.firstWhere((c) => c.metaData.id == visit.contractId);
-            } catch (_) {
-              contract = null;
-            }
-            final companyName =
-                contract?.metaData.employee?.branch.company.name ?? '';
-            final branchName = contract?.metaData.employee?.branch.name ?? '';
-            final employeeName = contract?.metaData.employee?.info.name ?? '';
-            Navigator.of(ctx).push(
-              MaterialPageRoute(
-                builder: (_) => EmergencyVisitDetailsScreen(
-                  emergencyVisitId: visit.id,
-                  contractId: visit.contractId,
-                  companyName: companyName,
-                  branchName: branchName,
-                  employeeName: employeeName,
-                  requestedByName: requestedByName,
-                ),
-              ),
-            );
-          },
-        );
-      },
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: emergencyVisits.isEmpty
+                ? CustomEmpty(message: l10n.no_contracts_yet)
+                : ListView.separated(
+                    padding: EdgeInsets.zero,
+                    itemCount: emergencyVisits.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    itemBuilder: (ctx, i) {
+                      final visit = emergencyVisits[i];
+                      final requestedByName = _findUserName(
+                          visit.requestedBy, state.employees, state.clients);
+                      return EmergencyVisitSummary(
+                        emergencyVisit: visit,
+                        createdAtText: _formatTimestamp(visit.createdAt),
+                        requestedByName: requestedByName,
+                        onTap: () {
+                          ContractData? contract;
+                          try {
+                            contract = state.contracts?.firstWhere(
+                                (c) => c.metaData.id == visit.contractId);
+                          } catch (_) {
+                            contract = null;
+                          }
+                          final companyName = contract
+                                  ?.metaData.employee?.branch.company.name ??
+                              '';
+                          final branchName =
+                              contract?.metaData.employee?.branch.name ?? '';
+                          final employeeName =
+                              contract?.metaData.employee?.info.name ?? '';
+                          Navigator.of(ctx).push(
+                            MaterialPageRoute(
+                              builder: (_) => EmergencyVisitDetailsScreen(
+                                emergencyVisitId: visit.id,
+                                contractId: visit.contractId,
+                                companyName: companyName,
+                                branchName: branchName,
+                                employeeName: employeeName,
+                                requestedByName: requestedByName,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 

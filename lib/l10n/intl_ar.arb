@@ -513,6 +513,9 @@
     "status_canceled": "تم إلغاء الطلب",
     "status_completed": "الطلب مكتمل",
 
+    "emergency_visit_filter_status_label": "الحالة",
+    "emergency_visit_filter_status_all": "الكل",
+
     "emergency_visit_not_found": "غير موجود",
 
     "emergency_visit_request_number": "طلب رقم: {code}",

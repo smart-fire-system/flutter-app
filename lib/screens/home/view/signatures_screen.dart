@@ -75,7 +75,6 @@ class _SignaturesScreenState extends State<SignaturesScreen> {
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: CustomAppBar(
         title: l10n.signatures_title,
-        leading: const Icon(Icons.qr_code_scanner),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -458,7 +457,6 @@ class _SignatureQrScannerScreenState extends State<SignatureQrScannerScreen> {
       backgroundColor: Colors.black,
       appBar: CustomAppBar(
         title: l10n.signatures_scan_title,
-        leading: const Icon(Icons.qr_code_scanner),
       ),
       body: Stack(
         children: [

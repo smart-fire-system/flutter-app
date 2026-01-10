@@ -2708,6 +2708,18 @@ abstract class AppLocalizations {
   /// **'Request completed'**
   String get status_completed;
 
+  /// No description provided for @emergency_visit_filter_status_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get emergency_visit_filter_status_label;
+
+  /// No description provided for @emergency_visit_filter_status_all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get emergency_visit_filter_status_all;
+
   /// No description provided for @emergency_visit_not_found.
   ///
   /// In en, this message translates to:

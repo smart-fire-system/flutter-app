@@ -1459,6 +1459,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get status_completed => 'Request completed';
 
   @override
+  String get emergency_visit_filter_status_label => 'Status';
+
+  @override
+  String get emergency_visit_filter_status_all => 'All';
+
+  @override
   String get emergency_visit_not_found => 'Not found';
 
   @override

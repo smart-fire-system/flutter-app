@@ -1432,6 +1432,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get status_completed => 'الطلب مكتمل';
 
   @override
+  String get emergency_visit_filter_status_label => 'الحالة';
+
+  @override
+  String get emergency_visit_filter_status_all => 'الكل';
+
+  @override
   String get emergency_visit_not_found => 'غير موجود';
 
   @override
