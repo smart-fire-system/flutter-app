@@ -46,6 +46,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Widget _buildPermissionBanner(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (_isNotificationGranted == true) return const SizedBox.shrink();
     return Material(
       color: const Color(0xFFFFF2F2),
@@ -66,8 +67,8 @@ class NotificationsScreenState extends State<NotificationsScreen> {
               Expanded(
                 child: Text(
                   _isNotificationGranted == false
-                      ? 'Notifications are disabled in system settings.'
-                      : 'Notifications are disabled. Tap to enable.',
+                      ? l10n.notifications_permission_disabled_system
+                      : l10n.notifications_permission_disabled_tap_enable,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
@@ -81,7 +82,9 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                       .add(RequestNotificationPermission());
                 },
                 child: Text(
-                  _isNotificationGranted == false ? 'Open Settings' : 'Enable',
+                  _isNotificationGranted == false
+                      ? l10n.notifications_open_settings
+                      : l10n.notifications_enable,
                 ),
               ),
             ],
@@ -92,6 +95,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Widget _buildSubscriptionBanner(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (_isSubscribed == true) return const SizedBox.shrink();
     return Material(
       color: const Color(0xFFFFF2F2),
@@ -106,12 +110,11 @@ class NotificationsScreenState extends State<NotificationsScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Icon(Icons.sync,
-                  color: Colors.redAccent),
+              const Icon(Icons.sync, color: Colors.redAccent),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Your notifications are not synced. Tap to sync your notifications.',
+                  l10n.notifications_not_synced_banner,
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium
@@ -125,7 +128,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                       .add(SubscribeToUserTopics());
                 },
                 child: Text(
-                  'Sync',
+                  l10n.notifications_sync,
                 ),
               ),
             ],
@@ -136,6 +139,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Future<void> _showNotificationDetails(NotificationItem item) async {
+    final l10n = AppLocalizations.of(context)!;
     final createdAt = item.createdAt?.toDate();
     final localeCode = _isArabic ? 'ar' : 'en';
     final fullTime = createdAt == null
@@ -187,7 +191,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                             _openStorePage();
                           },
                           icon: const Icon(Icons.update_rounded),
-                          label: const Text('Update application'),
+                          label: Text(l10n.notifications_update_application),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -195,7 +199,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('Close'),
+                        child: Text(l10n.close),
                       ),
                     ),
                   ],
@@ -308,7 +312,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                       size: 56, color: Colors.grey.shade400),
                   const SizedBox(height: 12),
                   Text(
-                    'No notifications',
+                    l10n.notifications_empty_title,
                     style: Theme.of(context)
                         .textTheme
                         .titleMedium
@@ -316,7 +320,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'You’re all caught up. New notifications will appear here.',
+                    l10n.notifications_empty_subtitle,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),

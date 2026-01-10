@@ -1150,6 +1150,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get view_visit_report => 'View Visit Report';
 
   @override
+  String get notifications_permission_disabled_system =>
+      'Notifications are disabled in system settings.';
+
+  @override
+  String get notifications_permission_disabled_tap_enable =>
+      'Notifications are disabled. Tap to enable.';
+
+  @override
+  String get notifications_open_settings => 'Open Settings';
+
+  @override
+  String get notifications_enable => 'Enable';
+
+  @override
+  String get notifications_not_synced_banner =>
+      'Your notifications are not synced. Tap to sync your notifications.';
+
+  @override
+  String get notifications_sync => 'Sync';
+
+  @override
+  String get notifications_update_application => 'Update application';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get notifications_empty_title => 'No notifications';
+
+  @override
+  String get notifications_empty_subtitle =>
+      'You’re all caught up. New notifications will appear here.';
+
+  @override
   String get signature_confirm_dialog_body_visit_report =>
       'By confirming, your signature will be recorded on this visit report. This action cannot be undone.';
 

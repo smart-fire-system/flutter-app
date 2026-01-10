@@ -1123,6 +1123,40 @@ class AppLocalizationsAr extends AppLocalizations {
   String get view_visit_report => 'عرض تقرير الزيارة';
 
   @override
+  String get notifications_permission_disabled_system =>
+      'الإشعارات معطلة في إعدادات النظام.';
+
+  @override
+  String get notifications_permission_disabled_tap_enable =>
+      'الإشعارات معطلة. اضغط للتمكين.';
+
+  @override
+  String get notifications_open_settings => 'فتح الإعدادات';
+
+  @override
+  String get notifications_enable => 'تمكين';
+
+  @override
+  String get notifications_not_synced_banner =>
+      'إشعاراتك غير متزامنة. اضغط لمزامنة إشعاراتك.';
+
+  @override
+  String get notifications_sync => 'مزامنة';
+
+  @override
+  String get notifications_update_application => 'تحديث التطبيق';
+
+  @override
+  String get close => 'إغلاق';
+
+  @override
+  String get notifications_empty_title => 'لا توجد إشعارات';
+
+  @override
+  String get notifications_empty_subtitle =>
+      'لقد اطلعت على كل شيء. ستظهر الإشعارات الجديدة هنا.';
+
+  @override
   String get signature_confirm_dialog_body_visit_report =>
       'بتأكيدك سيتم تسجيل توقيعك على تقرير الزيارة هذا. لا يمكن التراجع عن هذه العملية.';
 

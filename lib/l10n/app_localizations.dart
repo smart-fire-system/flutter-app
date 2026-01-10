@@ -2156,6 +2156,66 @@ abstract class AppLocalizations {
   /// **'View Visit Report'**
   String get view_visit_report;
 
+  /// No description provided for @notifications_permission_disabled_system.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are disabled in system settings.'**
+  String get notifications_permission_disabled_system;
+
+  /// No description provided for @notifications_permission_disabled_tap_enable.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are disabled. Tap to enable.'**
+  String get notifications_permission_disabled_tap_enable;
+
+  /// No description provided for @notifications_open_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get notifications_open_settings;
+
+  /// No description provided for @notifications_enable.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable'**
+  String get notifications_enable;
+
+  /// No description provided for @notifications_not_synced_banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Your notifications are not synced. Tap to sync your notifications.'**
+  String get notifications_not_synced_banner;
+
+  /// No description provided for @notifications_sync.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get notifications_sync;
+
+  /// No description provided for @notifications_update_application.
+  ///
+  /// In en, this message translates to:
+  /// **'Update application'**
+  String get notifications_update_application;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @notifications_empty_title.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications'**
+  String get notifications_empty_title;
+
+  /// No description provided for @notifications_empty_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You’re all caught up. New notifications will appear here.'**
+  String get notifications_empty_subtitle;
+
   /// No description provided for @signature_confirm_dialog_body_visit_report.
   ///
   /// In en, this message translates to:

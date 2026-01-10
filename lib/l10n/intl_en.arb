@@ -379,6 +379,20 @@
     "notifications_subtitle": "View notifications"
     ,
     "view_visit_report": "View Visit Report",
+
+    "notifications_permission_disabled_system": "Notifications are disabled in system settings.",
+    "notifications_permission_disabled_tap_enable": "Notifications are disabled. Tap to enable.",
+    "notifications_open_settings": "Open Settings",
+    "notifications_enable": "Enable",
+
+    "notifications_not_synced_banner": "Your notifications are not synced. Tap to sync your notifications.",
+    "notifications_sync": "Sync",
+
+    "notifications_update_application": "Update application",
+    "close": "Close",
+
+    "notifications_empty_title": "No notifications",
+    "notifications_empty_subtitle": "You’re all caught up. New notifications will appear here.",
     "signature_confirm_dialog_body_visit_report": "By confirming, your signature will be recorded on this visit report. This action cannot be undone.",
     "visit_report_wait_client_sign_subtitle": "Please sign the visit report to proceed.",
     "visit_report_wait_other_client_sign_subtitle": "Waiting for the client signature to complete the visit report.",

@@ -383,6 +383,20 @@
     "notifications_subtitle": "عرض الاشعارات"
     ,
     "view_visit_report": "عرض تقرير الزيارة",
+
+    "notifications_permission_disabled_system": "الإشعارات معطلة في إعدادات النظام.",
+    "notifications_permission_disabled_tap_enable": "الإشعارات معطلة. اضغط للتمكين.",
+    "notifications_open_settings": "فتح الإعدادات",
+    "notifications_enable": "تمكين",
+
+    "notifications_not_synced_banner": "إشعاراتك غير متزامنة. اضغط لمزامنة إشعاراتك.",
+    "notifications_sync": "مزامنة",
+
+    "notifications_update_application": "تحديث التطبيق",
+    "close": "إغلاق",
+
+    "notifications_empty_title": "لا توجد إشعارات",
+    "notifications_empty_subtitle": "لقد اطلعت على كل شيء. ستظهر الإشعارات الجديدة هنا.",
     "signature_confirm_dialog_body_visit_report": "بتأكيدك سيتم تسجيل توقيعك على تقرير الزيارة هذا. لا يمكن التراجع عن هذه العملية.",
     "visit_report_wait_client_sign_subtitle": "يرجى توقيع تقرير الزيارة للمتابعة.",
     "visit_report_wait_other_client_sign_subtitle": "بانتظار توقيع العميل لإكمال تقرير الزيارة.",
