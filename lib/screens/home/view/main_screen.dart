@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/screens/home/view/home_screen.dart';
-import 'package:fire_alarm_system/screens/home/view/notifications_screen.dart';
+import 'package:fire_alarm_system/screens/notifications/view/notifications_screen.dart';
 import 'package:fire_alarm_system/utils/app_version.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';

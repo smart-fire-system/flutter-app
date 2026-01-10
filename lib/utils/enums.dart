@@ -27,6 +27,7 @@ enum AppScreen {
   editUsers,
   addUsers,
   updateProfile,
+  viewNotifications,
 }
 
 

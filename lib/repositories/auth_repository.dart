@@ -89,6 +89,11 @@ class AuthRepository {
   Future<void> signOut() async {
     firebase.User? firebaseUser = _firebaseAuth.currentUser;
     if (firebaseUser != null) {
+      final result = await appRepository.notificationsRepository
+          .unsubscribeFromUserTopics();
+      if (!result) {
+        throw Exception('Failed to unsubscribe from user topics');
+      }
       for (firebase.UserInfo info in firebaseUser.providerData) {
         if (info.providerId == 'google.com') {
           final googleSignIn = GoogleSignIn(

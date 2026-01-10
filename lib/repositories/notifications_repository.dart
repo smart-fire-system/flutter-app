@@ -9,30 +9,32 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationsRepository {
   final FirebaseMessaging _messaging;
-  final AppRepository appRepository;
-  List<NotificationItem> notifications = [];
-  List<String> userTopics = [];
-  bool isSubscribed = false;
-  QuerySnapshot? notificationsSnapshot;
-  bool _isSubscribing = false;
+  final AppRepository _appRepository;
+  final String _subscribedTopicsKey = 'subscribedTopics';
+  final List<NotificationItem> _notifications = [];
+  final List<String> _userTopics = [];
   bool? _notificationPermissionStatus;
-  NotificationsRepository({required this.appRepository})
-      : _messaging = FirebaseMessaging.instance;
+  QuerySnapshot? notificationsSnapshot;
+  NotificationsRepository({required AppRepository appRepository})
+      : _appRepository = appRepository,
+        _messaging = FirebaseMessaging.instance;
+
+  List<NotificationItem> get notifications => _notifications;
 
   void refreshNotifications() {
     if (notificationsSnapshot == null) {
-      notifications = [];
+      _notifications.clear();
       return;
     }
-    notifications = [];
+    _notifications.clear();
     for (var doc in notificationsSnapshot!.docs) {
       final notification =
           NotificationItem.fromMap(doc.data() as Map<String, dynamic>);
-      if (userTopics.any((element) => notification.topics.contains(element))) {
-        notifications.add(notification);
+      if (_userTopics.any((element) => notification.topics.contains(element))) {
+        _notifications.add(notification);
       }
     }
-    notifications.sort((a, b) {
+    _notifications.sort((a, b) {
       final aDate = a.createdAt?.toDate();
       final bDate = b.createdAt?.toDate();
       if (aDate == null && bDate == null) return 0;
@@ -50,6 +52,18 @@ class NotificationsRepository {
     return _notificationPermissionStatus;
   }
 
+  Future<bool> isSubscribedToUserTopics() async {
+    final prefs = await SharedPreferences.getInstance();
+    final subscribedTopics = prefs.getStringList(_subscribedTopicsKey) ?? [];
+    bool isSubscribed = subscribedTopics.length == _userTopics.length &&
+        _userTopics.every((topic) => subscribedTopics.contains(topic)) &&
+        subscribedTopics.every((topic) => _userTopics.contains(topic));
+    if (!isSubscribed && subscribedTopics.isNotEmpty) {
+      await unsubscribeFromUserTopics();
+    }
+    return isSubscribed;
+  }
+
   Future<void> requestNotificationPermission() async {
     final status = await Permission.notification.request();
     if (status.isGranted || status.isLimited) {
@@ -63,12 +77,12 @@ class NotificationsRepository {
 
   Future<bool> setupUserToken() async {
     final token = await _messaging.getToken();
-    if (appRepository.authRepository.firebaseUser == null || token == null) {
+    if (_appRepository.authRepository.firebaseUser == null || token == null) {
       return false;
     }
     final userDoc = FirebaseFirestore.instance
         .collection('users')
-        .doc(appRepository.authRepository.firebaseUser!.uid)
+        .doc(_appRepository.authRepository.firebaseUser!.uid)
         .collection('tokens')
         .doc(token); // docId == token (easy to delete later)
     await userDoc.set({
@@ -79,7 +93,7 @@ class NotificationsRepository {
     _messaging.onTokenRefresh.listen((newToken) async {
       final newDoc = FirebaseFirestore.instance
           .collection('users')
-          .doc(appRepository.authRepository.firebaseUser!.uid)
+          .doc(_appRepository.authRepository.firebaseUser!.uid)
           .collection('tokens')
           .doc(newToken);
 
@@ -93,73 +107,68 @@ class NotificationsRepository {
   }
 
   Future<void> updateUserTopics() async {
-    final user = appRepository.authRepository.userRole;
+    final user = _appRepository.authRepository.userRole;
     if (user == null) {
       return;
     }
-    userTopics.clear();
-    userTopics.add('user_${user.info.id}');
-    userTopics.add('all_users');
+    _userTopics.clear();
+    _userTopics.add('user_${user.info.id}');
+    _userTopics.add('all_users');
     if (Platform.isAndroid) {
-      userTopics.add('android_users');
+      _userTopics.add('android_users');
     } else if (Platform.isIOS) {
-      userTopics.add('ios_users');
+      _userTopics.add('ios_users');
     }
     if (user is MasterAdmin) {
-      userTopics.add('masterAdmins');
+      _userTopics.add('masterAdmins');
     } else if (user is Admin) {
-      userTopics.add('admins');
+      _userTopics.add('admins');
     } else if (user is CompanyManager) {
-      userTopics.add('companyManagers');
-      userTopics.add('companyManagers_${user.company.id}');
-      userTopics.add('company_${user.company.id}');
+      _userTopics.add('companyManagers');
+      _userTopics.add('companyManagers_${user.company.id}');
+      _userTopics.add('company_${user.company.id}');
     } else if (user is BranchManager) {
-      userTopics.add('branchManagers');
-      userTopics.add('branchManagers_${user.branch.id}');
-      userTopics.add('branch_${user.branch.id}');
-      userTopics.add('company_${user.branch.company.id}');
+      _userTopics.add('branchManagers');
+      _userTopics.add('branchManagers_${user.branch.id}');
+      _userTopics.add('branch_${user.branch.id}');
+      _userTopics.add('company_${user.branch.company.id}');
     } else if (user is Employee) {
-      userTopics.add('employees');
-      userTopics.add('employees_${user.branch.id}');
-      userTopics.add('branch_${user.branch.id}');
-      userTopics.add('company_${user.branch.company.id}');
+      _userTopics.add('employees');
+      _userTopics.add('employees_${user.branch.id}');
+      _userTopics.add('branch_${user.branch.id}');
+      _userTopics.add('company_${user.branch.company.id}');
     } else if (user is Client) {
-      userTopics.add('clients');
-      userTopics.add('clients_${user.branch.id}');
-      userTopics.add('branch_${user.branch.id}');
-      userTopics.add('company_${user.branch.company.id}');
+      _userTopics.add('clients');
+      _userTopics.add('clients_${user.branch.id}');
+      _userTopics.add('branch_${user.branch.id}');
+      _userTopics.add('company_${user.branch.company.id}');
     }
-    subscribeToUserTopics();
   }
 
   Future<void> subscribeToUserTopics() async {
-    if (_isSubscribing) {
-      return;
-    }
-    _isSubscribing = true;
-    const key = 'subscribedTopics';
+    List<String> newSubscribedTopics = [];
     final prefs = await SharedPreferences.getInstance();
-    final subscribedTopics = prefs.getStringList(key) ?? [];
-    for (var topic in userTopics) {
+    final subscribedTopics = prefs.getStringList(_subscribedTopicsKey) ?? [];
+    newSubscribedTopics = List.from(subscribedTopics);
+    for (var topic in _userTopics) {
       if (!subscribedTopics.contains(topic)) {
         await _messaging.subscribeToTopic(topic);
-        subscribedTopics.add(topic);
-        prefs.setStringList(key, subscribedTopics);
+        newSubscribedTopics.add(topic);
+        prefs.setStringList(_subscribedTopicsKey, newSubscribedTopics);
       }
     }
     for (var topic in subscribedTopics) {
-      if (!userTopics.contains(topic)) {
+      if (!_userTopics.contains(topic)) {
         await _messaging.unsubscribeFromTopic(topic);
-        subscribedTopics.remove(topic);
-        prefs.setStringList(key, subscribedTopics);
+        newSubscribedTopics.remove(topic);
+        prefs.setStringList(_subscribedTopicsKey, newSubscribedTopics);
       }
     }
-    _isSubscribing = false;
   }
 
   Future<bool> unsubscribeFromUserTopics() async {
     try {
-      final user = appRepository.authRepository.userRole;
+      final user = _appRepository.authRepository.userRole;
       String userId = user == null ? '' : user.info.id;
       String companyId =
           user == null || user is! CompanyManager ? '' : user.company.id!;
@@ -183,6 +192,8 @@ class NotificationsRepository {
       await _messaging.unsubscribeFromTopic('clients_$branchId');
       await _messaging.unsubscribeFromTopic('company_$companyId');
       await _messaging.unsubscribeFromTopic('branch_$branchId');
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList(_subscribedTopicsKey, []);
       return true;
     } catch (e) {
       return false;
