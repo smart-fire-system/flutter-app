@@ -4,7 +4,6 @@ import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/screens/home/view/home_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/notifications_screen.dart';
 import 'package:fire_alarm_system/utils/app_version.dart';
-import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
@@ -38,52 +37,44 @@ class _MainScreenState extends State<MainScreen> {
               fit: BoxFit.cover,
             ),
             const SizedBox(height: 16),
-
-            // Large featured card - Users
-            LargeCard(
-              icon: Icons.bar_chart_rounded,
-              title: l10n.system_monitoring_control,
-              subtitle: l10n.system_monitoring_card_subtitle,
-              titleColor: Colors.white,
-              subtitleColor: Colors.white,
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [CustomStyle.redDark, CustomStyle.redDark],
-              ),
-              onTap: () {
-                homeScreenKey.currentState!.setCurrentTab(AppTab.system);
-              },
-            ),
-
-            const SizedBox(height: 16),
-            WideCard(
-                icon: Icons.person,
-                title: l10n.profile,
-                subtitle: l10n.profile_subtitle,
-                color: const Color(0xFFEF4444),
-                onTap: () =>
-                    homeScreenKey.currentState!.setCurrentTab(AppTab.profile)),
-            const SizedBox(height: 16),
-            WideCard(
-                icon: Icons.assignment,
-                title: l10n.reports_contracts_title,
-                subtitle: l10n.reports_contracts_subtitle,
-                color: const Color(0xFFEF4444),
-                onTap: () =>
-                    homeScreenKey.currentState!.setCurrentTab(AppTab.reports)),
-            const SizedBox(height: 16),
-
-            // Full width card - Branches
-            WideCard(
-              icon: Icons.group_rounded,
-              title: l10n.users_and_branches,
-              subtitle: l10n.users_and_branches_subtitle,
-              color: const Color(0xFFEF4444),
-              onTap: () {
-                homeScreenKey.currentState!
-                    .setCurrentTab(AppTab.usersAndBranches);
-              },
+            Row(
+              children: [
+                Expanded(
+                  child: QuickNavButton(
+                    icon: Icons.bar_chart_rounded,
+                    label: l10n.system,
+                    onTap: () => homeScreenKey.currentState!
+                        .setCurrentTab(AppTab.system),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: QuickNavButton(
+                    icon: Icons.article_rounded,
+                    label: l10n.reports_contracts_title,
+                    onTap: () => homeScreenKey.currentState!
+                        .setCurrentTab(AppTab.reports),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: QuickNavButton(
+                    icon: Icons.group_rounded,
+                    label: l10n.users_and_branches,
+                    onTap: () => homeScreenKey.currentState!
+                        .setCurrentTab(AppTab.usersAndBranches),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: QuickNavButton(
+                    icon: Icons.person_rounded,
+                    label: l10n.profile,
+                    onTap: () => homeScreenKey.currentState!
+                        .setCurrentTab(AppTab.profile),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             WideCard(

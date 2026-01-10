@@ -54,7 +54,8 @@ class CurrentUserCard extends StatelessWidget {
                       userInfo.name.isNotEmpty
                           ? userInfo.name[0].toUpperCase()
                           : 'U',
-                      style: CustomStyle.mediumTextBRed.copyWith(color: Colors.white),
+                      style: CustomStyle.mediumTextBRed
+                          .copyWith(color: Colors.white),
                     ),
                   ),
                 ),
@@ -156,7 +157,8 @@ class LargeCard extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: Text(
                           title,
-                          style: CustomStyle.largeTextBRed.copyWith(color: titleColor),
+                          style: CustomStyle.largeTextBRed
+                              .copyWith(color: titleColor),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -326,12 +328,14 @@ class WideCard extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: CustomStyle.mediumTextBRed.copyWith(color: titleColor),
+                        style: CustomStyle.mediumTextBRed
+                            .copyWith(color: titleColor),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         subtitle,
-                        style: CustomStyle.smallText.copyWith(color: subtitleColor),
+                        style: CustomStyle.smallText
+                            .copyWith(color: subtitleColor),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -342,6 +346,59 @@ class WideCard extends StatelessWidget {
                   Icons.arrow_forward_ios_rounded,
                   color: color.withValues(alpha: 0.5),
                   size: 18,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class QuickNavButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  const QuickNavButton(
+      {super.key,
+      required this.icon,
+      required this.label,
+      required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(14),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 8),
+                Icon(icon, color: const Color(0xFFEF4444), size: 28),
+                const SizedBox(height: 6),
+                Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: CustomStyle.smallTextB,
                 ),
               ],
             ),
