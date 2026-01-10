@@ -1220,6 +1220,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get signatures_toggle_flash_tooltip => 'تبديل الفلاش';
 
   @override
+  String get signatures_pick_from_gallery_tooltip => 'اختيار صورة';
+
+  @override
+  String get signatures_no_qr_found =>
+      'لم يتم العثور على رمز QR في الصورة المحددة.';
+
+  @override
   String get signatures_section_signature_summary => 'ملخص التوقيع';
 
   @override

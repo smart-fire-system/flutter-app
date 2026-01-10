@@ -2342,6 +2342,18 @@ abstract class AppLocalizations {
   /// **'Toggle flash'**
   String get signatures_toggle_flash_tooltip;
 
+  /// No description provided for @signatures_pick_from_gallery_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick image'**
+  String get signatures_pick_from_gallery_tooltip;
+
+  /// No description provided for @signatures_no_qr_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No QR code found in the selected image.'**
+  String get signatures_no_qr_found;
+
   /// No description provided for @signatures_section_signature_summary.
   ///
   /// In en, this message translates to:

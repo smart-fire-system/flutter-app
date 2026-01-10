@@ -2,6 +2,7 @@ import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/signature.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:fire_alarm_system/utils/date.dart';
+import 'package:fire_alarm_system/utils/image_compress.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
@@ -395,6 +396,7 @@ class SignatureQrScannerScreen extends StatefulWidget {
 class _SignatureQrScannerScreenState extends State<SignatureQrScannerScreen> {
   final MobileScannerController _controller = MobileScannerController();
   bool _popped = false;
+  bool _analyzingImage = false;
 
   @override
   void dispose() {
@@ -402,10 +404,51 @@ class _SignatureQrScannerScreenState extends State<SignatureQrScannerScreen> {
     super.dispose();
   }
 
+  void _showSnack(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   void _popOnce(String value) {
     if (_popped) return;
     _popped = true;
     Navigator.of(context).pop(value);
+  }
+
+  Future<void> _scanFromGallery() async {
+    final l10n = AppLocalizations.of(context)!;
+    if (_popped || _analyzingImage) return;
+
+    setState(() => _analyzingImage = true);
+    try {
+      final file = await AppImage.pickImage();
+      if (!mounted) return;
+
+      if (file == null) {
+        setState(() => _analyzingImage = false);
+        return;
+      }
+
+      final capture = await _controller.analyzeImage(file.path);
+      if (!mounted) return;
+
+      final raw = (capture?.barcodes.isNotEmpty ?? false)
+          ? (capture!.barcodes.first.rawValue?.trim() ?? '')
+          : '';
+
+      if (raw.isEmpty) {
+        _showSnack(l10n.signatures_no_qr_found);
+        setState(() => _analyzingImage = false);
+        return;
+      }
+
+      _popOnce(raw);
+    } catch (_) {
+      if (!mounted) return;
+      _showSnack(l10n.errorPickingImage);
+      setState(() => _analyzingImage = false);
+    }
   }
 
   @override
@@ -453,8 +496,29 @@ class _SignatureQrScannerScreenState extends State<SignatureQrScannerScreen> {
                         ),
                       ),
                       IconButton(
+                        tooltip: l10n.signatures_pick_from_gallery_tooltip,
+                        onPressed: (_analyzingImage || _popped)
+                            ? null
+                            : _scanFromGallery,
+                        icon: _analyzingImage
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Icon(
+                                Icons.photo_library_outlined,
+                                color: Colors.white,
+                              ),
+                      ),
+                      IconButton(
                         tooltip: l10n.signatures_toggle_flash_tooltip,
-                        onPressed: () => _controller.toggleTorch(),
+                        onPressed: (_analyzingImage || _popped)
+                            ? null
+                            : () => _controller.toggleTorch(),
                         icon: const Icon(Icons.flash_on, color: Colors.white),
                       ),
                     ],

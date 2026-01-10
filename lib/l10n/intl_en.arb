@@ -414,6 +414,8 @@
     "signatures_scan_title": "Scan QR",
     "signatures_point_camera_hint": "Point the camera at the QR code.",
     "signatures_toggle_flash_tooltip": "Toggle flash",
+    "signatures_pick_from_gallery_tooltip": "Pick image",
+    "signatures_no_qr_found": "No QR code found in the selected image.",
 
     "signatures_section_signature_summary": "Signature summary",
     "signatures_section_user_summary": "User summary",

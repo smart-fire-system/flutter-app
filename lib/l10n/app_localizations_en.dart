@@ -1247,6 +1247,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signatures_toggle_flash_tooltip => 'Toggle flash';
 
   @override
+  String get signatures_pick_from_gallery_tooltip => 'Pick image';
+
+  @override
+  String get signatures_no_qr_found =>
+      'No QR code found in the selected image.';
+
+  @override
   String get signatures_section_signature_summary => 'Signature summary';
 
   @override

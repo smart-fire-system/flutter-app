@@ -418,6 +418,8 @@
     "signatures_scan_title": "مسح QR",
     "signatures_point_camera_hint": "وجّه الكاميرا نحو رمز QR.",
     "signatures_toggle_flash_tooltip": "تبديل الفلاش",
+    "signatures_pick_from_gallery_tooltip": "اختيار صورة",
+    "signatures_no_qr_found": "لم يتم العثور على رمز QR في الصورة المحددة.",
 
     "signatures_section_signature_summary": "ملخص التوقيع",
     "signatures_section_user_summary": "ملخص المستخدم",
