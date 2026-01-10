@@ -2,6 +2,7 @@ import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
+import 'package:fire_alarm_system/utils/date.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
@@ -171,14 +172,6 @@ class _NewContractScreenState extends State<NewContractScreen> {
     );
   }
 
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    final String y = date.year.toString().padLeft(4, '0');
-    final String m = date.month.toString().padLeft(2, '0');
-    final String d = date.day.toString().padLeft(2, '0');
-    return '$y-$m-$d';
-  }
-
   Future<void> _pickStartDate() async {
     final DateTime now = DateTime.now();
     DateTime? picked = await showDatePicker(
@@ -190,7 +183,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
     if (picked != null) {
       setState(() {
         _contractData.metaData.startDate = picked;
-        _startDateController.text = _formatDate(picked);
+        _startDateController.text = DateLocalizations.of(picked, format: 'dd/MM/yyyy');
         _contractData.metaData.startDate = picked;
       });
     }
@@ -209,7 +202,7 @@ class _NewContractScreenState extends State<NewContractScreen> {
     if (picked != null) {
       setState(() {
         _contractData.metaData.endDate = picked;
-        _endDateController.text = _formatDate(picked);
+        _endDateController.text = DateLocalizations.of(picked, format: 'dd/MM/yyyy');
         _contractData.metaData.endDate = picked;
       });
     }

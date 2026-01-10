@@ -14,7 +14,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/screens/notifications/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/notifications/bloc/state.dart';
 import 'package:fire_alarm_system/screens/notifications/bloc/event.dart';
-import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -140,12 +139,6 @@ class NotificationsScreenState extends State<NotificationsScreen> {
 
   Future<void> _showNotificationDetails(NotificationItem item) async {
     final l10n = AppLocalizations.of(context)!;
-    final createdAt = item.createdAt?.toDate();
-    final localeCode = _isArabic ? 'ar' : 'en';
-    final fullTime = createdAt == null
-        ? null
-        : DateFormat('dd-MM-yyyy hh:mm a', localeCode)
-            .format(createdAt.toLocal());
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -169,9 +162,9 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                   _isArabic ? item.arTitle : item.enTitle,
                   style: CustomStyle.largeTextB,
                 ),
-                if (fullTime != null) ...[
+                if (item.createdAt != null) ...[
                   Text(
-                    fullTime,
+                    DateLocalizations.of(item.createdAt),
                     style: CustomStyle.smallTextGrey,
                   ),
                 ],
@@ -336,9 +329,8 @@ class NotificationsScreenState extends State<NotificationsScreen> {
               separatorBuilder: (_, __) => const SizedBox(height: 8),
               itemBuilder: (context, index) {
                 final item = _notifications[index];
-                final createdAt = item.createdAt?.toDate();
-                final timeLabel = createdAt != null
-                    ? TimeAgoHelper.of(context, createdAt,
+                final timeLabel = item.createdAt != null
+                    ? TimeAgoHelper.of(context, item.createdAt,
                         format: TimeAgoFormat.long)
                     : null;
                 return Card(

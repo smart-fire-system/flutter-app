@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/emergency_visit.dart';
@@ -8,12 +7,12 @@ import 'package:fire_alarm_system/screens/reports/bloc/event.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/state.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/emergency_visit_summary.dart';
 import 'package:fire_alarm_system/screens/reports/view/emergency_visit_details_screen.dart';
+import 'package:fire_alarm_system/utils/date.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/empty.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class EmergencyVisitsScreen extends StatefulWidget {
   final String contractId;
@@ -33,7 +32,6 @@ enum _EmergencyVisitStatusFilterOption {
 }
 
 class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
-  final _formatter = DateFormat('dd/MM/yyyy - hh:mm a');
   bool _sortOldToNew = true;
   bool _canRequestEmergencyVisit = false;
   EmergencyVisitStatus? _statusFilter;
@@ -424,7 +422,7 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
                           visit.requestedBy, state.employees, state.clients);
                       return EmergencyVisitSummary(
                         emergencyVisit: visit,
-                        createdAtText: _formatTimestamp(visit.createdAt),
+                        createdAtText: DateLocalizations.of(visit.createdAt),
                         requestedByName: requestedByName,
                         onTap: () {
                           ContractData? contract;
@@ -461,11 +459,6 @@ class _EmergencyVisitsScreenState extends State<EmergencyVisitsScreen> {
         ],
       ),
     );
-  }
-
-  String _formatTimestamp(Timestamp ts) {
-    final dt = ts.toDate();
-    return _formatter.format(dt.toLocal());
   }
 
   String _findUserName(

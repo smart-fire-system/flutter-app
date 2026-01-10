@@ -1,5 +1,6 @@
 import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/pin.dart';
+import 'package:fire_alarm_system/utils/date.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/button.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,6 @@ import 'package:fire_alarm_system/screens/system/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/system/bloc/event.dart';
 import 'package:fire_alarm_system/screens/system/bloc/state.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 
 class MasterDetailsScreen extends StatefulWidget {
   final int masterId;
@@ -67,18 +67,6 @@ class MasterDetailsScreenState extends State<MasterDetailsScreen> {
     );
   }
 
-  String formatDateTime(DateTime dt) {
-    final localTime = dt.toLocal();
-    final timeZoneOffset = localTime.timeZoneOffset;
-    final offsetHours = timeZoneOffset.inHours;
-    final offsetMinutes = timeZoneOffset.inMinutes.remainder(60);
-    final gmtSign = offsetHours >= 0 ? '+' : '-';
-    final formattedOffset =
-        'GMT$gmtSign${offsetHours.abs().toString().padLeft(2, '0')}:${offsetMinutes.toString().padLeft(2, '0')}';
-    final formatter = DateFormat('dd/MM/yyyy - hh:mm:ss a');
-    return '${formatter.format(localTime)} $formattedOffset';
-  }
-
   Widget _buildSystem(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
@@ -98,7 +86,7 @@ class MasterDetailsScreenState extends State<MasterDetailsScreen> {
                 style: CustomStyle.largeTextB,
               ),
               subtitle: Text(
-                "Last seen: ${formatDateTime(_master!.lastSeen)}",
+                "Last seen: ${DateLocalizations.of(_master!.lastSeen)}",
                 style: CustomStyle.smallText,
               ),
             ),

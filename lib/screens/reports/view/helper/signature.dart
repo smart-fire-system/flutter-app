@@ -229,11 +229,7 @@ class SignatureHelper {
                           padding: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 8),
                           child: Text(
-                            (() {
-                              final v = signature.createdAt?.toDate();
-                              if (v == null) return '-';
-                              return DateHelper.formatDate(v);
-                            })(),
+                            DateLocalizations.of(signature.createdAt),
                             style: CustomStyle.smallText,
                             textAlign: TextAlign.right,
                           ),

@@ -4,6 +4,7 @@ import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
+import 'package:fire_alarm_system/utils/date.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/info.dart';
@@ -121,7 +122,7 @@ class CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                   ),
                   CustomInfoItem(
                     title: l10n.createdAt,
-                    value: _company!.createdAt!.toDate().toString(),
+                    value: DateLocalizations.of(_company!.createdAt, format: 'dd/MM/yyyy'),
                   ),
                 ],
               ),

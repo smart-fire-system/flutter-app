@@ -3,6 +3,7 @@ import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
 import 'package:fire_alarm_system/screens/reports/view/emergency_visits_screen.dart';
 import 'package:fire_alarm_system/screens/reports/view/visit_reports_screen.dart';
+import 'package:fire_alarm_system/utils/date.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
@@ -29,14 +30,6 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
   late ContractData _contract;
   late dynamic _user;
   Set<String> _selectedSharedWith = {};
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    final String y = date.year.toString().padLeft(4, '0');
-    final String m = date.month.toString().padLeft(2, '0');
-    final String d = date.day.toString().padLeft(2, '0');
-    return '$y-$m-$d';
-  }
 
   bool _isPendingCurrentEmployeeSign() {
     if (_user is! Employee) return false;
@@ -98,14 +91,16 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
         cardColor = Colors.green.shade50;
         borderColor = Colors.greenAccent;
         title = l10n.contract_active_title;
-        subtitle = l10n
-            .contract_active_until(_formatDate(_contract.metaData.endDate));
+        subtitle = l10n.contract_active_until(DateLocalizations.of(
+            _contract.metaData.endDate,
+            format: 'dd/MM/yyyy'));
       } else {
         cardColor = Colors.red.shade50;
         borderColor = CustomStyle.redLight;
         title = l10n.contract_expired_title;
-        subtitle = l10n
-            .contract_expired_since(_formatDate(_contract.metaData.endDate));
+        subtitle = l10n.contract_expired_since(DateLocalizations.of(
+            _contract.metaData.endDate,
+            format: 'dd/MM/yyyy'));
       }
     }
 
@@ -532,8 +527,7 @@ class _ViewContractScreenState extends State<ViewContractScreen> {
                     state.message = null;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(
-                            l10n.contract_sharing_updated_success,
+                        content: Text(l10n.contract_sharing_updated_success,
                             style: CustomStyle.smallTextBWhite),
                         backgroundColor: Colors.green,
                       ));

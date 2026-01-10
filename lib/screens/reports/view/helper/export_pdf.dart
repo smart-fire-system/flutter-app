@@ -2,6 +2,7 @@ import 'package:fire_alarm_system/models/contract_data.dart';
 import 'package:fire_alarm_system/models/report.dart';
 import 'package:fire_alarm_system/models/signature.dart';
 import 'package:fire_alarm_system/screens/reports/view/helper/helper.dart';
+import 'package:fire_alarm_system/utils/date.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart' as pw_colors;
 import 'package:pdf/widgets.dart' as pw;
@@ -118,14 +119,6 @@ class ExportPdf {
         return '\u202B$t\u202C';
       }
 
-      String formatDate(DateTime? dt) {
-        if (dt == null) return '-';
-        final y = dt.year.toString().padLeft(4, '0');
-        final m = dt.month.toString().padLeft(2, '0');
-        final d = dt.day.toString().padLeft(2, '0');
-        return '$y-$m-$d';
-      }
-
       // Network images are omitted for PDF to keep generation synchronous
 
       pw.Widget buildSignatureBox({
@@ -137,9 +130,7 @@ class ExportPdf {
         pw.ImageProvider? signatureImage,
       }) {
         final String codeValue = signature.name ?? '-';
-        final String dateValue = signature.createdAt == null
-            ? '-'
-            : formatDate(signature.createdAt?.toDate());
+        final String dateValue = DateLocalizations.of(signature.createdAt);
         return pw.Container(
           padding: const pw.EdgeInsets.all(8),
           decoration: pw.BoxDecoration(
@@ -366,16 +357,16 @@ class ExportPdf {
                   ...types.asMap().entries.map((entry) {
                     final i = entry.key;
                     final type = entry.value;
-                    final details = contract.componentsData.categories[
-                            table.categoryIndex ?? 0].items.firstWhere(
-                        (item) => item.arName == type,
-                        orElse: () => ContractComponent(
-                            arName: type,
-                            enName: type,
-                            description: '',
-                            categoryIndex: table.categoryIndex ?? 0,
-                            quantity: 0,
-                            notes: ''));
+                    final details = contract.componentsData
+                        .categories[table.categoryIndex ?? 0].items
+                        .firstWhere((item) => item.arName == type,
+                            orElse: () => ContractComponent(
+                                arName: type,
+                                enName: type,
+                                description: '',
+                                categoryIndex: table.categoryIndex ?? 0,
+                                quantity: 0,
+                                notes: ''));
                     final quantity = details.quantity.toString();
                     final notes = details.notes;
                     final rowColor = (i % 2 == 0)

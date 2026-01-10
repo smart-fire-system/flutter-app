@@ -6,11 +6,11 @@ import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/event.dart';
 import 'package:fire_alarm_system/screens/reports/bloc/state.dart';
+import 'package:fire_alarm_system/utils/date.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class EmergencyVisitDetailsScreen extends StatefulWidget {
   final String emergencyVisitId;
@@ -37,7 +37,6 @@ class EmergencyVisitDetailsScreen extends StatefulWidget {
 
 class _EmergencyVisitDetailsScreenState
     extends State<EmergencyVisitDetailsScreen> {
-  final _formatter = DateFormat('dd/MM/yyyy - hh:mm a');
   final _scrollController = ScrollController();
   final _commentController = TextEditingController();
   String _visitHeader = "Emergency Visit Request";
@@ -144,7 +143,7 @@ class _EmergencyVisitDetailsScreenState
               widget.requestedByName.isNotEmpty
                   ? widget.requestedByName
                   : visit.requestedBy,
-              _formatTimestamp(visit.createdAt),
+              DateLocalizations.of(visit.createdAt),
             ),
             style: CustomStyle.smallText,
           ),
@@ -201,9 +200,6 @@ class _EmergencyVisitDetailsScreenState
             }
           }
 
-          final newText = pretty(c.newStatus);
-          final dateText = _formatTimestamp(c.createdAt);
-
           return Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: Align(
@@ -218,9 +214,9 @@ class _EmergencyVisitDetailsScreenState
                 ),
                 child: Text(
                   l10n.emergency_visit_status_changed_message(
-                    dateText,
+                    DateLocalizations.of(c.createdAt),
                     userName,
-                    newText,
+                    pretty(c.newStatus),
                   ),
                   textAlign: TextAlign.center,
                   style: CustomStyle.smallText.copyWith(
@@ -266,7 +262,7 @@ class _EmergencyVisitDetailsScreenState
                   ],
                   const SizedBox(height: 6),
                   Text(
-                    _formatTimestamp(c.createdAt),
+                    DateLocalizations.of(c.createdAt),
                     style: (isMe
                             ? CustomStyle.normalButtonTextSmallWhite
                             : CustomStyle.smallText)
@@ -364,11 +360,6 @@ class _EmergencyVisitDetailsScreenState
         ],
       ),
     );
-  }
-
-  String _formatTimestamp(Timestamp ts) {
-    final dt = ts.toDate();
-    return _formatter.format(dt.toLocal());
   }
 
   String _currentUserId(dynamic userRole) {
@@ -693,7 +684,6 @@ class _EmergencyVisitDetailsScreenState
         _StatusFlowTracker(
           title: '',
           steps: [step1, step2, step3],
-          formatDate: _formatTimestamp,
         ),
       ],
     );
@@ -746,12 +736,10 @@ class _TrackerStep {
 class _StatusFlowTracker extends StatelessWidget {
   final String title;
   final List<_TrackerStep> steps;
-  final String Function(Timestamp ts) formatDate;
 
   const _StatusFlowTracker({
     required this.title,
     required this.steps,
-    required this.formatDate,
   });
 
   @override
@@ -782,7 +770,6 @@ class _StatusFlowTracker extends StatelessWidget {
                   isDone: steps[i].date != null,
                   activeColor: activeColor,
                   inactiveColor: inactiveColor,
-                  formatDate: formatDate,
                 ),
                 if (i != steps.length - 1)
                   Expanded(
@@ -808,7 +795,6 @@ class _TrackerNode extends StatelessWidget {
   final bool isDone;
   final Color activeColor;
   final Color inactiveColor;
-  final String Function(Timestamp ts) formatDate;
 
   const _TrackerNode({
     required this.label,
@@ -816,7 +802,6 @@ class _TrackerNode extends StatelessWidget {
     required this.isDone,
     required this.activeColor,
     required this.inactiveColor,
-    required this.formatDate,
   });
 
   @override
@@ -846,7 +831,7 @@ class _TrackerNode extends StatelessWidget {
         SizedBox(
           width: 90,
           child: Text(
-            date != null ? formatDate(date!) : '',
+            DateLocalizations.of(date),
             textAlign: TextAlign.center,
             style: CustomStyle.smallText
                 .copyWith(fontSize: 10, color: Colors.black54),

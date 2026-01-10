@@ -4,6 +4,7 @@ import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
+import 'package:fire_alarm_system/utils/date.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/info.dart';
@@ -110,7 +111,7 @@ class BranchDetailsScreenState extends State<BranchDetailsScreen> {
                   ),
                   CustomInfoItem(
                     title: l10n.createdAt,
-                    value: _branch!.createdAt!.toDate().toString(),
+                    value: DateLocalizations.of(_branch!.createdAt, format: 'dd/MM/yyyy'),
                   ),
                 ],
               ),

@@ -88,8 +88,8 @@ class _ContractSummaryState extends State<ContractSummary> {
                           style: CustomStyle.smallTextBRed,
                         ),
                         TextSpan(
-                          text: DateHelper.formatDate(
-                              widget.contract.metaData.startDate),
+                          text: DateLocalizations.of(
+                              widget.contract.metaData.startDate, format: 'dd/MM/yyyy'),
                           style: CustomStyle.smallText,
                         ),
                         TextSpan(
@@ -97,8 +97,8 @@ class _ContractSummaryState extends State<ContractSummary> {
                           style: CustomStyle.smallTextBRed,
                         ),
                         TextSpan(
-                          text: DateHelper.formatDate(
-                              widget.contract.metaData.endDate),
+                          text: DateLocalizations.of(
+                              widget.contract.metaData.endDate, format: 'dd/MM/yyyy'),
                           style: CustomStyle.smallText,
                         ),
                       ],

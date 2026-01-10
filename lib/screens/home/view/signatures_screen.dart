@@ -170,10 +170,6 @@ class _SignatureCard extends StatelessWidget {
             ? l10n.signatures_role_employee
             : l10n.signatures_role_unknown;
 
-    final createdAt = signature.createdAt?.toDate();
-    final createdAtText =
-        createdAt == null ? '-' : DateHelper.formatDate(createdAt);
-
     final visitReport = isVisitReportSignature
         ? context
             .read<AppRepository>()
@@ -226,7 +222,10 @@ class _SignatureCard extends StatelessWidget {
                   l10n.signatures_field_signature_code,
                   signature.code?.toString() ?? '-',
                 ),
-                _kv(l10n.signatures_field_signed_at, createdAtText),
+                _kv(
+                  l10n.signatures_field_signed_at,
+                  DateLocalizations.of(signature.createdAt),
+                ),
                 _kv(
                   l10n.signatures_field_type,
                   isContractSignature

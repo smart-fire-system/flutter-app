@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/pin.dart';
 import 'package:fire_alarm_system/utils/alert.dart';
+import 'package:fire_alarm_system/utils/date.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,6 @@ import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/screens/system/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/system/bloc/event.dart';
 import 'package:fire_alarm_system/screens/system/bloc/state.dart';
-import 'package:intl/intl.dart';
 import 'package:fire_alarm_system/widgets/selection_screen.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/branch.dart';
@@ -120,10 +120,6 @@ class SystemScreenState extends State<SystemScreen> {
         return _buildSystem(context);
       },
     );
-  }
-
-  String formatDateTime(DateTime dt) {
-    return DateFormat('dd/MM/yyyy - hh:mm:ss a').format(dt.toLocal());
   }
 
   Widget _buildSystem(BuildContext context) {
@@ -311,7 +307,7 @@ class SystemScreenState extends State<SystemScreen> {
                                   ),
                                   title: Text('Master ID: ${master.id}'),
                                   subtitle: Text(
-                                      'Last Seen: ${formatDateTime(master.lastSeen)}'),
+                                      'Last Seen: ${DateLocalizations.of(master.lastSeen)}'),
                                   trailing: master.isActive
                                       ? const Icon(Icons.arrow_forward_sharp,
                                           color: Colors.green, size: 32)
