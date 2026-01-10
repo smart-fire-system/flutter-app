@@ -1,6 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/l10n/app_localizations.dart';
+import 'package:fire_alarm_system/utils/localization_util.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
+
+class DateLocalizations {
+  DateLocalizations();
+  static String of(dynamic date, {String format = 'dd/MM/yyyy hh:mm a'}) {
+    if (date is Timestamp) {
+      date = date.toDate().toLocal();
+    } else if (date is DateTime) {
+      date = date.toLocal();
+    } else {
+      return ' - ';
+    }
+    return DateFormat(format, LocalizationUtil.languageCode).format(date);
+  }
+}
 
 class DateHelper {
   static String formatDate(DateTime? date) {
@@ -11,7 +27,6 @@ class DateHelper {
     return '$y-$m-$d';
   }
 }
-
 
 enum TimeAgoFormat { long, short }
 
@@ -36,7 +51,9 @@ class TimeAgoHelper {
       return _maybeArabicDigits(
         isArabic,
         arabicIndicDigits,
-        format == TimeAgoFormat.short ? l10n.time_now_short : l10n.time_now_long,
+        format == TimeAgoFormat.short
+            ? l10n.time_now_short
+            : l10n.time_now_long,
       );
     }
 
@@ -45,25 +62,39 @@ class TimeAgoHelper {
     String result;
 
     if (diff.inMinutes < 1) {
-      result = format == TimeAgoFormat.short ? l10n.time_now_short : l10n.time_now_long;
+      result = format == TimeAgoFormat.short
+          ? l10n.time_now_short
+          : l10n.time_now_long;
     } else if (diff.inMinutes < 60) {
       final n = diff.inMinutes;
-      result = format == TimeAgoFormat.short ? l10n.time_min_short(n) : l10n.time_min_long(n);
+      result = format == TimeAgoFormat.short
+          ? l10n.time_min_short(n)
+          : l10n.time_min_long(n);
     } else if (diff.inHours < 24) {
       final n = diff.inHours;
-      result = format == TimeAgoFormat.short ? l10n.time_hour_short(n) : l10n.time_hour_long(n);
+      result = format == TimeAgoFormat.short
+          ? l10n.time_hour_short(n)
+          : l10n.time_hour_long(n);
     } else if (diff.inDays < 7) {
       final n = diff.inDays;
-      result = format == TimeAgoFormat.short ? l10n.time_day_short(n) : l10n.time_day_long(n);
+      result = format == TimeAgoFormat.short
+          ? l10n.time_day_short(n)
+          : l10n.time_day_long(n);
     } else if (diff.inDays < 30) {
       final n = (diff.inDays / 7).floor().clamp(1, 999999);
-      result = format == TimeAgoFormat.short ? l10n.time_week_short(n) : l10n.time_week_long(n);
+      result = format == TimeAgoFormat.short
+          ? l10n.time_week_short(n)
+          : l10n.time_week_long(n);
     } else if (diff.inDays < 365) {
       final n = (diff.inDays / 30).floor().clamp(1, 999999);
-      result = format == TimeAgoFormat.short ? l10n.time_month_short(n) : l10n.time_month_long(n);
+      result = format == TimeAgoFormat.short
+          ? l10n.time_month_short(n)
+          : l10n.time_month_long(n);
     } else {
       final n = (diff.inDays / 365).floor().clamp(1, 999999);
-      result = format == TimeAgoFormat.short ? l10n.time_year_short(n) : l10n.time_year_long(n);
+      result = format == TimeAgoFormat.short
+          ? l10n.time_year_short(n)
+          : l10n.time_year_long(n);
     }
 
     // Convert digits at the end so gen-l10n placeholder types stay int everywhere.

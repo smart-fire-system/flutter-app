@@ -17,6 +17,8 @@ class LocalizationUtil {
   static Stream<Locale> get languageChangedStream =>
       _languageChangedController.stream;
 
+  static String get languageCode => myLocale.languageCode;
+
   static void setChangeLanguageCallback(dynamic Function(Locale) callback) {
     changeMainLanguageCallback = callback;
   }
