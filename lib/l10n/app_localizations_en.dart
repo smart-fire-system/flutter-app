@@ -1530,4 +1530,38 @@ class AppLocalizationsEn extends AppLocalizations {
       String dateText, String userName, String status) {
     return '$dateText\n$userName changed status to ($status)';
   }
+
+  @override
+  String get about_app_and_developer => 'About app and developer';
+
+  @override
+  String get about_app_and_developer_subtitle =>
+      'App information, version, and developer contact details';
+
+  @override
+  String get about_app_info_title => 'App info';
+
+  @override
+  String get about_developer_info_title => 'Developer info';
+
+  @override
+  String get about_platform_label => 'Platform';
+
+  @override
+  String get about_version_label => 'Version';
+
+  @override
+  String get about_developer_name_label => 'Developer';
+
+  @override
+  String get about_developer_email_label => 'Email';
+
+  @override
+  String get about_developer_phone_label => 'Phone';
+
+  @override
+  String get about_developer_website_label => 'Website';
+
+  @override
+  String get about_developer_linkedin_label => 'LinkedIn';
 }

@@ -1503,4 +1503,38 @@ class AppLocalizationsAr extends AppLocalizations {
       String dateText, String userName, String status) {
     return '$dateText\n$userName غيّر الحالة إلى ($status)';
   }
+
+  @override
+  String get about_app_and_developer => 'حول التطبيق والمطور';
+
+  @override
+  String get about_app_and_developer_subtitle =>
+      'معلومات التطبيق والإصدار وبيانات تواصل المطور';
+
+  @override
+  String get about_app_info_title => 'معلومات التطبيق';
+
+  @override
+  String get about_developer_info_title => 'معلومات المطور';
+
+  @override
+  String get about_platform_label => 'المنصة';
+
+  @override
+  String get about_version_label => 'الإصدار';
+
+  @override
+  String get about_developer_name_label => 'المطور';
+
+  @override
+  String get about_developer_email_label => 'البريد الإلكتروني';
+
+  @override
+  String get about_developer_phone_label => 'الهاتف';
+
+  @override
+  String get about_developer_website_label => 'الموقع';
+
+  @override
+  String get about_developer_linkedin_label => 'لينكدإن';
 }

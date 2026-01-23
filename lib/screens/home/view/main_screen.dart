@@ -1,11 +1,12 @@
-import 'dart:io';
-
 import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/screens/home/view/home_screen.dart';
+import 'package:fire_alarm_system/screens/home/view/about_app_developer_screen.dart';
 import 'package:fire_alarm_system/screens/notifications/view/notifications_screen.dart';
 import 'package:fire_alarm_system/utils/app_version.dart';
+import 'package:fire_alarm_system/widgets/app_shimmer.dart';
 import 'package:fire_alarm_system/widgets/cards.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 
@@ -16,7 +17,24 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
+  late final AnimationController _logoShimmerController;
+
+  @override
+  void initState() {
+    super.initState();
+    _logoShimmerController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _logoShimmerController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -31,10 +49,24 @@ class _MainScreenState extends State<MainScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(
-              'assets/images/logo/1.png',
-              width: double.infinity,
-              fit: BoxFit.cover,
+            AnimatedBuilder(
+              animation: _logoShimmerController,
+              builder: (context, _) {
+                return Hero(
+                  tag: 'appLogoHero',
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: AppShimmer(
+                      progress: _logoShimmerController.value,
+                      child: Image.asset(
+                        'assets/images/logo/1.png',
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 16),
             Row(
@@ -118,12 +150,29 @@ class _MainScreenState extends State<MainScreen> {
                   TabNavigator.home.currentState?.pushNamed('/offline'),
             ),
             const SizedBox(height: 16),
+            WideCard(
+              icon: Icons.info_outline_rounded,
+              title: l10n.about_app_and_developer,
+              subtitle: l10n.about_app_and_developer_subtitle,
+              color: const Color(0xFF3B82F6),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AboutAppDeveloperScreen(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 6),
               child: SizedBox(
                 width: double.infinity,
                 child: Text(
-                  Platform.isAndroid ? androidAppVersion : iosAppVersion,
+                  (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
+                      ? androidAppVersion
+                      : iosAppVersion,
                   textAlign: TextAlign.center,
                   style: Theme.of(context)
                       .textTheme

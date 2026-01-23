@@ -561,6 +561,18 @@
             "userName": { "type": "String" },
             "status": { "type": "String" }
         }
-    }
+    },
+
+    "about_app_and_developer": "حول التطبيق والمطور",
+    "about_app_and_developer_subtitle": "معلومات التطبيق والإصدار وبيانات تواصل المطور",
+    "about_app_info_title": "معلومات التطبيق",
+    "about_developer_info_title": "معلومات المطور",
+    "about_platform_label": "المنصة",
+    "about_version_label": "الإصدار",
+    "about_developer_name_label": "المطور",
+    "about_developer_email_label": "البريد الإلكتروني",
+    "about_developer_phone_label": "الهاتف",
+    "about_developer_website_label": "الموقع",
+    "about_developer_linkedin_label": "لينكدإن"
 
 }

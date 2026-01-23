@@ -2840,6 +2840,72 @@ abstract class AppLocalizations {
   /// **'{dateText}\n{userName} changed status to ({status})'**
   String emergency_visit_status_changed_message(
       String dateText, String userName, String status);
+
+  /// No description provided for @about_app_and_developer.
+  ///
+  /// In en, this message translates to:
+  /// **'About app and developer'**
+  String get about_app_and_developer;
+
+  /// No description provided for @about_app_and_developer_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'App information, version, and developer contact details'**
+  String get about_app_and_developer_subtitle;
+
+  /// No description provided for @about_app_info_title.
+  ///
+  /// In en, this message translates to:
+  /// **'App info'**
+  String get about_app_info_title;
+
+  /// No description provided for @about_developer_info_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer info'**
+  String get about_developer_info_title;
+
+  /// No description provided for @about_platform_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform'**
+  String get about_platform_label;
+
+  /// No description provided for @about_version_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get about_version_label;
+
+  /// No description provided for @about_developer_name_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer'**
+  String get about_developer_name_label;
+
+  /// No description provided for @about_developer_email_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get about_developer_email_label;
+
+  /// No description provided for @about_developer_phone_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get about_developer_phone_label;
+
+  /// No description provided for @about_developer_website_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get about_developer_website_label;
+
+  /// No description provided for @about_developer_linkedin_label.
+  ///
+  /// In en, this message translates to:
+  /// **'LinkedIn'**
+  String get about_developer_linkedin_label;
 }
 
 class _AppLocalizationsDelegate
