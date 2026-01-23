@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/l10n/app_localizations.dart';
@@ -15,8 +14,7 @@ import 'package:fire_alarm_system/screens/notifications/bloc/bloc.dart';
 import 'package:fire_alarm_system/screens/notifications/bloc/state.dart';
 import 'package:fire_alarm_system/screens/notifications/bloc/event.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:url_launcher/url_launcher.dart';
-
+import 'package:fire_alarm_system/utils/open_store.dart';
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
 
@@ -181,7 +179,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                         child: ElevatedButton.icon(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            _openStorePage();
+                            openStore();
                           },
                           icon: const Icon(Icons.update_rounded),
                           label: Text(l10n.notifications_update_application),
@@ -211,25 +209,6 @@ class NotificationsScreenState extends State<NotificationsScreen> {
         return Icons.update_rounded;
       default:
         return Icons.notifications_rounded;
-    }
-  }
-
-  Future<void> _openStorePage() async {
-    Uri url;
-    if (Platform.isAndroid) {
-      url = Uri.parse("market://details?id=com.hassan.firealarm");
-    } else if (Platform.isIOS) {
-      url = Uri.parse("https://apps.apple.com/app/id1234567890");
-    } else {
-      return;
-    }
-    Uri fallback = Uri.parse(
-      "https://play.google.com/store/apps/details?id=com.hassan.firealarm",
-    );
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      await launchUrl(fallback, mode: LaunchMode.externalApplication);
     }
   }
 

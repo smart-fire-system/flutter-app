@@ -1177,6 +1177,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get close => 'Close';
 
   @override
+  String get update_needed_title_update_required => 'Update required';
+
+  @override
+  String get update_needed_title_unavailable => 'Temporarily unavailable';
+
+  @override
+  String get update_needed_message_update_required =>
+      'You can’t use the app until you update to the latest version.';
+
+  @override
+  String get update_needed_message_unavailable =>
+      'The app is temporarily unavailable right now. Please try again later.';
+
+  @override
+  String get update_needed_close_app => 'Close app';
+
+  @override
   String get notifications_empty_title => 'No notifications';
 
   @override

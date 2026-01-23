@@ -395,6 +395,12 @@
     "notifications_update_application": "تحديث التطبيق",
     "close": "إغلاق",
 
+    "update_needed_title_update_required": "تحديث مطلوب",
+    "update_needed_title_unavailable": "غير متاح مؤقتاً",
+    "update_needed_message_update_required": "لا يمكنك استخدام التطبيق قبل التحديث إلى أحدث إصدار.",
+    "update_needed_message_unavailable": "التطبيق غير متاح مؤقتاً حالياً. يرجى المحاولة مرة أخرى لاحقاً.",
+    "update_needed_close_app": "إغلاق التطبيق",
+
     "notifications_empty_title": "لا توجد إشعارات",
     "notifications_empty_subtitle": "لقد اطلعت على كل شيء. ستظهر الإشعارات الجديدة هنا.",
     "signature_confirm_dialog_body_visit_report": "بتأكيدك سيتم تسجيل توقيعك على تقرير الزيارة هذا. لا يمكن التراجع عن هذه العملية.",

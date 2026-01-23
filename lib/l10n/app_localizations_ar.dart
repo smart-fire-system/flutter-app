@@ -1150,6 +1150,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String get close => 'إغلاق';
 
   @override
+  String get update_needed_title_update_required => 'تحديث مطلوب';
+
+  @override
+  String get update_needed_title_unavailable => 'غير متاح مؤقتاً';
+
+  @override
+  String get update_needed_message_update_required =>
+      'لا يمكنك استخدام التطبيق قبل التحديث إلى أحدث إصدار.';
+
+  @override
+  String get update_needed_message_unavailable =>
+      'التطبيق غير متاح مؤقتاً حالياً. يرجى المحاولة مرة أخرى لاحقاً.';
+
+  @override
+  String get update_needed_close_app => 'إغلاق التطبيق';
+
+  @override
   String get notifications_empty_title => 'لا توجد إشعارات';
 
   @override

@@ -391,6 +391,12 @@
     "notifications_update_application": "Update application",
     "close": "Close",
 
+    "update_needed_title_update_required": "Update required",
+    "update_needed_title_unavailable": "Temporarily unavailable",
+    "update_needed_message_update_required": "You can’t use the app until you update to the latest version.",
+    "update_needed_message_unavailable": "The app is temporarily unavailable right now. Please try again later.",
+    "update_needed_close_app": "Close app",
+
     "notifications_empty_title": "No notifications",
     "notifications_empty_subtitle": "You’re all caught up. New notifications will appear here.",
     "signature_confirm_dialog_body_visit_report": "By confirming, your signature will be recorded on this visit report. This action cannot be undone.",

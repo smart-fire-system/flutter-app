@@ -2204,6 +2204,36 @@ abstract class AppLocalizations {
   /// **'Close'**
   String get close;
 
+  /// No description provided for @update_needed_title_update_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Update required'**
+  String get update_needed_title_update_required;
+
+  /// No description provided for @update_needed_title_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporarily unavailable'**
+  String get update_needed_title_unavailable;
+
+  /// No description provided for @update_needed_message_update_required.
+  ///
+  /// In en, this message translates to:
+  /// **'You can’t use the app until you update to the latest version.'**
+  String get update_needed_message_update_required;
+
+  /// No description provided for @update_needed_message_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The app is temporarily unavailable right now. Please try again later.'**
+  String get update_needed_message_unavailable;
+
+  /// No description provided for @update_needed_close_app.
+  ///
+  /// In en, this message translates to:
+  /// **'Close app'**
+  String get update_needed_close_app;
+
   /// No description provided for @notifications_empty_title.
   ///
   /// In en, this message translates to:
