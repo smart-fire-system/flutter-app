@@ -1194,6 +1194,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get update_needed_close_app => 'Close app';
 
   @override
+  String get update_available_title => 'Update available';
+
+  @override
+  String get update_available_desc =>
+      'A newer version is available. Please update to get the latest improvements.';
+
+  @override
+  String get update_available_confirm => 'Update now';
+
+  @override
+  String get update_available_cancel => 'Not now';
+
+  @override
   String get notifications_empty_title => 'No notifications';
 
   @override

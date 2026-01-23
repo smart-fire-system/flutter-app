@@ -396,6 +396,10 @@
     "update_needed_message_update_required": "You can’t use the app until you update to the latest version.",
     "update_needed_message_unavailable": "The app is temporarily unavailable right now. Please try again later.",
     "update_needed_close_app": "Close app",
+    "update_available_title": "Update available",
+    "update_available_desc": "A newer version is available. Please update to get the latest improvements.",
+    "update_available_confirm": "Update now",
+    "update_available_cancel": "Not now",
 
     "notifications_empty_title": "No notifications",
     "notifications_empty_subtitle": "You’re all caught up. New notifications will appear here.",

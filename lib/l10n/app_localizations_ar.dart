@@ -1167,6 +1167,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get update_needed_close_app => 'إغلاق التطبيق';
 
   @override
+  String get update_available_title => 'تحديث متاح';
+
+  @override
+  String get update_available_desc =>
+      'يتوفر إصدار أحدث. يرجى تحديث التطبيق للحصول على أحدث التحسينات.';
+
+  @override
+  String get update_available_confirm => 'حدّث الآن';
+
+  @override
+  String get update_available_cancel => 'ليس الآن';
+
+  @override
   String get notifications_empty_title => 'لا توجد إشعارات';
 
   @override

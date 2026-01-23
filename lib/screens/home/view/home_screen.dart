@@ -11,6 +11,7 @@ import 'package:fire_alarm_system/screens/home/view/signup_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/welcome_screen.dart';
 import 'package:fire_alarm_system/utils/errors.dart';
 import 'package:fire_alarm_system/utils/message.dart';
+import 'package:fire_alarm_system/utils/open_store.dart';
 import 'package:fire_alarm_system/widgets/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,6 +42,7 @@ class HomeScreenState extends State<HomeScreen> {
   bool? _viewLoginScreen;
   OverlayEntry? _notificationOverlay;
   Timer? _notificationOverlayTimer;
+  bool _isUpdateShown = false;
 
   @override
   void initState() {
@@ -146,6 +148,9 @@ class HomeScreenState extends State<HomeScreen> {
           return buildUpdateNeeded(context, state.appVersionData);
         }
         if (state is HomeNotAuthenticated) {
+          if (state.isUpdateAvailable && !_isUpdateShown) {
+            _showUpdateNeededAlert(context);
+          }
           _showAlert(
             context: context,
             message: state.message,
@@ -155,6 +160,9 @@ class HomeScreenState extends State<HomeScreen> {
           state.message = null;
           return _buildNotAuthenticated(context);
         } else if (state is HomeNotAuthorized) {
+          if (state.isUpdateAvailable && !_isUpdateShown) {
+            _showUpdateNeededAlert(context);
+          }
           _showAlert(
             context: context,
             message: state.message,
@@ -169,6 +177,9 @@ class HomeScreenState extends State<HomeScreen> {
             state.isEmailVerified,
           );
         } else if (state is HomeAuthenticated) {
+          if (state.isUpdateAvailable && !_isUpdateShown) {
+            _showUpdateNeededAlert(context);
+          }
           if (state.notificationReceived != null) {
             final title = state.notificationReceived!.enTitle;
             final body = state.notificationReceived!.enBody;
@@ -645,6 +656,34 @@ class HomeScreenState extends State<HomeScreen> {
             error,
           ),
         );
+      }
+    });
+  }
+
+  void _showUpdateNeededAlert(BuildContext context) {
+    _isUpdateShown = true;
+    final l10n = AppLocalizations.of(context)!;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final pressedValue = await CustomAlert.showConfirmation(
+          context: context,
+          title: l10n.update_available_title,
+          subtitle: l10n.update_available_desc,
+          buttons: [
+            CustomAlertConfirmationButton(
+              title: l10n.update_available_confirm,
+              value: 0,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+            ),
+            CustomAlertConfirmationButton(
+              title: l10n.update_available_cancel,
+              value: 1,
+              backgroundColor: CustomStyle.greyDark,
+              textColor: Colors.white,
+            ),
+          ]);
+      if (pressedValue == 0) {
+        openStore();
       }
     });
   }

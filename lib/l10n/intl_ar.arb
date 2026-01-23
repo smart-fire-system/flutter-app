@@ -401,6 +401,11 @@
     "update_needed_message_unavailable": "التطبيق غير متاح مؤقتاً حالياً. يرجى المحاولة مرة أخرى لاحقاً.",
     "update_needed_close_app": "إغلاق التطبيق",
 
+    "update_available_title": "تحديث متاح",
+    "update_available_desc": "يتوفر إصدار أحدث. يرجى تحديث التطبيق للحصول على أحدث التحسينات.",
+    "update_available_confirm": "حدّث الآن",
+    "update_available_cancel": "ليس الآن",
+
     "notifications_empty_title": "لا توجد إشعارات",
     "notifications_empty_subtitle": "لقد اطلعت على كل شيء. ستظهر الإشعارات الجديدة هنا.",
     "signature_confirm_dialog_body_visit_report": "بتأكيدك سيتم تسجيل توقيعك على تقرير الزيارة هذا. لا يمكن التراجع عن هذه العملية.",

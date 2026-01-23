@@ -2234,6 +2234,30 @@ abstract class AppLocalizations {
   /// **'Close app'**
   String get update_needed_close_app;
 
+  /// No description provided for @update_available_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Update available'**
+  String get update_available_title;
+
+  /// No description provided for @update_available_desc.
+  ///
+  /// In en, this message translates to:
+  /// **'A newer version is available. Please update to get the latest improvements.'**
+  String get update_available_desc;
+
+  /// No description provided for @update_available_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get update_available_confirm;
+
+  /// No description provided for @update_available_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get update_available_cancel;
+
   /// No description provided for @notifications_empty_title.
   ///
   /// In en, this message translates to:
