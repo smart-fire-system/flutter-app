@@ -11,57 +11,140 @@ class CustomStyle {
   static const Color greySuperLight = Color.fromARGB(255, 238, 237, 237);
 
   static final TextStyle navBarText = GoogleFonts.cairo(
-      fontSize: 12, color: greyLight, fontWeight: FontWeight.w500);
+    fontSize: 12,
+    color: greyLight,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
 
   static final TextStyle navBarTextHighLighted = GoogleFonts.cairo(
-      fontSize: 14, color: redDark, fontWeight: FontWeight.w700);
+    fontSize: 14,
+    color: redDark,
+    fontWeight: FontWeight.w700,
+    decoration: TextDecoration.none,
+  );
 
   static final TextStyle appBarText = GoogleFonts.cairo(
-      fontSize: 25, color: Colors.white, fontWeight: FontWeight.w500);
+    fontSize: 25,
+    color: Colors.white,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
 
   static final TextStyle largeText30 = GoogleFonts.cairo(
-      fontSize: 30, color: Colors.black, fontWeight: FontWeight.w500);
+    fontSize: 30,
+    color: Colors.black,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle largeText30B = GoogleFonts.cairo(
-      fontSize: 30, color: Colors.black, fontWeight: FontWeight.w700);
+    fontSize: 30,
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+    decoration: TextDecoration.none,
+  );
 
   static final TextStyle largeTextBRed = GoogleFonts.cairo(
-      fontSize: 30, color: redDark, fontWeight: FontWeight.w700);
+    fontSize: 30,
+    color: redDark,
+    fontWeight: FontWeight.w700,
+    decoration: TextDecoration.none,
+  );
 
   static final TextStyle largeText25 = GoogleFonts.cairo(
-      fontSize: 25, color: Colors.black, fontWeight: FontWeight.w500);
+    fontSize: 25,
+    color: Colors.black,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle largeText25B = GoogleFonts.cairo(
-      fontSize: 25, color: Colors.black, fontWeight: FontWeight.w700);
+    fontSize: 25,
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+    decoration: TextDecoration.none,
+  );
 
   static final TextStyle largeText = GoogleFonts.cairo(
-      fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500);
+    fontSize: 20,
+    color: Colors.black,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle largeTextB = GoogleFonts.cairo(
-      fontSize: 20, color: Colors.black, fontWeight: FontWeight.w700);
+    fontSize: 20,
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle largeTextBWhite = GoogleFonts.cairo(
-      fontSize: 20, color: Colors.white, fontWeight: FontWeight.w700);
+    fontSize: 20,
+    color: Colors.white,
+    fontWeight: FontWeight.w700,
+    decoration: TextDecoration.none,
+  );
 
   static final TextStyle mediumText = GoogleFonts.cairo(
-      fontSize: 18, color: Colors.black, fontWeight: FontWeight.w500);
+    fontSize: 18,
+    color: Colors.black,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle mediumTextWhite = GoogleFonts.cairo(
-      fontSize: 18, color: Colors.white, fontWeight: FontWeight.w500);
+    fontSize: 18,
+    color: Colors.white,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle mediumTextB = GoogleFonts.cairo(
-      fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700);
+    fontSize: 18,
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle mediumTextBRed = GoogleFonts.cairo(
-      fontSize: 18, color: redDark, fontWeight: FontWeight.w700);
+    fontSize: 18,
+    color: redDark,
+    fontWeight: FontWeight.w700,
+    decoration: TextDecoration.none,
+  );
 
   static final TextStyle smallText = GoogleFonts.cairo(
-      fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500);
+    fontSize: 16,
+    color: Colors.black,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle smallTextRed = GoogleFonts.cairo(
-      fontSize: 16, color: redDark, fontWeight: FontWeight.w500);
+    fontSize: 16,
+    color: redDark,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle smallTextBRed = GoogleFonts.cairo(
-      fontSize: 16, color: redDark, fontWeight: FontWeight.w700);
+    fontSize: 16,
+    color: redDark,
+    fontWeight: FontWeight.w700,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle smallTextGrey = GoogleFonts.cairo(
-      fontSize: 16, color: greyDark, fontWeight: FontWeight.w500);
+    fontSize: 16,
+    color: greyDark,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle smallTextB = GoogleFonts.cairo(
-      fontSize: 16, color: Colors.black, fontWeight: FontWeight.w700);
+    fontSize: 16,
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+    decoration: TextDecoration.none,
+  );
 
   static final TextStyle smallTextBWhite = GoogleFonts.cairo(
-      fontSize: 16, color: Colors.white, fontWeight: FontWeight.w700);
-
+    fontSize: 16,
+    color: Colors.white,
+    fontWeight: FontWeight.w700,
+    decoration: TextDecoration.none,
+  );
 
   static final ButtonStyle normalButton = ElevatedButton.styleFrom(
     backgroundColor: Colors.white,
@@ -90,16 +173,40 @@ class CustomStyle {
   );
 
   static final TextStyle normalButtonText = GoogleFonts.cairo(
-      fontSize: 20, color: redDark, fontWeight: FontWeight.w600);
+    fontSize: 20,
+    color: redDark,
+    fontWeight: FontWeight.w600,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle normalButtonTextMedium = GoogleFonts.cairo(
-      fontSize: 18, color: redDark, fontWeight: FontWeight.w500);
+    fontSize: 18,
+    color: redDark,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle normalButtonTextSmall = GoogleFonts.cairo(
-      fontSize: 16, color: redDark, fontWeight: FontWeight.w500);
+    fontSize: 16,
+    color: redDark,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
 
   static final TextStyle normalButtonTextWhite = GoogleFonts.cairo(
-      fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600);
+    fontSize: 20,
+    color: Colors.white,
+    fontWeight: FontWeight.w600,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle normalButtonTextMediumWhite = GoogleFonts.cairo(
-      fontSize: 18, color: Colors.white, fontWeight: FontWeight.w500);
+    fontSize: 18,
+    color: Colors.white,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
   static final TextStyle normalButtonTextSmallWhite = GoogleFonts.cairo(
-      fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500);
+    fontSize: 16,
+    color: Colors.white,
+    fontWeight: FontWeight.w500,
+    decoration: TextDecoration.none,
+  );
 }
