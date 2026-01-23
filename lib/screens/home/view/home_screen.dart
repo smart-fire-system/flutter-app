@@ -5,6 +5,7 @@ import 'package:fire_alarm_system/screens/home/view/add_phone_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/error_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/login_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/not_authorized_screen.dart';
+import 'package:fire_alarm_system/screens/home/view/update_needed_screen.dart';
 import 'package:fire_alarm_system/screens/notifications/view/notifications_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/signup_screen.dart';
 import 'package:fire_alarm_system/screens/home/view/welcome_screen.dart';
@@ -134,6 +135,16 @@ class HomeScreenState extends State<HomeScreen> {
     final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
+        if (state is HomeUpdateNeeded) {
+          _showAlert(
+            context: context,
+            message: state.message,
+            error: state.error,
+          );
+          state.error = null;
+          state.message = null;
+          return buildUpdateNeeded(context, state.appVersionData);
+        }
         if (state is HomeNotAuthenticated) {
           _showAlert(
             context: context,

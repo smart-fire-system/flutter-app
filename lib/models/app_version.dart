@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fire_alarm_system/utils/app_version.dart';
 
 class AppVersion {
@@ -41,7 +43,20 @@ class AppVersion {
   }
 }
 
+class AppVersionInfo {
+  final String updateMessageAr;
+  final String updateMessageEn;
+  final bool isAppAvailable;
+  AppVersionInfo({
+    required this.updateMessageAr,
+    required this.updateMessageEn,
+    required this.isAppAvailable,
+  });
+}
+
 class AppVersionData {
+  final AppVersionInfo androidInfo;
+  final AppVersionInfo iosInfo;
   final AppVersion currentAndroid = AppVersion.currentAndroid;
   final AppVersion latestAndroid;
   final AppVersion minimumAndroid;
@@ -49,6 +64,8 @@ class AppVersionData {
   final AppVersion latestIos;
   final AppVersion minimumIos;
   AppVersionData({
+    required this.androidInfo,
+    required this.iosInfo,
     required this.latestAndroid,
     required this.minimumAndroid,
     required this.latestIos,
@@ -72,4 +89,11 @@ class AppVersionData {
       minimumAndroid.isGreaterThan(currentAndroid);
   bool get isIosUpdateAvailable => latestIos.isGreaterThan(currentIos);
   bool get isIosUpdateRequired => minimumIos.isGreaterThan(currentIos);
+  bool get isUpdateRequired =>
+      (Platform.isAndroid &&
+          (isAndroidUpdateRequired || !androidInfo.isAppAvailable)) ||
+      (Platform.isIOS && (isIosUpdateRequired || !iosInfo.isAppAvailable));
+  bool get isUpdateAvailable =>
+      (isAndroidUpdateAvailable && Platform.isAndroid) ||
+      (isIosUpdateAvailable && Platform.isIOS);
 }

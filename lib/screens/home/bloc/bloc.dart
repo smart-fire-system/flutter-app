@@ -1,3 +1,4 @@
+import 'package:fire_alarm_system/models/app_version.dart';
 import 'package:fire_alarm_system/models/notification.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
@@ -14,11 +15,26 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   bool _openNotifications = false;
   bool _initialMessage = false;
   NotificationItem? _notificationReceived;
+  AppVersionData? _appVersionData;
 
   HomeBloc({required this.appRepository}) : super(HomeInitial()) {
     Future<HomeState> getHomeState({AppMessage? message, String? error}) async {
+      if (_appVersionData != null) {
+        if (_appVersionData!.isUpdateRequired) {
+          return HomeUpdateNeeded(
+            message: message,
+            error: error,
+            appVersionData: _appVersionData!,
+          );
+        }
+      } else {
+        return HomeLoading();
+      }
       if (appRepository.authStatus == AuthStatus.notAuthenticated) {
-        return HomeNotAuthenticated(message: message, error: error);
+        return HomeNotAuthenticated(
+            message: message,
+            error: error,
+            isUpdateAvailable: _appVersionData!.isUpdateAvailable);
       } else if (appRepository.userRole == null) {
         return HomeLoading();
       } else {
@@ -30,6 +46,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             user: appRepository.userRole,
             isEmailVerified:
                 appRepository.authStatus == AuthStatus.authenticated,
+            isUpdateAvailable: _appVersionData!.isUpdateAvailable,
             message: message,
             error: error,
           );
@@ -46,6 +63,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           _notificationReceived = null;
           return HomeAuthenticated(
             user: appRepository.userRole,
+            isUpdateAvailable: _appVersionData!.isUpdateAvailable,
             notifications: appRepository.notificationsRepository.notifications,
             openNotifications: openNotifications,
             notificationReceived: notificationReceived,
@@ -55,6 +73,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         }
       }
     }
+
+    appRepository.appVersionDataStream.listen((_) {
+      _appVersionData = appRepository.appVersionData;
+      add(AuthChanged(error: AuthChangeResult.noError));
+    });
 
     appRepository.notificationsStream.listen((_) {
       add(AuthChanged(error: AuthChangeResult.noError));

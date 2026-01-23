@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fire_alarm_system/models/app_version.dart';
 import 'package:fire_alarm_system/models/branch.dart';
 import 'package:fire_alarm_system/models/company.dart';
 import 'package:fire_alarm_system/models/permissions.dart';
@@ -12,6 +13,7 @@ import 'package:fire_alarm_system/repositories/system_repository.dart';
 import 'package:fire_alarm_system/repositories/user_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fire_alarm_system/utils/error_logger.dart';
 
 class AppRepository {
   final FirebaseFirestore _firestore;
@@ -21,6 +23,7 @@ class AppRepository {
   late final SystemRepository _systemRepository;
   late final ReportsRepository _reportsRepository;
   late final NotificationsRepository _notificationsRepository;
+  late final AppVersionData _appVersionData;
   AuthChangeResult _authChangeStatus = AuthChangeResult.generalError;
   BranchesAndCompanies _branchesAndCompanies =
       BranchesAndCompanies(branches: [], companies: []);
@@ -28,6 +31,7 @@ class AppRepository {
   final _usersController = StreamController<void>.broadcast();
   final _branchesAndCompaniesController = StreamController<void>.broadcast();
   final _notificationsController = StreamController<void>.broadcast();
+  final _appVersionDataController = StreamController<void>.broadcast();
 
   AppRepository() : _firestore = FirebaseFirestore.instance {
     _userRepository = UserRepository(appRepository: this);
@@ -109,6 +113,17 @@ class AppRepository {
       _notificationsRepository.refreshNotifications();
       _notificationsController.add(null);
     });
+    _firestore
+        .collection('info')
+        .doc('appVersion')
+        .snapshots()
+        .listen((snapshot) {
+      if (!snapshot.exists) {
+        return;
+      }
+      _updateAppVersionData(snapshot.data() as Map<String, dynamic>);
+      _appVersionDataController.add(null);
+    });
   }
 
   AuthStatus get authStatus => _authRepository.authStatus;
@@ -118,6 +133,7 @@ class AppRepository {
       _branchesAndCompaniesController.stream;
   Stream<void> get usersStream => _usersController.stream;
   Stream<void> get notificationsStream => _notificationsController.stream;
+  Stream<void> get appVersionDataStream => _appVersionDataController.stream;
   List<Branch> get branches => _branchesAndCompanies.branches;
   List<Company> get companies => _branchesAndCompanies.companies;
   UserInfo get userInfo => _authRepository.userRole.info as UserInfo;
@@ -132,6 +148,7 @@ class AppRepository {
   List<Employee> get employees => _users.employees;
   List<Client> get clients => _users.clients;
   List<NoRoleUser> get noRoleUsers => _users.noRoleUsers;
+  AppVersionData get appVersionData => _appVersionData;
 
   BranchRepository get branchRepository => _branchRepository;
   UserRepository get userRepository => _userRepository;
@@ -147,5 +164,50 @@ class AppRepository {
         userRole != null &&
         userRole is! NoRoleUser &&
         userRole.info.phoneNumber.isNotEmpty);
+  }
+
+  void _updateAppVersionData(Map<String, dynamic> data) {
+    try {
+      Map<String, dynamic> androidData = data['android'] ?? {};
+      Map<String, dynamic> iosData = data['ios'] ?? {};
+      _appVersionData = AppVersionData(
+        androidInfo: AppVersionInfo(
+          updateMessageAr: androidData['info']?['updateMessageAr'] ?? '',
+          updateMessageEn: androidData['info']?['updateMessageEn'] ?? '',
+          isAppAvailable: androidData['info']?['isAppAvailable'] ?? false,
+        ),
+        iosInfo: AppVersionInfo(
+          updateMessageAr: iosData['info']?['updateMessageAr'] ?? '',
+          updateMessageEn: iosData['info']?['updateMessageEn'] ?? '',
+          isAppAvailable: iosData['info']?['isAppAvailable'] ?? false,
+        ),
+        latestAndroid: AppVersion(
+          major: androidData['latest']?['major'] ?? 0,
+          minor: androidData['latest']?['minor'] ?? 0,
+          patch: androidData['latest']?['patch'] ?? 0,
+          buildNumber: androidData['latest']?['buildNumber'] ?? 0,
+        ),
+        minimumAndroid: AppVersion(
+          major: androidData['minimum']?['major'] ?? 0,
+          minor: androidData['minimum']?['minor'] ?? 0,
+          patch: androidData['minimum']?['patch'] ?? 0,
+          buildNumber: androidData['minimum']?['buildNumber'] ?? 0,
+        ),
+        latestIos: AppVersion(
+          major: iosData['latest']?['major'] ?? 0,
+          minor: iosData['latest']?['minor'] ?? 0,
+          patch: iosData['latest']?['patch'] ?? 0,
+          buildNumber: iosData['latest']?['buildNumber'] ?? 0,
+        ),
+        minimumIos: AppVersion(
+          major: iosData['minimum']?['major'] ?? 0,
+          minor: iosData['minimum']?['minor'] ?? 0,
+          patch: iosData['minimum']?['patch'] ?? 0,
+          buildNumber: iosData['minimum']?['buildNumber'] ?? 0,
+        ),
+      );
+    } catch (e) {
+      ErrorLogger.log(e, StackTrace.current, 'checkAppVersion');
+    }
   }
 }
