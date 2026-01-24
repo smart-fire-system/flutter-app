@@ -33,6 +33,20 @@ class AppRepository {
   final _notificationsController = StreamController<void>.broadcast();
   final _appVersionDataController = StreamController<void>.broadcast();
 
+  // Stream subscriptions for Firestore listeners
+  StreamSubscription? _branchesSubscription;
+  StreamSubscription? _companiesSubscription;
+  StreamSubscription? _usersSubscription;
+  StreamSubscription? _masterAdminsSubscription;
+  StreamSubscription? _adminsSubscription;
+  StreamSubscription? _companyManagersSubscription;
+  StreamSubscription? _branchManagersSubscription;
+  StreamSubscription? _employeesSubscription;
+  StreamSubscription? _clientsSubscription;
+  StreamSubscription? _notificationsSubscription;
+  StreamSubscription? _appVersionSubscription;
+  bool _wasUserLoggedIn = false;
+
   AppRepository() : _firestore = FirebaseFirestore.instance {
     _userRepository = UserRepository(appRepository: this);
     _authRepository = AuthRepository(appRepository: this);
@@ -41,8 +55,17 @@ class AppRepository {
     _reportsRepository = ReportsRepository(appRepository: this);
     _notificationsRepository = NotificationsRepository(appRepository: this);
     _authRepository.authStateChanges.listen((status) async {
+      final wasLoggedIn = _wasUserLoggedIn;
       _authChangeStatus = status;
-      if (isUserReady()) {
+
+      // Check if user just logged in (was logged out before and is now ready)
+      final isNowLoggedIn = isUserReady();
+
+      if (isNowLoggedIn) {
+        // If user just logged in (wasn't logged in before), reinitialize all streams
+        if (!wasLoggedIn) {
+          _reinitializeFirestoreListeners();
+        }
         _branchesAndCompanies = _branchRepository.getBranchesAndCompanies();
         _branchesAndCompaniesController.add(null);
         _users = _userRepository.getAllUsers();
@@ -50,70 +73,90 @@ class AppRepository {
         _notificationsRepository.updateUserTopics();
         _notificationsRepository.refreshNotifications();
         _notificationsController.add(null);
+      } else if (wasLoggedIn && !isNowLoggedIn) {
+        // User just logged out - clear the snapshots
+        _clearSnapshots();
       }
+
+      _wasUserLoggedIn = isNowLoggedIn;
     }, onError: (error) {});
 
-    _firestore.collection('branches').snapshots().listen((snapshot) {
+    // Initialize Firestore listeners
+    _initializeFirestoreListeners();
+  }
+
+  void _initializeFirestoreListeners() {
+    _branchesSubscription =
+        _firestore.collection('branches').snapshots().listen((snapshot) {
       _branchRepository.branchesSnapshot = snapshot;
       _branchesAndCompanies = _branchRepository.getBranchesAndCompanies();
       _branchesAndCompaniesController.add(null);
       _authRepository.refreshUserAuth();
     });
-    _firestore.collection('companies').snapshots().listen((snapshot) {
+    _companiesSubscription =
+        _firestore.collection('companies').snapshots().listen((snapshot) {
       _branchRepository.companiesSnapshot = snapshot;
       _branchesAndCompanies = _branchRepository.getBranchesAndCompanies();
       _branchesAndCompaniesController.add(null);
       _authRepository.refreshUserAuth();
     });
-    _firestore.collection('users').snapshots().listen((snapshot) {
+    _usersSubscription =
+        _firestore.collection('users').snapshots().listen((snapshot) {
       _userRepository.usersSnapshot = snapshot;
       _users = _userRepository.getAllUsers();
       _usersController.add(null);
       _authRepository.refreshUserAuth();
     });
-    _firestore.collection('masterAdmins').snapshots().listen((snapshot) {
+    _masterAdminsSubscription =
+        _firestore.collection('masterAdmins').snapshots().listen((snapshot) {
       _userRepository.masterAdminsSnapshot = snapshot;
       _users = _userRepository.getAllUsers();
       _usersController.add(null);
       _authRepository.refreshUserAuth();
     });
-    _firestore.collection('admins').snapshots().listen((snapshot) {
+    _adminsSubscription =
+        _firestore.collection('admins').snapshots().listen((snapshot) {
       _userRepository.adminsSnapshot = snapshot;
       _users = _userRepository.getAllUsers();
       _usersController.add(null);
       _authRepository.refreshUserAuth();
     });
-    _firestore.collection('companyManagers').snapshots().listen((snapshot) {
+    _companyManagersSubscription =
+        _firestore.collection('companyManagers').snapshots().listen((snapshot) {
       _userRepository.companyManagersSnapshot = snapshot;
       _users = _userRepository.getAllUsers();
       _usersController.add(null);
       _authRepository.refreshUserAuth();
     });
-    _firestore.collection('branchManagers').snapshots().listen((snapshot) {
+    _branchManagersSubscription =
+        _firestore.collection('branchManagers').snapshots().listen((snapshot) {
       _userRepository.branchManagersSnapshot = snapshot;
       _users = _userRepository.getAllUsers();
       _usersController.add(null);
       _authRepository.refreshUserAuth();
     });
-    _firestore.collection('employees').snapshots().listen((snapshot) {
+    _employeesSubscription =
+        _firestore.collection('employees').snapshots().listen((snapshot) {
       _userRepository.employeesSnapshot = snapshot;
       _users = _userRepository.getAllUsers();
       _usersController.add(null);
       _authRepository.refreshUserAuth();
     });
-    _firestore.collection('clients').snapshots().listen((snapshot) {
+    _clientsSubscription =
+        _firestore.collection('clients').snapshots().listen((snapshot) {
       _userRepository.clientsSnapshot = snapshot;
       _users = _userRepository.getAllUsers();
       _usersController.add(null);
       _authRepository.refreshUserAuth();
     });
-    _firestore.collection('notifications').snapshots().listen((snapshot) {
+    _notificationsSubscription =
+        _firestore.collection('notifications').snapshots().listen((snapshot) {
       _notificationsRepository.notificationsSnapshot = snapshot;
       _notificationsRepository.updateUserTopics();
       _notificationsRepository.refreshNotifications();
       _notificationsController.add(null);
     });
-    _firestore
+    _appVersionSubscription = _firestore
         .collection('info')
         .doc('appVersion')
         .snapshots()
@@ -124,6 +167,43 @@ class AppRepository {
       _updateAppVersionData(snapshot.data() as Map<String, dynamic>);
       _appVersionDataController.add(null);
     });
+  }
+
+  void _cancelAllSubscriptions() {
+    _branchesSubscription?.cancel();
+    _companiesSubscription?.cancel();
+    _usersSubscription?.cancel();
+    _masterAdminsSubscription?.cancel();
+    _adminsSubscription?.cancel();
+    _companyManagersSubscription?.cancel();
+    _branchManagersSubscription?.cancel();
+    _employeesSubscription?.cancel();
+    _clientsSubscription?.cancel();
+    _notificationsSubscription?.cancel();
+    _appVersionSubscription?.cancel();
+  }
+
+  void _reinitializeFirestoreListeners() {
+    _cancelAllSubscriptions();
+    _initializeFirestoreListeners();
+  }
+
+  void _clearSnapshots() {
+    _branchRepository.branchesSnapshot = null;
+    _branchRepository.companiesSnapshot = null;
+    _userRepository.usersSnapshot = null;
+    _userRepository.masterAdminsSnapshot = null;
+    _userRepository.adminsSnapshot = null;
+    _userRepository.companyManagersSnapshot = null;
+    _userRepository.branchManagersSnapshot = null;
+    _userRepository.employeesSnapshot = null;
+    _userRepository.clientsSnapshot = null;
+    _notificationsRepository.notificationsSnapshot = null;
+    _branchesAndCompanies = BranchesAndCompanies(branches: [], companies: []);
+    _users = Users();
+    _branchesAndCompaniesController.add(null);
+    _usersController.add(null);
+    _notificationsController.add(null);
   }
 
   AuthStatus get authStatus => _authRepository.authStatus;
