@@ -18,7 +18,7 @@ class Subscriptions {
   StreamSubscription? employees;
   StreamSubscription? clients;
   StreamSubscription? notifications;
-  StreamSubscription? appVersion;
+  StreamSubscription? infoCollection;
   Subscriptions();
 }
 
@@ -45,11 +45,10 @@ class StreamsRepository {
         cancelAllStreams();
       }
       _wasUserLoggedIn = isNowLoggedIn;
-      if (isNowLoggedIn) {
-        startAllStreams();
-      } else {
+      if (!isNowLoggedIn) {
         _clearSnapshots();
       }
+      startAllStreams(isLoggedIn: false);
       _updateAllDataStartingWith(UserRepository);
     }, onError: (error) {});
   }
@@ -84,7 +83,6 @@ class StreamsRepository {
     appRepository.userRepository.employeesSnapshot = null;
     appRepository.userRepository.clientsSnapshot = null;
     appRepository.notificationsRepository.notificationsSnapshot = null;
-    appRepository.infoCollectionSnapshot = null;
     controllers.users.add(null);
     controllers.notifications.add(null);
     controllers.infoCollection.add(null);
@@ -106,10 +104,17 @@ class StreamsRepository {
     subscriptions.employees?.cancel();
     subscriptions.clients?.cancel();
     subscriptions.notifications?.cancel();
-    subscriptions.appVersion?.cancel();
   }
 
-  void startAllStreams() {
+  void startAllStreams({isLoggedIn = true}) {
+    if (!isLoggedIn) {
+      subscriptions.infoCollection ??=
+          _firestore.collection('info').snapshots().listen((snapshot) {
+        appRepository.infoCollectionSnapshot = snapshot;
+        _updateAllDataStartingWith(AppVersionData);
+      });
+      return;
+    }
     subscriptions.branches =
         _firestore.collection('branches').snapshots().listen((snapshot) {
       appRepository.branchRepository.branchesSnapshot = snapshot;
@@ -159,11 +164,6 @@ class StreamsRepository {
         _firestore.collection('notifications').snapshots().listen((snapshot) {
       appRepository.notificationsRepository.notificationsSnapshot = snapshot;
       _updateAllDataStartingWith(NotificationsRepository);
-    });
-    subscriptions.appVersion =
-        _firestore.collection('info').snapshots().listen((snapshot) {
-      appRepository.infoCollectionSnapshot = snapshot;
-      _updateAllDataStartingWith(AppVersionData);
     });
   }
 }

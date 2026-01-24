@@ -72,29 +72,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     }
 
-    appRepository.appStream.listen((_) {
-      add(AuthChanged(error: AuthChangeResult.noError));
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      _openNotifications = true;
-      add(AuthChanged(error: AuthChangeResult.noError));
-    });
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      _notificationReceived = NotificationItem(
-        id: message.messageId ?? '',
-        enTitle: message.notification?.title ?? '',
-        enBody: message.notification?.body ?? '',
-        arTitle: message.notification?.title ?? '',
-        arBody: message.notification?.body ?? '',
-        topics: [],
-        data: message.data,
-        createdAt: null,
-      );
-      add(AuthChanged(error: AuthChangeResult.noError));
-    });
-
     on<AuthChanged>((event, emit) async {
       if (event.error == AuthChangeResult.noError) {
         emit(await getHomeState());
@@ -186,6 +163,33 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       } catch (error) {
         emit(await getHomeState(error: error.toString()));
       }
+    });
+
+    if (appRepository.lastAppError != null) {
+      add(AuthChanged(error: AuthChangeResult.noError));
+    }
+
+    appRepository.appStream.listen((_) {
+      add(AuthChanged(error: AuthChangeResult.noError));
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _openNotifications = true;
+      add(AuthChanged(error: AuthChangeResult.noError));
+    });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      _notificationReceived = NotificationItem(
+        id: message.messageId ?? '',
+        enTitle: message.notification?.title ?? '',
+        enBody: message.notification?.body ?? '',
+        arTitle: message.notification?.title ?? '',
+        arBody: message.notification?.body ?? '',
+        topics: [],
+        data: message.data,
+        createdAt: null,
+      );
+      add(AuthChanged(error: AuthChangeResult.noError));
     });
   }
 }

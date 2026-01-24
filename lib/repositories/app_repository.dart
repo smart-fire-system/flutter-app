@@ -31,6 +31,8 @@ class AppRepository {
   late final NotificationsRepository _notificationsRepository;
   late final StreamsRepository _streamsRepository;
   QuerySnapshot? infoCollectionSnapshot;
+  AppError? _lastAppError;
+
   final _appStreamDataController = StreamController<AppError>.broadcast();
   InfoCollection? _infoCollection;
 
@@ -42,13 +44,17 @@ class AppRepository {
     _reportsRepository = ReportsRepository(appRepository: this);
     _notificationsRepository = NotificationsRepository(appRepository: this);
     _streamsRepository = StreamsRepository(appRepository: this);
+
     _streamsRepository.controllers.users.stream.listen((_) {
+      _lastAppError = AppError.noError;
       _appStreamDataController.add(AppError.noError);
     });
     _streamsRepository.controllers.notifications.stream.listen((_) {
+      _lastAppError = AppError.noError;
       _appStreamDataController.add(AppError.noError);
     });
     _streamsRepository.controllers.infoCollection.stream.listen((_) {
+      _lastAppError = AppError.noError;
       _appStreamDataController.add(AppError.noError);
     });
   }
@@ -80,6 +86,7 @@ class AppRepository {
   ReportsRepository get reportsRepository => _reportsRepository;
   NotificationsRepository get notificationsRepository =>
       _notificationsRepository;
+  AppError? get lastAppError => _lastAppError;
 
   bool isUserReady() {
     return (_authRepository.authChangeStatus == AuthChangeResult.noError &&
