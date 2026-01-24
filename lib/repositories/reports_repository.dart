@@ -13,12 +13,11 @@ import 'package:fire_alarm_system/models/emergency_visit.dart';
 class ReportsRepository {
   final FirebaseFirestore _firestore;
   final AppRepository appRepository;
-  final _refreshController = StreamController<void>.broadcast();
-  QuerySnapshot? _contractsSnapshot;
-  QuerySnapshot? _signaturesSnapshot;
-  QuerySnapshot? _visitReportsSnapshot;
-  QuerySnapshot? _reportsMetaDataSnapshot;
-  QuerySnapshot? _emergencyVisitsSnapshot;
+  QuerySnapshot? contractsSnapshot;
+  QuerySnapshot? signaturesSnapshot;
+  QuerySnapshot? visitReportsSnapshot;
+  QuerySnapshot? reportsMetaDataSnapshot;
+  QuerySnapshot? emergencyVisitsSnapshot;
   List<ContractComponent>? _contractComponents;
   List<ContractCategory>? _contractCategories;
   List<ContractData>? _contracts;
@@ -27,51 +26,21 @@ class ReportsRepository {
   List<EmergencyVisitData> _emergencyVisits = [];
 
   ReportsRepository({required this.appRepository})
-      : _firestore = FirebaseFirestore.instance {
-    _refresh();
-
-    appRepository.appStream.listen((status) {
-      _refresh();
-    });
-
-    _firestore.collection('reportsMetaData').snapshots().listen((snapshot) {
-      _reportsMetaDataSnapshot = snapshot;
-      _contractCategories = [];
-      _contractComponents = [];
-      _refresh();
-    });
-
-    _firestore.collection('contracts').snapshots().listen((snapshot) {
-      _contractsSnapshot = snapshot;
-      _contracts = [];
-      _refresh();
-    });
-
-    _firestore.collection('visitReports').snapshots().listen((snapshot) {
-      _visitReportsSnapshot = snapshot;
-      _visitReports = [];
-      _refresh();
-    });
-
-    _firestore.collection('signatures').snapshots().listen((snapshot) {
-      _signaturesSnapshot = snapshot;
-      _signatures = [];
-      _refresh();
-    });
-
-    _firestore.collection('emergencyVisits').snapshots().listen((snapshot) {
-      _emergencyVisitsSnapshot = snapshot;
-      _emergencyVisits = [];
-      _refresh();
-    });
-  }
+      : _firestore = FirebaseFirestore.instance;
 
   List<ContractComponent>? get contractComponents => _contractComponents;
   List<ContractCategory>? get contractCategories => _contractCategories;
   List<ContractData>? get contracts => _contracts;
   List<VisitReportData>? get visitReports => _visitReports;
   List<EmergencyVisitData>? get emergencyVisits => _emergencyVisits;
-  Stream<void> get refreshStream => _refreshController.stream;
+
+  void refresh() {
+    _getMetaData();
+    _getSignatures();
+    _getContracts();
+    _getVisitReports();
+    _getEmergencyVisits();
+  }
 
   Future<void> saveContractComponents(
       List<ContractComponent> components) async {
@@ -448,22 +417,13 @@ class ReportsRepository {
     return signedVisitReport;
   }
 
-  void _refresh() {
-    _getMetaData();
-    _getSignatures();
-    _getContracts();
-    _getVisitReports();
-    _getEmergencyVisits();
-    _refreshController.add(null);
-  }
-
   void _getMetaData() {
-    if (_reportsMetaDataSnapshot == null) {
+    if (reportsMetaDataSnapshot == null) {
       _contractCategories = [];
       _contractComponents = [];
       return;
     }
-    final contractComponentsData = _reportsMetaDataSnapshot?.docs
+    final contractComponentsData = reportsMetaDataSnapshot?.docs
         .firstWhere((doc) => doc.id == 'contractComponents')
         .data() as Map<String, dynamic>;
     _contractComponents = List.from(contractComponentsData['items'] ?? [])
@@ -477,7 +437,7 @@ class ReportsRepository {
             ))
         .toList();
 
-    final contractCategoriesData = _reportsMetaDataSnapshot?.docs
+    final contractCategoriesData = reportsMetaDataSnapshot?.docs
         .firstWhere((doc) => doc.id == 'contractComponentCategories')
         .data() as Map<String, dynamic>;
     _contractCategories = List.from(contractCategoriesData['categories'] ?? [])
@@ -492,11 +452,11 @@ class ReportsRepository {
   }
 
   void _getSignatures() {
-    if (_signaturesSnapshot == null) {
+    if (signaturesSnapshot == null) {
       _signatures = [];
       return;
     }
-    _signatures = _signaturesSnapshot!.docs.map((doc) {
+    _signatures = signaturesSnapshot!.docs.map((doc) {
       final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       SignatureData signature = SignatureData.fromJson(data);
       signature.id = doc.id;
@@ -511,11 +471,11 @@ class ReportsRepository {
   }
 
   void _getContracts() {
-    if (_contractsSnapshot == null) {
+    if (contractsSnapshot == null) {
       _contracts = [];
       return;
     }
-    _contracts = _contractsSnapshot!.docs.map((doc) {
+    _contracts = contractsSnapshot!.docs.map((doc) {
       final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       final contract = ContractData.fromJson(data);
       try {
@@ -555,11 +515,11 @@ class ReportsRepository {
   }
 
   void _getVisitReports() {
-    if (_visitReportsSnapshot == null) {
+    if (visitReportsSnapshot == null) {
       _visitReports = [];
       return;
     }
-    _visitReports = _visitReportsSnapshot!.docs
+    _visitReports = visitReportsSnapshot!.docs
         .map((doc) {
           final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           final visitReport = VisitReportData.fromJson(data);
@@ -591,11 +551,11 @@ class ReportsRepository {
   }
 
   void _getEmergencyVisits() {
-    if (_emergencyVisitsSnapshot == null) {
+    if (emergencyVisitsSnapshot == null) {
       _emergencyVisits = [];
       return;
     }
-    _emergencyVisits = _emergencyVisitsSnapshot!.docs
+    _emergencyVisits = emergencyVisitsSnapshot!.docs
         .map((doc) {
           final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
           final emergencyVisit = EmergencyVisitData.fromMap(data);
@@ -637,7 +597,7 @@ class ReportsRepository {
         final contractRef = contracts.doc(contractId);
 
         final existingReports = <DocumentSnapshot>[];
-        for (final ref in _visitReportsSnapshot!.docs) {
+        for (final ref in visitReportsSnapshot!.docs) {
           if ((ref.data()! as Map<String, dynamic>)['contractId']?.toString() ==
               contractId) {
             existingReports.add(ref);

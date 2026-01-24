@@ -34,7 +34,7 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     });
     add(Refresh());
 
-    appRepository.reportsRepository.refreshStream.listen((_) {
+    appRepository.appStream.listen((_) {
       add(Refresh());
     }, onError: (error) {
       add(Refresh(error: error.toString()));

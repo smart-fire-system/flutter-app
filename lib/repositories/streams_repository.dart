@@ -6,12 +6,12 @@ import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-
 class StreamsRepository {
   final FirebaseFirestore _firestore;
   final AppRepository _appRepository;
   StreamSubscription? combinedUsersBranchesSubscription;
   StreamSubscription? infoCollectionSubscription;
+  StreamSubscription? combinedReportsSubscription;
   final StreamController<AppError> _appStream =
       StreamController<AppError>.broadcast();
   bool _wasUserLoggedIn = false;
@@ -49,7 +49,15 @@ class StreamsRepository {
       _updateAllData();
     });
     if (isLoggedIn) {
-      await _subscribeToUsersAndBranches();
+      if (_isSubscriptionNeeded()) {
+        await combinedReportsSubscription?.cancel();
+        await combinedUsersBranchesSubscription?.cancel();
+        combinedReportsSubscription = null;
+        combinedUsersBranchesSubscription = null;
+        _subscribeToUsersAndBranches();
+        _subscribeToReports();
+        _subscribedUser = _appRepository.userRole;
+      }
     }
   }
 
@@ -61,6 +69,7 @@ class StreamsRepository {
   void _updateAllData() {
     _appRepository.branchRepository.updateBranchesAndCompanies();
     _appRepository.userRepository.getAllUsers();
+    _appRepository.reportsRepository.refresh();
     _addStreamEvent(AppError.noError);
   }
 
@@ -74,12 +83,18 @@ class StreamsRepository {
     _appRepository.userRepository.branchManagersSnapshot = null;
     _appRepository.userRepository.employeesSnapshot = null;
     _appRepository.userRepository.clientsSnapshot = null;
+    _appRepository.reportsRepository.reportsMetaDataSnapshot = null;
+    _appRepository.reportsRepository.contractsSnapshot = null;
+    _appRepository.reportsRepository.visitReportsSnapshot = null;
+    _appRepository.reportsRepository.signaturesSnapshot = null;
+    _appRepository.reportsRepository.emergencyVisitsSnapshot = null;
     _addStreamEvent(AppError.noError);
   }
 
   bool _isSubscriptionNeeded() {
     final userRole = _appRepository.userRole;
-    if (combinedUsersBranchesSubscription == null) {
+    if (combinedUsersBranchesSubscription == null ||
+        combinedReportsSubscription == null) {
       return true;
     }
     if (_subscribedUser?.runtimeType == userRole?.runtimeType) {
@@ -102,10 +117,7 @@ class StreamsRepository {
     return true;
   }
 
-  Future<void> _subscribeToUsersAndBranches() async {
-    if (!_isSubscriptionNeeded()) {
-      return;
-    }
+  void _subscribeToUsersAndBranches() {
     Query<Map<String, dynamic>> branchesQuery =
         _firestore.collection('branches').orderBy('code');
     Query<Map<String, dynamic>> companiesQuery =
@@ -122,9 +134,6 @@ class StreamsRepository {
     Query<Map<String, dynamic>> employeesQuery =
         _firestore.collection('employees');
     Query<Map<String, dynamic>> clientsQuery = _firestore.collection('clients');
-
-    await combinedUsersBranchesSubscription?.cancel();
-    combinedUsersBranchesSubscription = null;
 
     if (_appRepository.userRole is MasterAdmin ||
         _appRepository.userRole is Admin) {
@@ -230,6 +239,92 @@ class StreamsRepository {
     }, onError: (_) {
       _addStreamEvent(AppError.networkError);
     });
-    _subscribedUser = _appRepository.userRole;
+  }
+
+  void _subscribeToReports() {
+    Query<Map<String, dynamic>> reportsMetaDataQuery =
+        _firestore.collection('reportsMetaData');
+    Query<Map<String, dynamic>> contractsQuery =
+        _firestore.collection('contracts');
+    Query<Map<String, dynamic>> visitReportsQuery =
+        _firestore.collection('visitReports');
+    Query<Map<String, dynamic>> signaturesQuery =
+        _firestore.collection('signatures');
+    Query<Map<String, dynamic>> emergencyVisitsQuery =
+        _firestore.collection('emergencyVisits');
+
+    if (_appRepository.userRole is MasterAdmin ||
+        _appRepository.userRole is Admin) {
+      /* Do Nothing */
+    } else if (_appRepository.userRole is CompanyManager) {
+      final companyId = _appRepository.userRole.company.id;
+      contractsQuery = contractsQuery.where('companyId', isEqualTo: companyId);
+      visitReportsQuery =
+          visitReportsQuery.where('companyId', isEqualTo: companyId);
+      signaturesQuery =
+          signaturesQuery.where('companyId', isEqualTo: companyId);
+      emergencyVisitsQuery =
+          emergencyVisitsQuery.where('companyId', isEqualTo: companyId);
+    } else if (_appRepository.userRole is BranchManager ||
+        _appRepository.userRole is Employee ||
+        _appRepository.userRole is Client) {
+      final branchId = _appRepository.userRole.branch.id;
+      contractsQuery = contractsQuery.where('branchId', isEqualTo: branchId);
+      visitReportsQuery =
+          visitReportsQuery.where('branchId', isEqualTo: branchId);
+      signaturesQuery = signaturesQuery.where('branchId', isEqualTo: branchId);
+      emergencyVisitsQuery =
+          emergencyVisitsQuery.where('branchId', isEqualTo: branchId);
+    } else {
+      return;
+    }
+
+    final reportsMetaData$ = reportsMetaDataQuery.snapshots();
+    final contracts$ = contractsQuery.snapshots();
+    final visitReports$ = visitReportsQuery.snapshots();
+    final signatures$ = signaturesQuery.snapshots();
+    final emergencyVisits$ = emergencyVisitsQuery.snapshots();
+
+    combinedReportsSubscription = Rx.combineLatest5(
+      reportsMetaData$,
+      contracts$,
+      visitReports$,
+      signatures$,
+      emergencyVisits$,
+      (
+        QuerySnapshot reportsMetaDataSnapshot,
+        QuerySnapshot contractsSnapshot,
+        QuerySnapshot visitReportsSnapshot,
+        QuerySnapshot signaturesSnapshot,
+        QuerySnapshot emergencyVisitsSnapshot,
+      ) {
+        return (
+          reportsMetaDataSnapshot,
+          contractsSnapshot,
+          visitReportsSnapshot,
+          signaturesSnapshot,
+          emergencyVisitsSnapshot
+        ); // Dart record
+      },
+    ).listen((all) {
+      final (
+        reportsMetaDataSnapshot,
+        contractsSnapshot,
+        visitReportsSnapshot,
+        signaturesSnapshot,
+        emergencyVisitsSnapshot
+      ) = all;
+      _appRepository.reportsRepository.reportsMetaDataSnapshot =
+          reportsMetaDataSnapshot;
+      _appRepository.reportsRepository.contractsSnapshot = contractsSnapshot;
+      _appRepository.reportsRepository.visitReportsSnapshot =
+          visitReportsSnapshot;
+      _appRepository.reportsRepository.signaturesSnapshot = signaturesSnapshot;
+      _appRepository.reportsRepository.emergencyVisitsSnapshot =
+          emergencyVisitsSnapshot;
+      _updateAllData();
+    }, onError: (_) {
+      _addStreamEvent(AppError.networkError);
+    });
   }
 }
