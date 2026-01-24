@@ -8,10 +8,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
   NotificationsBloc({required this.appRepository})
       : super(NotificationsInitial()) {
-    appRepository.authStateStream.listen((status) {
-      add(Refresh());
-    });
-    appRepository.notificationsStream.listen((_) {
+    appRepository.appStream.listen((status) {
       add(Refresh());
     });
     on<Refresh>((event, emit) async {

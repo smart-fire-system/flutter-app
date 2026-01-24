@@ -108,19 +108,7 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
 
     add(Refresh());
 
-    appRepository.authStateStream.listen((data) {
-      add(Refresh());
-    }, onError: (error) {
-      add(Refresh(error: error.toString()));
-    });
-
-    appRepository.branchesAndCompaniesStream.listen((_) {
-      add(Refresh());
-    }, onError: (error) {
-      add(Refresh(error: error.toString()));
-    });
-
-    appRepository.usersStream.listen((_) {
+    appRepository.appStream.listen((data) {
       add(Refresh());
     }, onError: (error) {
       add(Refresh(error: error.toString()));

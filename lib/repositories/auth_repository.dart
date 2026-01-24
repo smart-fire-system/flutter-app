@@ -29,25 +29,25 @@ class AuthRepository {
   final AppRepository appRepository;
   String? googleUserName;
   String? googleUserEmail;
-  final _authStateChangesController =
-      StreamController<AuthChangeResult>.broadcast();
+  final _authStateChangesController = StreamController<void>.broadcast();
+  AuthChangeResult _authChangeStatus = AuthChangeResult.generalError;
 
   AuthRepository({required this.appRepository})
       : _firebaseAuth = firebase.FirebaseAuth.instance,
         _firestore = FirebaseFirestore.instance,
         _userAuth = UserAuth(authStatus: AuthStatus.notAuthenticated) {
     _firebaseAuth.authStateChanges().listen((_) async {
-      final result = await _handleAuthStateChanged();
-      _authStateChangesController.add(result);
+      _authChangeStatus = await _handleAuthStateChanged();
+      _authStateChangesController.add(null);
     });
   }
 
   AuthStatus get authStatus => _userAuth.authStatus;
+  AuthChangeResult get authChangeStatus => _authChangeStatus;
   UserInfo get userInfo => _userAuth.userRole.info as UserInfo;
   dynamic get userRole => _userAuth.userRole;
   firebase.User? get firebaseUser => _firebaseAuth.currentUser;
-  Stream<AuthChangeResult> get authStateChanges =>
-      _authStateChangesController.stream;
+  Stream<void> get authStateChanges => _authStateChangesController.stream;
 
   Future<AuthChangeResult> _handleAuthStateChanged() async {
     final firebaseUser = _firebaseAuth.currentUser;
@@ -75,15 +75,14 @@ class AuthRepository {
   }
 
   Future<void> refreshUserAuth() async {
-    AuthChangeResult result = AuthChangeResult.noError;
     try {
       await _firebaseAuth.currentUser?.reload();
-      result = await _handleAuthStateChanged();
+      _authChangeStatus = await _handleAuthStateChanged();
     } catch (_) {
       _setUserNotAuthenticated();
-      result = AuthChangeResult.networkError;
+      _authChangeStatus = AuthChangeResult.networkError;
     }
-    _authStateChangesController.add(result);
+    _authStateChangesController.add(null);
   }
 
   Future<void> signOut() async {

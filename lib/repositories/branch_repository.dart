@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
-import 'package:fire_alarm_system/repositories/auth_repository.dart';
 import 'package:fire_alarm_system/utils/image_compress.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:typed_data';
@@ -21,61 +20,19 @@ class BranchRepository {
   final AppRepository appRepository;
   QuerySnapshot? branchesSnapshot;
   QuerySnapshot? companiesSnapshot;
+  List<Branch> branches = [];
+  List<Company> companies = [];
   BranchRepository({required this.appRepository})
       : _firestore = FirebaseFirestore.instance,
         _storage = FirebaseStorage.instance;
 
-  Future<Map<String, List<dynamic>>> getUserBranchesAndCompanies(
-      AuthRepository authRepository) async {
-    try {
-      List<Company> companies = [];
-      List<Branch> branches = [];
-      if (authRepository.userRole is MasterAdmin ||
-          authRepository.userRole is Admin) {
-        QuerySnapshot branchesSnapshot =
-            await _firestore.collection('branches').orderBy('name').get();
-        QuerySnapshot companiesSnapshot =
-            await _firestore.collection('companies').orderBy('name').get();
-        for (var doc in companiesSnapshot.docs) {
-          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          companies.add(Company.fromMap(data, doc.id));
-        }
-        for (var doc in branchesSnapshot.docs) {
-          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          branches.add(
-            Branch.fromMap(
-              map: data,
-              branchId: doc.id,
-              companies: companies,
-            ),
-          );
-        }
-      } else if (authRepository.userRole is CompanyManager) {
-        branches = List.from(authRepository.userRole.branches);
-        companies = [authRepository.userRole.company];
-      } else if (authRepository.userRole is BranchManager ||
-          authRepository.userRole is Employee ||
-          authRepository.userRole is Client) {
-        branches = [authRepository.userRole.branch];
-        companies = [authRepository.userRole.branch.company];
-      }
-      return {'branches': branches, 'companies': companies};
-    } catch (e) {
-      if (e is FirebaseException) {
-        throw Exception(e.code);
-      } else {
-        throw Exception(e.toString());
-      }
-    }
-  }
-
-  BranchesAndCompanies getBranchesAndCompanies() {
+  void updateBranchesAndCompanies() {
+    companies = [];
+    branches = [];
     try {
       if (companiesSnapshot == null || branchesSnapshot == null) {
-        return BranchesAndCompanies(branches: [], companies: []);
+        return;
       }
-      List<Company> companies = [];
-      List<Branch> branches = [];
       for (var doc in companiesSnapshot!.docs) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         Company company = Company.fromMap(data, doc.id);
@@ -145,103 +102,15 @@ class BranchRepository {
           branches.add(branch);
         }
       }
-      return BranchesAndCompanies(branches: branches, companies: companies);
     } catch (e) {
       throw Exception(e.toString());
-    }
-  }
-
-  Future<Map<String, List<dynamic>>> getAllBranchesAndCompanies() async {
-    try {
-      List<Company> companies = [];
-      List<Branch> branches = [];
-      QuerySnapshot branchesSnapshot =
-          await _firestore.collection('branches').orderBy('name').get();
-      QuerySnapshot companiesSnapshot =
-          await _firestore.collection('companies').orderBy('name').get();
-      for (var doc in companiesSnapshot.docs) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        Company company = Company.fromMap(data, doc.id);
-        bool canView = false;
-        dynamic user = appRepository.userRole;
-        switch (user) {
-          case MasterAdmin():
-          case Admin():
-            canView = true;
-            break;
-          case CompanyManager():
-            canView = user.company.id == company.id;
-            break;
-          case BranchManager():
-            canView = user.branch.company.id == company.id;
-            break;
-          case Employee():
-            canView = user.branch.company.id == company.id;
-            break;
-          case Client():
-            canView = user.branch.company.id == company.id;
-            break;
-          default:
-            canView = false;
-            break;
-        }
-        if (canView) {
-          companies.add(company);
-        }
-      }
-      for (var doc in branchesSnapshot.docs) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        Branch branch;
-        try {
-          branch = Branch.fromMap(
-            map: data,
-            branchId: doc.id,
-            companies: companies,
-          );
-        } catch (e) {
-          continue;
-        }
-        bool canView = false;
-        dynamic user = appRepository.userRole;
-        switch (user) {
-          case MasterAdmin():
-          case Admin():
-            canView = true;
-            break;
-          case CompanyManager():
-            canView = user.company.id == branch.company.id;
-            break;
-          case BranchManager():
-            canView = user.branch.id == branch.id;
-            break;
-          case Employee():
-            canView = user.branch.id == branch.id;
-            break;
-          case Client():
-            canView = user.branch.id == branch.id;
-            break;
-          default:
-            canView = false;
-            break;
-        }
-        if (canView) {
-          branches.add(branch);
-        }
-      }
-      return {'branches': branches, 'companies': companies};
-    } catch (e) {
-      if (e is FirebaseException) {
-        throw Exception(e.code);
-      } else {
-        throw Exception(e.toString());
-      }
     }
   }
 
   Future<Map<String, dynamic>?> getCompanyAndBranches(String companyId) async {
     try {
       Company company;
-      List<Branch> branches = [];
+      List<Branch> companyBranches = [];
       DocumentSnapshot companySnapshot =
           await _firestore.collection('companies').doc(companyId).get();
       if (!companySnapshot.exists) {
@@ -251,12 +120,12 @@ class BranchRepository {
         companySnapshot.data() as Map<String, dynamic>,
         companySnapshot.id,
       );
-      QuerySnapshot branchesSnapshot = await _firestore
+      QuerySnapshot companyBranchesSnapshot = await _firestore
           .collection('branches')
           .orderBy('name')
           .where('company', isEqualTo: companyId)
           .get();
-      for (var doc in branchesSnapshot.docs) {
+      for (var doc in companyBranchesSnapshot.docs) {
         Branch branch;
         try {
           branch = Branch.fromMap(
@@ -291,10 +160,10 @@ class BranchRepository {
             break;
         }
         if (canView) {
-          branches.add(branch);
+          companyBranches.add(branch);
         }
       }
-      return {'branches': branches, 'company': company};
+      return {'branches': companyBranches, 'company': company};
     } catch (e) {
       if (e is FirebaseException) {
         throw Exception(e.code);
@@ -330,51 +199,6 @@ class BranchRepository {
           companyDocument.id,
         ),
       );
-    } catch (e) {
-      if (e is FirebaseException) {
-        throw Exception(e.code);
-      } else {
-        throw Exception(e.toString());
-      }
-    }
-  }
-
-  Future<List<Company>> getCompaniesList() async {
-    try {
-      List<Company> companies = [];
-      QuerySnapshot companiesSnapshot =
-          await _firestore.collection('companies').orderBy('name').get();
-      for (var doc in companiesSnapshot.docs) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        Company company = Company.fromMap(data, doc.id);
-        bool canView = false;
-        dynamic user = appRepository.userRole;
-        switch (user) {
-          case MasterAdmin():
-          case Admin():
-            canView = true;
-            break;
-          case CompanyManager():
-            canView = user.company.id == company.id;
-            break;
-          case BranchManager():
-            canView = user.branch.company.id == company.id;
-            break;
-          case Employee():
-            canView = user.branch.company.id == company.id;
-            break;
-          case Client():
-            canView = user.branch.company.id == company.id;
-            break;
-          default:
-            canView = false;
-            break;
-        }
-        if (canView) {
-          companies.add(company);
-        }
-      }
-      return companies;
     } catch (e) {
       if (e is FirebaseException) {
         throw Exception(e.code);

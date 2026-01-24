@@ -21,6 +21,11 @@ class NotificationsRepository {
 
   List<NotificationItem> get notifications => _notifications;
 
+  void updateNotifications() {
+    updateUserTopics();
+    refreshNotifications();
+  }
+
   void refreshNotifications() {
     if (notificationsSnapshot == null) {
       _notifications.clear();

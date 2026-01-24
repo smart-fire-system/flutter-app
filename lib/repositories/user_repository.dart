@@ -213,6 +213,9 @@ class UserRepository {
     users.employees.clear();
     users.clients.clear();
     users.noRoleUsers.clear();
+    if (usersSnapshot == null) {
+      return users;
+    }
     try {
       for (var doc in usersSnapshot!.docs) {
         Map<String, dynamic> userData = doc.data() as Map<String, dynamic>;

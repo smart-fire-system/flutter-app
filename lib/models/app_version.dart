@@ -96,4 +96,45 @@ class AppVersionData {
   bool get isUpdateAvailable =>
       (isAndroidUpdateAvailable && Platform.isAndroid) ||
       (isIosUpdateAvailable && Platform.isIOS);
+
+  factory AppVersionData.fromMap(Map<String, dynamic> map) {
+    Map<String, dynamic> androidData = map['android'] ?? {};
+    Map<String, dynamic> iosData = map['ios'] ?? {};
+    return AppVersionData(
+      androidInfo: AppVersionInfo(
+        updateMessageAr: androidData['info']?['updateMessageAr'] ?? '',
+        updateMessageEn: androidData['info']?['updateMessageEn'] ?? '',
+        isAppAvailable: androidData['info']?['isAppAvailable'] ?? false,
+      ),
+      iosInfo: AppVersionInfo(
+        updateMessageAr: iosData['info']?['updateMessageAr'] ?? '',
+        updateMessageEn: iosData['info']?['updateMessageEn'] ?? '',
+        isAppAvailable: iosData['info']?['isAppAvailable'] ?? false,
+      ),
+      latestAndroid: AppVersion(
+        major: androidData['latest']?['major'] ?? 0,
+        minor: androidData['latest']?['minor'] ?? 0,
+        patch: androidData['latest']?['patch'] ?? 0,
+        buildNumber: androidData['latest']?['buildNumber'] ?? 0,
+      ),
+      minimumAndroid: AppVersion(
+        major: androidData['minimum']?['major'] ?? 0,
+        minor: androidData['minimum']?['minor'] ?? 0,
+        patch: androidData['minimum']?['patch'] ?? 0,
+        buildNumber: androidData['minimum']?['buildNumber'] ?? 0,
+      ),
+      latestIos: AppVersion(
+        major: iosData['latest']?['major'] ?? 0,
+        minor: iosData['latest']?['minor'] ?? 0,
+        patch: iosData['latest']?['patch'] ?? 0,
+        buildNumber: iosData['latest']?['buildNumber'] ?? 0,
+      ),
+      minimumIos: AppVersion(
+        major: iosData['minimum']?['major'] ?? 0,
+        minor: iosData['minimum']?['minor'] ?? 0,
+        patch: iosData['minimum']?['patch'] ?? 0,
+        buildNumber: iosData['minimum']?['buildNumber'] ?? 0,
+      ),
+    );
+  }
 }

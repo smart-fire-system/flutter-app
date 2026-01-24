@@ -80,19 +80,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     add(Refresh());
 
-    appRepository.authStateStream.listen((status) {
-      add(Refresh());
-    }, onError: (error) {
-      add(Refresh(error: error.toString()));
-    });
-
-    appRepository.branchesAndCompaniesStream.listen((_) {
-      add(Refresh());
-    }, onError: (error) {
-      add(Refresh(error: error.toString()));
-    });
-
-    appRepository.usersStream.listen((_) {
+    appRepository.appStream.listen((status) {
       add(Refresh());
     }, onError: (error) {
       add(Refresh(error: error.toString()));

@@ -30,7 +30,8 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<BranchModifyRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
-        await appRepository.branchRepository.modifyBranch(event.branch, event.signatureFile);
+        await appRepository.branchRepository
+            .modifyBranch(event.branch, event.signatureFile);
         message = BranchesMessage.branchModified;
       } catch (e) {
         add(Refresh(error: e.toString()));
@@ -40,8 +41,8 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
     on<BranchAddRequested>((event, emit) async {
       emit(BranchesLoading());
       try {
-        createdId =
-            await appRepository.branchRepository.addBranch(event.branch, event.signatureFile);
+        createdId = await appRepository.branchRepository
+            .addBranch(event.branch, event.signatureFile);
         message = BranchesMessage.branchAdded;
       } catch (e) {
         add(Refresh(error: e.toString()));
@@ -95,19 +96,7 @@ class BranchesBloc extends Bloc<BranchesEvent, BranchesState> {
 
     add(Refresh());
 
-    appRepository.authStateStream.listen((status) {
-      add(Refresh());
-    }, onError: (error) {
-      add(Refresh(error: error.toString()));
-    });
-
-    appRepository.branchesAndCompaniesStream.listen((_) {
-      add(Refresh());
-    }, onError: (error) {
-      add(Refresh(error: error.toString()));
-    });
-
-    appRepository.usersStream.listen((_) {
+    appRepository.appStream.listen((status) {
       add(Refresh());
     }, onError: (error) {
       add(Refresh(error: error.toString()));

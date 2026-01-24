@@ -1,208 +1,169 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fire_alarm_system/models/user.dart';
+import 'package:fire_alarm_system/models/app_version.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
+import 'package:fire_alarm_system/repositories/branch_repository.dart';
+import 'package:fire_alarm_system/repositories/notifications_repository.dart';
+import 'package:fire_alarm_system/repositories/user_repository.dart';
+
+class Subscriptions {
+  StreamSubscription? branches;
+  StreamSubscription? companies;
+  StreamSubscription? users;
+  StreamSubscription? masterAdmins;
+  StreamSubscription? admins;
+  StreamSubscription? companyManagers;
+  StreamSubscription? branchManagers;
+  StreamSubscription? employees;
+  StreamSubscription? clients;
+  StreamSubscription? notifications;
+  StreamSubscription? appVersion;
+  Subscriptions();
+}
+
+class Controllers {
+  StreamController<void> users = StreamController<void>.broadcast();
+  StreamController<void> notifications = StreamController<void>.broadcast();
+  StreamController<void> infoCollection = StreamController<void>.broadcast();
+  Controllers();
+}
 
 class StreamsRepository {
   final FirebaseFirestore _firestore;
   final AppRepository appRepository;
-  final _contractsController = StreamController<QuerySnapshot>.broadcast();
-  final _reportsMetaDataController =
-      StreamController<QuerySnapshot>.broadcast();
-  final _visitReportsController = StreamController<QuerySnapshot>.broadcast();
-  final _signaturesController = StreamController<QuerySnapshot>.broadcast();
-  final _authStateChangesController = StreamController<void>.broadcast();
-  final _branchesController = StreamController<QuerySnapshot>.broadcast();
-  final _companiesController = StreamController<QuerySnapshot>.broadcast();
-  final _usersController = StreamController<QuerySnapshot>.broadcast();
-  final _masterAdminsController = StreamController<QuerySnapshot>.broadcast();
-  final _adminsController = StreamController<QuerySnapshot>.broadcast();
-  final _companyManagersController =
-      StreamController<QuerySnapshot>.broadcast();
-  final _branchManagersController = StreamController<QuerySnapshot>.broadcast();
-  final _employeesController = StreamController<QuerySnapshot>.broadcast();
-  final _clientsController = StreamController<QuerySnapshot>.broadcast();
+  final Subscriptions subscriptions = Subscriptions();
+  final Controllers controllers = Controllers();
+  bool _wasUserLoggedIn = false;
 
   StreamsRepository({required this.appRepository})
       : _firestore = FirebaseFirestore.instance {
-    appRepository.authStateStream.listen((status) {
-      //startBranchesStream();
-      //startCompaniesStream();
-      //startUsersStream();
-      startContractsStream();
-      startReportsMetaDataStream();
-      startVisitReportsStream();
-      startSignaturesStream();
-    });
+    appRepository.authRepository.authStateChanges.listen((_) async {
+      final wasLoggedIn = _wasUserLoggedIn;
+      final isNowLoggedIn = appRepository.isUserReady();
+      if ((isNowLoggedIn && !wasLoggedIn) || (wasLoggedIn && !isNowLoggedIn)) {
+        cancelAllStreams();
+      }
+      _wasUserLoggedIn = isNowLoggedIn;
+      if (isNowLoggedIn) {
+        startAllStreams();
+      } else {
+        _clearSnapshots();
+      }
+      _updateAllDataStartingWith(UserRepository);
+    }, onError: (error) {});
   }
 
-  Stream<QuerySnapshot> get contractsStream => _contractsController.stream;
-  Stream<QuerySnapshot> get reportsMetaDataStream =>
-      _reportsMetaDataController.stream;
-  Stream<QuerySnapshot> get visitReportsStream =>
-      _visitReportsController.stream;
-  Stream<QuerySnapshot> get signaturesStream => _signaturesController.stream;
-  Stream<void> get authStateChangesStream => _authStateChangesController.stream;
-  Stream<QuerySnapshot> get branchesStream => _branchesController.stream;
-  Stream<QuerySnapshot> get companiesStream => _companiesController.stream;
-  Stream<QuerySnapshot> get usersStream => _usersController.stream;
-  Stream<QuerySnapshot> get masterAdminsStream =>
-      _masterAdminsController.stream;
-  Stream<QuerySnapshot> get adminsStream => _adminsController.stream;
-  Stream<QuerySnapshot> get companyManagersStream =>
-      _companyManagersController.stream;
-  Stream<QuerySnapshot> get branchManagersStream =>
-      _branchManagersController.stream;
-  Stream<QuerySnapshot> get employeesStream => _employeesController.stream;
-  Stream<QuerySnapshot> get clientsStream => _clientsController.stream;
-
-  StreamSubscription? _reportsMetaDataSubscription;
-  StreamSubscription? _contractsSubscription;
-  StreamSubscription? _visitReportsSubscription;
-  StreamSubscription? _signaturesSubscription;
-  StreamSubscription? _branchesSubscription;
-  StreamSubscription? _companiesSubscription;
-  StreamSubscription? _usersSubscription;
-  StreamSubscription? _masterAdminsSubscription;
-  StreamSubscription? _adminsSubscription;
-  StreamSubscription? _companyManagersSubscription;
-  StreamSubscription? _branchManagersSubscription;
-  StreamSubscription? _employeesSubscription;
-  StreamSubscription? _clientsSubscription;
-
-  void startBranchesStream() {
-    stopStream(_branchesSubscription);
-    Query collection = _firestore.collection('branches');
-    if (appRepository.userRole is CompanyManager) {
-      collection = collection.where('company',
-          isEqualTo: appRepository.userRole.company.id);
-    } else if (appRepository.userRole is BranchManager ||
-        appRepository.userRole is Employee ||
-        appRepository.userRole is Client) {
-      collection = collection.where(FieldPath.documentId,
-          isEqualTo: appRepository.userRole.branch.id);
+  void _updateAllDataStartingWith(dynamic repository) {
+    if (repository is BranchRepository) {
+      appRepository.branchRepository.updateBranchesAndCompanies();
+    } else if (repository is UserRepository) {
+      appRepository.userRepository.getAllUsers();
+    } else if (repository is NotificationsRepository) {
+      appRepository.notificationsRepository.updateNotifications();
+    } else if (repository is AppVersionData) {
+      appRepository.updateInfoCollection();
     }
-    collection = collection.orderBy('createdAt', descending: true);
-    _branchesSubscription = collection.snapshots().listen((snapshot) {
-      _branchesController.add(snapshot);
-    });
+    appRepository.branchRepository.updateBranchesAndCompanies();
+    appRepository.userRepository.getAllUsers();
+    appRepository.notificationsRepository.updateNotifications();
+    appRepository.updateInfoCollection();
+    controllers.users.add(null);
+    controllers.notifications.add(null);
+    controllers.infoCollection.add(null);
   }
 
-  void startCompaniesStream() {
-    stopStream(_companiesSubscription);
-    Query collection = _firestore.collection('companies');
-    if (appRepository.userRole is CompanyManager) {
-      collection = collection.where(FieldPath.documentId,
-          isEqualTo: appRepository.userRole.company.id);
-    } else if (appRepository.userRole is BranchManager ||
-        appRepository.userRole is Employee ||
-        appRepository.userRole is Client) {
-      collection = collection.where(FieldPath.documentId,
-          isEqualTo: appRepository.userRole.branch.company.id);
-    }
-    collection = collection.orderBy('createdAt', descending: true);
-    _companiesSubscription = collection.snapshots().listen((snapshot) {
-      _companiesController.add(snapshot);
-    });
+  void _clearSnapshots() {
+    appRepository.branchRepository.branchesSnapshot = null;
+    appRepository.branchRepository.companiesSnapshot = null;
+    appRepository.userRepository.usersSnapshot = null;
+    appRepository.userRepository.masterAdminsSnapshot = null;
+    appRepository.userRepository.adminsSnapshot = null;
+    appRepository.userRepository.companyManagersSnapshot = null;
+    appRepository.userRepository.branchManagersSnapshot = null;
+    appRepository.userRepository.employeesSnapshot = null;
+    appRepository.userRepository.clientsSnapshot = null;
+    appRepository.notificationsRepository.notificationsSnapshot = null;
+    appRepository.infoCollectionSnapshot = null;
+    controllers.users.add(null);
+    controllers.notifications.add(null);
+    controllers.infoCollection.add(null);
   }
 
-  void startUsersStream() {
-    stopStream(_usersSubscription);
-    stopStream(_masterAdminsSubscription);
-    stopStream(_adminsSubscription);
-    stopStream(_companyManagersSubscription);
-    stopStream(_branchManagersSubscription);
-    stopStream(_employeesSubscription);
-    stopStream(_clientsSubscription);
-    _usersSubscription =
+  void reStartAllStreams() {
+    cancelAllStreams();
+    startAllStreams();
+  }
+
+  void cancelAllStreams() {
+    subscriptions.branches?.cancel();
+    subscriptions.companies?.cancel();
+    subscriptions.users?.cancel();
+    subscriptions.masterAdmins?.cancel();
+    subscriptions.admins?.cancel();
+    subscriptions.companyManagers?.cancel();
+    subscriptions.branchManagers?.cancel();
+    subscriptions.employees?.cancel();
+    subscriptions.clients?.cancel();
+    subscriptions.notifications?.cancel();
+    subscriptions.appVersion?.cancel();
+  }
+
+  void startAllStreams() {
+    subscriptions.branches =
+        _firestore.collection('branches').snapshots().listen((snapshot) {
+      appRepository.branchRepository.branchesSnapshot = snapshot;
+      _updateAllDataStartingWith(BranchRepository);
+    });
+    subscriptions.companies =
+        _firestore.collection('companies').snapshots().listen((snapshot) {
+      appRepository.branchRepository.companiesSnapshot = snapshot;
+      _updateAllDataStartingWith(BranchRepository);
+    });
+    subscriptions.users =
         _firestore.collection('users').snapshots().listen((snapshot) {
-      _usersController.add(snapshot);
+      appRepository.userRepository.usersSnapshot = snapshot;
+      _updateAllDataStartingWith(UserRepository);
     });
-    _masterAdminsSubscription =
+    subscriptions.masterAdmins =
         _firestore.collection('masterAdmins').snapshots().listen((snapshot) {
-      _masterAdminsController.add(snapshot);
+      appRepository.userRepository.masterAdminsSnapshot = snapshot;
+      _updateAllDataStartingWith(UserRepository);
     });
-    _adminsSubscription =
+    subscriptions.admins =
         _firestore.collection('admins').snapshots().listen((snapshot) {
-      _adminsController.add(snapshot);
+      appRepository.userRepository.adminsSnapshot = snapshot;
+      _updateAllDataStartingWith(UserRepository);
     });
-    _companyManagersSubscription =
+    subscriptions.companyManagers =
         _firestore.collection('companyManagers').snapshots().listen((snapshot) {
-      _companyManagersController.add(snapshot);
+      appRepository.userRepository.companyManagersSnapshot = snapshot;
+      _updateAllDataStartingWith(UserRepository);
     });
-    _branchManagersSubscription =
+    subscriptions.branchManagers =
         _firestore.collection('branchManagers').snapshots().listen((snapshot) {
-      _branchManagersController.add(snapshot);
+      appRepository.userRepository.branchManagersSnapshot = snapshot;
+      _updateAllDataStartingWith(UserRepository);
     });
-    _employeesSubscription =
+    subscriptions.employees =
         _firestore.collection('employees').snapshots().listen((snapshot) {
-      _employeesController.add(snapshot);
+      appRepository.userRepository.employeesSnapshot = snapshot;
+      _updateAllDataStartingWith(UserRepository);
     });
-    _clientsSubscription =
+    subscriptions.clients =
         _firestore.collection('clients').snapshots().listen((snapshot) {
-      _clientsController.add(snapshot);
+      appRepository.userRepository.clientsSnapshot = snapshot;
+      _updateAllDataStartingWith(UserRepository);
     });
-  }
-
-  void startContractsStream() {
-    stopStream(_contractsSubscription);
-    Query collection = _firestore.collection('contracts');
-    if (appRepository.userRole is CompanyManager) {
-      collection = collection.where('companyId',
-          isEqualTo: appRepository.userRole.company.id);
-    } else if (appRepository.userRole is BranchManager) {
-      collection = collection.where('branchId',
-          isEqualTo: appRepository.userRole.branch.id);
-    } else {
-      collection = collection.where('sharedWith',
-          arrayContains: appRepository.userRole.info.id);
-    }
-    collection = collection.orderBy('createdAt', descending: true);
-    _contractsSubscription = collection.snapshots().listen((snapshot) {
-      _contractsController.add(snapshot);
+    subscriptions.notifications =
+        _firestore.collection('notifications').snapshots().listen((snapshot) {
+      appRepository.notificationsRepository.notificationsSnapshot = snapshot;
+      _updateAllDataStartingWith(NotificationsRepository);
     });
-  }
-
-  void startVisitReportsStream() {
-    stopStream(_visitReportsSubscription);
-    Query collection = _firestore.collection('visitReports');
-    if (appRepository.userRole is CompanyManager) {
-      collection = collection.where('companyId',
-          isEqualTo: appRepository.userRole.company.id);
-    } else if (appRepository.userRole is BranchManager) {
-      collection = collection.where('branchId',
-          isEqualTo: appRepository.userRole.branch.id);
-    } else {
-      collection = collection.where('sharedWith',
-          arrayContains: appRepository.userRole.info.id);
-    }
-    collection = collection.orderBy('createdAt', descending: true);
-    _visitReportsSubscription = collection.snapshots().listen((snapshot) {
-      _visitReportsController.add(snapshot);
+    subscriptions.appVersion =
+        _firestore.collection('info').snapshots().listen((snapshot) {
+      appRepository.infoCollectionSnapshot = snapshot;
+      _updateAllDataStartingWith(AppVersionData);
     });
-  }
-
-  void startReportsMetaDataStream() {
-    stopStream(_reportsMetaDataSubscription);
-    _reportsMetaDataSubscription =
-        _firestore.collection('reportsMetaData').snapshots().listen((snapshot) {
-      _reportsMetaDataController.add(snapshot);
-    });
-  }
-
-  void startSignaturesStream() {
-    stopStream(_signaturesSubscription);
-    _signaturesSubscription =
-        _firestore.collection('signatures').snapshots().listen((snapshot) {
-      _signaturesController.add(snapshot);
-    });
-  }
-
-  void stopStream(StreamSubscription? subscription) {
-    if (subscription != null) {
-      subscription.cancel();
-      subscription = null;
-    }
   }
 }

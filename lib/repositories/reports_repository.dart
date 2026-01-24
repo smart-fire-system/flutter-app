@@ -30,15 +30,7 @@ class ReportsRepository {
       : _firestore = FirebaseFirestore.instance {
     _refresh();
 
-    appRepository.branchesAndCompaniesStream.listen((status) {
-      _refresh();
-    });
-
-    appRepository.usersStream.listen((status) {
-      _refresh();
-    });
-
-    appRepository.authStateStream.listen((status) {
+    appRepository.appStream.listen((status) {
       _refresh();
     });
 
