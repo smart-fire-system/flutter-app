@@ -15,6 +15,12 @@ import 'package:fire_alarm_system/repositories/system_repository.dart';
 import 'package:fire_alarm_system/repositories/user_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 
+enum AppError {
+  noError,
+  networkError,
+  generalError,
+}
+
 class AppRepository {
   late final AuthRepository _authRepository;
   late final BranchRepository _branchRepository;

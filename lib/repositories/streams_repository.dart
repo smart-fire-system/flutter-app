@@ -4,31 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/models/info_collection.dart';
 import 'package:fire_alarm_system/models/user.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
+import 'package:rxdart/rxdart.dart';
 
-enum AppError {
-  noError,
-  networkError,
-  generalError,
-}
-
-class Subscriptions {
-  StreamSubscription? branches;
-  StreamSubscription? companies;
-  StreamSubscription? users;
-  StreamSubscription? masterAdmins;
-  StreamSubscription? admins;
-  StreamSubscription? companyManagers;
-  StreamSubscription? branchManagers;
-  StreamSubscription? employees;
-  StreamSubscription? clients;
-  StreamSubscription? infoCollection;
-  Subscriptions();
-}
 
 class StreamsRepository {
   final FirebaseFirestore _firestore;
   final AppRepository _appRepository;
-  final Subscriptions _subscriptions = Subscriptions();
+  StreamSubscription? combinedUsersBranchesSubscription;
+  StreamSubscription? infoCollectionSubscription;
   final StreamController<AppError> _appStream =
       StreamController<AppError>.broadcast();
   bool _wasUserLoggedIn = false;
@@ -45,7 +28,8 @@ class StreamsRepository {
       final wasLoggedIn = _wasUserLoggedIn;
       final isNowLoggedIn = _appRepository.isUserReady();
       if ((isNowLoggedIn && !wasLoggedIn) || (wasLoggedIn && !isNowLoggedIn)) {
-        _cancelAllStreams();
+        await combinedUsersBranchesSubscription?.cancel();
+        combinedUsersBranchesSubscription = null;
       }
       _wasUserLoggedIn = isNowLoggedIn;
       if (!isNowLoggedIn) {
@@ -59,7 +43,7 @@ class StreamsRepository {
   }
 
   Future<void> _startAllStreams({isLoggedIn = true}) async {
-    _subscriptions.infoCollection ??=
+    infoCollectionSubscription ??=
         _firestore.collection('info').snapshots().listen((snapshot) {
       _appRepository.infoCollection = InfoCollection.fromSnapshot(snapshot);
       _updateAllData();
@@ -67,27 +51,6 @@ class StreamsRepository {
     if (isLoggedIn) {
       await _subscribeToUsersAndBranches();
     }
-  }
-
-  Future<void> _cancelAllStreams() async {
-    await _subscriptions.branches?.cancel();
-    _subscriptions.branches = null;
-    await _subscriptions.companies?.cancel();
-    _subscriptions.companies = null;
-    await _subscriptions.users?.cancel();
-    _subscriptions.users = null;
-    await _subscriptions.masterAdmins?.cancel();
-    _subscriptions.masterAdmins = null;
-    await _subscriptions.admins?.cancel();
-    _subscriptions.admins = null;
-    await _subscriptions.companyManagers?.cancel();
-    _subscriptions.companyManagers = null;
-    await _subscriptions.branchManagers?.cancel();
-    _subscriptions.branchManagers = null;
-    await _subscriptions.employees?.cancel();
-    _subscriptions.employees = null;
-    await _subscriptions.clients?.cancel();
-    _subscriptions.clients = null;
   }
 
   void _addStreamEvent(AppError error) {
@@ -116,14 +79,7 @@ class StreamsRepository {
 
   bool _isSubscriptionNeeded() {
     final userRole = _appRepository.userRole;
-    if (_subscriptions.branches == null ||
-        _subscriptions.companies == null ||
-        _subscriptions.masterAdmins == null ||
-        _subscriptions.admins == null ||
-        _subscriptions.companyManagers == null ||
-        _subscriptions.branchManagers == null ||
-        _subscriptions.employees == null ||
-        _subscriptions.clients == null) {
+    if (combinedUsersBranchesSubscription == null) {
       return true;
     }
     if (_subscribedUser?.runtimeType == userRole?.runtimeType) {
@@ -167,7 +123,8 @@ class StreamsRepository {
         _firestore.collection('employees');
     Query<Map<String, dynamic>> clientsQuery = _firestore.collection('clients');
 
-    await _cancelAllStreams();
+    await combinedUsersBranchesSubscription?.cancel();
+    combinedUsersBranchesSubscription = null;
 
     if (_appRepository.userRole is MasterAdmin ||
         _appRepository.userRole is Admin) {
@@ -201,44 +158,77 @@ class StreamsRepository {
     } else {
       return;
     }
-    _subscriptions.branches = branchesQuery.snapshots().listen((snapshot) {
-      _appRepository.branchRepository.branchesSnapshot = snapshot;
+
+    final branches$ = branchesQuery.snapshots();
+    final companies$ = companiesQuery.snapshots();
+    final users$ = usersQuery.snapshots();
+    final masterAdmins$ = masterAdminsQuery.snapshots();
+    final admins$ = adminsQuery.snapshots();
+    final companyManagers$ = companyManagersQuery.snapshots();
+    final branchManagers$ = branchManagersQuery.snapshots();
+    final employees$ = employeesQuery.snapshots();
+    final clients$ = clientsQuery.snapshots();
+
+    combinedUsersBranchesSubscription = Rx.combineLatest9(
+      branches$,
+      companies$,
+      users$,
+      masterAdmins$,
+      admins$,
+      companyManagers$,
+      branchManagers$,
+      employees$,
+      clients$,
+      (
+        QuerySnapshot branchesSnapshot,
+        QuerySnapshot companiesSnapshot,
+        QuerySnapshot usersSnapshot,
+        QuerySnapshot masterAdminsSnapshot,
+        QuerySnapshot adminsSnapshot,
+        QuerySnapshot companyManagersSnapshot,
+        QuerySnapshot branchManagersSnapshot,
+        QuerySnapshot employeesSnapshot,
+        QuerySnapshot clientsSnapshot,
+      ) {
+        return (
+          branchesSnapshot,
+          companiesSnapshot,
+          usersSnapshot,
+          masterAdminsSnapshot,
+          adminsSnapshot,
+          companyManagersSnapshot,
+          branchManagersSnapshot,
+          employeesSnapshot,
+          clientsSnapshot
+        ); // Dart record
+      },
+    ).listen((all) {
+      final (
+        branchesSnapshot,
+        companiesSnapshot,
+        usersSnapshot,
+        masterAdminsSnapshot,
+        adminsSnapshot,
+        companyManagersSnapshot,
+        branchManagersSnapshot,
+        employeesSnapshot,
+        clientsSnapshot
+      ) = all;
+
+      _appRepository.branchRepository.branchesSnapshot = branchesSnapshot;
+      _appRepository.branchRepository.companiesSnapshot = companiesSnapshot;
+      _appRepository.userRepository.usersSnapshot = usersSnapshot;
+      _appRepository.userRepository.masterAdminsSnapshot = masterAdminsSnapshot;
+      _appRepository.userRepository.adminsSnapshot = adminsSnapshot;
+      _appRepository.userRepository.companyManagersSnapshot =
+          companyManagersSnapshot;
+      _appRepository.userRepository.branchManagersSnapshot =
+          branchManagersSnapshot;
+      _appRepository.userRepository.employeesSnapshot = employeesSnapshot;
+      _appRepository.userRepository.clientsSnapshot = clientsSnapshot;
       _updateAllData();
-    });
-    _subscriptions.companies = companiesQuery.snapshots().listen((snapshot) {
-      _appRepository.branchRepository.companiesSnapshot = snapshot;
-      _updateAllData();
-    });
-    _subscriptions.users = usersQuery.snapshots().listen((snapshot) {
-      _appRepository.userRepository.usersSnapshot = snapshot;
-      _updateAllData();
-    });
-    _subscriptions.masterAdmins =
-        masterAdminsQuery.snapshots().listen((snapshot) {
-      _appRepository.userRepository.masterAdminsSnapshot = snapshot;
-      _updateAllData();
-    });
-    _subscriptions.admins = adminsQuery.snapshots().listen((snapshot) {
-      _appRepository.userRepository.adminsSnapshot = snapshot;
-      _updateAllData();
-    });
-    _subscriptions.companyManagers =
-        companyManagersQuery.snapshots().listen((snapshot) {
-      _appRepository.userRepository.companyManagersSnapshot = snapshot;
-      _updateAllData();
-    });
-    _subscriptions.branchManagers =
-        branchManagersQuery.snapshots().listen((snapshot) {
-      _appRepository.userRepository.branchManagersSnapshot = snapshot;
-      _updateAllData();
-    });
-    _subscriptions.employees = employeesQuery.snapshots().listen((snapshot) {
-      _appRepository.userRepository.employeesSnapshot = snapshot;
-      _updateAllData();
-    });
-    _subscriptions.clients = clientsQuery.snapshots().listen((snapshot) {
-      _appRepository.userRepository.clientsSnapshot = snapshot;
-      _updateAllData();
+    }, onError: (_) {
+      _addStreamEvent(AppError.networkError);
     });
     _subscribedUser = _appRepository.userRole;
   }

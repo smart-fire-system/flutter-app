@@ -1,6 +1,5 @@
 import 'package:fire_alarm_system/models/pin.dart';
 import 'package:fire_alarm_system/repositories/app_repository.dart';
-import 'package:fire_alarm_system/repositories/streams_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'event.dart';
