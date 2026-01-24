@@ -345,6 +345,8 @@ class ReportsRepository {
         'createdAt': FieldValue.serverTimestamp(),
         'userId': appRepository.userInfo.id,
         'contractId': contract.metaData.id,
+        'companyId': contract.metaData.employee?.branch.company.id,
+        'branchId': contract.metaData.employee?.branch.id,
       });
       final contractRef =
           _firestore.collection('contracts').doc(contract.metaData.id);
@@ -403,6 +405,8 @@ class ReportsRepository {
         'createdAt': FieldValue.serverTimestamp(),
         'userId': appRepository.userInfo.id,
         'visitReportId': visitReport.id,
+        'companyId': visitReport.contractMetaData.employee?.branch.company.id,
+        'branchId': visitReport.contractMetaData.employee?.branch.id,
       });
       final visitReportRef =
           _firestore.collection('visitReports').doc(visitReport.id);

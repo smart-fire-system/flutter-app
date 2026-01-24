@@ -163,9 +163,10 @@ class AppPermissions {
   }
 
   Map<String, dynamic> toBranchManagerMap(
-      AppPermissions permissions, String branchId) {
+      AppPermissions permissions, String branchId, String companyId) {
     return {
       'branch': branchId,
+      'company': companyId,
       'permissions': {
         'canUpdateEmployees': permissions.canUpdateEmployees,
         'canUpdateClients': permissions.canUpdateClients,
@@ -185,9 +186,10 @@ class AppPermissions {
   }
 
   Map<String, dynamic> toEmployeeMap(
-      AppPermissions permissions, String branchId) {
+      AppPermissions permissions, String branchId, String companyId) {
     return {
       'branch': branchId,
+      'company': companyId,
       'permissions': {
         'canUpdateClients': permissions.canUpdateClients,
       },
@@ -203,9 +205,10 @@ class AppPermissions {
   }
 
   Map<String, dynamic> toClientMap(
-      AppPermissions permissions, String branchId) {
+      AppPermissions permissions, String branchId, String companyId) {
     return {
       'branch': branchId,
+      'company': companyId,
       'permissions': {},
     };
   }

@@ -71,50 +71,6 @@ class UserRepository {
     }
   }
 
-  Future<void> addUserPermissions({
-    required String userId,
-    required AppPermissions permissions,
-    String companyId = '',
-    String branchId = '',
-  }) async {
-    try {
-      if (permissions.role == UserRole.masterAdmin) {
-        await _firestore.collection('masterAdmins').doc(userId).set({});
-      } else if (permissions.role == UserRole.admin) {
-        await _firestore
-            .collection('admins')
-            .doc(userId)
-            .set(AppPermissions().toAdminMap(permissions));
-      } else if (permissions.role == UserRole.companyManager) {
-        await _firestore
-            .collection('companyManagers')
-            .doc(userId)
-            .set(AppPermissions().toCompanyManagerMap(permissions, companyId));
-      } else if (permissions.role == UserRole.branchManager) {
-        await _firestore
-            .collection('branchManagers')
-            .doc(userId)
-            .set(AppPermissions().toBranchManagerMap(permissions, branchId));
-      } else if (permissions.role == UserRole.employee) {
-        await _firestore
-            .collection('employees')
-            .doc(userId)
-            .set(AppPermissions().toEmployeeMap(permissions, branchId));
-      } else if (permissions.role == UserRole.client) {
-        await _firestore
-            .collection('clients')
-            .doc(userId)
-            .set(AppPermissions().toClientMap(permissions, branchId));
-      }
-    } catch (e) {
-      if (e is FirebaseException) {
-        throw Exception(e.code);
-      } else {
-        throw Exception(e.toString());
-      }
-    }
-  }
-
   Future<void> modifyUserPermissions({
     required String userId,
     required AppPermissions permissions,
@@ -145,15 +101,16 @@ class UserRepository {
             );
       } else if (permissions.role == UserRole.branchManager) {
         await _firestore.collection('branchManagers').doc(userId).set(
-              AppPermissions().toBranchManagerMap(permissions, branchId),
+              AppPermissions()
+                  .toBranchManagerMap(permissions, branchId, companyId),
             );
       } else if (permissions.role == UserRole.employee) {
         await _firestore.collection('employees').doc(userId).set(
-              AppPermissions().toEmployeeMap(permissions, branchId),
+              AppPermissions().toEmployeeMap(permissions, branchId, companyId),
             );
       } else if (permissions.role == UserRole.client) {
         await _firestore.collection('clients').doc(userId).set(
-              AppPermissions().toClientMap(permissions, branchId),
+              AppPermissions().toClientMap(permissions, branchId, companyId),
             );
       }
     } catch (e) {
