@@ -14,13 +14,6 @@ import 'package:fire_alarm_system/repositories/streams_repository.dart';
 import 'package:fire_alarm_system/repositories/system_repository.dart';
 import 'package:fire_alarm_system/repositories/user_repository.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-enum AppError {
-  noError,
-  networkError,
-  generalError,
-}
 
 class AppRepository {
   late final AuthRepository _authRepository;
@@ -30,37 +23,21 @@ class AppRepository {
   late final ReportsRepository _reportsRepository;
   late final NotificationsRepository _notificationsRepository;
   late final StreamsRepository _streamsRepository;
-  QuerySnapshot? infoCollectionSnapshot;
-  AppError? _lastAppError;
-
-  final _appStreamDataController = StreamController<AppError>.broadcast();
-  InfoCollection? _infoCollection;
+  InfoCollection? infoCollection;
 
   AppRepository() {
-    _userRepository = UserRepository(appRepository: this);
     _authRepository = AuthRepository(appRepository: this);
+    _streamsRepository = StreamsRepository(appRepository: this);
+    _userRepository = UserRepository(appRepository: this);
     _branchRepository = BranchRepository(appRepository: this);
     _systemRepository = SystemRepository();
     _reportsRepository = ReportsRepository(appRepository: this);
     _notificationsRepository = NotificationsRepository(appRepository: this);
-    _streamsRepository = StreamsRepository(appRepository: this);
-
-    _streamsRepository.controllers.users.stream.listen((_) {
-      _lastAppError = AppError.noError;
-      _appStreamDataController.add(AppError.noError);
-    });
-    _streamsRepository.controllers.notifications.stream.listen((_) {
-      _lastAppError = AppError.noError;
-      _appStreamDataController.add(AppError.noError);
-    });
-    _streamsRepository.controllers.infoCollection.stream.listen((_) {
-      _lastAppError = AppError.noError;
-      _appStreamDataController.add(AppError.noError);
-    });
   }
 
   AuthStatus get authStatus => _authRepository.authStatus;
-  Stream<AppError> get appStream => _appStreamDataController.stream;
+  Stream<AppError> get appStream => _streamsRepository.appStream;
+  AppError? get lastAppError => _streamsRepository.lastAppError;
   UserInfo get userInfo => _authRepository.userRole.info as UserInfo;
   dynamic get userRole => _authRepository.userRole;
   AppPermissions get permissions => _authRepository.userRole.permissions;
@@ -75,7 +52,7 @@ class AppRepository {
   List<Employee> get employees => _userRepository.users.employees;
   List<Client> get clients => _userRepository.users.clients;
   List<NoRoleUser> get noRoleUsers => _userRepository.users.noRoleUsers;
-  AppVersionData? get appVersionData => _infoCollection?.appVersionData;
+  AppVersionData? get appVersionData => infoCollection?.appVersionData;
   List<Branch> get branches => _branchRepository.branches;
   List<Company> get companies => _branchRepository.companies;
 
@@ -86,7 +63,6 @@ class AppRepository {
   ReportsRepository get reportsRepository => _reportsRepository;
   NotificationsRepository get notificationsRepository =>
       _notificationsRepository;
-  AppError? get lastAppError => _lastAppError;
 
   bool isUserReady() {
     return (_authRepository.authChangeStatus == AuthChangeResult.noError &&
@@ -94,11 +70,5 @@ class AppRepository {
         userRole != null &&
         userRole is! NoRoleUser &&
         userRole.info.phoneNumber.isNotEmpty);
-  }
-
-  void updateInfoCollection() {
-    if (infoCollectionSnapshot != null) {
-      _infoCollection = InfoCollection.fromSnapshot(infoCollectionSnapshot!);
-    }
   }
 }
