@@ -12,9 +12,27 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       add(Refresh());
     });
     on<Refresh>((event, emit) async {
+      emit(NotificationsLoading());
       if (!appRepository.isUserReady()) {
         emit(NotificationsNotAuthenticated());
       } else {
+        await appRepository.notificationsRepository.readNotifications();
+        emit(NotificationsAuthenticated(
+          user: appRepository.userRole,
+          notifications: appRepository.notificationsRepository.notifications,
+          isNotificationGranted: await appRepository.notificationsRepository
+              .isNotificationPermissionGranted(),
+          isSubscribed: await appRepository.notificationsRepository
+              .isSubscribedToUserTopics(),
+        ));
+      }
+    });
+    on<LoadNextNotifications>((event, emit) async {
+      emit(NotificationsLoadingNext());
+      if (!appRepository.isUserReady()) {
+        emit(NotificationsNotAuthenticated());
+      } else {
+        await appRepository.notificationsRepository.readNextNotifications();
         emit(NotificationsAuthenticated(
           user: appRepository.userRole,
           notifications: appRepository.notificationsRepository.notifications,

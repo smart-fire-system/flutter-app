@@ -245,13 +245,18 @@ class NotificationsScreenState extends State<NotificationsScreen> {
         }
         return Scaffold(
           appBar: CustomAppBar(title: l10n.notifications),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (!_isLoading) _buildPermissionBanner(context),
-              if (!_isLoading) _buildSubscriptionBanner(context),
-              Expanded(child: _buildContent(context)),
-            ],
+          body: RefreshIndicator(
+            onRefresh: () async {
+              context.read<NotificationsBloc>().add(Refresh());
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (!_isLoading) _buildPermissionBanner(context),
+                if (!_isLoading) _buildSubscriptionBanner(context),
+                Expanded(child: _buildContent(context)),
+              ],
+            ),
           ),
         );
       },

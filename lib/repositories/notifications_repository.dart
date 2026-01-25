@@ -9,17 +9,55 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationsRepository {
   final FirebaseMessaging _messaging;
+  final FirebaseFirestore _firestore;
   final AppRepository _appRepository;
   final String _subscribedTopicsKey = 'subscribedTopics';
   final List<NotificationItem> _notifications = [];
   final List<String> _userTopics = [];
+  QueryDocumentSnapshot? lastNotificationSnapshot;
   bool? _notificationPermissionStatus;
   QuerySnapshot? notificationsSnapshot;
   NotificationsRepository({required AppRepository appRepository})
       : _appRepository = appRepository,
-        _messaging = FirebaseMessaging.instance;
+        _messaging = FirebaseMessaging.instance,
+        _firestore = FirebaseFirestore.instance;
 
   List<NotificationItem> get notifications => _notifications;
+
+  Future<void> readNotifications() async {
+    updateUserTopics();
+    Query baseQuery = _firestore
+        .collection('notifications')
+        .where(
+          'topics',
+          arrayContainsAny: _userTopics,
+        )
+        .orderBy('createdAt', descending: true)
+        .limit(10);
+    QuerySnapshot notificationsSnapshot = await baseQuery.get();
+    lastNotificationSnapshot = notificationsSnapshot.docs.last;
+    _notifications.clear();
+    _notifications.addAll(notificationsSnapshot.docs.map(
+        (doc) => NotificationItem.fromMap(doc.data() as Map<String, dynamic>)));
+  }
+
+  Future<void> readNextNotifications() async {
+    Query baseQuery = _firestore
+        .collection('notifications')
+        .where(
+          'allowedUsers',
+          arrayContainsAny: _userTopics,
+        )
+        .orderBy('createdAt', descending: true)
+        .limit(10);
+    if (lastNotificationSnapshot != null) {
+      baseQuery = baseQuery.startAfterDocument(lastNotificationSnapshot!);
+    }
+    QuerySnapshot notificationsSnapshot = await baseQuery.get();
+    lastNotificationSnapshot = notificationsSnapshot.docs.last;
+    _notifications.addAll(notificationsSnapshot.docs.map(
+        (doc) => NotificationItem.fromMap(doc.data() as Map<String, dynamic>)));
+  }
 
   void updateNotifications() {
     updateUserTopics();

@@ -8,6 +8,8 @@ class NotificationsInitial extends NotificationsState {}
 
 class NotificationsLoading extends NotificationsState {}
 
+class NotificationsLoadingNext extends NotificationsState {}
+
 class NotificationsAuthenticated extends NotificationsState {
   final dynamic user;
   AppMessage? message;
