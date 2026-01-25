@@ -15,6 +15,7 @@ import 'package:fire_alarm_system/screens/notifications/bloc/state.dart';
 import 'package:fire_alarm_system/screens/notifications/bloc/event.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:fire_alarm_system/utils/open_store.dart';
+
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
 
@@ -29,6 +30,8 @@ class NotificationsScreenState extends State<NotificationsScreen> {
   bool _isArabic = false;
   bool _isSubscribed = false;
   bool _isLoading = true;
+  bool _loadNextRequested = false;
+  bool _hasMore = true;
 
   @override
   void initState() {
@@ -223,7 +226,21 @@ class NotificationsScreenState extends State<NotificationsScreen> {
     final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<NotificationsBloc, NotificationsState>(
       builder: (context, state) {
-        if (state is! NotificationsAuthenticated) {
+        if (state is NotificationsAuthenticated) {
+          _notifications = state.notifications;
+          _isNotificationGranted = state.isNotificationGranted;
+          _isSubscribed = state.isSubscribed;
+          _isLoading = false;
+          _hasMore = state.hasMore;
+          _loadNextRequested = false;
+        } else if (state is NotificationsLoadingNext) {
+          _notifications = state.notifications;
+          _isNotificationGranted = state.isNotificationGranted;
+          _isSubscribed = state.isSubscribed;
+          _isLoading = false;
+          _hasMore = state.hasMore;
+          _loadNextRequested = true;
+        } else if (state is! NotificationsAuthenticated) {
           _notifications = List.filled(
             7,
             NotificationItem(
@@ -237,11 +254,6 @@ class NotificationsScreenState extends State<NotificationsScreen> {
             ),
           );
           _isLoading = true;
-        } else {
-          _notifications = state.notifications;
-          _isNotificationGranted = state.isNotificationGranted;
-          _isSubscribed = state.isSubscribed;
-          _isLoading = false;
         }
         return Scaffold(
           appBar: CustomAppBar(title: l10n.notifications),
@@ -254,7 +266,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
               children: [
                 if (!_isLoading) _buildPermissionBanner(context),
                 if (!_isLoading) _buildSubscriptionBanner(context),
-                Expanded(child: _buildContent(context)),
+                Expanded(child: _buildContent(context, state)),
               ],
             ),
           ),
@@ -263,7 +275,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
-  Widget _buildContent(BuildContext context) {
+  Widget _buildContent(BuildContext context, NotificationsState state) {
     final l10n = AppLocalizations.of(context)!;
     if (_isLoading) {
       AppLoading().show(
@@ -307,55 +319,111 @@ class NotificationsScreenState extends State<NotificationsScreen> {
           )
         : Skeletonizer(
             enabled: _isLoading,
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-              itemCount: _notifications.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final item = _notifications[index];
-                final timeLabel = item.createdAt != null
-                    ? TimeAgoHelper.of(context, item.createdAt,
-                        format: TimeAgoFormat.long)
-                    : null;
-                return Card(
-                  elevation: 1,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                    leading: CircleAvatar(
-                      radius: 20,
-                      backgroundColor: Colors.redAccent.withValues(alpha: 0.12),
-                      child: Icon(_getIcon(item.data['clickAction'] ?? ''),
-                          color: Colors.redAccent),
-                    ),
-                    title: Text(
-                      _isArabic ? item.arTitle : item.enTitle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: Text(
-                      _isArabic ? item.arBody : item.enBody,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    trailing: timeLabel == null
-                        ? null
-                        : Text(
-                            timeLabel,
-                            textAlign: TextAlign.right,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                    onTap: () => _showNotificationDetails(item),
-                  ),
-                );
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (notification) {
+                final nearBottom = notification.metrics.extentAfter < 200;
+                final canLoad = state is NotificationsAuthenticated &&
+                    _hasMore &&
+                    !_loadNextRequested;
+                if (nearBottom && canLoad) {
+                  _loadNextRequested = true;
+                  context
+                      .read<NotificationsBloc>()
+                      .add(LoadNextNotifications());
+                }
+                return false;
               },
+              child: ListView.separated(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                itemCount: _notifications.length +
+                    ((_hasMore || state is NotificationsLoadingNext) ? 1 : 0),
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  final isFooter = index >= _notifications.length;
+                  if (isFooter) {
+                    final isLoadingNext = state is NotificationsLoadingNext;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Center(
+                        child: isLoadingNext
+                            ? Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const SizedBox(
+                                    height: 18,
+                                    width: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    'Load more',
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ],
+                              )
+                            : TextButton(
+                                onPressed: () {
+                                  if (!_hasMore) return;
+                                  context
+                                      .read<NotificationsBloc>()
+                                      .add(LoadNextNotifications());
+                                },
+                                child: const Text('Load more'),
+                              ),
+                      ),
+                    );
+                  }
+
+                  final item = _notifications[index];
+                  final timeLabel = item.createdAt != null
+                      ? TimeAgoHelper.of(context, item.createdAt,
+                          format: TimeAgoFormat.long)
+                      : null;
+                  return Card(
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      leading: CircleAvatar(
+                        radius: 20,
+                        backgroundColor:
+                            Colors.redAccent.withValues(alpha: 0.12),
+                        child: Icon(_getIcon(item.data['clickAction'] ?? ''),
+                            color: Colors.redAccent),
+                      ),
+                      title: Text(
+                        _isArabic ? item.arTitle : item.enTitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: Text(
+                        _isArabic ? item.arBody : item.enBody,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: timeLabel == null
+                          ? null
+                          : Text(
+                              timeLabel,
+                              textAlign: TextAlign.right,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                      onTap: () => _showNotificationDetails(item),
+                    ),
+                  );
+                },
+              ),
             ),
           );
   }

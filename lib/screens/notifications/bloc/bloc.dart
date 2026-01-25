@@ -24,14 +24,24 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
               .isNotificationPermissionGranted(),
           isSubscribed: await appRepository.notificationsRepository
               .isSubscribedToUserTopics(),
+          hasMore: appRepository.notificationsRepository.hasMore,
         ));
       }
     });
     on<LoadNextNotifications>((event, emit) async {
-      emit(NotificationsLoadingNext());
       if (!appRepository.isUserReady()) {
         emit(NotificationsNotAuthenticated());
       } else {
+        final current = state;
+        if (current is NotificationsAuthenticated) {
+          emit(NotificationsLoadingNext(
+            user: current.user,
+            notifications: current.notifications,
+            isNotificationGranted: current.isNotificationGranted,
+            isSubscribed: current.isSubscribed,
+            hasMore: current.hasMore,
+          ));
+        }
         await appRepository.notificationsRepository.readNextNotifications();
         emit(NotificationsAuthenticated(
           user: appRepository.userRole,
@@ -40,6 +50,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
               .isNotificationPermissionGranted(),
           isSubscribed: await appRepository.notificationsRepository
               .isSubscribedToUserTopics(),
+          hasMore: appRepository.notificationsRepository.hasMore,
         ));
       }
     });

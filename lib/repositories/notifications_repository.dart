@@ -12,9 +12,11 @@ class NotificationsRepository {
   final FirebaseFirestore _firestore;
   final AppRepository _appRepository;
   final String _subscribedTopicsKey = 'subscribedTopics';
+  static const int _pageSize = 10;
   final List<NotificationItem> _notifications = [];
   final List<String> _userTopics = [];
   QueryDocumentSnapshot? lastNotificationSnapshot;
+  bool _hasMore = true;
   bool? _notificationPermissionStatus;
   QuerySnapshot? notificationsSnapshot;
   NotificationsRepository({required AppRepository appRepository})
@@ -23,8 +25,39 @@ class NotificationsRepository {
         _firestore = FirebaseFirestore.instance;
 
   List<NotificationItem> get notifications => _notifications;
+  bool get hasMore => _hasMore;
 
   Future<void> readNotifications() async {
+    updateUserTopics();
+    _hasMore = true;
+    Query baseQuery = _firestore
+        .collection('notifications')
+        .where(
+          'topics',
+          arrayContainsAny: _userTopics,
+        )
+        .orderBy('createdAt', descending: true)
+        .limit(_pageSize);
+    QuerySnapshot notificationsSnapshot = await baseQuery.get();
+    _notifications.clear();
+    if (notificationsSnapshot.docs.isEmpty) {
+      lastNotificationSnapshot = null;
+      _hasMore = false;
+      return;
+    }
+    lastNotificationSnapshot = notificationsSnapshot.docs.last;
+    _notifications.addAll(
+      notificationsSnapshot.docs.map(
+        (doc) => NotificationItem.fromMap(doc.data() as Map<String, dynamic>),
+      ),
+    );
+    if (notificationsSnapshot.docs.length < _pageSize) {
+      _hasMore = false;
+    }
+  }
+
+  Future<void> readNextNotifications() async {
+    if (!_hasMore) return;
     updateUserTopics();
     Query baseQuery = _firestore
         .collection('notifications')
@@ -33,30 +66,24 @@ class NotificationsRepository {
           arrayContainsAny: _userTopics,
         )
         .orderBy('createdAt', descending: true)
-        .limit(10);
-    QuerySnapshot notificationsSnapshot = await baseQuery.get();
-    lastNotificationSnapshot = notificationsSnapshot.docs.last;
-    _notifications.clear();
-    _notifications.addAll(notificationsSnapshot.docs.map(
-        (doc) => NotificationItem.fromMap(doc.data() as Map<String, dynamic>)));
-  }
-
-  Future<void> readNextNotifications() async {
-    Query baseQuery = _firestore
-        .collection('notifications')
-        .where(
-          'allowedUsers',
-          arrayContainsAny: _userTopics,
-        )
-        .orderBy('createdAt', descending: true)
-        .limit(10);
+        .limit(_pageSize);
     if (lastNotificationSnapshot != null) {
       baseQuery = baseQuery.startAfterDocument(lastNotificationSnapshot!);
     }
     QuerySnapshot notificationsSnapshot = await baseQuery.get();
+    if (notificationsSnapshot.docs.isEmpty) {
+      _hasMore = false;
+      return;
+    }
     lastNotificationSnapshot = notificationsSnapshot.docs.last;
-    _notifications.addAll(notificationsSnapshot.docs.map(
-        (doc) => NotificationItem.fromMap(doc.data() as Map<String, dynamic>)));
+    _notifications.addAll(
+      notificationsSnapshot.docs.map(
+        (doc) => NotificationItem.fromMap(doc.data() as Map<String, dynamic>),
+      ),
+    );
+    if (notificationsSnapshot.docs.length < _pageSize) {
+      _hasMore = false;
+    }
   }
 
   void updateNotifications() {
