@@ -432,7 +432,7 @@
     "signatures_validate_button": "Validate",
     "signatures_clear_button": "Clear",
     "signatures_empty_error": "Please enter a signature ID.",
-    "signatures_invalid_error": "Invalid signature.",
+    "signatures_invalid_error": "Invalid signature or you are not authorized to validate it.",
     "signatures_enter_or_scan_hint": "Enter a signature ID or scan a QR code to validate.",
 
     "signatures_scan_title": "Scan QR",

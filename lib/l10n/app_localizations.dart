@@ -2429,7 +2429,7 @@ abstract class AppLocalizations {
   /// No description provided for @signatures_invalid_error.
   ///
   /// In en, this message translates to:
-  /// **'Invalid signature.'**
+  /// **'Invalid signature or you are not authorized to validate it.'**
   String get signatures_invalid_error;
 
   /// No description provided for @signatures_enter_or_scan_hint.

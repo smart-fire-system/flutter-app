@@ -1295,7 +1295,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signatures_empty_error => 'Please enter a signature ID.';
 
   @override
-  String get signatures_invalid_error => 'Invalid signature.';
+  String get signatures_invalid_error =>
+      'Invalid signature or you are not authorized to validate it.';
 
   @override
   String get signatures_enter_or_scan_hint =>

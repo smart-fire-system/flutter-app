@@ -1268,7 +1268,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get signatures_empty_error => 'يرجى إدخال معرّف التوقيع.';
 
   @override
-  String get signatures_invalid_error => 'توقيع غير صالح.';
+  String get signatures_invalid_error =>
+      'توقيع غير صالح أو غير مصرح لك بالتحقق منه.';
 
   @override
   String get signatures_enter_or_scan_hint =>

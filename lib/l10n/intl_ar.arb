@@ -437,7 +437,7 @@
     "signatures_validate_button": "تحقق",
     "signatures_clear_button": "مسح",
     "signatures_empty_error": "يرجى إدخال معرّف التوقيع.",
-    "signatures_invalid_error": "توقيع غير صالح.",
+    "signatures_invalid_error": "توقيع غير صالح أو غير مصرح لك بالتحقق منه.",
     "signatures_enter_or_scan_hint": "أدخل معرّف التوقيع أو امسح رمز QR للتحقق.",
 
     "signatures_scan_title": "مسح QR",
