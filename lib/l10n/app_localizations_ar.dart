@@ -1166,7 +1166,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notifications_unsubscribe_confirmation_title =>
-      'هل أنت متأكد أنك تريد إلغاء الاشتراك في الإشعارات؟';
+      'هل أنت متأكد أنك تريد تعطيل الإشعارات؟';
 
   @override
   String get notifications_unsubscribe_banner_text =>

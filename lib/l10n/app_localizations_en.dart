@@ -1195,7 +1195,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifications_unsubscribe_confirmation_title =>
-      'Are you sure you want to unsubscribe from notifications?';
+      'Are you sure you want to disable notifications?';
 
   @override
   String get notifications_unsubscribe_banner_text =>

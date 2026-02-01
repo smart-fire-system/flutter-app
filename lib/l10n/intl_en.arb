@@ -393,7 +393,7 @@
     "notifications_failed_to_subscribe": "Failed to subscribe to notifications",
     "notifications_unsubscribed": "Successfully unsubscribed from notifications",
     "notifications_failed_to_unsubscribe": "Failed to unsubscribe to notifications",
-    "notifications_unsubscribe_confirmation_title": "Are you sure you want to unsubscribe from notifications?",
+    "notifications_unsubscribe_confirmation_title": "Are you sure you want to disable notifications?",
     "notifications_unsubscribe_banner_text": "Unsubscribe from notifications",
     "notifications_unsubscribe_button": "Unsubscribe",
 

@@ -2231,7 +2231,7 @@ abstract class AppLocalizations {
   /// No description provided for @notifications_unsubscribe_confirmation_title.
   ///
   /// In en, this message translates to:
-  /// **'Are you sure you want to unsubscribe from notifications?'**
+  /// **'Are you sure you want to disable notifications?'**
   String get notifications_unsubscribe_confirmation_title;
 
   /// No description provided for @notifications_unsubscribe_banner_text.

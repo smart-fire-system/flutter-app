@@ -397,7 +397,7 @@
     "notifications_failed_to_subscribe": "فشل الاشتراك في الإشعارات",
     "notifications_unsubscribed": "تم إلغاء الاشتراك في الإشعارات بنجاح",
     "notifications_failed_to_unsubscribe": "فشل إلغاء الاشتراك في الإشعارات",
-    "notifications_unsubscribe_confirmation_title": "هل أنت متأكد أنك تريد إلغاء الاشتراك في الإشعارات؟",
+    "notifications_unsubscribe_confirmation_title": "هل أنت متأكد أنك تريد تعطيل الإشعارات؟",
     "notifications_unsubscribe_banner_text": "إلغاء الاشتراك في الإشعارات",
     "notifications_unsubscribe_button": "إلغاء الاشتراك",
 
