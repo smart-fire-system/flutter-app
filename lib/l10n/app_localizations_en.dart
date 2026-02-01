@@ -1161,6 +1161,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Notifications are disabled. Tap to enable.';
 
   @override
+  String get notifications_permission_denied =>
+      'Notification permission was denied. Please enable it in settings.';
+
+  @override
   String get notifications_open_settings => 'Open Settings';
 
   @override
@@ -1199,6 +1203,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifications_unsubscribe_button => 'Unsubscribe';
+
+  @override
+  String get notifications_enabled => 'Notifications Enabled';
+
+  @override
+  String get notifications_disabled => 'Notifications Disabled';
+
+  @override
+  String get notifications_enabled_subtitle =>
+      'You\'re receiving all notifications';
+
+  @override
+  String get notifications_disabled_subtitle =>
+      'Tap the switch to enable notifications';
 
   @override
   String get notifications_update_application => 'Update application';

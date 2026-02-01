@@ -387,6 +387,7 @@
 
     "notifications_permission_disabled_system": "الإشعارات معطلة في إعدادات النظام.",
     "notifications_permission_disabled_tap_enable": "الإشعارات معطلة. اضغط للتمكين.",
+    "notifications_permission_denied": "تم رفض إذن الإشعارات. يرجى تفعيله في الإعدادات.",
     "notifications_open_settings": "فتح الإعدادات",
     "notifications_enable": "تمكين",
 
@@ -399,6 +400,11 @@
     "notifications_unsubscribe_confirmation_title": "هل أنت متأكد أنك تريد إلغاء الاشتراك في الإشعارات؟",
     "notifications_unsubscribe_banner_text": "إلغاء الاشتراك في الإشعارات",
     "notifications_unsubscribe_button": "إلغاء الاشتراك",
+
+    "notifications_enabled": "الإشعارات مُفعّلة",
+    "notifications_disabled": "الإشعارات معطّلة",
+    "notifications_enabled_subtitle": "أنت تتلقى جميع الإشعارات",
+    "notifications_disabled_subtitle": "اضغط على المفتاح لتفعيل الإشعارات",
 
     "notifications_update_application": "تحديث التطبيق",
     "close": "إغلاق",

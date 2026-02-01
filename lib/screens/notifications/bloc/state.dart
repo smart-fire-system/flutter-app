@@ -6,43 +6,26 @@ abstract class NotificationsState {}
 
 class NotificationsInitial extends NotificationsState {}
 
-class NotificationsLoadingNext extends NotificationsState {
-  final dynamic user;
-  AppMessage? message;
-  String? error;
-  final List<NotificationItem> notifications;
-  final bool? isNotificationGranted;
-  final bool isSubscribed;
-  final bool hasMore;
-  NotificationsLoadingNext({
-    required this.user,
-    required this.notifications,
-    required this.isNotificationGranted,
-    required this.isSubscribed,
-    required this.hasMore,
-    this.message,
-    this.error,
-  });
-}
-
 class NotificationsAuthenticated extends NotificationsState {
   final dynamic user;
   AppMessage? message;
   String? error;
   final List<NotificationItem> notifications;
-  final bool? isNotificationGranted;
-  final bool isSubscribed;
+  final bool? isNotificationsEnabled;
   final bool hasMore;
-  bool? isLoading;
+  bool isLoadingNext;
+  bool isLoadingNotifications;
+  bool isLoadingEnableOrDisable;
   NotificationsAuthenticated({
     required this.user,
     required this.notifications,
-    required this.isNotificationGranted,
-    required this.isSubscribed,
+    required this.isNotificationsEnabled,
     required this.hasMore,
+    this.isLoadingNotifications = false,
+    this.isLoadingNext = false,
+    this.isLoadingEnableOrDisable = false,
     this.message,
     this.error,
-    this.isLoading,
   });
 }
 

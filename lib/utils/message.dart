@@ -25,10 +25,10 @@ enum AppMessageId {
   clientAdded,
   clientModified,
   clientDeleted,
-  notificationsSubscribed,
-  notificationsFailedToSubscribe,
-  notificationsUnsubscribed,
-  notificationsFailedToUnsubscribe,
+  notificationsEnabled,
+  notificationsDisabled,
+  notificationsPermissionDenied,
+  unknownError,
 }
 
 class AppMessage {
@@ -43,14 +43,14 @@ class AppMessage {
         return l10n.confirmEmailSent;
       case AppMessageId.profileInfoUpdated:
         return l10n.info_updated;
-      case AppMessageId.notificationsSubscribed:
-        return l10n.notifications_subscribed;
-      case AppMessageId.notificationsFailedToSubscribe:
-        return l10n.notifications_failed_to_subscribe;
-      case AppMessageId.notificationsUnsubscribed:
-        return l10n.notifications_unsubscribed;
-      case AppMessageId.notificationsFailedToUnsubscribe:
-        return l10n.notifications_failed_to_unsubscribe;
+      case AppMessageId.notificationsEnabled:
+        return l10n.notifications_enabled;
+      case AppMessageId.notificationsDisabled:
+        return l10n.notifications_disabled;
+      case AppMessageId.notificationsPermissionDenied:
+        return l10n.notifications_permission_denied;
+      case AppMessageId.unknownError:
+        return l10n.unknown_error;
       default:
         return 'This is message';
     }
@@ -58,8 +58,8 @@ class AppMessage {
 
   MaterialColor getColor() {
     switch (id) {
-      case AppMessageId.notificationsFailedToSubscribe:
-      case AppMessageId.notificationsFailedToUnsubscribe:
+      case AppMessageId.notificationsPermissionDenied:
+      case AppMessageId.unknownError:
         return Colors.red;
       default:
         return Colors.green;

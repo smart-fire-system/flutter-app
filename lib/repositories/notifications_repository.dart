@@ -57,6 +57,15 @@ class NotificationsRepository {
     }
   }
 
+  Future<bool> isNotificationsEnabled() async {
+    bool isGranted = await isNotificationPermissionGranted() ?? false;
+    if (isGranted) {
+      return await isSubscribedToUserTopics();
+    } else {
+      return false;
+    }
+  }
+
   Future<void> readNextNotifications() async {
     if (!_hasMore) return;
     updateUserTopics();

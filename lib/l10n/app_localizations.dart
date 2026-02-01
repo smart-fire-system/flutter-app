@@ -2174,6 +2174,12 @@ abstract class AppLocalizations {
   /// **'Notifications are disabled. Tap to enable.'**
   String get notifications_permission_disabled_tap_enable;
 
+  /// No description provided for @notifications_permission_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification permission was denied. Please enable it in settings.'**
+  String get notifications_permission_denied;
+
   /// No description provided for @notifications_open_settings.
   ///
   /// In en, this message translates to:
@@ -2239,6 +2245,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unsubscribe'**
   String get notifications_unsubscribe_button;
+
+  /// No description provided for @notifications_enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications Enabled'**
+  String get notifications_enabled;
+
+  /// No description provided for @notifications_disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications Disabled'**
+  String get notifications_disabled;
+
+  /// No description provided for @notifications_enabled_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re receiving all notifications'**
+  String get notifications_enabled_subtitle;
+
+  /// No description provided for @notifications_disabled_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the switch to enable notifications'**
+  String get notifications_disabled_subtitle;
 
   /// No description provided for @notifications_update_application.
   ///

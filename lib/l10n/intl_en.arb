@@ -383,6 +383,7 @@
 
     "notifications_permission_disabled_system": "Notifications are disabled in system settings.",
     "notifications_permission_disabled_tap_enable": "Notifications are disabled. Tap to enable.",
+    "notifications_permission_denied": "Notification permission was denied. Please enable it in settings.",
     "notifications_open_settings": "Open Settings",
     "notifications_enable": "Enable",
 
@@ -396,6 +397,11 @@
     "notifications_unsubscribe_banner_text": "Unsubscribe from notifications",
     "notifications_unsubscribe_button": "Unsubscribe",
 
+    "notifications_enabled": "Notifications Enabled",
+    "notifications_disabled": "Notifications Disabled",
+    "notifications_enabled_subtitle": "You're receiving all notifications",
+    "notifications_disabled_subtitle": "Tap the switch to enable notifications",
+    
     "notifications_update_application": "Update application",
     "close": "Close",
 

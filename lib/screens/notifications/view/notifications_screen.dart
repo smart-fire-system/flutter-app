@@ -27,15 +27,14 @@ class NotificationsScreen extends StatefulWidget {
 
 class NotificationsScreenState extends State<NotificationsScreen> {
   List<NotificationItem> _notifications = [];
-  bool? _isNotificationGranted;
+  bool? _isNotificationsEnabled;
   StreamSubscription<Locale>? _languageSub;
   bool _isArabic = false;
-  bool _isSubscribed = false;
-  bool _isLoading = true;
-  bool _loadNextRequested = false;
+  bool _isLoadingNotifications = true;
+  bool _isLoadingNext = false;
+  bool _isLoadingEnableOrDisable = false;
   bool _hasMore = true;
   AppMessage? _message;
-  bool? _isStateLoading;
 
   @override
   void initState() {
@@ -49,157 +48,131 @@ class NotificationsScreenState extends State<NotificationsScreen> {
     });
   }
 
-  Widget _buildPermissionBanner(BuildContext context) {
+  Widget _buildNotificationToggle(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    if (_isNotificationGranted == true) return const SizedBox.shrink();
-    return Material(
-      color: const Color(0xFFFFF2F2),
-      child: InkWell(
-        onTap: () {
-          context
-              .read<NotificationsBloc>()
-              .add(RequestNotificationPermission());
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(Icons.notifications_off_rounded,
-                  color: Colors.redAccent),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  _isNotificationGranted == false
-                      ? l10n.notifications_permission_disabled_system
-                      : l10n.notifications_permission_disabled_tap_enable,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.redAccent),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  context
-                      .read<NotificationsBloc>()
-                      .add(RequestNotificationPermission());
-                },
-                child: Text(
-                  _isNotificationGranted == false
-                      ? l10n.notifications_open_settings
-                      : l10n.notifications_enable,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
-  Widget _buildSubscriptionBanner(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    if (_isSubscribed == true) return const SizedBox.shrink();
-    return Material(
-      color: const Color(0xFFFFF2F2),
-      child: InkWell(
-        onTap: () {
-          context
-              .read<NotificationsBloc>()
-              .add(RequestNotificationPermission());
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(Icons.sync, color: Colors.redAccent),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  l10n.notifications_not_synced_banner,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.redAccent),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  context
-                      .read<NotificationsBloc>()
-                      .add(SubscribeToUserTopics());
-                },
-                child: Text(
-                  l10n.notifications_sync,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUnsubscribeBanner(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    Future<void> onUnsubscribe() async {
-      final result = await CustomAlert.showConfirmation(
-          context: context,
-          title: l10n.notifications_unsubscribe_confirmation_title,
-          buttons: [
-            CustomAlertConfirmationButton(
-                title: l10n.yes,
-                value: 1,
-                backgroundColor: Colors.deepOrange,
-                textColor: Colors.white),
-            CustomAlertConfirmationButton(
-                title: l10n.cancel,
-                value: 0,
-                backgroundColor: Colors.grey,
-                textColor: Colors.white),
-          ]);
-      if (result == 1 && context.mounted) {
-        context.read<NotificationsBloc>().add(UnsubscribeFromUserTopics());
+    Future<void> onToggle(bool value) async {
+      if (value) {
+        // Turning notifications ON
+        context.read<NotificationsBloc>().add(EnableNotifications());
+      } else {
+        // Turning notifications OFF - show confirmation
+        final result = await CustomAlert.showConfirmation(
+            context: context,
+            title: l10n.notifications_unsubscribe_confirmation_title,
+            buttons: [
+              CustomAlertConfirmationButton(
+                  title: l10n.yes,
+                  value: 1,
+                  backgroundColor: Colors.deepOrange,
+                  textColor: Colors.white),
+              CustomAlertConfirmationButton(
+                  title: l10n.cancel,
+                  value: 0,
+                  backgroundColor: Colors.grey,
+                  textColor: Colors.white),
+            ]);
+        if (result == 1 && context.mounted) {
+          context.read<NotificationsBloc>().add(DisableNotifications());
+        }
       }
     }
 
-    if (_isSubscribed == false || _isNotificationGranted == false) {
-      return const SizedBox.shrink();
-    }
-    return Material(
-      color: const Color(0xFFFFF2F2),
-      child: InkWell(
-        onTap: () {
-          onUnsubscribe();
-        },
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: _isNotificationsEnabled == true
+              ? [
+                  const Color(0xFFE8F5E9),
+                  const Color(0xFFC8E6C9),
+                ]
+              : [
+                  const Color(0xFFFFF3E0),
+                  const Color(0xFFFFE0B2),
+                ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color:
+                (_isNotificationsEnabled == true ? Colors.green : Colors.orange)
+                    .withValues(alpha: 0.15),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.all(16),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Icon(Icons.unsubscribe, color: Colors.deepOrange),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  l10n.notifications_unsubscribe_banner_text,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.deepOrange),
+              // Icon indicator
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: _isNotificationsEnabled == true
+                      ? Colors.green.withValues(alpha: 0.2)
+                      : Colors.orange.withValues(alpha: 0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  _isNotificationsEnabled == true
+                      ? Icons.notifications_active_rounded
+                      : Icons.notifications_off_rounded,
+                  color: _isNotificationsEnabled == true
+                      ? Colors.green.shade700
+                      : Colors.orange.shade700,
+                  size: 24,
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  onUnsubscribe();
-                },
-                child: Text(
-                  l10n.notifications_unsubscribe_button,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.deepOrange),
+              const SizedBox(width: 16),
+              // Text content
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      _isNotificationsEnabled == true
+                          ? l10n.notifications_enabled
+                          : l10n.notifications_disabled,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: _isNotificationsEnabled == true
+                                ? Colors.green.shade800
+                                : Colors.orange.shade800,
+                          ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _isNotificationsEnabled == true
+                          ? l10n.notifications_enabled_subtitle
+                          : l10n.notifications_disabled_subtitle,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: _isNotificationsEnabled == true
+                                ? Colors.green.shade700
+                                : Colors.orange.shade700,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+              // Toggle switch
+              Transform.scale(
+                scale: 1.1,
+                child: Switch(
+                  value: _isNotificationsEnabled == true,
+                  onChanged: onToggle,
+                  activeThumbColor: Colors.white,
+                  activeTrackColor: Colors.green.shade600,
+                  inactiveThumbColor: Colors.white,
+                  inactiveTrackColor: Colors.orange.shade400,
+                  materialTapTargetSize: MaterialTapTargetSize.padded,
                 ),
               ),
             ],
@@ -292,6 +265,21 @@ class NotificationsScreenState extends State<NotificationsScreen> {
     super.dispose();
   }
 
+  void _buildFakeNotifications() {
+    _notifications = List.filled(
+      7,
+      NotificationItem(
+        id: 'fake',
+        enTitle: 'Fake Notification',
+        enBody: 'This is a fake notification',
+        arTitle: 'Fake Notification',
+        arBody: 'This is a fake notification',
+        topics: ['fake'],
+        createdAt: Timestamp.fromDate(DateTime.now()),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -300,35 +288,20 @@ class NotificationsScreenState extends State<NotificationsScreen> {
         if (state is NotificationsAuthenticated) {
           _message = state.message;
           _notifications = state.notifications;
-          _isNotificationGranted = state.isNotificationGranted;
-          _isSubscribed = state.isSubscribed;
-          _isLoading = false;
+          _isNotificationsEnabled = state.isNotificationsEnabled;
           _hasMore = state.hasMore;
-          _loadNextRequested = false;
-          _isStateLoading = state.isLoading;
-          state.isLoading = null;
+          _isLoadingNext = state.isLoadingNext;
+          _isLoadingNotifications = state.isLoadingNotifications;
+          _isLoadingEnableOrDisable = state.isLoadingEnableOrDisable;
+          state.isLoadingNotifications = false;
+          state.isLoadingNext = false;
+          state.isLoadingEnableOrDisable = false;
           state.message = null;
-        } else if (state is NotificationsLoadingNext) {
-          _notifications = state.notifications;
-          _isNotificationGranted = state.isNotificationGranted;
-          _isSubscribed = state.isSubscribed;
-          _isLoading = false;
-          _hasMore = state.hasMore;
-          _loadNextRequested = true;
+          if (_isLoadingNotifications == true) {
+            _buildFakeNotifications();
+          }
         } else if (state is! NotificationsAuthenticated) {
-          _notifications = List.filled(
-            7,
-            NotificationItem(
-              id: 'fake',
-              enTitle: 'Fake Notification',
-              enBody: 'This is a fake notification',
-              arTitle: 'Fake Notification',
-              arBody: 'This is a fake notification',
-              topics: ['fake'],
-              createdAt: Timestamp.fromDate(DateTime.now()),
-            ),
-          );
-          _isLoading = true;
+          _buildFakeNotifications();
         }
         if (_message != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -348,9 +321,8 @@ class NotificationsScreenState extends State<NotificationsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (!_isLoading) _buildPermissionBanner(context),
-                if (!_isLoading) _buildSubscriptionBanner(context),
-                if (!_isLoading) _buildUnsubscribeBanner(context),
+                if (_isNotificationsEnabled != null)
+                  _buildNotificationToggle(context),
                 Expanded(child: _buildContent(context, state)),
               ],
             ),
@@ -362,7 +334,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
 
   Widget _buildContent(BuildContext context, NotificationsState state) {
     final l10n = AppLocalizations.of(context)!;
-    if (_isLoading || _isStateLoading == true) {
+    if (_isLoadingNotifications || _isLoadingEnableOrDisable) {
       AppLoading().show(
         context: context,
         screen: AppScreen.viewNotifications,
@@ -375,7 +347,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
         screen: AppScreen.viewNotifications,
       );
     }
-    return _notifications.isEmpty && !_isLoading
+    return _notifications.isEmpty && !_isLoadingNotifications
         ? Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -403,15 +375,15 @@ class NotificationsScreenState extends State<NotificationsScreen> {
             ),
           )
         : Skeletonizer(
-            enabled: _isLoading,
+            enabled: _isLoadingNotifications,
             child: NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 final nearBottom = notification.metrics.extentAfter < 200;
                 final canLoad = state is NotificationsAuthenticated &&
                     _hasMore &&
-                    !_loadNextRequested;
+                    !_isLoadingNext;
                 if (nearBottom && canLoad) {
-                  _loadNextRequested = true;
+                  _isLoadingNext = true;
                   context
                       .read<NotificationsBloc>()
                       .add(LoadNextNotifications());
@@ -422,12 +394,12 @@ class NotificationsScreenState extends State<NotificationsScreen> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                 itemCount: _notifications.length +
-                    ((_hasMore || state is NotificationsLoadingNext) ? 1 : 0),
+                    ((_hasMore || _isLoadingNext) ? 1 : 0),
                 separatorBuilder: (_, __) => const SizedBox(height: 8),
                 itemBuilder: (context, index) {
                   final isFooter = index >= _notifications.length;
                   if (isFooter) {
-                    final isLoadingNext = state is NotificationsLoadingNext;
+                    final isLoadingNext = _isLoadingNext;
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Center(

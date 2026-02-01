@@ -1134,6 +1134,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'الإشعارات معطلة. اضغط للتمكين.';
 
   @override
+  String get notifications_permission_denied =>
+      'تم رفض إذن الإشعارات. يرجى تفعيله في الإعدادات.';
+
+  @override
   String get notifications_open_settings => 'فتح الإعدادات';
 
   @override
@@ -1170,6 +1174,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notifications_unsubscribe_button => 'إلغاء الاشتراك';
+
+  @override
+  String get notifications_enabled => 'الإشعارات مُفعّلة';
+
+  @override
+  String get notifications_disabled => 'الإشعارات معطّلة';
+
+  @override
+  String get notifications_enabled_subtitle => 'أنت تتلقى جميع الإشعارات';
+
+  @override
+  String get notifications_disabled_subtitle =>
+      'اضغط على المفتاح لتفعيل الإشعارات';
 
   @override
   String get notifications_update_application => 'تحديث التطبيق';
