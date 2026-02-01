@@ -1,6 +1,6 @@
+import 'dart:ui';
 import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
-import 'package:fire_alarm_system/widgets/button.dart';
 import 'package:flutter/material.dart';
 
 class CustomAlertConfirmationButton {
@@ -29,51 +29,97 @@ class CustomAlert {
     return showDialog(
       context: context,
       barrierDismissible: barrierDismissible,
+      barrierColor: Colors.black54,
       builder: (BuildContext context) {
         return PopScope(
           canPop: canPop,
-          child: Center(
-            child: Container(
-              width: MediaQuery.of(context).size.width < 500
-                  ? MediaQuery.of(context).size.width * 0.8
-                  : 400,
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height < 800
-                    ? MediaQuery.of(context).size.height * 0.7
-                    : 400,
-              ),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  Image.asset(
-                    'assets/gif/success.gif',
-                    height: 75,
-                  ),
-                  Center(
-                    child: Text(
-                      title,
-                      style: CustomStyle.largeText25B,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+            child: Dialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 400),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(28),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
                     ),
-                  ),
-                  if (subtitle != null)
-                    Center(
-                      child: Text(
-                        subtitle,
-                        style: CustomStyle.largeText,
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 32),
+                    // Success Icon
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4CAF50).withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.check_circle_rounded,
+                        color: Color(0xFF4CAF50),
+                        size: 48,
                       ),
                     ),
-                  CustomBasicButton(
-                    label: buttonText ?? l10n.ok,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
+                    const SizedBox(height: 24),
+                    // Title
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: CustomStyle.largeText25B,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Text(
+                          subtitle,
+                          textAlign: TextAlign.center,
+                          style: CustomStyle.smallTextGrey,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 32),
+                    // Button
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 52,
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF4CAF50),
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          child: Text(
+                            buttonText ?? l10n.ok,
+                            style: CustomStyle.largeTextBWhite.copyWith(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
               ),
             ),
           ),
@@ -94,56 +140,113 @@ class CustomAlert {
     await showDialog(
       context: context,
       barrierDismissible: barrierDismissible,
+      barrierColor: Colors.black54,
       builder: (BuildContext context) {
         return PopScope(
           canPop: canPop,
-          child: Center(
-            child: Container(
-              width: MediaQuery.of(context).size.width < 500
-                  ? MediaQuery.of(context).size.width * 0.8
-                  : 400,
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height < 800
-                    ? MediaQuery.of(context).size.height * 0.7
-                    : 400,
-              ),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  Image.asset(
-                    'assets/gif/warning.gif',
-                    height: 75,
-                  ),
-                  Center(
-                    child: Text(
-                      title,
-                      style: CustomStyle.largeText25B,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+            child: Dialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 400),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(28),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
                     ),
-                  ),
-                  if (subtitle != null)
-                    Center(
-                      child: Text(
-                        subtitle,
-                        style: CustomStyle.largeText,
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 32),
+                    // Warning Icon
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFF9800).withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.warning_rounded,
+                        color: Color(0xFFFF9800),
+                        size: 48,
                       ),
                     ),
-                  ...List.generate(buttons.length, (index) {
-                    return CustomNormalButton(
-                      label: buttons[index].title,
-                      backgroundColor: buttons[index].backgroundColor,
-                      textColor: buttons[index].textColor,
-                      onPressed: () {
-                        pressedValue = buttons[index].value;
-                        Navigator.of(context).pop();
-                      },
-                    );
-                  }),
-                ],
+                    const SizedBox(height: 24),
+                    // Title
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: CustomStyle.largeText25B,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Text(
+                          subtitle,
+                          textAlign: TextAlign.center,
+                          style: CustomStyle.smallTextGrey,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 32),
+                    // Buttons
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        children: List.generate(buttons.length, (index) {
+                          final button = buttons[index];
+                          final isLastButton = index == buttons.length - 1;
+
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom: isLastButton ? 0 : 12,
+                            ),
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: 52,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  pressedValue = button.value;
+                                  Navigator.of(context).pop();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: button.backgroundColor,
+                                  foregroundColor: button.textColor,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                child: Text(
+                                  button.title,
+                                  style: CustomStyle.mediumTextB.copyWith(
+                                    color: button.textColor,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
               ),
             ),
           ),
@@ -165,51 +268,97 @@ class CustomAlert {
     return showDialog(
       context: context,
       barrierDismissible: barrierDismissible,
+      barrierColor: Colors.black54,
       builder: (BuildContext context) {
         return PopScope(
           canPop: canPop,
-          child: Center(
-            child: Container(
-              width: MediaQuery.of(context).size.width < 500
-                  ? MediaQuery.of(context).size.width * 0.8
-                  : 400,
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height < 800
-                    ? MediaQuery.of(context).size.height * 0.7
-                    : 400,
-              ),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  Image.asset(
-                    'assets/gif/fail.gif',
-                    height: 75,
-                  ),
-                  Center(
-                    child: Text(
-                      title,
-                      style: CustomStyle.largeText25B,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+            child: Dialog(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 400),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(28),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
                     ),
-                  ),
-                  if (subtitle != null)
-                    Center(
-                      child: Text(
-                        subtitle,
-                        style: CustomStyle.largeText,
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 32),
+                    // Error Icon
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF44336).withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.error_rounded,
+                        color: Color(0xFFF44336),
+                        size: 48,
                       ),
                     ),
-                  CustomBasicButton(
-                    label: buttonText ?? l10n.ok,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
+                    const SizedBox(height: 24),
+                    // Title
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: CustomStyle.largeText25B,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Text(
+                          subtitle,
+                          textAlign: TextAlign.center,
+                          style: CustomStyle.smallTextGrey,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 32),
+                    // Button
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 52,
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFF44336),
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          child: Text(
+                            buttonText ?? l10n.ok,
+                            style: CustomStyle.largeTextBWhite.copyWith(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
               ),
             ),
           ),
