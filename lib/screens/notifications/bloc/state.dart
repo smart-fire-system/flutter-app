@@ -6,8 +6,6 @@ abstract class NotificationsState {}
 
 class NotificationsInitial extends NotificationsState {}
 
-class NotificationsLoading extends NotificationsState {}
-
 class NotificationsLoadingNext extends NotificationsState {
   final dynamic user;
   AppMessage? message;
@@ -35,6 +33,7 @@ class NotificationsAuthenticated extends NotificationsState {
   final bool? isNotificationGranted;
   final bool isSubscribed;
   final bool hasMore;
+  bool? isLoading;
   NotificationsAuthenticated({
     required this.user,
     required this.notifications,
@@ -43,6 +42,7 @@ class NotificationsAuthenticated extends NotificationsState {
     required this.hasMore,
     this.message,
     this.error,
+    this.isLoading,
   });
 }
 

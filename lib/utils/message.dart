@@ -25,6 +25,10 @@ enum AppMessageId {
   clientAdded,
   clientModified,
   clientDeleted,
+  notificationsSubscribed,
+  notificationsFailedToSubscribe,
+  notificationsUnsubscribed,
+  notificationsFailedToUnsubscribe,
 }
 
 class AppMessage {
@@ -39,8 +43,26 @@ class AppMessage {
         return l10n.confirmEmailSent;
       case AppMessageId.profileInfoUpdated:
         return l10n.info_updated;
+      case AppMessageId.notificationsSubscribed:
+        return l10n.notifications_subscribed;
+      case AppMessageId.notificationsFailedToSubscribe:
+        return l10n.notifications_failed_to_subscribe;
+      case AppMessageId.notificationsUnsubscribed:
+        return l10n.notifications_unsubscribed;
+      case AppMessageId.notificationsFailedToUnsubscribe:
+        return l10n.notifications_failed_to_unsubscribe;
       default:
         return 'This is message';
+    }
+  }
+
+  MaterialColor getColor() {
+    switch (id) {
+      case AppMessageId.notificationsFailedToSubscribe:
+      case AppMessageId.notificationsFailedToUnsubscribe:
+        return Colors.red;
+      default:
+        return Colors.green;
     }
   }
 }

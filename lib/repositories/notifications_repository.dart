@@ -12,6 +12,7 @@ class NotificationsRepository {
   final FirebaseFirestore _firestore;
   final AppRepository _appRepository;
   final String _subscribedTopicsKey = 'subscribedTopics';
+  final String _localUserTokenKey = 'localUserToken';
   static const int _pageSize = 10;
   final List<NotificationItem> _notifications = [];
   final List<String> _userTopics = [];
@@ -215,24 +216,65 @@ class NotificationsRepository {
     }
   }
 
-  Future<void> subscribeToUserTopics() async {
-    List<String> newSubscribedTopics = [];
+  Future<bool> subscribeToUserTopics() async {
+    final token = await _messaging.getToken();
     final prefs = await SharedPreferences.getInstance();
-    final subscribedTopics = prefs.getStringList(_subscribedTopicsKey) ?? [];
-    newSubscribedTopics = List.from(subscribedTopics);
-    for (var topic in _userTopics) {
-      if (!subscribedTopics.contains(topic)) {
-        await _messaging.subscribeToTopic(topic);
-        newSubscribedTopics.add(topic);
-        prefs.setStringList(_subscribedTopicsKey, newSubscribedTopics);
+    List<String> newSubscribedTopics = [];
+
+    Future<void> updateTopic(String topic, {bool remove = false}) async {
+      final result = await prefs.setStringList(
+          _subscribedTopicsKey,
+          !remove
+              ? [...newSubscribedTopics, topic]
+              : newSubscribedTopics.isNotEmpty
+                  ? newSubscribedTopics.sublist(
+                      0, newSubscribedTopics.length - 1)
+                  : []);
+      if (result) {
+        if (remove) {
+          newSubscribedTopics.remove(topic);
+          await _messaging.unsubscribeFromTopic(topic);
+        } else {
+          newSubscribedTopics.add(topic);
+          await _messaging.subscribeToTopic(topic);
+        }
       }
     }
-    for (var topic in subscribedTopics) {
-      if (!_userTopics.contains(topic)) {
-        await _messaging.unsubscribeFromTopic(topic);
-        newSubscribedTopics.remove(topic);
-        prefs.setStringList(_subscribedTopicsKey, newSubscribedTopics);
+
+    try {
+      if (token == null) {
+        await prefs.setStringList(_subscribedTopicsKey, []);
+        await prefs.setString(_localUserTokenKey, '');
+        return false;
       }
+      final subscribedTopics = prefs.getStringList(_subscribedTopicsKey) ?? [];
+      final localUserToken = prefs.getString(_localUserTokenKey);
+      if (localUserToken != token) {
+        await prefs.setString(_localUserTokenKey, token);
+
+        for (var topic in _userTopics) {
+          await updateTopic(topic);
+        }
+      } else {
+        newSubscribedTopics = List.from(subscribedTopics);
+        for (var topic in _userTopics) {
+          if (!subscribedTopics.contains(topic)) {
+            await updateTopic(topic);
+          }
+        }
+        for (var topic in subscribedTopics) {
+          if (!_userTopics.contains(topic)) {
+            updateTopic(topic, remove: true);
+          }
+        }
+      }
+      await prefs.setString(_localUserTokenKey, token);
+      return true;
+    } catch (e) {
+      await prefs.setStringList(_subscribedTopicsKey, []);
+      await prefs.setString(_localUserTokenKey, '');
+      await _messaging.deleteToken();
+      return false;
     }
   }
 
@@ -262,6 +304,16 @@ class NotificationsRepository {
       await _messaging.unsubscribeFromTopic('clients_$branchId');
       await _messaging.unsubscribeFromTopic('company_$companyId');
       await _messaging.unsubscribeFromTopic('branch_$branchId');
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList(_subscribedTopicsKey, []);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteLocalUserToken() async {
+    try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setStringList(_subscribedTopicsKey, []);
       return true;

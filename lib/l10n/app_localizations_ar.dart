@@ -36,6 +36,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ok => 'حسناً';
 
   @override
+  String get yes => 'نعم';
+
+  @override
   String get cancel => 'إلغاء';
 
   @override
@@ -1142,6 +1145,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get notifications_sync => 'مزامنة';
+
+  @override
+  String get notifications_subscribed => 'تم الاشتراك في الإشعارات بنجاح';
+
+  @override
+  String get notifications_failed_to_subscribe => 'فشل الاشتراك في الإشعارات';
+
+  @override
+  String get notifications_unsubscribed =>
+      'تم إلغاء الاشتراك في الإشعارات بنجاح';
+
+  @override
+  String get notifications_failed_to_unsubscribe =>
+      'فشل إلغاء الاشتراك في الإشعارات';
+
+  @override
+  String get notifications_unsubscribe_confirmation_title =>
+      'هل أنت متأكد أنك تريد إلغاء الاشتراك في الإشعارات؟';
+
+  @override
+  String get notifications_unsubscribe_banner_text =>
+      'إلغاء الاشتراك في الإشعارات';
+
+  @override
+  String get notifications_unsubscribe_button => 'إلغاء الاشتراك';
 
   @override
   String get notifications_update_application => 'تحديث التطبيق';

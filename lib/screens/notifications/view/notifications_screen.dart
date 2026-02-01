@@ -2,9 +2,11 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/l10n/app_localizations.dart';
 import 'package:fire_alarm_system/models/notification.dart';
+import 'package:fire_alarm_system/utils/alert.dart';
 import 'package:fire_alarm_system/utils/date.dart';
 import 'package:fire_alarm_system/utils/enums.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
+import 'package:fire_alarm_system/utils/message.dart';
 import 'package:fire_alarm_system/utils/styles.dart';
 import 'package:fire_alarm_system/widgets/app_bar.dart';
 import 'package:fire_alarm_system/widgets/loading.dart';
@@ -32,6 +34,8 @@ class NotificationsScreenState extends State<NotificationsScreen> {
   bool _isLoading = true;
   bool _loadNextRequested = false;
   bool _hasMore = true;
+  AppMessage? _message;
+  bool? _isStateLoading;
 
   @override
   void initState() {
@@ -138,6 +142,73 @@ class NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
+  Widget _buildUnsubscribeBanner(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    Future<void> onUnsubscribe() async {
+      final result = await CustomAlert.showConfirmation(
+          context: context,
+          title: l10n.notifications_unsubscribe_confirmation_title,
+          buttons: [
+            CustomAlertConfirmationButton(
+                title: l10n.yes,
+                value: 1,
+                backgroundColor: Colors.deepOrange,
+                textColor: Colors.white),
+            CustomAlertConfirmationButton(
+                title: l10n.cancel,
+                value: 0,
+                backgroundColor: Colors.grey,
+                textColor: Colors.white),
+          ]);
+      if (result == 1 && context.mounted) {
+        context.read<NotificationsBloc>().add(UnsubscribeFromUserTopics());
+      }
+    }
+
+    if (_isSubscribed == false || _isNotificationGranted == false) {
+      return const SizedBox.shrink();
+    }
+    return Material(
+      color: const Color(0xFFFFF2F2),
+      child: InkWell(
+        onTap: () {
+          onUnsubscribe();
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(Icons.unsubscribe, color: Colors.deepOrange),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  l10n.notifications_unsubscribe_banner_text,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.deepOrange),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  onUnsubscribe();
+                },
+                child: Text(
+                  l10n.notifications_unsubscribe_button,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.deepOrange),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Future<void> _showNotificationDetails(NotificationItem item) async {
     final l10n = AppLocalizations.of(context)!;
     await showModalBottomSheet(
@@ -227,12 +298,16 @@ class NotificationsScreenState extends State<NotificationsScreen> {
     return BlocBuilder<NotificationsBloc, NotificationsState>(
       builder: (context, state) {
         if (state is NotificationsAuthenticated) {
+          _message = state.message;
           _notifications = state.notifications;
           _isNotificationGranted = state.isNotificationGranted;
           _isSubscribed = state.isSubscribed;
           _isLoading = false;
           _hasMore = state.hasMore;
           _loadNextRequested = false;
+          _isStateLoading = state.isLoading;
+          state.isLoading = null;
+          state.message = null;
         } else if (state is NotificationsLoadingNext) {
           _notifications = state.notifications;
           _isNotificationGranted = state.isNotificationGranted;
@@ -255,6 +330,15 @@ class NotificationsScreenState extends State<NotificationsScreen> {
           );
           _isLoading = true;
         }
+        if (_message != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(_message!.getText(context)),
+              backgroundColor: _message!.getColor(),
+            ));
+            _message = null;
+          });
+        }
         return Scaffold(
           appBar: CustomAppBar(title: l10n.notifications),
           body: RefreshIndicator(
@@ -266,6 +350,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
               children: [
                 if (!_isLoading) _buildPermissionBanner(context),
                 if (!_isLoading) _buildSubscriptionBanner(context),
+                if (!_isLoading) _buildUnsubscribeBanner(context),
                 Expanded(child: _buildContent(context, state)),
               ],
             ),
@@ -277,7 +362,7 @@ class NotificationsScreenState extends State<NotificationsScreen> {
 
   Widget _buildContent(BuildContext context, NotificationsState state) {
     final l10n = AppLocalizations.of(context)!;
-    if (_isLoading) {
+    if (_isLoading || _isStateLoading == true) {
       AppLoading().show(
         context: context,
         screen: AppScreen.viewNotifications,

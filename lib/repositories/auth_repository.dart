@@ -10,6 +10,7 @@ import 'package:fire_alarm_system/models/user_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_alarm_system/utils/error_logger.dart';
 import 'package:fire_alarm_system/utils/localization_util.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -27,6 +28,7 @@ class AuthRepository {
   final FirebaseFirestore _firestore;
   final UserAuth _userAuth;
   final AppRepository appRepository;
+  final FirebaseMessaging _messaging;
   String? googleUserName;
   String? googleUserEmail;
   final _authStateChangesController = StreamController<void>.broadcast();
@@ -35,7 +37,8 @@ class AuthRepository {
   AuthRepository({required this.appRepository})
       : _firebaseAuth = firebase.FirebaseAuth.instance,
         _firestore = FirebaseFirestore.instance,
-        _userAuth = UserAuth(authStatus: AuthStatus.notAuthenticated) {
+        _userAuth = UserAuth(authStatus: AuthStatus.notAuthenticated),
+        _messaging = FirebaseMessaging.instance {
     _firebaseAuth.authStateChanges().listen((_) async {
       _authChangeStatus = await _handleAuthStateChanged();
       _authStateChangesController.add(null);
@@ -88,10 +91,17 @@ class AuthRepository {
   Future<void> signOut() async {
     firebase.User? firebaseUser = _firebaseAuth.currentUser;
     if (firebaseUser != null) {
-      final result = await appRepository.notificationsRepository
-          .unsubscribeFromUserTopics();
-      if (!result) {
+      final result =
+          await appRepository.notificationsRepository.deleteLocalUserToken();
+      if (result) {
         throw Exception('Failed to unsubscribe from user topics');
+      } else {
+        try {
+          await _messaging.deleteToken();
+          await _messaging.getToken();
+        } catch (e) {
+          throw Exception('Failed to delete local user token');
+        }
       }
       for (firebase.UserInfo info in firebaseUser.providerData) {
         if (info.providerId == 'google.com') {

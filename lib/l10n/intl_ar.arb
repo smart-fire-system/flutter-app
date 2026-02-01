@@ -12,6 +12,7 @@
 
     "error": "خطأ",
     "ok": "حسناً",
+    "yes": "نعم",
     "cancel": "إلغاء",
     "and": "و",
 
@@ -391,6 +392,13 @@
 
     "notifications_not_synced_banner": "إشعاراتك غير متزامنة. اضغط لمزامنة إشعاراتك.",
     "notifications_sync": "مزامنة",
+    "notifications_subscribed": "تم الاشتراك في الإشعارات بنجاح",
+    "notifications_failed_to_subscribe": "فشل الاشتراك في الإشعارات",
+    "notifications_unsubscribed": "تم إلغاء الاشتراك في الإشعارات بنجاح",
+    "notifications_failed_to_unsubscribe": "فشل إلغاء الاشتراك في الإشعارات",
+    "notifications_unsubscribe_confirmation_title": "هل أنت متأكد أنك تريد إلغاء الاشتراك في الإشعارات؟",
+    "notifications_unsubscribe_banner_text": "إلغاء الاشتراك في الإشعارات",
+    "notifications_unsubscribe_button": "إلغاء الاشتراك",
 
     "notifications_update_application": "تحديث التطبيق",
     "close": "إغلاق",

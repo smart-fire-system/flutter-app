@@ -35,6 +35,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ok => 'Ok';
 
   @override
+  String get yes => 'Yes';
+
+  @override
   String get cancel => 'Cancel';
 
   @override
@@ -1169,6 +1172,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifications_sync => 'Sync';
+
+  @override
+  String get notifications_subscribed =>
+      'Successfully subscribed to notifications';
+
+  @override
+  String get notifications_failed_to_subscribe =>
+      'Failed to subscribe to notifications';
+
+  @override
+  String get notifications_unsubscribed =>
+      'Successfully unsubscribed from notifications';
+
+  @override
+  String get notifications_failed_to_unsubscribe =>
+      'Failed to unsubscribe to notifications';
+
+  @override
+  String get notifications_unsubscribe_confirmation_title =>
+      'Are you sure you want to unsubscribe from notifications?';
+
+  @override
+  String get notifications_unsubscribe_banner_text =>
+      'Unsubscribe from notifications';
+
+  @override
+  String get notifications_unsubscribe_button => 'Unsubscribe';
 
   @override
   String get notifications_update_application => 'Update application';

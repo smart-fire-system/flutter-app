@@ -1,4 +1,5 @@
 import 'package:fire_alarm_system/repositories/app_repository.dart';
+import 'package:fire_alarm_system/utils/message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'event.dart';
 import 'state.dart';
@@ -12,22 +13,26 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       add(Refresh());
     });
     on<Refresh>((event, emit) async {
-      emit(NotificationsLoading());
       if (!appRepository.isUserReady()) {
         emit(NotificationsNotAuthenticated());
       } else {
-        await appRepository.notificationsRepository.readNotifications();
-        emit(NotificationsAuthenticated(
-          user: appRepository.userRole,
-          notifications: appRepository.notificationsRepository.notifications,
-          isNotificationGranted: await appRepository.notificationsRepository
-              .isNotificationPermissionGranted(),
-          isSubscribed: await appRepository.notificationsRepository
-              .isSubscribedToUserTopics(),
-          hasMore: appRepository.notificationsRepository.hasMore,
-        ));
+        if (event.state != null) {
+          emit(event.state!);
+        } else {
+          await appRepository.notificationsRepository.readNotifications();
+          emit(NotificationsAuthenticated(
+            user: appRepository.userRole,
+            notifications: appRepository.notificationsRepository.notifications,
+            isNotificationGranted: await appRepository.notificationsRepository
+                .isNotificationPermissionGranted(),
+            isSubscribed: await appRepository.notificationsRepository
+                .isSubscribedToUserTopics(),
+            hasMore: appRepository.notificationsRepository.hasMore,
+          ));
+        }
       }
     });
+
     on<LoadNextNotifications>((event, emit) async {
       if (!appRepository.isUserReady()) {
         emit(NotificationsNotAuthenticated());
@@ -43,33 +48,111 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
           ));
         }
         await appRepository.notificationsRepository.readNextNotifications();
-        emit(NotificationsAuthenticated(
-          user: appRepository.userRole,
-          notifications: appRepository.notificationsRepository.notifications,
-          isNotificationGranted: await appRepository.notificationsRepository
-              .isNotificationPermissionGranted(),
-          isSubscribed: await appRepository.notificationsRepository
-              .isSubscribedToUserTopics(),
-          hasMore: appRepository.notificationsRepository.hasMore,
-        ));
+        add(
+          Refresh(
+            state: NotificationsAuthenticated(
+              user: appRepository.userRole,
+              notifications:
+                  appRepository.notificationsRepository.notifications,
+              isNotificationGranted: await appRepository.notificationsRepository
+                  .isNotificationPermissionGranted(),
+              isSubscribed: await appRepository.notificationsRepository
+                  .isSubscribedToUserTopics(),
+              hasMore: appRepository.notificationsRepository.hasMore,
+            ),
+          ),
+        );
       }
     });
+
     add(Refresh());
+
     on<RequestNotificationPermission>((event, emit) async {
-      emit(NotificationsLoading());
       await appRepository.notificationsRepository
           .requestNotificationPermission();
-      add(Refresh());
+      add(
+        Refresh(
+          state: NotificationsAuthenticated(
+            user: appRepository.userRole,
+            notifications: appRepository.notificationsRepository.notifications,
+            isNotificationGranted: await appRepository.notificationsRepository
+                .isNotificationPermissionGranted(),
+            isSubscribed: await appRepository.notificationsRepository
+                .isSubscribedToUserTopics(),
+            hasMore: appRepository.notificationsRepository.hasMore,
+          ),
+        ),
+      );
     });
+
     on<SubscribeToUserTopics>((event, emit) async {
-      emit(NotificationsLoading());
-      await appRepository.notificationsRepository.subscribeToUserTopics();
-      add(Refresh());
+      add(
+        Refresh(
+          state: NotificationsAuthenticated(
+            user: appRepository.userRole,
+            notifications: appRepository.notificationsRepository.notifications,
+            isNotificationGranted: await appRepository.notificationsRepository
+                .isNotificationPermissionGranted(),
+            isSubscribed: false,
+            hasMore: appRepository.notificationsRepository.hasMore,
+            isLoading: true,
+          ),
+        ),
+      );
+      final result =
+          await appRepository.notificationsRepository.subscribeToUserTopics();
+      add(
+        Refresh(
+          state: NotificationsAuthenticated(
+            user: appRepository.userRole,
+            notifications: appRepository.notificationsRepository.notifications,
+            isNotificationGranted: await appRepository.notificationsRepository
+                .isNotificationPermissionGranted(),
+            isSubscribed: await appRepository.notificationsRepository
+                .isSubscribedToUserTopics(),
+            hasMore: appRepository.notificationsRepository.hasMore,
+            message: result
+                ? AppMessage(id: AppMessageId.notificationsSubscribed)
+                : AppMessage(id: AppMessageId.notificationsFailedToSubscribe),
+            isLoading: false,
+          ),
+        ),
+      );
     });
+
     on<UnsubscribeFromUserTopics>((event, emit) async {
-      emit(NotificationsLoading());
-      await appRepository.notificationsRepository.unsubscribeFromUserTopics();
-      add(Refresh());
+      add(
+        Refresh(
+          state: NotificationsAuthenticated(
+            user: appRepository.userRole,
+            notifications: appRepository.notificationsRepository.notifications,
+            isNotificationGranted: await appRepository.notificationsRepository
+                .isNotificationPermissionGranted(),
+            isSubscribed: true,
+            hasMore: appRepository.notificationsRepository.hasMore,
+            isLoading: true,
+          ),
+        ),
+      );
+      final result = await appRepository.notificationsRepository
+          .unsubscribeFromUserTopics();
+      add(
+        Refresh(
+          state: NotificationsAuthenticated(
+            user: appRepository.userRole,
+            notifications: appRepository.notificationsRepository.notifications,
+            isNotificationGranted: await appRepository.notificationsRepository
+                .isNotificationPermissionGranted(),
+            isSubscribed: await appRepository.notificationsRepository
+                .isSubscribedToUserTopics(),
+            hasMore: appRepository.notificationsRepository.hasMore,
+            message: result
+                ? AppMessage(id: AppMessageId.notificationsUnsubscribed)
+                : AppMessage(id: AppMessageId.notificationsFailedToUnsubscribe),
+            isLoading: false,
+          ),
+        ),
+      );
     });
   }
 }

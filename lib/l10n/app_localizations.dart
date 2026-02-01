@@ -146,6 +146,12 @@ abstract class AppLocalizations {
   /// **'Ok'**
   String get ok;
 
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
@@ -2191,6 +2197,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sync'**
   String get notifications_sync;
+
+  /// No description provided for @notifications_subscribed.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully subscribed to notifications'**
+  String get notifications_subscribed;
+
+  /// No description provided for @notifications_failed_to_subscribe.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to subscribe to notifications'**
+  String get notifications_failed_to_subscribe;
+
+  /// No description provided for @notifications_unsubscribed.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully unsubscribed from notifications'**
+  String get notifications_unsubscribed;
+
+  /// No description provided for @notifications_failed_to_unsubscribe.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to unsubscribe to notifications'**
+  String get notifications_failed_to_unsubscribe;
+
+  /// No description provided for @notifications_unsubscribe_confirmation_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to unsubscribe from notifications?'**
+  String get notifications_unsubscribe_confirmation_title;
+
+  /// No description provided for @notifications_unsubscribe_banner_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsubscribe from notifications'**
+  String get notifications_unsubscribe_banner_text;
+
+  /// No description provided for @notifications_unsubscribe_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsubscribe'**
+  String get notifications_unsubscribe_button;
 
   /// No description provided for @notifications_update_application.
   ///
